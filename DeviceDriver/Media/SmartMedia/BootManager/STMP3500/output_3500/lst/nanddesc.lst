@@ -1,0 +1,1948 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\make\cc4f2c1b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DD3500 -DINCLUDE_TYPE2_NAND -DINCLUDE_MLC_DESCRIPTORS
+                                3 ;          -DINCLUDE_RENESAS_DESCRIPTORS -DFAT16 -DDEBUG -DDEVICE_3500 -DENGR_BD
+                                4 ;          -DWMAAPI_NO_DRM -w68 -w66
+                                5 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\DeviceDriv
+                                  er
+                                6 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\API
+                                7 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\CH9
+                                8 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\Include
+                                9 ;          -I..\..\..\..\..\..\inc
+                               10 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500
+                               11 ;          -I -I..\output_3500\include -rr6 -rn6 -rm6 -g -O2 -R -Cs -MmxL
+                               12 
+                               19 
+                               20 ;     nanddesc.c:
+                               21 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                               22 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2006
+                               23 ; 3    |//
+                               24 ; 4    |// Filename: nanddesc.c
+                               25 ; 5    |// Description: C Support functions for NAND flash Device Driver
+                               26 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                               27 ; 7    |
+                               28 ; 8    |#include "types.h"
+                               29 
+                               31 
+                               32 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               33 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                               34 ; 3    |//
+                               35 ; 4    |// Filename: types.h
+                               36 ; 5    |// Description: Standard data types
+                               37 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                               38 ; 7    |
+                               39 ; 8    |#ifndef _TYPES_H
+                               40 ; 9    |#define _TYPES_H
+                               41 ; 10   |
+                               42 ; 11   |// TODO:  move this outta here!
+                               43 ; 12   |#if !defined(NOERROR)
+                               44 ; 13   |#define NOERROR 0
+                               45 ; 14   |#define SUCCESS 0
+                               46 ; 15   |#endif 
+                               47 ; 16   |#if !defined(SUCCESS)
+                               48 ; 17   |#define SUCCESS  0
+                               49 ; 18   |#endif
+                               50 ; 19   |#if !defined(ERROR)
+                               51 ; 20   |#define ERROR   -1
+                               52 ; 21   |#endif
+                               53 ; 22   |#if !defined(FALSE)
+                               54 ; 23   |#define FALSE 0
+                               55 ; 24   |#endif
+                               56 ; 25   |#if !defined(TRUE)
+                               57 ; 26   |#define TRUE  1
+                               58 ; 27   |#endif
+                               59 ; 28   |
+                               60 ; 29   |#if !defined(NULL)
+                               61 ; 30   |#define NULL 0
+                               62 ; 31   |#endif
+                               63 ; 32   |
+                               64 ; 33   |#define MAX_INT     0x7FFFFF
+                               65 ; 34   |#define MAX_LONG    0x7FFFFFFFFFFF
+                               66 ; 35   |
+                               67 ; 36   |
+                               68 ; 37   |#define BYTE    unsigned char       // btVarName
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               69 ; 38   |#define CHAR    signed char         // cVarName
+                               70 ; 39   |#define USHORT  unsigned short      // usVarName
+                               71 ; 40   |#define SHORT   unsigned short      // sVarName
+                               72 ; 41   |#define WORD    unsigned int        // wVarName
+                               73 ; 42   |#define INT     signed int          // iVarName
+                               74 ; 43   |#define DWORD   unsigned long       // dwVarName
+                               75 ; 44   |#define LONG    signed long         // lVarName
+                               76 ; 45   |#define BOOL    unsigned int        // bVarName
+                               77 ; 46   |#define FRACT   _fract              // frVarName
+                               78 ; 47   |#define LFRACT  long _fract         // lfrVarName
+                               79 ; 48   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                               80 ; 49   |#define FLOAT   float               // fVarName
+                               81 ; 50   |#define DBL     double              // dVarName
+                               82 ; 51   |#define ENUM    enum                // eVarName
+                               83 ; 52   |#define CMX     _complex            // cmxVarName
+                               84 ; 53   |typedef WORD UCS3;                  // 
+                               85 ; 54   |
+                               86 ; 55   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                               87 ; 56   |// Examples of circular pointers:
+                               88 ; 57   |//    INT CIRC cpiVarName
+                               89 ; 58   |//    DWORD CIRC cpdwVarName
+                               90 ; 59   |
+                               91 ; 60   |#define RETCODE WORD                // rcVarName
+                               92 ; 61   |
+                               93 ; 62   |// generic bitfield structure
+                               94 ; 63   |struct Bitfield {
+                               95 ; 64   |    int B0  :1;
+                               96 ; 65   |    int B1  :1;
+                               97 ; 66   |    int B2  :1;
+                               98 ; 67   |    int B3  :1;
+                               99 ; 68   |    int B4  :1;
+                              100 ; 69   |    int B5  :1;
+                              101 ; 70   |    int B6  :1;
+                              102 ; 71   |    int B7  :1;
+                              103 ; 72   |    int B8  :1;
+                              104 ; 73   |    int B9  :1;
+                              105 ; 74   |    int B10 :1;
+                              106 ; 75   |    int B11 :1;
+                              107 ; 76   |    int B12 :1;
+                              108 ; 77   |    int B13 :1;
+                              109 ; 78   |    int B14 :1;
+                              110 ; 79   |    int B15 :1;
+                              111 ; 80   |    int B16 :1;
+                              112 ; 81   |    int B17 :1;
+                              113 ; 82   |    int B18 :1;
+                              114 ; 83   |    int B19 :1;
+                              115 ; 84   |    int B20 :1;
+                              116 ; 85   |    int B21 :1;
+                              117 ; 86   |    int B22 :1;
+                              118 ; 87   |    int B23 :1;
+                              119 ; 88   |};
+                              120 ; 89   |
+                              121 ; 90   |union BitInt {
+                              122 ; 91   |        struct Bitfield B;
+                              123 ; 92   |        int        I;
+                              124 ; 93   |};
+                              125 ; 94   |
+                              126 ; 95   |#define MAX_MSG_LENGTH 10
+                              127 ; 96   |struct CMessage
+                              128 ; 97   |{
+                              129 ; 98   |        unsigned int m_uLength;
+                              130 ; 99   |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              131 ; 100  |};
+                              132 ; 101  |
+                              133 ; 102  |struct MessageQueueDescriptor
+                              134 ; 103  |{
+                              135 ; 104  |        int *m_pBase;
+                              136 ; 105  |        int m_iModulo;
+                              137 ; 106  |        int m_iSize;
+                              138 ; 107  |        int *m_pHead;
+                              139 ; 108  |        int *m_pTail;
+                              140 ; 109  |};
+                              141 ; 110  |
+                              142 ; 111  |struct ModuleEntry
+                              143 ; 112  |{
+                              144 ; 113  |    int m_iSignaledEventMask;
+                              145 ; 114  |    int m_iWaitEventMask;
+                              146 ; 115  |    int m_iResourceOfCode;
+                              147 ; 116  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              148 ; 117  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              149 ; 118  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              150 ; 119  |    int m_uTimeOutHigh;
+                              151 ; 120  |    int m_uTimeOutLow;
+                              152 ; 121  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              153 ; 122  |};
+                              154 ; 123  |
+                              155 ; 124  |union WaitMask{
+                              156 ; 125  |    struct B{
+                              157 ; 126  |        int m_bNone     :1;
+                              158 ; 127  |        int m_bMessage  :1;
+                              159 ; 128  |        int m_bTimer    :1;
+                              160 ; 129  |        int m_bButton   :1;
+                              161 ; 130  |    } B;
+                              162 ; 131  |    int I;
+                              163 ; 132  |} ;
+                              164 ; 133  |
+                              165 ; 134  |
+                              166 ; 135  |struct Button {
+                              167 ; 136  |        WORD wButtonEvent;
+                              168 ; 137  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              169 ; 138  |};
+                              170 ; 139  |
+                              171 ; 140  |struct Message {
+                              172 ; 141  |        WORD wMsgLength;
+                              173 ; 142  |        WORD wMsgCommand;
+                              174 ; 143  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              175 ; 144  |};
+                              176 ; 145  |
+                              177 ; 146  |union EventTypes {
+                              178 ; 147  |        struct CMessage msg;
+                              179 ; 148  |        struct Button Button ;
+                              180 ; 149  |        struct Message Message;
+                              181 ; 150  |};
+                              182 ; 151  |
+                              183 ; 152  |
+                              184 ; 153  |
+                              185 ; 154  |
+                              186 ; 155  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error")
+                              187 ; 156  |
+                              188 ; 157  |    
+                              189 ; 158  |#endif // #ifndef _TYPES_H
+                              190 
+                              192 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              193 ; 9    |#include "smequ.h"
+                              194 
+                              196 
+                              197 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              198 ; 2    |// Copyright(C) SigmaTel, Inc. 2000
+                              199 ; 3    |// STMP SmartMedia        
+                              200 ; 4    |/////////////////////////////////////////////////////////////////////////////////
+                              201 ; 5    |
+                              202 ; 6    |#if (!defined(smequ))
+                              203 ; 7    |#define smequ 1
+                              204 ; 8    |
+                              205 ; 9    |// SmartMedia SmReadParams and SmWriteParams
+                              206 ; 10   |#define SM_RWP_ADDRLOW 0
+                              207 ; 11   |#define SM_RWP_ADDRHIGH 1
+                              208 ; 12   |#define SM_RWP_PAGEBUFADDR 2
+                              209 ; 13   |#define SM_RWP_NUMBYTES 3
+                              210 ; 14   |#define SM_RWP_CARDINFO 4
+                              211 ; 15   |#define SM_RWP_FLAGS 5
+                              212 ; 16   |#define SM_RWP_STATUS 6
+                              213 ; 17   |
+                              214 ; 18   |#define SM_ICMD_MASK 0x000100
+                              215 ; 19   |#define SM_ADDRLOWBYTE_MASK 0xFFFF00
+                              216 ; 20   |#define SM_ADDRLOWBYTEUPPER_MASK 0x0000FF
+                              217 ; 21   |
+                              218 ; 22   |#define SM_BUFSHIFT 0x000080
+                              219 ; 23   |#define SM_NUMBYTESSHIFT 0x000020
+                              220 ; 24   |
+                              221 ; 25   |#define SM_RWP_FLAGS_ECCEN_MASK 0x000003
+                              222 ; 26   |#define SM_RWP_FLAGS_ECCEN00 0x000000
+                              223 ; 27   |#define SM_RWP_FLAGS_ECCEN01 0x000001
+                              224 ; 28   |#define SM_RWP_FLAGS_ECCENLOW 0
+                              225 ; 29   |#define SM_RWP_FLAGS_ECCENHIGH 1
+                              226 ; 30   |#define SM_RWP_FLAGS_IDFEN 2
+                              227 ; 31   |#define SM_RWP_FLAGS_BSBEN 3
+                              228 ; 32   |#define SM_RWP_FLAGS_RTNERROR 4
+                              229 ; 33   |
+                              230 ; 34   |// SmartMedia SmCardnInfo
+                              231 ; 35   |#define SM_CI_CARDNUM 0
+                              232 ; 36   |#define SM_CI_ID 1
+                              233 ; 37   |#define SM_CI_PAGESIZE 2
+                              234 ; 38   |#define SM_CI_BLOCKSIZE 3
+                              235 ; 39   |#define SM_CI_BLOCKBYTESIZE 4
+                              236 ; 40   |#define SM_CI_CARDSIZE 5
+                              237 ; 41   |#define SM_CI_CARDMB 6
+                              238 ; 42   |#define SM_CI_STATUS 7
+                              239 ; 43   |
+                              240 ; 44   |// SmartMedia Device Codes for SM_CI_ID
+                              241 ; 45   |//mask off the manufacturer id
+                              242 ; 46   |#define SM_ID_MASK 0x00FF00    
+                              243 ; 47   |#define SM_ID_1a 0x006E00
+                              244 ; 48   |#define SM_ID_1b 0x00E800
+                              245 ; 49   |#define SM_ID_1c 0x00EC00
+                              246 ; 50   |#define SM_ID_2 0x00EA00
+                              247 ; 51   |#define SM_ID_4a 0x00E300
+                              248 ; 52   |#define SM_ID_4b 0x00E500
+                              249 ; 53   |#define SM_ID_8 0x00E600
+                              250 ; 54   |#define SM_ID_16 0x007300
+                              251 ; 55   |#define SM_ID_32 0x007500
+                              252 ; 56   |#define SM_ID_64 0x007600
+                              253 ; 57   |#define SM_ID_128 0x007900
+                              254 ; 58   |
+                              255 ; 59   |// SmReadIdParams
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              256 ; 60   |#define SM_RID_PAGEBUFADDR 0
+                              257 ; 61   |#define SM_RID_CARDINFO 1
+                              258 ; 62   |#define SM_RID_STATUS 2
+                              259 ; 63   |
+                              260 ; 64   |// SmStatusReadParams
+                              261 ; 65   |#define SM_SR_PAGEBUFADDR 0
+                              262 ; 66   |#define SM_SR_CARDINFO 1
+                              263 ; 67   |#define SM_SR_STATUS 2
+                              264 ; 68   |
+                              265 ; 69   |// SmBlockEraseParams
+                              266 ; 70   |#define SM_BE_ADDRLOW 0
+                              267 ; 71   |#define SM_BE_ADDRHIGH 1
+                              268 ; 72   |#define SM_BE_PAGEBUFADDR 2
+                              269 ; 73   |#define SM_BE_CARDINFO 3
+                              270 ; 74   |#define SM_BE_STATUS 4
+                              271 ; 75   |
+                              272 ; 76   |#define SM_IDFZEROERRORCOUNT 4
+                              273 ; 77   |#define SM_BSBZEROERRORCOUNT 2
+                              274 ; 78   |
+                              275 ; 79   |// Card Status
+                              276 ; 80   |#define SM_CS_PASSFAIL_BIT 0
+                              277 ; 81   |#define SM_CS_READYBUSY_BIT 6
+                              278 ; 82   |#define SM_CS_WRITEPROTECT_BIT 7
+                              279 ; 83   |
+                              280 ; 84   |#define FLH_PAGEBUFSIZE 0x00B0
+                              281 ; 85   |#define SM_PAGEBUFSIZE 0x00B0
+                              282 ; 86   |// !!!!!!!!!!!!! We're assuming SmartMedia >= 4MB !!!!!!!!!!!!!!!!!!!!!!!!
+                              283 ; 87   |//4 MBytes and up
+                              284 ; 88   |#define SM_PAGESIZE 0x0200  
+                              285 ; 89   |//2 MBytes and under
+                              286 ; 90   |#define SM_PAGESIZE2 0x0100  
+                              287 ; 91   |#define SM_PAGESPERBLOCK16 32
+                              288 ; 92   |#define SM_PAGESPERBLOCK8 16
+                              289 ; 93   |#define SM_PHYSBLOCKSIZE16 SM_PAGESIZE*SM_PAGESPERBLOCK16
+                              290 ; 94   |#define SM_PHYSBLOCKSIZE8 SM_PAGESIZE*SM_PAGESPERBLOCK8
+                              291 ; 95   |#define SM_PHYSBLOCKSIZE2 SM_PAGESIZE2*SM_PAGESPERBLOCK8
+                              292 ; 96   |#define SM_PAGESTATE_A 1
+                              293 ; 97   |#define SM_PAGESTATE_B 2
+                              294 ; 98   |#define SM_PAGESTATE_C 3
+                              295 ; 99   |
+                              296 ; 100  |
+                              297 ; 101  |
+                              298 ; 102  |
+                              299 ; 103  |// PageBuf offset $AC (172).
+                              300 ; 104  |#define SM_STATUS_BYTES 0xAC     
+                              301 ; 105  |//   CIS/IDI Field:
+                              302 ; 106  |//      byte 0 = Invalid Data Flag
+                              303 ; 107  |//      byte 1 = $ff
+                              304 ; 108  |//   All other pages:
+                              305 ; 109  |//      byte 0 = Data Status Byte
+                              306 ; 110  |//      byte 1 = Block Status Byte
+                              307 ; 111  |// For byte 0, if 4 or more bits are zero
+                              308 ; 112  |//   then data is invalid
+                              309 ; 113  |// For byte 1, if 2 or more bits are zero
+                              310 ; 114  |//   the block is invalid
+                              311 ; 115  |
+                              312 ; 116  |#define SM_INFO_CARD_DETECTED 0
+                              313 ; 117  |#define SM_INFO_READ_ID_TIMEOUT 1
+                              314 ; 118  |#define SM_INFO_READ_TIMEOUT 2
+                              315 ; 119  |#define SM_INFO_END_OF_BLOCKS 3
+                              316 ; 120  |#define SM_INFO_READ_ID_BAD_PROGRAMMING 4
+                              317 ; 121  |#define SM_INFO_READ_BAD_PROGRAMMING 5
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              318 ; 122  |
+                              319 ; 123  |#endif
+                              320 ; 124  |
+                              321 ; 125  |
+                              322 
+                              324 
+                              325 ; 10   |
+                              326 ; 11   |#include "nandstructs.h"
+                              327 
+                              329 
+                              330 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                              331 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                              332 ; 3    |//
+                              333 ; 4    |// Filename: nandstructs.h
+                              334 ; 5    |// Description: Structure definitions for NAND descriptors
+                              335 ; 6    |///////////////////////////////////////////////////////////////////////////////
+                              336 ; 7    |
+                              337 ; 8    |#ifndef NAND_STRUCTS_H
+                              338 ; 9    |#define NAND_STRUCTS_H 1
+                              339 ; 10   |
+                              340 ; 11   |// By design:
+                              341 ; 12   |
+                              342 ; 13   |
+                              343 ; 14   |
+                              344 ; 15   |///////////////////////////////////////////////////////////////////////////////
+                              345 ; 16   |// Sector/Page Descriptor
+                              346 ; 17   |struct NANDSectorDescriptorStruct {
+                              347 ; 18   |  WORD  iSectorTotalSize;               // Total Sector size (Data + Redundant Area)
+                              348 ; 19   |  WORD  iSectorDataSize;            // Number Data bytes per Page
+                              349 ; 20   |  WORD  iRedundantAreaSize;             // Number of bytes per Redundant/Spare Area
+                              350 ; 21   |
+                              351 ; 22   |  // A physical Page may contain multiple Sectors.  
+                              352 ; 23   |  // It is assumed that the number or Sectors per Page is always 
+                              353 ; 24   |  // a power of 2 (i.e. 1,2,4...)
+                              354 ; 25   |  // The following elements are used to help address the Sectors within a Page
+                              355 ; 26   |  WORD  iSectorToPageShift;             // Number of right shifts to compute Page Num from
+                                   Sector Num
+                              356 ; 27   |  WORD  iSectorInPageMask;              // Mask to extract "relative sector in Page" from 
+                                  absolute Sector Num
+                              357 ; 28   |};
+                              358 ; 29   |
+                              359 ; 30   |
+                              360 ; 31   |///////////////////////////////////////////////////////////////////////////////
+                              361 ; 32   |// Block Descriptor
+                              362 ; 33   |struct NANDBlockDescriptorStruct {
+                              363 ; 34   |  WORD  NumSectorsPerBlock;
+                              364 ; 35   |  WORD  PagesPerBlock;
+                              365 ; 36   |  WORD  MaxBlocksPerZone;
+                              366 ; 37   |};
+                              367 ; 38   |
+                              368 ; 39   |
+                              369 ; 40   |
+                              370 ; 41   |
+                              371 ; 42   |
+                              372 ; 43   |///////////////////////////////////////////////////////////////////////////////
+                              373 ; 44   |// RedundantArea Descriptor
+                              374 ; 45   |struct NANDRedundantAreaDescriptorStruct {
+                              375 ; 46   |                                // Describes locations of fields in the Redundant Area *wh
+                                  en it
+                              376 ; 47   |                                // is read by itself* (i.e. not as part of a FullSector re
+                                  ad).
+                              377 ; 48   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              378 ; 49   |  WORD  BadBlockFlag_Offset;    // 24-bit word offset to Bad Block Flag
+                              379 ; 50   |  WORD  BadBlockFlag_ByteNum;   // byte number (0-2) of Bad Block Flag
+                              380 ; 51   |  WORD  Tag0_Offset;                    // 24-bit word offset to Tag0
+                              381 ; 52   |  WORD  Tag0_ByteNum;                   // byte number of Tag0
+                              382 ; 53   |  WORD  Tag1_Offset;                    // 24-bit word offset to Tag1
+                              383 ; 54   |  WORD  Tag1_ByteNum;                   // byte number of Tag1
+                              384 ; 55   |};
+                              385 ; 56   |
+                              386 ; 57   |#define NAND_GOOD_BLOCK_VALUE   (0x0000ff)
+                              387 ; 58   |
+                              388 ; 59   |///////////////////////////////////////////////////////////////////////////////
+                              389 ; 60   |// Device Addressing Descriptor
+                              390 ; 61   |struct NANDDeviceAddressingDescriptorStruct {
+                              391 ; 62   |
+                              392 ; 63   |  WORD  iNumColumnBytes;        // Number of Column Address bytes required
+                              393 ; 64   |  WORD  iNumRowBytes;           // Number of Row Address bytes required
+                              394 ; 65   |};
+                              395 ; 66   |
+                              396 ; 67   |
+                              397 ; 68   |///////////////////////////////////////////////////////////////////////////////
+                              398 ; 69   |// NAND Command Codes Descriptor
+                              399 ; 70   |struct NANDCommandCodesStruct {
+                              400 ; 71   |
+                              401 ; 72   |  // NOTE: Command are a single byte, in the LSByte.  A value of -1 (0xffffff) indicates
+                              402 ; 73   |  //        a code is not available for the current device.
+                              403 ; 74   |
+                              404 ; 75   |  WORD iReadIDCode;                             // ReadID
+                              405 ; 76   |  WORD iReadStatusCode;             // Read Status
+                              406 ; 77   |  WORD iResetCode;                  // Reset
+                              407 ; 78   |
+                              408 ; 79   |  WORD iSerialDataInputCode;            // Serial Data Input
+                              409 ; 80   |  WORD iRead1Code;                              // Read (Mode 1)
+                              410 ; 81   |  WORD iRead1_2ndCycleCode;         // Second Cycle for Read (Type 2 NANDs)
+                              411 ; 82   |  WORD iRead2Code;                              // Read (Mode 2)
+                              412 ; 83   |  WORD iRead3Code;                              // Read (Mode 3)
+                              413 ; 84   |
+                              414 ; 85   |#ifdef NAND_WRITES_ALLOWED
+                              415 ; 86   |  WORD iPageProgramCode;                // Page Program
+                              416 ; 87   |  WORD iCacheProgramCode;           // Cache Program
+                              417 ; 88   |
+                              418 ; 89   |  // TBD: Add ReadForCopy Back 0x00 & 0x35
+                              419 ; 90   |  WORD iCopyBackProgramCode;        // Copy Back Program
+                              420 ; 91   |  // TBD: Add Copy Back Program 2nd Cycle 0x10
+                              421 ; 92   |
+                              422 ; 93   |  WORD iBlockEraseCode;             // Block Erase
+                              423 ; 94   |  WORD iBlockErase2Code;            // Block Erase 2
+                              424 ; 95   |
+                              425 ; 96   |  WORD iRandomDataInCode;           // Random Data Input
+                              426 ; 97   |
+                              427 ; 98   |  WORD iRandomDataOutCode;          // Random Data Output
+                              428 ; 99   |  WORD iRandomDataOut_2ndCycleCode; // Random Data Output 2nd Cycle
+                              429 ; 100  |
+                              430 ; 101  |  WORD iMultiPlaneBlockEraseCode;       // Multiplane Block Erase
+                              431 ; 102  |
+                              432 ; 103  |  WORD iReadMultiPlaneStatusCode;   // Read Multiplane Status
+                              433 ; 104  |#endif
+                              434 ; 105  |};
+                              435 ; 106  |
+                              436 ; 107  |
+                              437 ; 108  |
+                              438 ; 109  |///////////////////////////////////////////////////////////////////////////////
+                              439 ; 110  |// Device Driver API Functions
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              440 ; 111  |struct NANDDeviceDriverFunctionsStruct {
+                              441 ; 112  |
+                              442 ; 113  |  _reentrant WORD (*pReadSectorData)(struct NANDDescriptorStruct _P *pNANDDevice, WORD iCh
+                                  ip,
+                              443 ; 114  |                                     WORD iSectorNum, WORD *pDataBuf, BYTE bType);
+                              444 ; 115  |//  _reentrant WORD (*pReadSectorRedundant)(struct NANDDescriptorStruct _P *pNANDDevice, W
+                                  ORD iChip, 
+                              445 ; 116  |//                                          WORD iSectorNum, WORD *pDataBuf);
+                              446 ; 117  |  _reentrant WORD (*pResetNand)(WORD iDeviceNum);
+                              447 ; 118  |
+                              448 ; 119  |#ifdef NAND_WRITES_ALLOWED
+                              449 ; 120  |  // WRITE Functions
+                              450 ; 121  |
+                              451 ; 122  |  _reentrant WORD (*pWriteSectorData)(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              452 ; 123  |                                      WORD iChip, 
+                              453 ; 124  |                                      WORD iSectorNum, WORD *pDataBuf);
+                              454 ; 125  |  _reentrant WORD (*pEraseBlock)(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              455 ; 126  |                                 WORD iDeviceNum, WORD iBlockNum);
+                              456 ; 127  |#endif
+                              457 ; 128  |};
+                              458 ; 129  |
+                              459 ; 130  |
+                              460 ; 131  |///////////////////////////////////////////////////////////////////////////////
+                              461 ; 132  |// Hardware API Functions
+                              462 ; 133  |struct NANDHardwareAPIFunctionsStruct {
+                              463 ; 134  |  _reentrant WORD (*pPortInit)(WORD iDeviceNum);
+                              464 ; 135  |  _reentrant WORD (*pWritePortCmd)(WORD iDeviceNum, WORD iCommandCode, WORD bDeassertCEn);
+                                  
+                              465 ; 136  |  _reentrant WORD (*pWritePortAddr)(WORD iDeviceNum, WORD iNumColBytes, 
+                              466 ; 137  |                         WORD iColumnAddress, WORD iNumRowBytes, 
+                              467 ; 138  |                         WORD iRowAddress, WORD bDeassertCEn);
+                              468 ; 139  |  _reentrant WORD (*pReadPortData)(WORD iDeviceNum, WORD iNumBytesToRead, 
+                              469 ; 140  |                                   WORD *pBuffer, WORD b16BitMode);
+                              470 ; 141  |  _reentrant WORD (*pWaitForReadyPort)(WORD iDeviceNum, WORD iTimeoutCount);
+                              471 ; 142  |  _reentrant WORD (*pPowerUpPads)(void);
+                              472 ; 143  |  _reentrant WORD (*pPowerUpPads_16bit)(void);
+                              473 ; 144  |  _reentrant WORD (*pTerminatePort)(WORD iDeviceNum);
+                              474 ; 145  |};
+                              475 ; 146  |
+                              476 ; 147  |
+                              477 ; 148  |#ifdef NAND_WRITES_ALLOWED
+                              478 ; 149  |struct NANDHardwareAPI_w_FunctionsStruct {
+                              479 ; 150  |  // WRITE Functions
+                              480 ; 151  |
+                              481 ; 152  |  _reentrant void (*pEnableWritesPort)(WORD WPnum);
+                              482 ; 153  |  _reentrant void (*pDisableWritesPort)(WORD WPnum);
+                              483 ; 154  |  _reentrant WORD (*pWriteDataPort)(WORD iDeviceNum, WORD iNumBytesToWrite, 
+                              484 ; 155  |                                            WORD *pBuffer, WORD b16BitMode);
+                              485 ; 156  |};
+                              486 ; 157  |#endif
+                              487 ; 158  |
+                              488 ; 159  |
+                              489 ; 160  |
+                              490 ; 161  |
+                              491 ; 162  |///////////////////////////////////////////////////////////////////////////////
+                              492 ; 163  |// This SubStruct is a consolidation for memory savings. 
+                              493 ; 164  |typedef struct NANDDescriptorSubStruct{
+                              494 ; 165  |    struct NANDSectorDescriptorStruct _P *pPageDescriptor;
+                              495 ; 166  |    struct NANDBlockDescriptorStruct _P *pBlockDescriptor;
+                              496 ; 167  |//    struct NANDRedundantAreaDescriptorStruct _P *pRedundantAreaDescriptor;
+                              497 ; 168  |    struct NANDDeviceDriverFunctionsStruct _P *pDeviceDriverFunctions;
+                              498 ; 169  |    struct NANDCommandCodesStruct _P *pDeviceCommandCodes;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              499 ; 170  |    struct NANDDeviceAddressingDescriptorStruct _P *pDeviceAddressing;    
+                              500 ; 171  |    WORD  NandType;       // = 1 (SSFDC), 2 (e.g. Samsung 1Gbit), or 3 (e.g. MLC)
+                              501 ; 172  |};
+                              502 ; 173  |
+                              503 ; 174  |// The NANDDescriptorStruct is whole NAND descriptor - includes pointers to some of the ab
+                                  ove structs
+                              504 ; 175  |typedef struct NANDDescriptorStruct {
+                              505 ; 176  |  struct NANDDescriptorSubStruct _P *pNandDescriptorSubStruct; // consolidated
+                              506 ; 177  |  WORD  DataBusWidth;   // BusWidth = 8 or 16 bits
+                              507 ; 178  |                                                // Use this parameter only to initialize t
+                                  he global CurrentNANDBusWidth
+                              508 ; 179  |                                                // Some NANDs required more real time proc
+                                  ess to determine  their bus
+                              509 ; 180  |                                                // width. (see CurrentNANDBusWidth declara
+                                  tion Note for further information)
+                              510 ; 181  |//WORD  TotalSectors;   // Unused in bootmanager
+                              511 ; 182  |//WORD  TotalPages;     // Unused in bootmanager
+                              512 ; 183  |  WORD  TotalBlocks;
+                              513 ; 184  |//WORD  TotalZones;     // Unused in bootmanager
+                              514 ; 185  |} NAND_DESCRIPTOR, *P_NAND_DESCRIPTOR;
+                              515 ; 186  |
+                              516 ; 187  |
+                              517 ; 188  |
+                              518 ; 189  |typedef struct {
+                              519 ; 190  |  WORD    DeviceManufacturerCode;                 // 00:Device:Manufacturer
+                              520 ; 191  |  struct NANDDescriptorStruct _P *pNANDDescriptor;
+                              521 ; 192  |} NAND_DEVICECODE_MAP;
+                              522 ; 193  |
+                              523 ; 194  |#define TYPE1_NAND  1
+                              524 ; 195  |#define TYPE2_NAND  2
+                              525 ; 196  |#define TYPE3_NAND  3
+                              526 ; 197  |#define TYPE4_NAND  4
+                              527 ; 198  |#define TYPE5_NAND  5
+                              528 ; 199  |#define TYPE6_NAND  6
+                              529 ; 200  |#define TYPE7_NAND  7
+                              530 ; 201  |
+                              531 ; 202  |
+                              532 ; 203  |#endif
+                              533 
+                              535 
+                              536 ; 12   |#include "nanddevdrvapi.h"
+                              537 
+                              539 
+                              540 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              541 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              542 ; 3    |//
+                              543 ; 4    |// Filename: nanddevdrvapi.h
+                              544 ; 5    |// Description: Function prototypes for NAND Device Driver API
+                              545 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                              546 ; 7    |
+                              547 ; 8    |
+                              548 ; 9    |// TBD: Decide where the next prototype really belongs...
+                              549 ; 10   |// _reentrant struct NANDDescriptorStruct _P * NandLookupID(WORD iDeviceCode);
+                              550 ; 11   |
+                              551 ; 12   |// Used in ReadSectorData functions to determine which area is to be read (data or redunda
+                                  nt area)
+                              552 ; 13   |#define READ_TYPE_REDUNDANT_AREA        0       
+                              553 ; 14   |#define READ_TYPE_DATA_AREA             1
+                              554 ; 15   | 
+                              555 ; 16   |_reentrant WORD NANDInitInterfacePort(WORD iDeviceNum);
+                              556 ; 17   |_reentrant WORD NANDTerminateInterfacePort(WORD iDeviceNum);
+                              557 ; 18   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              558 ; 19   |
+                              559 ; 20   |_reentrant WORD Sm_ReadId(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDeviceNum);
+                              560 ; 21   |
+                              561 ; 22   |
+                              562 ; 23   |_reentrant WORD NandReadSectorDataWrapper(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              563 ; 24   |                                          WORD iDeviceNum, WORD iPageNum, WORD _X *pPageBu
+                                  f);
+                              564 ; 25   |
+                              565 ; 26   |_reentrant WORD NandReadSectorRedundantWrapper(struct NANDDescriptorStruct _P *pNANDDevice
+                                  , 
+                              566 ; 27   |                                               WORD iDeviceNum, WORD iSectorNum, WORD _X *
+                                  pBuf);
+                              567 ; 28   |
+                              568 ; 29   |_reentrant WORD ResetNand(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDeviceNum);
+                              569 ; 30   |
+                              570 ; 31   |/////////////////////////////////////////////////////////////////////////////////
+                              571 ; 32   |// SmartMedia (SSFDC) Device Driver Routines
+                              572 ; 33   |_reentrant WORD Sm_ReadSectorData(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDevic
+                                  eNum, 
+                              573 ; 34   |                                  WORD iPageNum, WORD _X *pDataBuf, BYTE bType);
+                              574 ; 35   |
+                              575 ; 36   |//_reentrant WORD Sm_ReadSectorRedundant(struct NANDDescriptorStruct _P *pNANDDevice, WORD
+                                   iDeviceNum, 
+                              576 ; 37   |//                                       WORD iPageNum, WORD *pDataBuf);
+                              577 ; 38   |
+                              578 ; 39   |
+                              579 ; 40   |#ifdef INCLUDE_TYPE2_NAND
+                              580 ; 41   |/////////////////////////////////////////////////////////////////////////////////
+                              581 ; 42   |// Type2 NANDs (e.g. Samsung 1Gbit and 2Gbit NANDs)
+                              582 ; 43   |_reentrant WORD Type2_ReadSectorData(struct NANDDescriptorStruct _P *pNANDDesc, 
+                              583 ; 44   |                                            WORD iDeviceNum, 
+                              584 ; 45   |                                            WORD iSectorNum,
+                              585 ; 46   |                                            WORD _X *pBuf,
+                              586 ; 47   |                                            BYTE bType);
+                              587 ; 48   |
+                              588 ; 49   |//_reentrant WORD Type2_ReadSectorRedundant(struct NANDDescriptorStruct _P *pNANDDesc, 
+                              589 ; 50   |//                                            WORD iDeviceNum, 
+                              590 ; 51   |//                                            WORD iSectorNum,
+                              591 ; 52   |//                                                 WORD _X *pBuf);
+                              592 ; 53   |#endif
+                              593 ; 54   |
+                              594 ; 55   |#ifdef INCLUDE_MLC_DESCRIPTORS
+                              595 ; 56   |_reentrant WORD Type3ReadSectorData(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              596 ; 57   |                                    WORD iDeviceNum, WORD iSectorNum, 
+                              597 ; 58   |                                    WORD _X *pBuf, BYTE bType);
+                              598 ; 59   |#endif
+                              599 ; 60   |
+                              600 
+                              602 
+                              603 ; 13   |
+                              604 ; 14   |#ifdef NAND_WRITES_ALLOWED
+                              605 ; 15   |#include "nanddevdrvapi_w.h"
+                              606 ; 16   |#endif
+                              607 ; 17   |
+                              608 ; 18   |///////////////////////////////////////////////////////////////////////////////
+                              609 ; 19   |// Exports
+                              610 ; 20   |_reentrant struct NANDDescriptorStruct _P * matchDevice(WORD iDeviceCode);
+                              611 ; 21   |
+                              612 ; 22   |
+                              613 ; 23   |
+                              614 ; 24   |
+                              615 ; 25   |///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              616 ; 26   |//  Sector Descriptors
+                              617 ; 27   |_P struct NANDSectorDescriptorStruct                            Sm_SectorDescriptor = {
+                              618 
+                              619 
+P:0000                        620         org     p,".pdatananddesc",init:
+                              621 FSm_SectorDescriptor:
+P:0000 000210 000200          622         dc      $000210,$000200,$000010,$000000,$ffffff
+       000010 000000              
+       FFFFFF                     
+                              631 
+                              632 ; 28   |  528,                          // iSectorSize
+                              633 ; 29   |  512,                          // iDataPageSize
+                              634 ; 30   |  16,                           // iRedundantAreaSize
+                              635 ; 31   |  0,                // iSectorToPageShift
+                              636 ; 32   |  0xffffff          // iSectorInPageMask
+                              637 ; 33   |};
+                              638 ; 34   |
+                              639 ; 35   |#ifdef INCLUDE_TYPE2_NAND
+                              640 ; 36   |_P struct NANDSectorDescriptorStruct                            Type2_SectorDescriptor = {
+                                  
+                              641 
+                              642 FType2_SectorDescriptor:
+P:0005 000840 000800          643         dc      $000840,$000800,$000040,$000000,$000000
+       000040 000000              
+       000000                     
+                              646 
+                              647 ; 37   |  2112,                         // iSectorSize
+                              648 ; 38   |  2048,                // iDataPageSize
+                              649 ; 39   |  64,                           // iRedundantAreaSize
+                              650 ; 40   |  0,                // iSectorToPageShift
+                              651 ; 41   |  0x000000          // iSectorInPageMask
+                              652 ; 42   |};
+                              653 ; 43   |#endif
+                              654 ; 44   |
+                              655 ; 45   |///////////////////////////////////////////////////////////////////////////////
+                              656 ; 46   |// Block Descriptors
+                              657 ; 47   |_P struct NANDBlockDescriptorStruct                     Sm_Small_BlockDescriptor = {
+                              658 
+                              659 FSm_Small_BlockDescriptor:
+P:000A 000010 000010          660         dc      $000010,$000010,$000000
+       000000                     
+                              667 
+                              668 ; 48   |  16,                           // iNumSectorsPerBlock
+                              669 ; 49   |  16                            // iPagesPerBlock
+                              670 ; 50   |};
+                              671 ; 51   |_P struct NANDBlockDescriptorStruct                     Sm_Large_BlockDescriptor = {
+                              672 
+                              673 FSm_Large_BlockDescriptor:
+P:000D 000020 000020          674         dc      $000020,$000020,$000000
+       000000                     
+                              677 
+                              678 ; 52   |  32,                           // iNumSectorsPerBlock
+                              679 ; 53   |  32                            // iPagesPerBlock
+                              680 ; 54   |};
+                              681 ; 55   |
+                              682 ; 56   |#ifdef INCLUDE_TYPE2_NAND
+                              683 ; 57   |_P struct NANDBlockDescriptorStruct                     Type2_BlockDescriptor = {
+                              684 
+                              685 FType2_BlockDescriptor:
+P:0010 000040 000040          686         dc      $000040,$000040,$000000
+       000000                     
+                              689 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              690 ; 58   |  64,                           // iNumSectorsPerBlock
+                              691 ; 59   |  64                            // iPagesPerBlock
+                              692 ; 60   |};
+                              693 ; 61   |#endif
+                              694 ; 62   |
+                              695 ; 63   |#ifdef INCLUDE_RENESAS_DESCRIPTORS
+                              696 ; 64   |// Note that we're fooling the code here.  We're combining 4 actual blocks
+                              697 ; 65   |// into 1 Virtual block.
+                              698 ; 66   |_P struct NANDBlockDescriptorStruct                     Type4_BlockDescriptor = {
+                              699 
+                              700 FType4_BlockDescriptor:
+P:0013 000020 000008          701         dc      $000020,$000008,$000000
+       000000                     
+                              704 
+                              705 ; 67   |  32,                           // iNumSectorsPerBlock
+                              706 ; 68   |  8                             // iPagesPerBlock
+                              707 ; 69   |};
+                              708 ; 70   |#endif
+                              709 ; 71   |
+                              710 ; 72   |_P struct NANDBlockDescriptorStruct                     Type5_BlockDescriptor = {
+                              711 
+                              712 FType5_BlockDescriptor:
+P:0016 000080 000080          713         dc      $000080,$000080,$000000
+       000000                     
+                              716 
+                              717 ; 73   |  128,                          // iNumSectorsPerBlock
+                              718 ; 74   |  128                           // iPagesPerBlock
+                              719 ; 75   |};
+                              720 ; 76   |
+                              721 ; 77   |
+                              722 ; 78   |///////////////////////////////////////////////////////////////////////////////
+                              723 ; 79   |// Device Driver API Functions
+                              724 ; 80   |_P struct NANDDeviceDriverFunctionsStruct               Sm_DeviceDriverAPI  = {
+                              725 
+                              726 FSm_DeviceDriverAPI:
+P:0019 rrrrrr rrrrrr          727         dc      FType2_ReadSectorData,FResetNand
+                              728 
+                              729 ; 81   |
+                              730 ; 82   |  Type2_ReadSectorData,         // *pReadSectorData(struct NANDDescriptorStruct *pNANDDevi
+                                  ce, WORD iChip,
+                              731 ; 83   |                            //                  WORD iSectorNum, WORD *pDataBuf, BYTE bTyp
+                                  e);
+                              732 ; 84   |//  Sm_ReadSectorRedundant,     // *pReadRedundantArea(struct NANDDescriptorStruct *pNANDD
+                                  evice, WORD iChip,
+                              733 ; 85   |                            //                     WORD iSectorNum, WORD *pDataBuf);
+                              734 ; 86   |  ResetNand,                // *pResetNand(WORD iDeviceNum)
+                              735 ; 87   |#ifdef NAND_WRITES_ALLOWED
+                              736 ; 88   |  Sm_WriteSectorData,       // *pWriteSectorData(struct NANDDescriptorStruct _P *pNANDDevi
+                                  ce, WORD iChip,
+                              737 ; 89   |                            //                   WORD iSectorNum, WORD *pDataBuf);
+                              738 ; 90   |  Sm_EraseBlock             // *pEraseBlock(struct NANDDescriptorStruct _P *pNANDDevice, W
+                                  ORD iBlockNum);
+                              739 ; 91   |#endif
+                              740 
+                              791 
+                              792 ; 92   |};
+                              793 ; 93   |
+                              794 ; 94   |
+                              795 ; 95   |#ifdef INCLUDE_TYPE2_NAND
+                              796 ; 96   |_P struct NANDDeviceDriverFunctionsStruct               Type2_DeviceDriverAPI  = {
+                              797 
+                              798 FType2_DeviceDriverAPI:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:001B rrrrrr rrrrrr          799         dc      FType2_ReadSectorData,FResetNand
+                              800 
+                              801 ; 97   |
+                              802 ; 98   |  Type2_ReadSectorData,             // *pReadSectorData(struct NANDDescriptorStruct *pNAND
+                                  Device, WORD iChip,
+                              803 ; 99   |                                //                  WORD iSectorNum, WORD *pDataBuf, BYTE 
+                                  bType);
+                              804 ; 100  |//  Type2_ReadSectorRedundant,  // *pReadRedundantArea(struct NANDDescriptorStruct *pNANDD
+                                  evice, WORD iChip,
+                              805 ; 101  |                                //                     WORD iSectorNum, WORD *pDataBuf);
+                              806 ; 102  |  ResetNand,                    // *pResetNand(WORD iDeviceNum)
+                              807 ; 103  |
+                              808 ; 104  |#ifdef NAND_WRITES_ALLOWED
+                              809 ; 105  |  Type2_WriteSectorData,        // *pWriteSectorData(struct NANDDescriptorStruct _P *pNAND
+                                  Device, WORD iChip,
+                              810 ; 106  |                                //                   WORD iSectorNum, WORD *pDataBuf);
+                              811 ; 107  |  Sm_EraseBlock                 // *pEraseBlock(struct NANDDescriptorStruct _P *pNANDDevic
+                                  e, WORD iBlockNum);
+                              812 ; 108  |#endif
+                              813 
+                              816 
+                              817 ; 109  |
+                              818 ; 110  |};
+                              819 ; 111  |#endif
+                              820 ; 112  |
+                              821 ; 113  |
+                              822 ; 114  |///////////////////////////////////////////////////////////////////////////////
+                              823 ; 115  |// NAND Command Codes Descriptors
+                              824 ; 116  |_P struct NANDCommandCodesStruct                                Sm_CommandCodes = {
+                              825 
+                              826 FSm_CommandCodes:
+P:001D 000090 000070          827         dc      $000090,$000070,$0000ff,$000080,$000000,$ffffff,$000001,$000050
+       0000FF 000080              
+       000000 FFFFFF              
+       000001 000050              
+                              828 
+                              829 ; 117  |
+                              830 ; 118  |  0x000090,                                             // iReadIDCode
+                              831 ; 119  |  0x000070,                             // iReadStatusCode
+                              832 ; 120  |  0x0000ff,                         // iResetCode
+                              833 ; 121  |
+                              834 ; 122  |  0x000080,                         // iSerial Data Input
+                              835 ; 123  |  0x000000,                         // iRead1Code
+                              836 ; 124  |  0xffffff,                         // Second Cycle for Read (Type 2 NANDs)
+                              837 ; 125  |  0x000001,                         // iRead2Code
+                              838 ; 126  |  0x000050,                         // iRead3Code
+                              839 ; 127  |
+                              840 ; 128  |#ifdef NAND_WRITES_ALLOWED
+                              841 ; 129  |  0x000010,                         // iPageProgramCode
+                              842 ; 130  |  0xffffff,                         // iCacheProgramCode
+                              843 ; 131  |
+                              844 ; 132  |  // TBD: Add ReadForCopy Back 0x00 & 0x35
+                              845 ; 133  |  0xffffff,                         // iCopyBackProgramCode
+                              846 ; 134  |  // TBD: Add Copy Back Program 2nd Cycle 0x10
+                              847 ; 135  |
+                              848 ; 136  |  0x000060,                         // iBlockEraseCode
+                              849 ; 137  |  0x0000d0,                         // iBlockErase2Code
+                              850 ; 138  |
+                              851 ; 139  |  0xffffff,                         // iRandomDataInCode
+                              852 ; 140  |
+                              853 ; 141  |  0xffffff,                         // iRandomDataOutCode
+                              854 ; 142  |  0xffffff,                         // iRandomDataOut_2ndCycleCode
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              855 ; 143  |
+                              856 ; 144  |  0xffffff,                         // iMultiPlaneBlockEraseCode
+                              857 ; 145  |  0xffffff                          // iReadMultiPlaneStatusCode
+                              858 ; 146  |#endif
+                              859 
+                              862 
+                              863 ; 147  |};
+                              864 ; 148  |
+                              865 ; 149  |#ifdef INCLUDE_TYPE2_NAND
+                              866 ; 150  |_P struct NANDCommandCodesStruct                                Type2_CommandCodes = {
+                              867 
+                              868 FType2_CommandCodes:
+P:0025 000090 000070          869         dc      $000090,$000070,$0000ff,$000080,$000000,$000030,$ffffff,$ffffff
+       0000FF 000080              
+       000000 000030              
+       FFFFFF FFFFFF              
+                              870 
+                              871 ; 151  |
+                              872 ; 152  |  0x000090,                                             // iReadIDCode
+                              873 ; 153  |  0x000070,                             // iReadStatusCode
+                              874 ; 154  |  0x0000ff,                         // iResetCode
+                              875 ; 155  |
+                              876 ; 156  |  0x000080,                         // iSerial Data Input
+                              877 ; 157  |  0x000000,                         // iRead1Code
+                              878 ; 158  |  0x000030,                         // iRead1_2ndCycle
+                              879 ; 159  |  0xffffff,                         // iRead2Code
+                              880 ; 160  |  0xffffff,                         // iRead3Code
+                              881 ; 161  |
+                              882 ; 162  |#ifdef NAND_WRITES_ALLOWED
+                              883 ; 163  |  0x000010,                         // iPageProgramCode
+                              884 ; 164  |  0x000015,                         // iCacheProgramCode
+                              885 ; 165  |
+                              886 ; 166  |                
+                              887 ; 167  |  // TBD: Add ReadForCopy Back 0x00 & 0x35
+                              888 ; 168  |  0x000085,                         // iCopyBackProgramCode
+                              889 ; 169  |  // TBD: Add Copy Back Program 2nd Cycle 0x10
+                              890 ; 170  |
+                              891 ; 171  |  0x000060,                         // iBlockEraseCode
+                              892 ; 172  |  0x0000D0,                         // iBlockErase2Code
+                              893 ; 173  |
+                              894 ; 174  |  0x000085,                         // iRandomDataInCode
+                              895 ; 175  |
+                              896 ; 176  |  0x000005,                         // iRandomDataOutCode
+                              897 ; 177  |  0x0000e0,                         // iRandonDataOut_2ndCycleCode
+                              898 ; 178  |
+                              899 ; 179  |  0xffffff,                         // iMultiPlaneBlockEraseCode
+                              900 ; 180  |  0xffffff                          // iReadMultiPlaneStatusCode
+                              901 ; 181  |#endif
+                              902 
+                              905 
+                              906 ; 182  |};
+                              907 ; 183  |#endif
+                              908 ; 184  |
+                              909 ; 185  |
+                              910 ; 186  |
+                              911 ; 187  |///////////////////////////////////////////////////////////////////////////////
+                              912 ; 188  |// Device Addressing Descriptors
+                              913 ; 189  |_P struct NANDDeviceAddressingDescriptorStruct          Sm_Small_Addressing = {
+                              914 
+                              915 FSm_Small_Addressing:
+P:002D 000001 000002          916         dc      $000001,$000002
+                              919 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              920 ; 190  |
+                              921 ; 191  |  1,                                            // Number of Column Address bytes required
+                                  
+                              922 ; 192  |  2                                                     // Number of Row Address bytes req
+                                  uired
+                              923 ; 193  |};
+                              924 ; 194  |_P struct NANDDeviceAddressingDescriptorStruct          Sm_Large_Addressing = {
+                              925 
+                              926 FSm_Large_Addressing:
+P:002F 000001 000003          927         dc      $000001,$000003
+                              930 
+                              931 ; 195  |
+                              932 ; 196  |  1,                                            // Number of Column Address bytes required
+                                  
+                              933 ; 197  |  3                                                     // Number of Row Address bytes req
+                                  uired
+                              934 ; 198  |};
+                              935 ; 199  |
+                              936 ; 200  |#ifdef INCLUDE_TYPE2_NAND
+                              937 ; 201  |_P struct NANDDeviceAddressingDescriptorStruct          Type2_Small_Addressing = {
+                              938 
+                              939 FType2_Small_Addressing:
+P:0031 000002 000002          940         dc      $000002,$000002
+                              943 
+                              944 ; 202  |
+                              945 ; 203  |  2,                                            // Number of Column Address bytes required
+                                  
+                              946 ; 204  |  2                                                     // Number of Row Address bytes req
+                                  uired
+                              947 ; 205  |};
+                              948 ; 206  |_P struct NANDDeviceAddressingDescriptorStruct          Type2_Large_Addressing = {
+                              949 
+                              950 FType2_Large_Addressing:
+P:0033 000002 000003          951         dc      $000002,$000003
+                              954 
+                              955 ; 207  |  2,                                            // Number of Column Address bytes required
+                                  
+                              956 ; 208  |  3                                                     // Number of Row Address bytes req
+                                  uired
+                              957 ; 209  |};
+                              958 ; 210  |#endif
+                              959 ; 211  |
+                              960 ; 212  |///////////////////////////////////////////////////////////////////////////////
+                              961 ; 213  |// NAND Descriptors
+                              962 ; 214  |//   Fill in the following fields for each entry:
+                              963 ; 215  |/***************************************************************************
+                              964 ; 216  |_P struct NANDDescriptorStruct          TBD = {
+                              965 ; 217  |    &NANDDescriptorSubStructType1/2/3/4Small/LargeAddr,  // NandDescriptorSubStruct with c
+                                  ommon member values for this nand type.
+                              966 ; 218  |    TBD,                                    // DataBusWidth = 8 or 16 bits
+                              967 ; 219  |//  TBD,                                    // TotalSectors Unused in bootmanager
+                              968 ; 220  |//  TBD,                                    // TotalPages   Unused in bootmanager
+                              969 ; 221  |    TBD                                     // TotalBlocks
+                              970 ; 222  |//  TBD                                     // TotalZones.  Unused in bootmanager
+                              971 ; 223  |};
+                              972 ; 224  |****************************************************************************/
+                              973 ; 225  |
+                              974 ; 226  |// This SubStruct is used by all the type 1 descriptor structs below. mem savings.
+                              975 ; 227  |_P struct NANDDescriptorSubStruct NANDDescriptorSubStructType1SmallAddr = {
+                              976 
+                              977 FNANDDescriptorSubStructType1SmallAddr:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0035 rrrrrr rrrrrr          978         dc      FSm_SectorDescriptor,FSm_Small_BlockDescriptor,FSm_DeviceDriverAPI
+       rrrrrr                     
+P:0038 rrrrrr rrrrrr          979         dc      FSm_CommandCodes,FSm_Small_Addressing,$000001
+       000001                     
+                              982 
+                              983 ; 228  |    &Sm_SectorDescriptor,                       // *pSectorDescriptor
+                              984 ; 229  |    &Sm_Small_BlockDescriptor,              // *pBlockDescriptor
+                              985 ; 230  |    &Sm_DeviceDriverAPI,                    // *pDeviceDriverFunctions
+                              986 ; 231  |    &Sm_CommandCodes,                       // *pDeviceCommandCodes
+                              987 ; 232  |    &Sm_Small_Addressing,                   // *pDeviceAddressing
+                              988 ; 233  |    TYPE1_NAND                              // NandType
+                              989 ; 234  |};
+                              990 ; 235  |
+                              991 ; 236  |// Similar but for Large Addressing
+                              992 ; 237  |_P struct NANDDescriptorSubStruct NANDDescriptorSubStructType1LargeAddr = {
+                              993 
+                              994 FNANDDescriptorSubStructType1LargeAddr:
+P:003B rrrrrr rrrrrr          995         dc      FSm_SectorDescriptor,FSm_Large_BlockDescriptor,FSm_DeviceDriverAPI
+       rrrrrr                     
+P:003E rrrrrr rrrrrr          996         dc      FSm_CommandCodes,FSm_Large_Addressing,$000001
+       000001                     
+                              999 
+                             1000 ; 238  |    &Sm_SectorDescriptor,                       // *pSectorDescriptor
+                             1001 ; 239  |    &Sm_Large_BlockDescriptor,              // *pBlockDescriptor
+                             1002 ; 240  |    &Sm_DeviceDriverAPI,                    // *pDeviceDriverFunctions
+                             1003 ; 241  |    &Sm_CommandCodes,                       // *pDeviceCommandCodes
+                             1004 ; 242  |    &Sm_Large_Addressing,                   // *pDeviceAddressing
+                             1005 ; 243  |    TYPE1_NAND                              // NandType
+                             1006 ; 244  |};
+                             1007 ; 245  |
+                             1008 ; 246  |_P struct NANDDescriptorStruct          Type1_8MB_8bit_NAND = {         // SmartMedia/SSFD
+                                  C/Type 1, 8 MB, 8-bit, 3.3V
+                             1009 
+                             1010 FType1_8MB_8bit_NAND:
+P:0041 rrrrrr 000008         1011         dc      FNANDDescriptorSubStructType1SmallAddr,$000008,$000400
+       000400                     
+                             1014 
+                             1015 ; 247  |
+                             1016 ; 248  |    &NANDDescriptorSubStructType1SmallAddr, // See members and values at define above.
+                             1017 ; 249  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1018 ; 250  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1019 ; 251  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1020 ; 252  |    8,                                              // DataBusWidth = 8 or 16 bits
+                             1021 ; 253  |//  16384,                                  // TotalSectors Unused in bootmanager
+                             1022 ; 254  |//  16384,                                  // TotalPages   Unused in bootmanager
+                             1023 ; 255  |    1024                                    // TotalBlocks
+                             1024 ; 256  |//  1                                       // TotalZones   Unused in bootmanager
+                             1025 ; 257  |};
+                             1026 ; 258  |
+                             1027 ; 259  |
+                             1028 ; 260  |_P struct NANDDescriptorStruct          Type1_16MB_8bit_NAND = {                // SmartMe
+                                  dia/SSFDC/Type 1, 16 MB, 8-bit, 3.3V
+                             1029 
+                             1030 FType1_16MB_8bit_NAND:
+P:0044 rrrrrr 000008         1031         dc      FNANDDescriptorSubStructType1LargeAddr,$000008,$000400
+       000400                     
+                             1034 
+                             1035 ; 261  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1036 ; 262  |    &NANDDescriptorSubStructType1LargeAddr,          // See members and values at define a
+                                  bove.
+                             1037 ; 263  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1038 ; 264  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1039 ; 265  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1040 ; 266  |    8,                                              // DataBusWidth = 8 or 16 bits
+                             1041 ; 267  |//  32768,                                  // TotalSectors Unused in bootmanager
+                             1042 ; 268  |//  32768,                                  // TotalPages   Unused in bootmanager
+                             1043 ; 269  |    1024                                    // TotalBlocks
+                             1044 ; 270  |//  1                                       // TotalZones   Unused in bootmanager
+                             1045 ; 271  |};
+                             1046 ; 272  |
+                             1047 ; 273  |_P struct NANDDescriptorStruct          Type1_32MB_8bit_NAND = {                // SmartMe
+                                  dia/SSFDC/Type 1, 32 MB, 8-bit, 3.3V
+                             1048 
+                             1049 FType1_32MB_8bit_NAND:
+P:0047 rrrrrr 000008         1050         dc      FNANDDescriptorSubStructType1LargeAddr,$000008,$000800
+       000800                     
+                             1053 
+                             1054 ; 274  |
+                             1055 ; 275  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.
+                             1056 ; 276  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1057 ; 277  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1058 ; 278  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1059 ; 279  |    8,                                              // DataBusWidth = 8 or 16 bits
+                             1060 ; 280  |//  65536,                                  // TotalSectors Unused in bootmanager
+                             1061 ; 281  |//  65536,                                  // TotalPages   Unused in bootmanager
+                             1062 ; 282  |    2048                                    // TotalBlocks
+                             1063 ; 283  |//  2                                       // TotalZones   Unused in bootmanager
+                             1064 ; 284  |};
+                             1065 ; 285  |
+                             1066 ; 286  |_P struct NANDDescriptorStruct          Type1_64MB_8bit_NAND = {                // SmartMe
+                                  dia/SSFDC/Type 1, 64 MB, 8-bit, 3.3V
+                             1067 
+                             1068 FType1_64MB_8bit_NAND:
+P:004A rrrrrr 000008         1069         dc      FNANDDescriptorSubStructType1LargeAddr,$000008,$001000
+       001000                     
+                             1072 
+                             1073 ; 287  |
+                             1074 ; 288  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.
+                             1075 ; 289  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1076 ; 290  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1077 ; 291  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1078 ; 292  |    8,                                              // DataBusWidth = 8 or 16 bits
+                             1079 ; 293  |//  131072,                                 // TotalSectors Unused in bootmanager
+                             1080 ; 294  |//  131072,                                 // TotalPages   Unused in bootmanager
+                             1081 ; 295  |    4096                                   // TotalBlocks
+                             1082 ; 296  |//  4                                       // TotalZones   Unused in bootmanager
+                             1083 ; 297  |};
+                             1084 ; 298  |
+                             1085 ; 299  |_P struct NANDDescriptorStruct          Type1_128MB_8bit_NAND = {               // SmartMe
+                                  dia/SSFDC/Type 1, 128 MB, 8-bit, 3.3V
+                             1086 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1087 FType1_128MB_8bit_NAND:
+P:004D rrrrrr 000008         1088         dc      FNANDDescriptorSubStructType1LargeAddr,$000008,$002000
+       002000                     
+                             1091 
+                             1092 ; 300  |
+                             1093 ; 301  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.
+                             1094 ; 302  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1095 ; 303  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1096 ; 304  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1097 ; 305  |    8,                                              // DataBusWidth = 8 or 16 bits
+                             1098 ; 306  |//  262144,                                 // TotalSectors Unused in bootmanager
+                             1099 ; 307  |//  262144,                                 // TotalPages   Unused in bootmanager
+                             1100 ; 308  |    8192                                    // TotalBlocks
+                             1101 ; 309  |//  8                                       // TotalZones   Unused in bootmanager
+                             1102 ; 310  |};
+                             1103 ; 311  |
+                             1104 ; 312  |_P struct NANDDescriptorStruct      Type1_16MB_16bit_NAND = {
+                             1105 
+                             1106 FType1_16MB_16bit_NAND:
+P:0050 rrrrrr 000010         1107         dc      FNANDDescriptorSubStructType1LargeAddr,$000010,$000400
+       000400                     
+                             1110 
+                             1111 ; 313  |
+                             1112 ; 314  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.
+                             1113 ; 315  |
+                             1114 ; 316  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1115 ; 317  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1116 ; 318  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1117 ; 319  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1118 ; 320  |//  32768,                                  // TotalSectors Unused in bootmanager
+                             1119 ; 321  |//  32768,                                  // TotalPages   Unused in bootmanager
+                             1120 ; 322  |    1024                                    // TotalBlocks
+                             1121 ; 323  |//  1                                       // TotalZones   Unused in bootmanager
+                             1122 ; 324  |};
+                             1123 ; 325  |
+                             1124 ; 326  |
+                             1125 ; 327  |
+                             1126 ; 328  |_P struct NANDDescriptorStruct      Type1_32MB_16bit_NAND = {
+                             1127 
+                             1128 FType1_32MB_16bit_NAND:
+P:0053 rrrrrr 000010         1129         dc      FNANDDescriptorSubStructType1LargeAddr,$000010,$000800
+       000800                     
+                             1132 
+                             1133 ; 329  |
+                             1134 ; 330  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.    
+                                                                                                                  // Use this parame
+                                  ter only to initialize the global CurrentNANDBusWidth
+                             1135 ; 331  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1136 ; 332  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1137 ; 333  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1138 ; 334  |//  65536,                                  // TotalSectors Unused in bootmanager
+                             1139 ; 335  |//  65536,                                  // TotalPages   Unused in bootmanager
+                             1140 ; 336  |    2048                                    // TotalBlocks
+                             1141 ; 337  |//  2                                       // TotalZones   Unused in bootmanager
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1142 ; 338  |};
+                             1143 ; 339  |
+                             1144 ; 340  |
+                             1145 ; 341  |
+                             1146 ; 342  |
+                             1147 ; 343  |_P struct NANDDescriptorStruct      Type1_64MB_16bit_NAND = {
+                             1148 
+                             1149 FType1_64MB_16bit_NAND:
+P:0056 rrrrrr 000010         1150         dc      FNANDDescriptorSubStructType1LargeAddr,$000010,$001000
+       001000                     
+                             1153 
+                             1154 ; 344  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.
+                             1155 ; 345  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1156 ; 346  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1157 ; 347  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1158 ; 348  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1159 ; 349  |//  131072,                                 // TotalSectors Unused in bootmanager
+                             1160 ; 350  |//  131072,                                 // TotalPages   Unused in bootmanager
+                             1161 ; 351  |    4096                                    // TotalBlocks
+                             1162 ; 352  |//  4                                       // TotalZones   Unused in bootmanager
+                             1163 ; 353  |};
+                             1164 ; 354  |
+                             1165 ; 355  |_P struct NANDDescriptorStruct      Type1_128MB_16bit_NAND = {
+                             1166 
+                             1167 FType1_128MB_16bit_NAND:
+P:0059 rrrrrr 000010         1168         dc      FNANDDescriptorSubStructType1LargeAddr,$000010,$002000
+       002000                     
+                             1171 
+                             1172 ; 356  |
+                             1173 ; 357  |    &NANDDescriptorSubStructType1LargeAddr, // See members and values at define above.
+                             1174 ; 358  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1175 ; 359  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1176 ; 360  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1177 ; 361  |    16,                                      // DataBusWidth = 8 or 16 bits
+                             1178 ; 362  |//  262144,                                 // TotalSectors Unused in bootmanager
+                             1179 ; 363  |//  262144,                                 // TotalPages   Unused in bootmanager
+                             1180 ; 364  |    8192                                    // TotalBlocks
+                             1181 ; 365  |//  8                                       // TotalZones   Unused in bootmanager
+                             1182 ; 366  |};
+                             1183 ; 367  |
+                             1184 ; 368  |
+                             1185 ; 369  |
+                             1186 ; 370  |
+                             1187 ; 371  |
+                             1188 ; 372  |/////////////////////////////////////////////////////////////////////////////////
+                             1189 ; 373  |//  Type 2 NANDs
+                             1190 ; 374  |/////////////////////////////////////////////////////////////////////////////////
+                             1191 ; 375  |#ifdef INCLUDE_TYPE2_NAND
+                             1192 ; 376  |
+                             1193 ; 377  |// This SubStruct is used by all the type 2 descriptor structs below. mem savings.
+                             1194 ; 378  |_P struct NANDDescriptorSubStruct NANDDescriptorSubStructType2SmallAddr = {
+                             1195 
+                             1196 FNANDDescriptorSubStructType2SmallAddr:
+P:005C rrrrrr rrrrrr         1197         dc      FType2_SectorDescriptor,FType2_BlockDescriptor,FType2_DeviceDriverAPI
+       rrrrrr                     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:005F rrrrrr rrrrrr         1198         dc      FType2_CommandCodes,FType2_Small_Addressing,$000002
+       000002                     
+                             1201 
+                             1202 ; 379  |    &Type2_SectorDescriptor,                // *pSectorDescriptor
+                             1203 ; 380  |    &Type2_BlockDescriptor,                 // *pBlockDescriptor
+                             1204 ; 381  |    &Type2_DeviceDriverAPI,                 // *pDeviceDriverFunctions
+                             1205 ; 382  |    &Type2_CommandCodes,                    // *pDeviceCommandCodes
+                             1206 ; 383  |    &Type2_Small_Addressing,                // *pDeviceAddressing
+                             1207 ; 384  |    TYPE2_NAND                              // NandType
+                             1208 ; 385  |};
+                             1209 ; 386  |
+                             1210 ; 387  |_P struct NANDDescriptorSubStruct NANDDescriptorSubStructType2LargeAddr = {
+                             1211 
+                             1212 FNANDDescriptorSubStructType2LargeAddr:
+P:0062 rrrrrr rrrrrr         1213         dc      FType2_SectorDescriptor,FType2_BlockDescriptor,FType2_DeviceDriverAPI
+       rrrrrr                     
+P:0065 rrrrrr rrrrrr         1214         dc      FType2_CommandCodes,FType2_Large_Addressing,$000002
+       000002                     
+                             1217 
+                             1218 ; 388  |    &Type2_SectorDescriptor,                // *pSectorDescriptor
+                             1219 ; 389  |    &Type2_BlockDescriptor,                 // *pBlockDescriptor
+                             1220 ; 390  |    &Type2_DeviceDriverAPI,                 // *pDeviceDriverFunctions
+                             1221 ; 391  |    &Type2_CommandCodes,                    // *pDeviceCommandCodes
+                             1222 ; 392  |    &Type2_Large_Addressing,                // *pDeviceAddressing
+                             1223 ; 393  |    TYPE2_NAND                              // NandType
+                             1224 ; 394  |};
+                             1225 ; 395  |
+                             1226 ; 396  |//------------- Type 2 nands below use one of the SubStructs above.
+                             1227 ; 397  |
+                             1228 ; 398  |_P struct NANDDescriptorStruct          Type2_128MB_8bit_NAND = {
+                             1229 
+                             1230 FType2_128MB_8bit_NAND:
+P:0068 rrrrrr 000008         1231         dc      FNANDDescriptorSubStructType2SmallAddr,$000008,$000400
+       000400                     
+                             1234 
+                             1235 ; 399  |    &NANDDescriptorSubStructType2SmallAddr, // consolidation for mem savings.
+                             1236 ; 400  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1237 ; 401  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1238 ; 402  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1239 ; 403  |    8,                                      // DataBusWidth = 8 or 16 bits
+                             1240 ; 404  |//  262144,                                 // TotalSectors Unused in bootmanager
+                             1241 ; 405  |//  65536,                                  // TotalPages   Unused in bootmanager
+                             1242 ; 406  |    1024                                    // TotalBlocks
+                             1243 ; 407  |//  1                                       // TotalZones   Unused in bootmanager
+                             1244 ; 408  |};
+                             1245 ; 409  |
+                             1246 ; 410  |
+                             1247 ; 411  |_P struct NANDDescriptorStruct          Type2_128MB_16bit_NAND = {
+                             1248 
+                             1249 FType2_128MB_16bit_NAND:
+P:006B rrrrrr 000010         1250         dc      FNANDDescriptorSubStructType2SmallAddr,$000010,$000400
+       000400                     
+                             1253 
+                             1254 ; 412  |    &NANDDescriptorSubStructType2SmallAddr, // consolidation for mem savings.
+                             1255 ; 413  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1256 ; 414  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1257 ; 415  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1258 ; 416  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1259 ; 417  |//  262144,                                 // TotalSectors Unused in bootmanager
+                             1260 ; 418  |//  65536,                                  // TotalPages   Unused in bootmanager
+                             1261 ; 419  |    1024                                    // TotalBlocks
+                             1262 ; 420  |//  1                                       // TotalZones   Unused in bootmanager
+                             1263 ; 421  |};
+                             1264 ; 422  |
+                             1265 ; 423  |
+                             1266 ; 424  |
+                             1267 ; 425  |
+                             1268 ; 426  |_P struct NANDDescriptorStruct          Type2_256MB_8bit_NAND = {
+                             1269 
+                             1270 FType2_256MB_8bit_NAND:
+P:006E rrrrrr 000008         1271         dc      FNANDDescriptorSubStructType2LargeAddr,$000008,$000800
+       000800                     
+                             1274 
+                             1275 ; 427  |    &NANDDescriptorSubStructType2LargeAddr,  // consolidation for mem savings.
+                             1276 ; 428  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1277 ; 429  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1278 ; 430  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1279 ; 431  |    8,                                      // DataBusWidth = 8 or 16 bits
+                             1280 ; 432  |//  524288,                                 // TotalSectors Unused in bootmanager
+                             1281 ; 433  |//  131072,                                 // TotalPages   Unused in bootmanager
+                             1282 ; 434  |    2048                                    // TotalBlocks
+                             1283 ; 435  |//  2                                       // TotalZones   Unused in bootmanager
+                             1284 ; 436  |};
+                             1285 ; 437  |
+                             1286 ; 438  |
+                             1287 ; 439  |
+                             1288 ; 440  |_P struct NANDDescriptorStruct          Type2_256MB_16bit_NAND = {
+                             1289 
+                             1290 FType2_256MB_16bit_NAND:
+P:0071 rrrrrr 000010         1291         dc      FNANDDescriptorSubStructType2LargeAddr,$000010,$000800
+       000800                     
+                             1294 
+                             1295 ; 441  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1296 ; 442  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1297 ; 443  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1298 ; 444  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1299 ; 445  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1300 ; 446  |//  524288,                                 // TotalSectors Unused in bootmanager
+                             1301 ; 447  |//  131072,                                 // TotalPages   Unused in bootmanager
+                             1302 ; 448  |    2048                                    // TotalBlocks
+                             1303 ; 449  |//  2                                       // TotalZones   Unused in bootmanager
+                             1304 ; 450  |};
+                             1305 ; 451  |
+                             1306 ; 452  |
+                             1307 ; 453  |
+                             1308 ; 454  |
+                             1309 ; 455  |_P struct NANDDescriptorStruct      Type2_512MB_8bit_NAND = {
+                             1310 
+                             1311 FType2_512MB_8bit_NAND:
+P:0074 rrrrrr 000008         1312         dc      FNANDDescriptorSubStructType2LargeAddr,$000008,$001000
+       001000                     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1315 
+                             1316 ; 456  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1317 ; 457  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1318 ; 458  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1319 ; 459  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1320 ; 460  |    8,                                      // DataBusWidth = 8 or 16 bits
+                             1321 ; 461  |//  1048576,                                // TotalSectors Unused in bootmanager
+                             1322 ; 462  |//  262144,                                 // TotalPages   Unused in bootmanager
+                             1323 ; 463  |    4096                                   // TotalBlocks
+                             1324 ; 464  |//  4                                       // TotalZones   Unused in bootmanager
+                             1325 ; 465  |};
+                             1326 ; 466  |
+                             1327 ; 467  |
+                             1328 ; 468  |
+                             1329 ; 469  |_P struct NANDDescriptorStruct      Type2_512MB_16bit_NAND = {
+                             1330 
+                             1331 FType2_512MB_16bit_NAND:
+P:0077 rrrrrr 000010         1332         dc      FNANDDescriptorSubStructType2LargeAddr,$000010,$001000
+       001000                     
+                             1335 
+                             1336 ; 470  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1337 ; 471  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1338 ; 472  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1339 ; 473  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1340 ; 474  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1341 ; 475  |//  1048576,                                // TotalSectors Unused in bootmanager
+                             1342 ; 476  |//  262144,                                 // TotalPages   Unused in bootmanager
+                             1343 ; 477  |    4096                                    // TotalBlocks
+                             1344 ; 478  |//  4                                       // TotalZones   Unused in bootmanager
+                             1345 ; 479  |};
+                             1346 ; 480  |
+                             1347 ; 481  |
+                             1348 ; 482  |
+                             1349 ; 483  |    // Those are guesses because datasheets not yet released
+                             1350 ; 484  |_P struct NANDDescriptorStruct      Type2_1024MB_8bit_NAND = {
+                             1351 
+                             1352 FType2_1024MB_8bit_NAND:
+P:007A rrrrrr 000008         1353         dc      FNANDDescriptorSubStructType2LargeAddr,$000008,$002000
+       002000                     
+                             1356 
+                             1357 ; 485  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1358 ; 486  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1359 ; 487  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1360 ; 488  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1361 ; 489  |    8,                                      // DataBusWidth = 8 or 16 bits
+                             1362 ; 490  |//  2*1048576,                              // TotalSectors Unused in bootmanager
+                             1363 ; 491  |//  2*262144,                               // TotalPages   Unused in bootmanager
+                             1364 ; 492  |    2*4096                                  // TotalBlocks
+                             1365 ; 493  |//  8                                       // TotalZones   Unused in bootmanager
+                             1366 ; 494  |};
+                             1367 ; 495  |
+                             1368 ; 496  |
+                             1369 ; 497  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1370 ; 498  |    // Those are guesses because datasheets not yet released
+                             1371 ; 499  |_P struct NANDDescriptorStruct      Type2_1024MB_16bit_NAND = {
+                             1372 
+                             1373 FType2_1024MB_16bit_NAND:
+P:007D rrrrrr 000010         1374         dc      FNANDDescriptorSubStructType2LargeAddr,$000010,$002000
+       002000                     
+                             1377 
+                             1378 ; 500  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1379 ; 501  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1380 ; 502  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1381 ; 503  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1382 ; 504  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1383 ; 505  |//  2*1048576,                              // TotalSectors Unused in bootmanager
+                             1384 ; 506  |//  2*262144,                               // TotalPages   Unused in bootmanager
+                             1385 ; 507  |    2*4096                                  // TotalBlocks
+                             1386 ; 508  |//  2*4                                     // TotalZones   Unused in bootmanager
+                             1387 ; 509  |};
+                             1388 ; 510  |
+                             1389 ; 511  |
+                             1390 ; 512  |
+                             1391 ; 513  |    // Those are guesses because datasheets not yet released
+                             1392 ; 514  |_P struct NANDDescriptorStruct      Type2_2048MB_8bit_NAND = {
+                             1393 
+                             1394 FType2_2048MB_8bit_NAND:
+P:0080 rrrrrr 000008         1395         dc      FNANDDescriptorSubStructType2LargeAddr,$000008,$004000
+       004000                     
+                             1398 
+                             1399 ; 515  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1400 ; 516  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1401 ; 517  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1402 ; 518  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1403 ; 519  |    8,                                      // DataBusWidth = 8 or 16 bits
+                             1404 ; 520  |//  4*1048576,                              // TotalSectors Unused in bootmanager
+                             1405 ; 521  |//  4*262144,                               // TotalPages   Unused in bootmanager
+                             1406 ; 522  |    4*4096                                  // TotalBlocks
+                             1407 ; 523  |//  4*2                                     // TotalZones   Unused in bootmanager
+                             1408 ; 524  |};
+                             1409 ; 525  |
+                             1410 ; 526  |
+                             1411 ; 527  |
+                             1412 ; 528  |    // Those are guesses because datasheets not yet released
+                             1413 ; 529  |_P struct NANDDescriptorStruct      Type2_2048MB_16bit_NAND = {
+                             1414 
+                             1415 FType2_2048MB_16bit_NAND:
+P:0083 rrrrrr 000010         1416         dc      FNANDDescriptorSubStructType2LargeAddr,$000010,$004000
+       004000                     
+                             1419 
+                             1420 ; 530  |    &NANDDescriptorSubStructType2LargeAddr, // consolidation for mem savings.
+                             1421 ; 531  |                                                                                        //
+                                   Use this parameter only to initialize the global CurrentNANDBusWidth
+                             1422 ; 532  |                                                                                        //
+                                   Some NANDs required more real time process to determine  their bus
+                             1423 ; 533  |                                                                                        //
+                                   width. (see CurrentNANDBusWidth declaration Note for further information)
+                             1424 ; 534  |    16,                                     // DataBusWidth = 8 or 16 bits
+                             1425 ; 535  |//  4*1048576,                              // TotalSectors Unused in bootmanager
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1426 ; 536  |//  4*262144,                               // TotalPages   Unused in bootmanager
+                             1427 ; 537  |    4*4096                                  // TotalBlocks
+                             1428 ; 538  |//  4*2                                     // TotalZones   Unused in bootmanager
+                             1429 ; 539  |};
+                             1430 ; 540  |
+                             1431 ; 541  |#endif //#ifdef INCLUDE_TYPE2_NAND
+                             1432 ; 542  |
+                             1433 ; 543  |
+                             1434 ; 544  |
+                             1435 ; 545  |
+                             1436 ; 546  |
+                             1437 ; 547  |/////////////////////////////////////////////////////////////////////////////////
+                             1438 ; 548  |//  Type 4 Renesas AG-AND
+                             1439 ; 549  |/////////////////////////////////////////////////////////////////////////////////
+                             1440 ; 550  |
+                             1441 ; 551  |///////////////////////////////////// WARNING !!!!!!!!! /////////////////////////
+                             1442 ; 552  |/// Check with Gray to fill these structures properly - update: filled.
+                             1443 ; 553  |////////////////////////////////////////////////////////////////////////////////
+                             1444 ; 554  |#ifdef INCLUDE_RENESAS_DESCRIPTORS
+                             1445 ; 555  |_P struct NANDDescriptorSubStruct NANDDescriptorSubStructType4 = {
+                             1446 
+                             1447 FNANDDescriptorSubStructType4:
+P:0086 rrrrrr rrrrrr         1448         dc      FType2_SectorDescriptor,FType4_BlockDescriptor,FType2_DeviceDriverAPI
+       rrrrrr                     
+P:0089 rrrrrr rrrrrr         1449         dc      FType2_CommandCodes,FType2_Small_Addressing,$000004
+       000004                     
+                             1452 
+                             1453 ; 556  |    &Type2_SectorDescriptor,        // *pSectorDescriptor
+                             1454 ; 557  |    &Type4_BlockDescriptor,         // *pBlockDescriptor
+                             1455 ; 558  |    &Type2_DeviceDriverAPI,         // *pDeviceDriverFunctions
+                             1456 ; 559  |    &Type2_CommandCodes,            // *pDeviceCommandCodes
+                             1457 ; 560  |    &Type2_Small_Addressing,        // *pDeviceAddressing
+                             1458 ; 561  |    TYPE4_NAND,                     // NandType
+                             1459 ; 562  |};
+                             1460 ; 563  |//----------- Type 4 nands below use the SubStruct above. mem savings.
+                             1461 ; 564  |
+                             1462 ; 565  |_P struct NANDDescriptorStruct  Type4_128MB_8bit_AND = {
+                             1463 
+                             1464 FType4_128MB_8bit_AND:
+P:008C rrrrrr 000008         1465         dc      FNANDDescriptorSubStructType4,$000008,$002000
+       002000                     
+                             1468 
+                             1469 ; 566  |    &NANDDescriptorSubStructType4,
+                             1470 ; 567  |                                                                        // Use this parame
+                                  ter only to initialize the global CurrentNANDBusWidth
+                             1471 ; 568  |                                                                        // Some NANDs requ
+                                  ired more real time process to determine  their bus
+                             1472 ; 569  |                                                                        // width. (see Cur
+                                  rentNANDBusWidth declaration Note for further information)
+                             1473 ; 570  |        8,
+                             1474 ; 571  |    8192                                // TotalBlocks
+                             1475 ; 572  |};
+                             1476 ; 573  |
+                             1477 ; 574  |_P struct NANDDescriptorStruct  Type4_512MB_8bit_AND = {
+                             1478 
+                             1479 FType4_512MB_8bit_AND:
+P:008F rrrrrr 000008         1480         dc      FNANDDescriptorSubStructType4,$000008,$002000
+       002000                     
+                             1483 
+                             1484 ; 575  |    &NANDDescriptorSubStructType4,
+                             1485 ; 576  |                                                                        // Use this parame
+                                  ter only to initialize the global CurrentNANDBusWidth
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1486 ; 577  |                                                                        // Some NANDs requ
+                                  ired more real time process to determine  their bus
+                             1487 ; 578  |                                                                        // width. (see Cur
+                                  rentNANDBusWidth declaration Note for further information)
+                             1488 ; 579  |        8,
+                             1489 ; 580  |    8192                                // TotalBlocks
+                             1490 ; 581  |};
+                             1491 ; 582  |
+                             1492 ; 583  |#endif   //#ifdef INCLUDE_RENESAS_DESCRIPTORS
+                             1493 ; 584  |
+                             1494 ; 585  |_P struct NANDDescriptorSubStruct NANDDescriptorSubStructType5 = {
+                             1495 
+                             1496 FNANDDescriptorSubStructType5:
+P:0092 rrrrrr rrrrrr         1497         dc      FType2_SectorDescriptor,FType5_BlockDescriptor,FType2_DeviceDriverAPI
+       rrrrrr                     
+P:0095 rrrrrr rrrrrr         1498         dc      FType2_CommandCodes,FType2_Large_Addressing,$000005
+       000005                     
+                             1501 
+                             1502 ; 586  |    &Type2_SectorDescriptor,        // *pSectorDescriptor
+                             1503 ; 587  |    &Type5_BlockDescriptor,         // *pBlockDescriptor
+                             1504 ; 588  |    &Type2_DeviceDriverAPI,         // *pDeviceDriverFunctions
+                             1505 ; 589  |    &Type2_CommandCodes,            // *pDeviceCommandCodes
+                             1506 ; 590  |    &Type2_Large_Addressing,        // *pDeviceAddressing
+                             1507 ; 591  |    TYPE5_NAND,                     // NandType
+                             1508 ; 592  |};
+                             1509 ; 593  |
+                             1510 ; 594  |/////////////////////////////////////////////////////////////////////////////////
+                             1511 ; 595  |//  Type 5 - Toshiba/Sandisk Large Page MLC
+                             1512 ; 596  |/////////////////////////////////////////////////////////////////////////////////
+                             1513 ; 597  |_P struct NANDDescriptorStruct  Type5_256MB_MLC_NAND = {
+                             1514 
+                             1515 FType5_256MB_MLC_NAND:
+P:0098 rrrrrr 000008         1516         dc      FNANDDescriptorSubStructType5,$000008,$000400
+       000400                     
+                             1519 
+                             1520 ; 598  |    &NANDDescriptorSubStructType5,                 // SubDescriptor
+                             1521 ; 599  |    8,
+                             1522 ; 600  |    1024,
+                             1523 ; 601  |};
+                             1524 ; 602  |
+                             1525 ; 603  |_P struct NANDDescriptorStruct  Type5_512MB_MLC_NAND = {
+                             1526 
+                             1527 FType5_512MB_MLC_NAND:
+P:009B rrrrrr 000008         1528         dc      FNANDDescriptorSubStructType5,$000008,$000800
+       000800                     
+                             1531 
+                             1532 ; 604  |    &NANDDescriptorSubStructType5,                 // SubDescriptor
+                             1533 ; 605  |    8,
+                             1534 ; 606  |    2048,
+                             1535 ; 607  |};
+                             1536 ; 608  |
+                             1537 ; 609  |_P struct NANDDescriptorStruct  Type5_1024MB_MLC_NAND = {
+                             1538 
+                             1539 FType5_1024MB_MLC_NAND:
+P:009E rrrrrr 000008         1540         dc      FNANDDescriptorSubStructType5,$000008,$001000
+       001000                     
+                             1543 
+                             1544 ; 610  |    &NANDDescriptorSubStructType5,                 // SubDescriptor
+                             1545 ; 611  |    8,
+                             1546 ; 612  |    4096,
+                             1547 ; 613  |};
+                             1548 ; 614  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1549 ; 615  |_P struct NANDDescriptorStruct  Type5_2048MB_MLC_NAND = {
+                             1550 
+                             1551 FType5_2048MB_MLC_NAND:
+P:00A1 rrrrrr 000008         1552         dc      FNANDDescriptorSubStructType5,$000008,$002000
+       002000                     
+                             1559 
+                             1560 ; 616  |    &NANDDescriptorSubStructType5,                 // SubDescriptor
+                             1561 ; 617  |    8,
+                             1562 ; 618  |    8192,
+                             1563 ; 619  |};
+                             1564 ; 620  |
+                             1565 ; 621  |///////////////////////////////////////////////////////////////////////////////
+                             1566 ; 622  |// Device Code - NAND Descriptor Map
+                             1567 ; 623  |// Associates Device/Manufacturer IDs with NAND Descriptors (above), to give their
+                             1568 ; 624  |// parameters.
+                             1569 ; 625  |///////////////////////////////////////////////////////////////////////////////
+                             1570 ; 626  |
+                             1571 ; 627  |_P NAND_DEVICECODE_MAP UniqueInitDescriptorIdList[] =
+                             1572 
+                             1573 FUniqueInitDescriptorIdList:
+P:00A4 00E6EC rrrrrr         1574         dc      $00e6ec,FType1_8MB_8bit_NAND,$00e698,FType1_8MB_8bit_NAND,$0073ec
+       00E698 rrrrrr              
+       0073EC                     
+P:00A9 rrrrrr 007398         1575         dc      FType1_16MB_8bit_NAND,$007398,FType1_16MB_8bit_NAND,$007320,FType1_16MB_8bit_NAND
+       rrrrrr 007320              
+       rrrrrr                     
+P:00AE 007345 rrrrrr         1576         dc      $007345,FType1_16MB_8bit_NAND,$0073ad,FType1_16MB_8bit_NAND,$0075ec
+       0073AD rrrrrr              
+       0075EC                     
+P:00B3 rrrrrr 007598         1577         dc      FType1_32MB_8bit_NAND,$007598,FType1_32MB_8bit_NAND,$007520,FType1_32MB_8bit_NAND
+       rrrrrr 007520              
+       rrrrrr                     
+P:00B8 007545 rrrrrr         1578         dc      $007545,FType1_32MB_8bit_NAND,$0075ad,FType1_32MB_8bit_NAND,$0076ec
+       0075AD rrrrrr              
+       0076EC                     
+P:00BD rrrrrr 007698         1579         dc      FType1_64MB_8bit_NAND,$007698,FType1_64MB_8bit_NAND,$007620,FType1_64MB_8bit_NAND
+       rrrrrr 007620              
+       rrrrrr                     
+P:00C2 007645 rrrrrr         1580         dc      $007645,FType1_64MB_8bit_NAND,$0076ad,FType1_64MB_8bit_NAND,$0079ec
+       0076AD rrrrrr              
+       0079EC                     
+P:00C7 rrrrrr 007998         1581         dc      FType1_128MB_8bit_NAND,$007998,FType1_128MB_8bit_NAND,$007920,FType1_128MB_8bit_NA
+       rrrrrr 007920              ND
+       rrrrrr                     
+P:00CC 007945 rrrrrr         1582         dc      $007945,FType1_128MB_8bit_NAND,$0079ad,FType1_128MB_8bit_NAND
+       0079AD rrrrrr              
+                             1583 
+                             1584 ; 628  |{
+                             1585 ; 629  |  // Note: Devices with pages smaller than 512 bytes are not supported.
+                             1586 ; 630  |
+                             1587 ; 631  |  {0x00e6ec, &Type1_8MB_8bit_NAND},           // SSFDC, 8 MB NANDs
+                             1588 ; 632  |  {0x00e698, &Type1_8MB_8bit_NAND},           // SSFDC, 8 MB NANDs
+                             1589 ; 633  |
+                             1590 ; 634  |  {0x0073ec, &Type1_16MB_8bit_NAND},          // SSFDC, 16 MB NANDs
+                             1591 ; 635  |  {0x007398, &Type1_16MB_8bit_NAND},          // SSFDC, 16 MB NANDs
+                             1592 ; 636  |  {0x007320, &Type1_16MB_8bit_NAND},          // SSFDC, 16 MB NANDs
+                             1593 ; 637  |  {0x007345, &Type1_16MB_8bit_NAND},          // SSFDC, 16 MB NANDs
+                             1594 ; 638  |  {0x0073ad, &Type1_16MB_8bit_NAND},          // SSFDC, 16 MB NANDs    (Hynix 128Mbit)
+                             1595 ; 639  |
+                             1596 ; 640  |  {0x0075ec, &Type1_32MB_8bit_NAND},          // SSFDC, 32 MB NANDs
+                             1597 ; 641  |  {0x007598, &Type1_32MB_8bit_NAND},          // SSFDC, 32 MB NANDs
+                             1598 ; 642  |  {0x007520, &Type1_32MB_8bit_NAND},          // SSFDC, 32 MB NANDs
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1599 ; 643  |  {0x007545, &Type1_32MB_8bit_NAND},          // SSFDC, 32 MB NANDs
+                             1600 ; 644  |  {0x0075ad, &Type1_32MB_8bit_NAND},          // SSFDC, 32 MB NANDs    (Hynix 256Mbit)
+                             1601 ; 645  |
+                             1602 ; 646  |  {0x0076ec, &Type1_64MB_8bit_NAND},          // SSFDC, 64 MB NANDs (Samsung, 512Mbit, K9F
+                                  1208UOM, multiplane)
+                             1603 ; 647  |  {0x007698, &Type1_64MB_8bit_NAND},          // SSFDC, 64 MB NANDs (Toshiba, 512Mbit, TC5
+                                  8512)
+                             1604 ; 648  |  {0x007620, &Type1_64MB_8bit_NAND},          // SSFDC, 64 MB NANDs (STMicro, 512Mbit, NAN
+                                  D512W3A)
+                             1605 ; 649  |  {0x007645, &Type1_64MB_8bit_NAND},          // SSFDC, 64 MB NANDs (SanDisk, 512Mbit, SDT
+                                  NGAHE0)
+                             1606 ; 650  |  {0x0076ad, &Type1_64MB_8bit_NAND},          // SSFDC, 64 MB NANDs, (Hynix,   512Mbit, HY
+                                  27US08121M)
+                             1607 ; 651  |
+                             1608 ; 652  |  {0x0079ec, &Type1_128MB_8bit_NAND},         // SSFDC, 128 MB NANDs
+                             1609 ; 653  |  {0x007998, &Type1_128MB_8bit_NAND},         // Toshiba, 128 MB NANDs
+                             1610 ; 654  |  {0x007920, &Type1_128MB_8bit_NAND},         // SSFDC, 128 MB NANDs (STMicro, 1Gbit, NAND
+                                  01GW3A)
+                             1611 ; 655  |  {0x007945, &Type1_128MB_8bit_NAND},         // Sandisk, 128 MB NANDs
+                             1612 ; 656  |  {0x0079ad, &Type1_128MB_8bit_NAND},         // SSFDC, 128 MB NANDs (Hynix, 1Gbit, HY27UA
+                                  081G1M)
+                             1613 ; 657  |
+                             1614 ; 658  |#ifdef INCLUDE_RENESAS_DESCRIPTORS
+                             1615 
+P:00D0 000107 rrrrrr         1616         dc      $000107,FType4_128MB_8bit_AND,$002907,FType4_128MB_8bit_AND
+       002907 rrrrrr              
+                             1617 
+                             1618 ; 659  |  {0x000107, &Type4_128MB_8bit_AND},       // Renesas AG-AND, 128 MB
+                             1619 ; 660  |  {0x002907, &Type4_128MB_8bit_AND},       // Renesas AG-AND, 4Gbit
+                             1620 ; 661  |#endif
+                             1621 
+P:00D4 000001 000000         1622         dc      $000001,$000000
+                             1626 
+                             1627 ; 662  |
+                             1628 ; 663  |  {0x000001, NULL}                                              // Last entry
+                             1629 ; 664  |};
+                             1630 ; 665  |
+                             1631 ; 666  |#ifdef INCLUDE_TYPE2_NAND
+                             1632 ; 667  |_P NAND_DEVICECODE_MAP Type2DescriptorIdList[] =
+                             1633 
+                             1634 FType2DescriptorIdList:
+P:00D6 00F120 rrrrrr         1635         dc      $00f120,FType2_128MB_8bit_NAND,$00f1ad,FType2_128MB_8bit_NAND,$00f12c
+       00F1AD rrrrrr              
+       00F12C                     
+P:00DB rrrrrr 00F1EC         1636         dc      FType2_128MB_8bit_NAND,$00f1ec,FType2_128MB_8bit_NAND,$00f198,FType2_128MB_8bit_NA
+       rrrrrr 00F198              ND
+       rrrrrr                     
+P:00E0 00F145 rrrrrr         1637         dc      $00f145,FType2_128MB_8bit_NAND,$00da20,FType2_256MB_8bit_NAND,$00daad
+       00DA20 rrrrrr              
+       00DAAD                     
+P:00E5 rrrrrr 00DA2C         1638         dc      FType2_256MB_8bit_NAND,$00da2c,FType2_256MB_8bit_NAND,$00daec,FType2_256MB_8bit_NA
+       rrrrrr 00DAEC              ND
+       rrrrrr                     
+P:00EA 00DA98 rrrrrr         1639         dc      $00da98,FType2_256MB_8bit_NAND,$00da45,FType2_256MB_8bit_NAND,$00dc20
+       00DA45 rrrrrr              
+       00DC20                     
+P:00EF rrrrrr 00DCAD         1640         dc      FType2_512MB_8bit_NAND,$00dcad,FType2_512MB_8bit_NAND,$00dc2c,FType2_512MB_8bit_NA
+       rrrrrr 00DC2C              ND
+       rrrrrr                     
+P:00F4 00DC45 rrrrrr         1641         dc      $00dc45,FType2_512MB_8bit_NAND,$00dc98,FType2_512MB_8bit_NAND,$00dcec
+       00DC98 rrrrrr              
+       00DCEC                     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00F9 rrrrrr 00D398         1642         dc      FType2_512MB_8bit_NAND,$00d398,FType2_1024MB_8bit_NAND,$00d3ec
+       rrrrrr 00D3EC              
+P:00FD rrrrrr 00D345         1643         dc      FType2_1024MB_8bit_NAND,$00d345,FType2_1024MB_8bit_NAND,$00d320
+       rrrrrr 00D320              
+P:0101 rrrrrr 00D3AD         1644         dc      FType2_1024MB_8bit_NAND,$00d3ad,FType2_1024MB_8bit_NAND,$00d32c
+       rrrrrr 00D32C              
+P:0105 rrrrrr 00D520         1645         dc      FType2_1024MB_8bit_NAND,$00d520,FType2_2048MB_8bit_NAND,$00d5ad
+       rrrrrr 00D5AD              
+P:0109 rrrrrr 00D52C         1646         dc      FType2_2048MB_8bit_NAND,$00d52c,FType2_2048MB_8bit_NAND,$00d5ec
+       rrrrrr 00D5EC              
+P:010D rrrrrr 00D598         1647         dc      FType2_2048MB_8bit_NAND,$00d598,FType2_2048MB_8bit_NAND,$00d545
+       rrrrrr 00D545              
+P:0111 rrrrrr 000001         1648         dc      FType2_2048MB_8bit_NAND,$000001,$000000
+       000000                     
+                             1652 
+                             1653 ; 668  |{
+                             1654 ; 669  |  // Note: An FF in the high byte means to ignore the
+                             1655 ; 670  |  // Manufacturer Code (low byte) in matches (wildcard match)
+                             1656 ; 671  |
+                             1657 ; 672  |  // Note: Matches are checked in order, so you can test for a specific manufacturer
+                             1658 ; 673  |  // before allowing a wildcard match to any manufacturer for that device.
+                             1659 ; 674  |
+                             1660 ; 675  |  // Note: Devices with pages smaller than 512 bytes are not supported.
+                             1661 ; 676  |
+                             1662 ; 677  |  {0x00f120, &Type2_128MB_8bit_NAND},      // 128 MB NANDs    ST Micro
+                             1663 ; 678  |  {0x00f1ad, &Type2_128MB_8bit_NAND},      // 128 MB NANDs    Hynix
+                             1664 ; 679  |  {0x00f12c, &Type2_128MB_8bit_NAND},      // 128 MB NANDs    Micron
+                             1665 ; 680  |  {0x00f1ec, &Type2_128MB_8bit_NAND},      // 128 MB NANDs    Samsung
+                             1666 ; 681  |  {0x00f198, &Type2_128MB_8bit_NAND},      // 128 MB NANDs    Toshiba
+                             1667 ; 682  |  {0x00f145, &Type2_128MB_8bit_NAND},      // 128 MB NANDs    SanDisk
+                             1668 ; 683  |
+                             1669 ; 684  |  {0x00da20, &Type2_256MB_8bit_NAND},      // 256 MB NANDs    ST Micro
+                             1670 ; 685  |  {0x00daad, &Type2_256MB_8bit_NAND},      // 256 MB NANDs    Hynix
+                             1671 ; 686  |  {0x00da2c, &Type2_256MB_8bit_NAND},      // 256 MB NANDs    Micron
+                             1672 ; 687  |  {0x00daec, &Type2_256MB_8bit_NAND},      // 256 MB NANDs    Samsung
+                             1673 ; 688  |  {0x00da98, &Type2_256MB_8bit_NAND},      // 256 MB NANDs    Toshiba
+                             1674 ; 689  |  {0x00da45, &Type2_256MB_8bit_NAND},      // 256 MB NANDs    SanDisk
+                             1675 ; 690  |
+                             1676 ; 691  |  {0x00dc20, &Type2_512MB_8bit_NAND},      // 512 MB NANDs    ST Micro
+                             1677 ; 692  |  {0x00dcad, &Type2_512MB_8bit_NAND},      // 512 MB NANDs    Hynix
+                             1678 ; 693  |  {0x00dc2c, &Type2_512MB_8bit_NAND},      // 512 MB NANDs    Micron
+                             1679 ; 694  |  {0x00dc45, &Type2_512MB_8bit_NAND},      // 512 MB NANDs    SanDisk
+                             1680 ; 695  |  {0x00dc98, &Type2_512MB_8bit_NAND},      // 512 MB NANDs    Toshiba
+                             1681 ; 696  |  {0x00dcec, &Type2_512MB_8bit_NAND},      // 512 MB NANDs    Samsung
+                             1682 ; 697  |
+                             1683 ; 698  |  {0x00d398, &Type2_1024MB_8bit_NAND},     // 1024 MB, 8bit bus, 3.3V
+                             1684 ; 699  |  {0x00d3ec, &Type2_1024MB_8bit_NAND},     // 1024 MB, 8bit bus, 3.3V
+                             1685 ; 700  |  {0x00d345, &Type2_1024MB_8bit_NAND},   //Prelim
+                             1686 ; 701  |  {0x00d320, &Type2_1024MB_8bit_NAND},   //Prelim
+                             1687 ; 702  |  {0x00d3ad, &Type2_1024MB_8bit_NAND},   //Prelim
+                             1688 ; 703  |  {0x00d32c, &Type2_1024MB_8bit_NAND},   //Prelim
+                             1689 ; 704  |
+                             1690 ; 705  |  {0x00d520, &Type2_2048MB_8bit_NAND},   //Prelim
+                             1691 ; 706  |  {0x00d5ad, &Type2_2048MB_8bit_NAND},   //Prelim
+                             1692 ; 707  |  {0x00d52c, &Type2_2048MB_8bit_NAND},   //Prelim
+                             1693 ; 708  |  {0x00d5ec, &Type2_2048MB_8bit_NAND},   //Prelim
+                             1694 ; 709  |  {0x00d598, &Type2_2048MB_8bit_NAND},   //Prelim
+                             1695 ; 710  |  {0x00d545, &Type2_2048MB_8bit_NAND},   //Prelim
+                             1696 ; 711  |
+                             1697 ; 712  |  {0x000001, NULL}                                              // Last entry
+                             1698 ; 713  |};
+                             1699 ; 714  |#endif // #ifdef INCLUDE_TYPE2_NAND
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1700 ; 715  |
+                             1701 ; 716  |_P NAND_DEVICECODE_MAP LargeMLCDescriptorIdList[] =
+                             1702 
+                             1703 FLargeMLCDescriptorIdList:
+P:0114 00DA98 rrrrrr         1704         dc      $00da98,FType5_256MB_MLC_NAND,$00da45,FType5_256MB_MLC_NAND,$00dc98
+       00DA45 rrrrrr              
+       00DC98                     
+P:0119 rrrrrr 00DC45         1705         dc      FType5_512MB_MLC_NAND,$00dc45,FType5_512MB_MLC_NAND,$00dcec,FType5_512MB_MLC_NAND
+       rrrrrr 00DCEC              
+       rrrrrr                     
+P:011E 00DCAD rrrrrr         1706         dc      $00dcad,FType5_512MB_MLC_NAND,$00dc20,FType5_512MB_MLC_NAND,$00d398
+       00DC20 rrrrrr              
+       00D398                     
+P:0123 rrrrrr 00D345         1707         dc      FType5_1024MB_MLC_NAND,$00d345,FType5_1024MB_MLC_NAND,$00d3ec,FType5_1024MB_MLC_NA
+       rrrrrr 00D3EC              ND
+       rrrrrr                     
+P:0128 00D3AD rrrrrr         1708         dc      $00d3ad,FType5_1024MB_MLC_NAND,$00d598,FType5_2048MB_MLC_NAND,$00d545
+       00D598 rrrrrr              
+       00D545                     
+P:012D rrrrrr 00D5EC         1709         dc      FType5_2048MB_MLC_NAND,$00d5ec,FType5_2048MB_MLC_NAND,$000001,$000000
+       rrrrrr 000001              
+       000000                     
+                             1713 
+                             1714 ; 717  |{
+                             1715 ; 718  |  {0x00da98, &Type5_256MB_MLC_NAND},          // 2  GBit Large MLC, Toshiba TC58NVG1D4BFT0
+                                  0
+                             1716 ; 719  |  {0x00da45, &Type5_256MB_MLC_NAND},          // 2  GBit Large MLC, Sandisk
+                             1717 ; 720  |
+                             1718 ; 721  |  {0x00dc98, &Type5_512MB_MLC_NAND},          // 4  GBit Large MLC, Toshiba TC58NVG2D4BFT0
+                                  0
+                             1719 ; 722  |  {0x00dc45, &Type5_512MB_MLC_NAND},          // 4  GBit Large MLC, Sandisk
+                             1720 ; 723  |  {0x00dcec, &Type5_512MB_MLC_NAND},          // 4  GBit Large MLC, Samsung K9G4G08U0M
+                             1721 ; 724  |  {0x00dcad, &Type5_512MB_MLC_NAND},          // 4  GBit Large MLC, Hynix HY27UT084G2M 512
+                                  MByte / HY27UU088G5M 1GByte 2CEs.
+                             1722 ; 725  |  {0x00dc20, &Type5_512MB_MLC_NAND},          // 4  GBit Large MLC, ST Micro NAND04GW3C2A
+                             1723 ; 726  |
+                             1724 ; 727  |
+                             1725 ; 728  |  {0x00d398, &Type5_1024MB_MLC_NAND},         // 8  GBit Large MLC, Toshiba TH58NVG3D4xFT0
+                                  0
+                             1726 ; 729  |  {0x00d345, &Type5_1024MB_MLC_NAND},         // 8  GBit Large MLC, Sandisk
+                             1727 ; 730  |  {0x00d3ec, &Type5_1024MB_MLC_NAND},         // 8  GBit Large MLC, Samsung               
+                                      //Prelim
+                             1728 ; 731  |  {0x00d3ad, &Type5_1024MB_MLC_NAND},         // 8  GBit Large MLC, Hynix HY27UV08AG5M (2*
+                                  8Gb). 2 CE. 2GByte.
+                             1729 ; 732  |
+                             1730 ; 733  |  {0x00d598, &Type5_2048MB_MLC_NAND},         // 16 GBit Large MLC, Toshiba TH58NVG4D4xFT0
+                                  0   //Prelim
+                             1731 ; 734  |  {0x00d545, &Type5_2048MB_MLC_NAND},         // 16 GBit Large MLC, Sandisk               
+                                      //Prelim
+                             1732 ; 735  |  {0x00d5ec, &Type5_2048MB_MLC_NAND},         // 16 GBit Large MLC, Samsung               
+                                      //Prelim
+                             1733 ; 736  |
+                             1734 ; 737  |  {0x000001, NULL}                                              // Last entry
+                             1735 ; 738  |};
+                             1736 ; 739  |
+                             1737 ; 740  |extern _X WORD CurrentNANDBusWidth;
+                             1738 ; 741  |
+                             1739 ; 742  |
+                             1740 ; 743  |
+                             1741 ; 744  |
+                             1742 ; 745  |/////////////////////////////////////////////////////////////////////////////////
+                             1743 ; 746  |/////////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1744 ; 747  |/////////////////////////////////////////////////////////////////////////////////
+                             1745 
+                             1751 
+                             1752         extern  FResetNand, FType2_ReadSectorData
+                             1753 
+                             1754         global  FLargeMLCDescriptorIdList
+                             1755         global  FNANDDescriptorSubStructType1LargeAddr
+                             1756         global  FNANDDescriptorSubStructType1SmallAddr
+                             1757         global  FNANDDescriptorSubStructType2LargeAddr
+                             1758         global  FNANDDescriptorSubStructType2SmallAddr
+                             1759         global  FNANDDescriptorSubStructType4
+                             1760         global  FNANDDescriptorSubStructType5, FSm_CommandCodes
+                             1761         global  FSm_DeviceDriverAPI, FSm_Large_Addressing
+                             1762         global  FSm_Large_BlockDescriptor, FSm_SectorDescriptor
+                             1763         global  FSm_Small_Addressing, FSm_Small_BlockDescriptor
+                             1764         global  FType1_128MB_16bit_NAND, FType1_128MB_8bit_NAND
+                             1765         global  FType1_16MB_16bit_NAND, FType1_16MB_8bit_NAND
+                             1766         global  FType1_32MB_16bit_NAND, FType1_32MB_8bit_NAND
+                             1767         global  FType1_64MB_16bit_NAND, FType1_64MB_8bit_NAND
+                             1768         global  FType1_8MB_8bit_NAND, FType2DescriptorIdList
+                             1769         global  FType2_1024MB_16bit_NAND, FType2_1024MB_8bit_NAND
+                             1770         global  FType2_128MB_16bit_NAND, FType2_128MB_8bit_NAND
+                             1771         global  FType2_2048MB_16bit_NAND, FType2_2048MB_8bit_NAND
+                             1772         global  FType2_256MB_16bit_NAND, FType2_256MB_8bit_NAND
+                             1773         global  FType2_512MB_16bit_NAND, FType2_512MB_8bit_NAND
+                             1774         global  FType2_BlockDescriptor, FType2_CommandCodes
+                             1775         global  FType2_DeviceDriverAPI, FType2_Large_Addressing
+                             1776         global  FType2_SectorDescriptor, FType2_Small_Addressing
+                             1777         global  FType4_128MB_8bit_AND, FType4_512MB_8bit_AND
+                             1778         global  FType4_BlockDescriptor, FType5_1024MB_MLC_NAND
+                             1779         global  FType5_2048MB_MLC_NAND, FType5_256MB_MLC_NAND
+                             1780         global  FType5_512MB_MLC_NAND, FType5_BlockDescriptor
+                             1781         global  FUniqueInitDescriptorIdList
+                             1782 

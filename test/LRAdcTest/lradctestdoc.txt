@@ -1,0 +1,24 @@
+LRADC test Documentation
+------------------------
+
+Functional Description
+----------------------
+The lradctest uses the lradc block to measure voltage and display it on the graphical LCD. We test the voltage on both the available channels, one measuring the voltage on the BATT pin and the other measuring voltage on the LRADC pin. Testing is performed for ON and OFF values of Half Power Mode and different ADC Channel Reference values (see LowResADCRef enum for the list of supported values).
+
+Build Options
+-------------
+Usage : lradctest [ALL]
+     	ALL    = rebuilds all files
+
+Test Execution
+--------------
+The main part of the test program is a while(1) loop which keeps on displaying voltage values on the LCD depending on which button is pressed. Different reference values are used depending on the button being pressed. Button functionality can be manipulated using the 'buttonsdef.inc' file.
+
+Test Architecture
+-----------------
+The test uses the following modules
+Modules used in the test:
+DisplayModule - for display functionality
+
+The resources are in Y memory. The test uses forced processing of the module queues. Since the main task here is voltage measurement, only the display module is needed to keep updating voltage values. 
+The LRADC initialization function (SysLowResolutionADCInit(..)) and the voltage measurement function (SysLowResolutionAdcReadVolt(..)) is present in the 'lowresolutionadc.c' file.

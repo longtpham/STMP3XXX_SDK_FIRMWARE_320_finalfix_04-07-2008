@@ -1,0 +1,749 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\mp3\decoder_nonoverlay.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ; STMP3410 ISR-level Decoder Module (CANNOT be overlayed)
+                                5 ;
+                                6 ; Filename: decoder_nonoverlay.asm (MPEG - Used with layers 1,2,3)
+                                7 ;
+                                8 ;///////////////////////////////////////////////////////////////////////////////
+                                9         section DECAPP_DecoderNonOverlay
+                               10  
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Includes
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               35     list
+                               36     page    132,60,0,0,0
+                               39 ;///////////////////////////////////////////////////////////////////////////////
+                               40 ;   External Definitions
+                               41 ;///////////////////////////////////////////////////////////////////////////////
+                               47 ;///////////////////////////////////////////////////////////////////////////////
+                               48 ;   External References
+                               49 ;///////////////////////////////////////////////////////////////////////////////
+                               73 ;///////////////////////////////////////////////////////////////////////////////
+                               74 ;   Equates
+                               75 ;///////////////////////////////////////////////////////////////////////////////
+                               76 DECODER_READ_BUSY_BIT   equ 0           ;0 Decoder File Read function not busy
+                               77 DECODER_READ_UPDATE_BIT equ 1           ;0 Decoder File Read function return void
+                               78 DECODER_READ_ERROR_BIT  equ 2           ;0 Decoder File Read function successfull
+                               79 DECODER_READ_ENABLE_BIT equ 3           ;0 Decoder File Read function not to be call
+                               81 SAFETY_NET_WORDS        equ 200         ; Need for MP3 files ripped with the CRC bit set
+                               82                                         ; It looks like even if Parthus MP3 decoder
+                               83                                         ; reports the the Mp3DecoderSourceBuf being
+                               84                                         ; free we need this safety net of words.
+                               85                                         ; To be persued by Parthus ....
+                               86 MAX_WORDS_TO_READ       equ 800         ; Number max of words to be read at once  
+                               87 EOF_SAFETY_OFFSET_BYTES equ 551         ; MAX_MP3_FRAME_BYTES+1                 DECODE2EOF
+                               88 ; Above equates could be moved to mp3dec.inc
+                               89 ;///////////////////////////////////////////////////////////////////////////////
+                               90 ;   X Memory
+                               91 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         92         org     x,"DECAPP_DecoderNonOverlay_X":
+X:0000 000000                  93 DecoderReadStatus       dc  0
+X:0001 000000                  94 DecoderFileReadNBytes   dc  0
+                               96 ;///////////////////////////////////////////////////////////////////////////////
+                               97 ;   Y Memory
+                               98 ;///////////////////////////////////////////////////////////////////////////////
+                              100 ;///////////////////////////////////////////////////////////////////////////////
+                              101 ;   Code
+                              102 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        103         org     p,"DECAPP_DecoderNonOverlay_P":
+                              105 ;*******************************************************************************
+                              106 ; DecoderModuleTimerDisable Routine
+                              107 ;*******************************************************************************
+                              108 DecoderModuleTimerDisable
+                              109         ; CANNOT be overlayed, called by ISR.
+                              111         ; Hardware Workaround -- Disable IVL at HW_IPR
+P:0000 200013         2    2  112         clr     a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0001 54F400 FF3FFF  3    5  113         move    #>DECODER_IVL_MASK,a1
+P:0003 44F000 00FFFF  3    8  114         move    x:HW_IPR,x0
+                              115         push    x0
+P:0005 4C5F00         2   10  115     move    x0,y:(r7)+
+P:0006 200046         2   12  116         and     x0,a
+P:0007 547000 00FFFF  3   15  117         move    a1,x:HW_IPR                     ; disables decoder timer IVL
+                              119         ; Disable Timer0 Module for use by decoder
+P:0009 44F400 rrrrrr  3   18  120         move    #>DecoderTimerNum,x0
+P:000B 60F400 rrrrrr  3   21  121         move    #_TimerDisabled,r0
+P:000D 0AF080 rrrrrr  6   27  122         jmp     SysDisableTimer
+                              123 _TimerDisabled
+                              125         ; Hardware Workaround -- Restore IVL at HW_IPR
+                              126         pop     x0
+P:000F 4CFF00         4   31  126     move    y:-(r7),x0
+P:0010 447000 00FFFF  3   34  127         move    x0,x:HW_IPR                      ; re-enables the IVL line of decoder
+P:0012 00000C         4   38  129         rts
+                              131 ;*******************************************************************************
+                              132 ; DecoderFileRead Routine
+                              133 ;*******************************************************************************
+                              134 DecoderFileRead
+                              135         ; CANNOT be overlayed, called by ISR.
+                              136         ;Here the Interruption level is dropped automatically to 0 (user level)
+                              137 ; debug  ;//dbgmpg
+                              138         ; save off all registers
+                              140         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              141         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              142         ; will be popped back off System Stack Low (SSL).
+                              143         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              144         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:0013 00BFB8         2   40  145         andi #$BF,mr
+P:0014 6E7000 rrrrrr  3   43  147         move    r6,y:DecoderReadSaveR6          ; r6 used for return mechanism
+P:0016 66F400 rrrrrr  3   46  148         move    #_DecoderReadSaveRegReturn,r6   ; setup the return address
+P:0018 0AF080 rrrrrr  6   52  149         jmp     SaveRegs                        ; save the remaining registers
+                              150 _DecoderReadSaveRegReturn
+                              151         
+                              152         ; save off stack
+P:001A 66F400 rrrrrr  3   55  153         move    #_DecoderReadSaveStackReturn,r6 ; setup the return address
+P:001C 65F400 rrrrrr  3   58  154         move    #Mp3DecFileReadIsrSp,r5         ; pointer to the SP local save
+P:001E 0AF080 rrrrrr  6   64  155         jmp     SaveSystemStack                 ; save the hardware stack
+                              156 _DecoderReadSaveStackReturn
+P:0020 0BF080 rrrrrr  6   70  157         jsr     SysAllLinear
+P:0022 56F000 rrrrrr  3   73  158         move    x:Fbitbuf_data_demand_o,a
+P:0024 200003         2   75  159         tst     a
+P:0025 0AF0A7 rrrrrr  6   81  160         jgt     _checkForSpace
+P:0027 0AF0AA rrrrrr  6   87  161         jeq     _return
+                              162         error
+P:0029 000200         4   91  162     debug
+                              164 _return
+P:002A 44F000 rrrrrr  3   94  165         move    x:DecoderReadStatus,x0
+P:002C 0AC440         4   98  166         bclr    #DECODER_READ_BUSY_BIT,x0
+P:002D 0AC461         4  102  167         bset    #DECODER_READ_UPDATE_BIT,x0
+P:002E 0AC442         4  106  168         bclr    #DECODER_READ_ERROR_BIT,x0
+                              170 _RestoreSystem
+                              172         ;Raise Int level to 1 so we can update the BUSY flag without being
+                              173         ;interrupted by the Decoder Isr
+P:002F 0AF968         4  110  175         bset    #8,sr                       ; Raise interrupt level to 1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0030 000000         2  112  176         nop                                 ; Those nops make sure that 
+P:0031 000000         2  114  177         nop                                 ; any interrupt pending is processed
+P:0032 000000         2  116  178         nop                                 ; DO NOT REMOVED, UNLESS YOU HAVE 
+                              179                                             ; A FREE DAY TO DEBUG CODE
+P:0033 547000 rrrrrr  3  119  181         move    a1,x:DecoderFileReadNBytes
+P:0035 447000 rrrrrr  3  122  182         move    x0,x:DecoderReadStatus
+                              184         ; restore stack
+P:0037 65F400 rrrrrr  3  125  185         move    #Mp3DecFileReadIsrSp,r5         ; pointer to the SP local save
+P:0039 66F400 rrrrrr  3  128  186         move    #_DecoderReadStackRestored,r6   ; setup the return address
+P:003B 0AF080 rrrrrr  6  134  187         jmp     RestoreSystemStack              ; restore the hardware stack
+                              188 _DecoderReadStackRestored
+P:003D 66F400 rrrrrr  3  137  190         move    #_DecoderReadRestoreRegReturn,r6 ; setup the return address
+P:003F 0AF080 rrrrrr  6  143  191         jmp     RestoreRegs                     ; restore registers
+                              192 _DecoderReadRestoreRegReturn
+P:0041 6EF000 rrrrrr  3  146  193         move    y:DecoderReadSaveR6,r6          ; restore minimal reg set
+P:0043 05F07C rrrrrr  4  150  195         movec   y:Mp3DecSavePC,ssh              ;Force return 
+P:0045 05F07D rrrrrr  4  154  196         movec   y:Mp3DecSaveSR,ssl
+P:0047 000000         2  156  197         nop
+P:0048 000004         4  160  198         rti                            ;This needs to be a RTI to restore the SR
+                              200 _checkForSpace
+                              202         ; Determine how much data needed
+P:0049 6CF000 rrrrrr  3  163  203         move    y:Mp3DecoderSourceBufDesc,r4
+P:004B 058064r        2  165  204         movec   y:<Const_ffffff,m4
+P:004C 0BF080 rrrrrr  6  171  205         jsr     GetEmptySpace               ; returns: a==number of words in buffer
+                              206                       ; The checks are valid only during syncing process.                         
+                                   
+P:004E 57F000 rrrrrr  3  174  207                       move    x:Fstatus_o,B
+P:0050 4C8000r        2  176  208                       move    y:<Const_000001,x0
+P:0051 20004D         2  178  209                       cmp     x0,B          
+P:0052 0AF0A2 rrrrrr  6  184  210                       jne     _ContinueNoSync
+P:0054 4C8000r        2  186  211                       move    y:<Const_000003,x0
+P:0055 57F000 rrrrrr  3  189  212                       move    x:Falgorithm_o,B
+P:0057 20004D         2  191  213                       cmp     x0,B
+P:0058 0AF0A2 rrrrrr  6  197  214                       jne     _checkForFilledSpace
+                              215 _ContinueNoSync                   
+P:005A 44F000 rrrrrr  3  200  216                       move    x:Fbitbuf_data_demand_o,x0
+P:005C 57F400 000265  3  203  217                           move    #>SAFE_NUMBER,B
+P:005E 20004D         2  205  218                       cmp     x0,B
+                              219                       ; Under some rare circumstances the data demand exceeds SAFE region. This ha
+                                  ppens
+                              220                       ; when the file is corrupt. Allow the overwrite to take place in such a case
+                                   to allow
+                              221                       ; resync and playback. This will skip some frames, but allow syncing.
+                              222                       ; In such a case fill up the buffer equal to data demand.
+P:005F 0AF0A7 rrrrrr  6  211  223                       jgt     _WithinBounds
+                              225                       ; This section is rarely hit.
+                              226                       ; AmtToRead = bitbuf_data_demand_o - FilledSpace;
+                              227                       ; AmtToRead = bitbuf_data_demand_o - Bitbufsize + Emptyspace
+P:0061 44F440 0009C4  3  214  228                       add     x0,A      #>g_Mp3DataSrcBufSize,x0
+P:0063 4C8044r        2  216  229                       sub     x0,A      y:<Const_000001,x0
+                              230                       ; Free space reported will be one less. Correct for this.
+P:0064 200040         2  218  231                       add     x0,A                      
+P:0065 0AF080 rrrrrr  6  224  232                       jmp     _checkForFilledSpace
+                              233                       
+                              234 _WithinBounds
+P:0067 44F400 000265  3  227  235                       move #>SAFE_NUMBER,x0    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0069 44F044 rrrrrr  3  230  236                       sub     x0,A           x:Fbitbuf_data_demand_o,x0
+P:006B 200040         2  232  237                       add     x0,A
+                              238 _checkForFilledSpace
+P:006C 200003         2  234  239                       tst     A
+P:006D 0AF0A7 rrrrrr  6  240  240                       jgt     _checkEof
+P:006F 200013         2  242  241                       clr     a                            ; enough data in memory already
+P:0070 0AF080 rrrrrr  6  248  242                       jmp     _return
+                              245                 ;Simulate old code
+                              246                     ; Determine how much data needed
+                              247 ;                    move    y:Mp3DecoderSourceBufDesc,r0
+                              248 ;                    move    y:<Const_ffffff,m0
+                              249 ;                    jsr     GetFilledSpace               ; returns: a==number of words in buffer
+                              250 ;                    move    a,x0
+                              251 ;                    move    x:Fbitbuf_data_demand_o,a
+                              252 ;                    sub     x0,a
+                              253 ;                    tst     a
+                              254 ;                    jgt     _checkEof
+                              255 ;                    clr     a                            ; enough data in memory already
+                              256 ;                    jmp     _return
+                              257                 ;Simulate old code                    
+                              262 _checkEof
+                              263         ; See if EOF was already reached on a previous read.
+P:0072 44F000 rrrrrr  3  251  264         move    x:DecoderCSR2,x0            
+P:0074 0AC400 rrrrrr  6  257  265         jclr    #EndOfFileReached,x0,_ProceedToCheckAvailable  ; See if fread needed. DECODE2EOF 
+                              266         ; EOF already reached so return now without reading file
+P:0076 200013         2  259  268         clr     a
+P:0077 0AF080 rrrrrr  6  265  269         jmp     _return
+                              271 _ProceedToSafetyNet
+                              272         ; Add safety net
+                              273 ;        move    #>SAFETY_NET_WORDS,x0
+                              274 ;        sub     x0,a
+                              275 ;        tst     a
+                              276 ;        jgt     _ProceedToCheckLimitRead
+                              278 ;        clr     a
+                              279 ;        jmp     _return
+                              280         
+                              281 ;_ProceedToCheckLimitRead
+                              282 ;        ;This checks if the words to read are greater than a constant
+                              283 ;        ;if so, it limits the number of words read at one time to this constant
+                              284 ;        ; Why? At least the 1sttrack of the playlist will have a few seconds 
+                              285 ;        ; missing when played if read too many words.
+                              286 ;        move    #>MAX_WORDS_TO_READ,x0
+                              287 ;        cmp     x0,a
+                              288 ;        jlt     _ProceedToCheckAvailable
+                              289 ;        
+                              290 ;        ; Limit the read to x0 words
+                              291 ;        move    x0,a1
+                              292                 ;Simulate old code                     
+                              293 _ProceedToCheckAvailable 
+                              295         push    a0                          ; save off bytes needed
+P:0079 585F00         2  267  295     move    a0,y:(r7)+
+                              296         push    a1
+P:007A 5C5F00         2  269  296     move    a1,y:(r7)+
+                              297         push    a2
+P:007B 5A5F00         2  271  297     move    a2,y:(r7)+
+P:007C 200013         2  273  298         clr     a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:007D 5AF000 rrrrrr  3  276  299         move    y:Mp3DecoderFileHandle,a2
+P:007F 0BF080 rrrrrr  6  282  300         jsr     FileEOF                     ; returns bytes left in file in A1
+P:0081 218400         2  284  301         move    a1,x0                       ; X0 = bytes left in file
+                              302         pop     a2                          ; restore bytes needed in A
+P:0082 5AFF00         4  288  302     move    y:-(r7),a2
+                              303         pop     a1
+P:0083 5CFF00         4  292  303     move    y:-(r7),a1
+                              304         pop     a0
+P:0084 58FF00         4  296  304     move    y:-(r7),a0
+P:0085 200045         2  298  305         cmp     x0,a                        ; If bytes needed < bytes left then 
+                              306                                             ; Read more data
+P:0086 0AF0AF rrrrrr  6  304  307         jle     _readMoreData
+P:0088 200013         2  306  309         clr     a                           ; if bytes needed greater than bytes 
+                              310                                             ; left => it is end of song
+P:0089 54F000 rrrrrr  3  309  311         move    x:Fbitbuf_data_demand_o,a1
+P:008B 200045         2  311  312         cmp     x0,a
+P:008C 0AF0A7 rrrrrr  6  317  313         jgt     _EndOfSong
+                              314         
+P:008E 208C00         2  319  315         move    x0,a1                       ; Read bytes left in file
+P:008F 0AF080 rrrrrr  6  325  316         jmp     _readMoreData        
+                              318 _EndOfSong
+P:0091 200013         2  327  319         clr  a
+                              320         ; Must set EndOfFileReached instead of EndOfSong as in previous versions. STMP1851.
+P:0092 44F000 rrrrrr  3  330  321         move    x:DecoderCSR2,x0
+P:0094 0AC460         4  334  322         bset    #EndOfFileReached,x0        
+P:0095 447000 rrrrrr  3  337  323         move    x0,x:DecoderCSR2
+                              324         ; File read attempts will stop, decode continues. DECODE2EOF    
+                              325         ; testpoint      
+P:0097 0AF080 rrrrrr  6  343  326         jmp     _return
+                              330                 ;Simulate old code
+                              331 ;                    push    a0                           ; save off bytes needed
+                              332 ;                    push    a1
+                              333 ;                    push    a2
+                              334 ;                    clr     a
+                              335 ;                    move    y:Mp3DecoderFileHandle,a2
+                              336 ;                    jsr     FileEOF                      ; returns bytes left in file in A1
+                              337 ;                    move    a1,x0                        ; X0 = bytes left in file
+                              338 ;                    pop     a2                              ; restore bytes needed in A
+                              339 ;                    pop     a1
+                              340 ;                    pop     a0
+                              341 ;                    cmp     x0,a                            ; if bytes needed > bytes left then E
+                                  ndOfSong -> Exit
+                              342 ;                    jle     _readMoreData
+                              344 ;                    clr     a
+                              345 ;                    bset    #EndOfSong,x:DecoderCSR
+                              346 ;                    jmp     _return
+                              347                 ;Simulate old code
+                              348             
+                              353 _readMoreData
+P:0099 4C8000r        2  345  355         move    y:<Const_000003,x0
+P:009A 21C500         2  347  356         move    a,x1
+P:009B 2000A0         2  349  357         mpy     x0,x1,a                     ; get number of bytes (from words)
+P:009C 200022         2  351  358         asr     a                           ; fix for integer arithmetic
+P:009D 210E00         2  353  359         move    a0,a                        ; A1 = num bytes to read
+P:009E 5AF000 rrrrrr  3  356  360         move    y:Mp3DecoderFileHandle,a2   ; A2 = File handle
+P:00A0 50F400 800000  3  359  361         move    #TARGET_MEM_X,a0            ; A0 = Memory space identifier
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00A2 68F000 rrrrrr  3  362  362         move    y:g_pMp3DataSrcBufHead,r0   ; R0 = Buffer pointer to read into
+                              363         push    r0                          ; save for byte swap (MSB/LSB)
+P:00A4 685F00         2  364  363     move    r0,y:(r7)+
+                              364         push    x1                          ; x1 = number of words to transfer (save for byte swap
+                                  )
+P:00A5 4D5F00         2  366  364     move    x1,y:(r7)+
+P:00A6 0BF080 rrrrrr  6  372  365         jsr     SysAllLinear                ; force all M registers to linear
+P:00A8 05F060 rrrrrr  4  376  366         movec   y:g_pMp3DataSrcBufMod,m0    ; M0 = Buffer modulo
+P:00AA 0BF080 rrrrrr  6  382  367         jsr     FileRead                    ; FileRead A1 num bytes into r0 buf
+P:00AC 0AF0A0 rrrrrr  6  388  368         jcc     _swapMsbLsb
+                              369         pop     x1                          ; balance the stack
+P:00AE 4DFF00         4  392  369     move    y:-(r7),x1
+                              370         pop     r0                           
+P:00AF 68FF00         4  396  370     move    y:-(r7),r0
+P:00B0 44F000 rrrrrr  3  399  372         move    x:DecoderReadStatus,x0
+P:00B2 0AC440         4  403  373         bclr    #DECODER_READ_BUSY_BIT,x0
+P:00B3 0AC461         4  407  374         bset    #DECODER_READ_UPDATE_BIT,x0
+P:00B4 0AC462         4  411  375         bset    #DECODER_READ_ERROR_BIT,x0
+P:00B5 0AF080 rrrrrr  6  417  376         jmp     _RestoreSystem
+                              377         
+                              379 _swapMsbLsb
+                              380         pop     x1                           ; needed for Do Loop Count
+P:00B7 4DFF00         4  421  380     move    y:-(r7),x1
+                              381         pop     r0                           ; needed for MSB/LSB swap
+P:00B8 68FF00         4  425  381     move    y:-(r7),r0
+P:00B9 05F060 rrrrrr  4  429  382         movec   y:g_pMp3DataSrcBufMod,m0     ; M0 = Buffer modulo
+                              383         push    a                            ; must return with a = num bytes transferred
+P:00BB 5E5F00         2  431  383     move    a,y:(r7)+
+P:00BC 4C8000r        2  433  384         move    y:<Const_000080,x0           ; multiply factor needed
+P:00BD 06C500 rrrrrr  6  439  385         do      x1,_swap_msb_lsb
+P:00BF 46E000         2  441  386         move    x:(r0),y0                    ; y0 = B2:B1:B0 (bytes from flash)
+P:00C0 45F400 0000FF  3  444  387         move    #>$ff,x1                     ; byte mask
+P:00C2 2000D0         2  446  388         mpy     y0,x0,a                      ; a = shifted bytes
+P:00C3 200066         2  448  389         and     x1,a                         ; A1 = MSB in LSB position ($00:00:B2)
+P:00C4 218700         2  450  390         move    a1,y1                        ; Y1 = $00:00:B2
+P:00C5 210600         2  452  391         move    a0,y0                        ; Y0 = $B1:B0:00
+P:00C6 2000D0         2  454  392         mpy     y0,x0,a                      ; A1 = $00:00:B1 A0 = $B0:00:00
+P:00C7 210F00         2  456  393         move    a0,b                         ; b1 = $B0:00:00
+P:00C8 20007A         2  458  394         or      y1,b                         ; b1 = $B0:00:B2
+P:00C9 200066         2  460  395         and     x1,a                         ; A1 = $00:00:B1
+P:00CA 218700         2  462  396         move    a1,y1                        ; Y1 = $00:00:B1
+P:00CB 2000C0         2  464  397         mpy     x0,y1,a                      ; A0 = $00:B1:00
+P:00CC 210700         2  466  398         move    a0,y1                        ; Y1 = $00:B1:00
+P:00CD 20007A         2  468  399         or      y1,b                         ; b1 = $B0:B1:B2 :: MSB/LSB are swapped
+P:00CE 21A600         2  470  400         move    b1,y0
+P:00CF 465800         2  472  401         move    y0,x:(r0)+                   ; save new value
+                        (33)  402 _swap_msb_lsb
+                              403         ; update the head ptr
+P:00D0 687000 rrrrrr  3  475  404         move    r0,y:g_pMp3DataSrcBufHead    ; adjust the pointer
+                              405         pop     a                            ; must return with a = num bytes transferred
+P:00D2 5EFF00         4  479  405     move    y:-(r7),a
+P:00D3 0AF080 rrrrrr  6  485  406         jmp     _return
+                              409 ;*******************************************************************************
+                              410 ; DecoderByteCounter Routine
+                              411 ;*******************************************************************************
+                              412 DecoderByteCounter
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              413 ; Inputs: A1 = number of bytes read from mp3 file in current call
+                              414 ; Outputs: EndOfSong bit is set if done with current song
+                              415 ;          A = 0 if done with current song
+                              416         ; CANNOT be overlayed, called by ISR.
+                              417         ; 1.  Total Bytes = Current Bytes + Previous SubTotal
+                              418         ; A1 has current bytes in it.
+P:00D5 200003         2  487  419         tst     a
+P:00D6 0AF0AA rrrrrr  6  493  420         jeq     _proceed_to_eof_reached_check ; Skip the decoded sum if none to add
+                              421         ; We decoded some data this pass so:
+                              422 _add_in_new_bytes
+P:00D8 218400         2  495  423         move    a1,x0                         ; x0 = bytes decoded this pass
+P:00D9 200013         2  497  424         clr     a
+P:00DA 21C500         2  499  425         move    a,x1                          ; prepare for double-precision add
+P:00DB 5CF000 rrrrrr  3  502  426         move    y:SongByteTotalHigh,a1        ; total bytes decoded in previous passes
+P:00DD 58F000 rrrrrr  3  505  427         move    y:SongByteTotalLow,a0
+P:00DF 200020         2  507  428         add     x,a                           ; A = new byte total (48 bits)
+P:00E0 5C7000 rrrrrr  3  510  429         move    a1,y:SongByteTotalHigh
+P:00E2 587000 rrrrrr  3  513  430         move    a0,y:SongByteTotalLow
+                              431         ; total bytes in A1:A0
+                              433        ; Warning: DISPLAY TIME should not be and is no longer based on 
+                              434        ; SongByteTotalLow directly. 
+                              435        ; The time calc routine requires a running total of bytes actually consumed
+                              436        ; by the decoder rather than total bytes read from file into Mp3DataSrcBuf. 
+                              437        ; Using Mp3 consumed bytes instead accounts for queuing and time delay 
+                              438        ; that SongByteTotalLow does not. Changing to running tot of bytes 
+                              439        ; consumed by decoder, the current time displayed is the time for 
+                              440        ; a byte that was just decoded rather than time for byte that we just 
+                              441        ; sent to the Mp3 data src buf which is prefilled and has not been decoded 
+                              442        ; yet. Resolution keeps a bytes consumed count in the ISR.  STMP00001793
+                              444 _proceed_to_eof_reached_check
+                              446         ; DECODE2EOF: Note using SongBytesTotalLow here we were setting  
+                              447         ; EndOfSong bit prematurely (when file read finished). Decoding of final 
+                              448         ; src buf sz words remained undone (<=7500 bytes). Now we have two 
+                              449         ; different checks to determine when to stop the decoder at a later time. 
+                              450         ; Allows decode of additional frames at end of encoding. Note: One status 
+                              451         ; bit used to stop file reads at EOF and another bit to allow decoder to 
+                              452         ; finish consumption of remaining MPEG data after file reads complete.  
+                              453         ; STMP00001851
+                              455         ; 2. if freads didn't find EOF yet, don't consider stopping decoder.
+P:00E4 44F000 rrrrrr  3  516  456         move    x:DecoderCSR2,x0
+P:00E6 0AC400 rrrrrr  6  522  457         jclr    #EndOfFileReached,x0,_continue_decoding_song
+                              459 _done_with_song_fread
+                              460         ; 3. File reads done and we have at most: src buf sz encoded bytes remaining. 
+                              461         ; Don't stop decode by setting EndOfSong bit until one of the 2 checks say.
+                              462         ;   if consumed bytes > (fileSz - safetyEofOffset) then stop decoder.
+                              463         
+                              464         ; _do_consumption_check     Prevents consumption beyond encoding. 
+                              465         ; Load B1:B0 with the song length in bytes
+P:00E8 5FF000 rrrrrr  3  525  466         move    y:SongByteLengthHigh,b         ; high bytes of song length
+P:00EA 59F000 rrrrrr  3  528  467         move    y:SongByteLengthLow,b0          ; low bytes of song length
+P:00EC 200013         2  530  468         clr     a
+                              469 ;               move    #>EOF_SAFETY_OFFSET_BYTES,a0
+P:00ED 50F000 rrrrrr  3  533  470         move    x:Fg_wFrameLengthInBytes,a0             ; Updated in GetMp3FrameInfo(), SL
+P:00EF 20001C         2  535  471         sub     a,b                             ; b1:b0=(fileSz - safety offset)
+P:00F0 200013         2  537  472         clr     a
+P:00F1 5CF000 rrrrrr  3  540  473         move    y:SongByteTotalConsumedHigh,a1  ; total bytes decoded in A1:A0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00F3 58F000 rrrrrr  3  543  474         move    y:SongByteTotalConsumedLow,a0        
+                              475         ; added begin, SL
+                              476         ; the consumed byte (file size) includes tag size, minus it for a more precious calculatio
+                                  n
+                              477         ; i.e. consumed byte = consumed byte - tag size
+                              478         push    r0
+P:00F5 685F00         2  545  478     move    r0,y:(r7)+
+P:00F6 60F400 rrrrrr  3  548  479         move    #>FMp3DecoderStartFrameFilePosition,r0
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\mp3\decoder_nonoverlay.asm: line 479 : inserted "extern FMp3DecoderStartFrameFilePosition"
+P:00F8 4CD800         2  550  480         move    y:(r0)+,x0
+as2410 W140: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\mp3\decoder_nonoverlay.asm: line 480 : previous instruction sequence may have a pipeline effect
+P:00F9 4DD800         2  552  481         move    y:(r0)+,x1
+P:00FA 200024         2  554  482         sub     x,a
+                              483         pop             r0
+P:00FB 68FF00         4  558  483     move    y:-(r7),r0
+                              484         ; added end, SL
+                              485         ; cmp Decoded byte count to (filesz - safety offset)    All in bytes
+P:00FC 20000D         2  560  486         cmp     a,b                             
+                              487 ;   jgt     _continue_decoding_song ; debug line only. skips required src_buf_check below.
+P:00FD 0AF0A7 rrrrrr  6  566  488         jgt     _do_src_buf_check   ; jump & continue if decode limit in b > consumed
+P:00FF 0A702D rrrrrr  6  572  490         bset    #EndOfSong,x:DecoderCSR 
+                              491         ; testpoint
+P:0101 200013         2  574  492         clr     a
+                              493         ; After EOF, Less than Safety offset bytes left to decode. Flag decode stop.
+P:0102 0AF080 rrrrrr  6  580  494         jmp     _continue_decoding_song
+                              496 _do_src_buf_check    
+                              497         ; 4. Redundant secondary decoder stop check inspects encoded src buffer vs 
+                              498         ; demand in the rare case that the consumption check above is in error.
+P:0104 0BF080 rrrrrr  6  586  499         jsr     GetMpegSrcBufWords        ; Returns # src buf words in A1
+P:0106 20001B         2  588  500         clr     b
+P:0107 57F000 rrrrrr  3  591  501         move    Fbitbuf_data_demand_o,b        
+P:0109 200005         2  593  502         cmp     b,a
+P:010A 0AF0A7 rrrrrr  6  599  503         jgt     _continue_decoding_song   ; if src words in a > demand in b, continue decode
+                              504         ; jgt (>) required above to stop decoder. (not >=)
+P:010C 0A702D rrrrrr  6  605  506         bset    #EndOfSong,x:DecoderCSR    
+                              507         ; testpoint
+P:010E 200013         2  607  508         clr     a
+                              509         ; After EOF, last src buf data can not meet demand. Flag decoder stop.
+                              511 _continue_decoding_song
+P:010F 00000C         4  611  512         rts
+                              514 ;*******************************************************************************
+                              515 ; SubRoutine: GetMpegSrcBufWords Internal Routine
+                              516 ; Purpose:    Calls GetEmptySpace and subtracts emptyspace size from src buf size
+                              517 ; Inputs:     Global src buffer size variable. Calls GetEmptySpace uses globals.
+                              518 ; Output:     Returns current number of source buffer bytes in A1.    DECODE2EOF
+                              519 ;*******************************************************************************
+                              520 GetMpegSrcBufWords
+P:0110 200013         2  613  521         clr     a
+P:0111 0BF080 rrrrrr  6  619  522         jsr     GetEmptySpace                   ; empty word count in A1
+P:0113 20001B         2  621  523         clr     b        
+P:0114 57F400 0009C4  3  624  524         move    #>g_Mp3DataSrcBufSize,b
+P:0116 20001C         2  626  525         sub     a,b                             ; src buf words = sz - free
+P:0117 200013         2  628  526         clr     a
+P:0118 21AE00         2  630  527         move    b1,a                            ; to a1 & sign extends
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              529         ; Returns in A1 the number of words currently in the encoded src buffer
+P:0119 00000C         4  634  530         rts
+                              532        
+                              533 ;*******************************************************************************
+                              534 ; Mp3DecoderModuleIsr
+                              535 ;*******************************************************************************
+                              536 Mp3DecoderModuleIsr
+                              537 ; debug ;//dbgmpg
+                              538        ;trace   #>$AA0000 ;Enable is TRACEBUF_EN else trace macro stubbed. systrace.asm
+                              541         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              542         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              543         ; will be popped back off System Stack Low (SSL).
+                              544         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              545         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:011A 00BFB8         2  636  546         andi #$BF,mr
+                              547     
+P:011B 4C7000 rrrrrr  3  639  548         move    x0,y:IntL1_SaveR6           ; save x0 state
+                              549         
+                              550         ; Check if spurious interrupt. If so, exit now!
+P:011D 44F000 00F302  3  642  551         move    x:HW_ICLSTATUS0R,x0
+P:011F 0AC42D rrrrrr  6  648  552         jset    #HW_ICLSTATUS0R_SST13_BITPOS,x0,_ContinueIsr
+                              553         ; None of the above, exit interruption
+P:0121 4CF000 rrrrrr  3  651  554         move    y:IntL1_SaveR6,x0           ; restore x0 state
+P:0123 000004         4  655  555         rti
+                              557 _ContinueIsr
+P:0124 4CF000 rrrrrr  3  658  558         move    y:IntL1_SaveR6,x0           ; restore x0 state
+                              560         ; save off all registers
+P:0126 6E7000 rrrrrr  3  661  561         move    r6,y:IntL1_SaveR6            ; r6 used for return mechanism
+P:0128 66F400 rrrrrr  3  664  562         move    #_DecoderSaveRegReturn,r6    ; setup the return address
+P:012A 0AF080 rrrrrr  6  670  563         jmp     SaveRegs                     ; save the remaining registers
+                              564 _DecoderSaveRegReturn
+                              566         ; save off stack
+P:012C 66F400 rrrrrr  3  673  567         move    #_DecoderSaveStackReturn,r6  ; setup the return address
+P:012E 65F400 rrrrrr  3  676  568         move    #Mp3DecIsrSp,r5                 ; pointer to the SP local save
+P:0130 0AF080 rrrrrr  6  682  569         jmp     SaveSystemStack              ; save the hardware stack
+                              570 _DecoderSaveStackReturn
+                              572 _DecoderStateMachine
+P:0132 44F000 rrrrrr  3  685  574         move    x:DecoderCSR,x0
+P:0134 0AC426 rrrrrr  6  691  575         jset    #Stop,x0,_IsrStopSequence
+P:0136 0AC425 rrrrrr  6  697  576         jset    #Pause,x0,_IsrPauseSequence
+                              578 _IsrPlaySequence
+P:0138 0A702C rrrrrr  6  703  579         bset    #Play,x:DecoderCSR
+                              581         ; Set the status register
+P:013A 0A7006 rrrrrr  6  709  582         bclr    #Stop,x:DecoderSR
+P:013C 0A7005 rrrrrr  6  715  583         bclr    #Pause,x:DecoderSR
+P:013E 0A702C rrrrrr  6  721  584         bset    #Play,x:DecoderSR
+                              586         ; if (DecSync == 1) Enable the Digital to Analog Converter
+P:0140 0AC40A rrrrrr  6  727  587         jclr    #DecSync,x0,_checkFileOK
+P:0142 44F000 00F800  3  730  588         move    x:HW_DACCSR,x0
+P:0144 0AC420 rrrrrr  6  736  589         jset    #HW_DACCSR_TXEN_BITPOS,x0,_checkFileOK
+P:0146 0A7020 00F800  6  742  590         bset    #HW_DACCSR_TXEN_BITPOS,x:HW_DACCSR
+                              592 _checkFileOK
+P:0148 4CF000 rrrrrr  3  745  593         move    y:CurrentSongBad,x0
+P:014A 0AC400 rrrrrr  6  751  594         jclr    #0,x0,_checkForData
+P:014C 0A702D rrrrrr  6  757  595         bset    #EndOfSong,x:DecoderCSR     ; force to end of bad file
+                              596         ; testpoint
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:014E 0A7020 rrrrrr  6  763  598         bset    #EndOfFileReached,x:DecoderCSR2                     ; DECODE2EOF
+P:0150 0AF080 rrrrrr  6  769  599         jmp     _IsrStopSequence
+                              601 _checkForData
+P:0152 6CF000 rrrrrr  3  772  602         move    y:Mp3DecoderSourceBufDesc,r4 ; TIME_FIX
+P:0154 058064r        2  774  603         movec   y:<Const_ffffff,m4
+P:0155 0BF080 rrrrrr  6  780  604         jsr     GetEmptySpace
+                              605         push    a1                          ; save pre-decode words free result
+P:0157 5C5F00         2  782  605     move    a1,y:(r7)+
+                              606         ; Determine if more data needed for decoder
+P:0158 68F000 rrrrrr  3  785  607         move    y:Mp3DecoderSourceBufDesc,r0
+P:015A 058060r        2  787  608         movec   y:<Const_ffffff,m0
+P:015B 0BF080 rrrrrr  6  793  609         jsr     GetFilledSpace               ; returns: a==number of words in buffer
+P:015D 44F000 rrrrrr  3  796  610         move    x:Fbitbuf_data_demand_o,x0
+P:015F 200045         2  798  611         cmp     x0,a
+                              613         ; if supply < demand,  Skip the decoder call.
+P:0160 0AF0A9 rrrrrr  6  804  614         jlt     _getMoreBytes 
+                              615 _callDecoder
+P:0162 0BF080 rrrrrr  6  810  616         jsr     Mp3DecProcess
+P:0164 44F000 rrrrrr  3  813  617         move    x:DecoderCSR,x0
+P:0166 0AC435 rrrrrr  6  819  618         jset    #BadFile,x0,_IsrStopSequence
+                              620 _getMoreBytes
+                              621         ;--------- Tally the song bytes consumed by decoder, summing free space decrease
+P:0168 6CF000 rrrrrr  3  822  622         move    y:Mp3DecoderSourceBufDesc,r4 ; TIME_FIX
+P:016A 058064r        2  824  623         movec   y:<Const_ffffff,m4
+P:016B 0BF080 rrrrrr  6  830  624         jsr     GetEmptySpace             
+                              625         push    a1   
+P:016D 5C5F00         2  832  625     move    a1,y:(r7)+
+P:016E 200013         2  834  626         clr     a
+                              627         pop     a0                        ; Move post-decode free words result to A0 (final)
+P:016F 58FF00         4  838  627     move    y:-(r7),a0
+P:0170 20001B         2  840  629         clr     b       
+                              630         pop     b0                        ; pre-decode free words result in B0 (initial)
+P:0171 59FF00         4  844  630     move    y:-(r7),b0
+                              631         ; Compare the pre and post decode free word counts.  
+P:0172 200005         2  846  632         cmp     b,a                       ; if( (finalFree - initialFree) > 0 ) 
+                              633                                           ;   Free increasing. Decoder consumed.
+P:0173 0AF0AF rrrrrr  6  852  634         jle     _none_consumed         
+                              635         ; Free space increased so tally consumed bytes
+P:0175 200014         2  854  636         sub     b,a                       ; Gives 'words free increase' in A
+P:0176 4E8000r        2  856  637         move    y:<Const_000003,y0        ; Convert word count in a0 to bytes
+P:0177 210400         2  858  638         move    a0,x0
+P:0178 2000D0         2  860  639         mpy     y0,x0,a
+P:0179 200022         2  862  640         asr     a        
+                              641         ; We tally consumed bytes when buf free bytes decreases across an Mp3DecProcess.
+                              642         ; If more empty space now, then the decoder consumed bytes so tally them.
+P:017A 4DF000 rrrrrr  3  865  643         move    y:SongByteTotalConsumedHigh,x1
+P:017C 4CF000 rrrrrr  3  868  644         move    y:SongByteTotalConsumedLow,x0
+P:017E 200020         2  870  645         add     x,a
+P:017F 5C7000 rrrrrr  3  873  646         move    a1,y:SongByteTotalConsumedHigh
+P:0181 587000 rrrrrr  3  876  647         move    a0,y:SongByteTotalConsumedLow
+                              648 _none_consumed  ; End Tally. Next, read more bytes into MP3 src buf. -----
+                              650         ; Determine if file read is already in progress
+P:0183 44F000 rrrrrr  3  879  651         move    x:DecoderReadStatus,x0
+P:0185 0AC420 rrrrrr  6  885  652         jset    #DECODER_READ_BUSY_BIT,x0,_restore_stack
+                              653                 
+                              654 _ForceInt
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0187 0AC463         4  889  655         bset    #DECODER_READ_ENABLE_BIT,x0     ;Enables the file read decoder
+P:0188 0AC460         4  893  656         bset    #DECODER_READ_BUSY_BIT,x0       ;Sets the busy bit
+P:0189 447000 rrrrrr  3  896  657         move    x0,x:DecoderReadStatus
+                              659         ; Determine if decoder file read has new information
+P:018B 0AC401 rrrrrr  6  902  660         jclr    #DECODER_READ_UPDATE_BIT,x0,_restore_stack
+                              661         
+                              662         ; Process new information from decoder file read
+P:018D 0AC441         4  906  663         bclr    #DECODER_READ_UPDATE_BIT,x0
+P:018E 447000 rrrrrr  3  909  664         move    x0,x:DecoderReadStatus
+                              665         
+P:0190 200013         2  911  666         clr     a
+P:0191 54F000 rrrrrr  3  914  667         move    x:DecoderFileReadNBytes,a1      ; TIME_FIX note _incrementByteCount
+                              668         
+P:0193 0AC402 rrrrrr  6  920  669         jclr    #DECODER_READ_ERROR_BIT,x0,_incrementByteCount
+P:0195 0AC442         4  924  671         bclr    #DECODER_READ_ERROR_BIT,x0
+P:0196 447000 rrrrrr  3  927  672         move    x0,x:DecoderReadStatus
+P:0198 0A7037 rrrrrr  6  933  674         bset    #FileReadError,x:DecoderCSR ; failed to read data
+P:019A 0AF080 rrrrrr  6  939  675         jmp     _IsrStopSequence
+                              677 _incrementByteCount
+P:019C 0BF080 rrrrrr  6  945  678         jsr     DecoderByteCounter           ; Expects number of bytes decoded in A1.
+                              679                                              ; EndOfSong bit is set if done with song
+                              680 _checkIfTrackDone
+P:019E 44F000 rrrrrr  3  948  681         move    x:DecoderCSR,x0
+P:01A0 0AC40D rrrrrr  6  954  682         jclr    #EndOfSong,x0,_restore_stack   ; continue decoding song if bit not yet set
+                              683         ; Note _restore_stack conditional jump above. DECODE2EOF
+                              685         ; Stop Decoder since EndOfSong is indicated
+                              687 _IsrStopSequence
+                              688         ; Set the status register
+P:01A2 0A7026 rrrrrr  6  960  689         bset    #Stop,x:DecoderSR
+P:01A4 0A7005 rrrrrr  6  966  690         bclr    #Pause,x:DecoderSR
+P:01A6 0A700C rrrrrr  6  972  691         bclr    #Play,x:DecoderSR
+P:01A8 0AF080 rrrrrr  6  978  692         jmp     _decoderTimerOff
+                              693 _IsrPauseSequence
+                              694         ; Set the status register
+P:01AA 0A7025 rrrrrr  6  984  695         bset    #Pause,x:DecoderSR
+P:01AC 0A700C rrrrrr  6  990  696         bclr    #Play,x:DecoderSR
+                              697 _decoderTimerOff
+                              699         ; Check if DAC is not even on (never sync'd -- possible bad file)
+                              701         ; if (#EndOfSong && #SyncWait && !#DecSync)   #BadFile = TRUE;
+P:01AE 44F000 rrrrrr  3  993  703         move    x:DecoderCSR,x0              ; copy contents of status register
+P:01B0 0AC40D rrrrrr  6  999  704         jclr    #EndOfSong,x0,_ok ; ok if EndOfSong not flagged yet
+P:01B2 0AC416 rrrrrr  6 1005  705         jclr    #SyncWait,x0,_ok  ; ok if Sync was previously found (ReSyncWaiting)
+P:01B4 0AC42A rrrrrr  6 1011  706         jset    #DecSync,x0,_ok   ; ok if DecSync is ON now
+P:01B6 0A7035 rrrrrr  6 1017  707         bset    #BadFile,x:DecoderCSR
+                              708 _ok
+                              710         ; Since done decoding per pause sequence, disable timer.
+                              711         ; User level will turn DAC off before advancing to next song
+P:01B8 0A700C rrrrrr  6 1023  712         bclr    #Play,x:DecoderCSR           ; clear to avoid "Pause" on next song
+P:01BA 0BF080 rrrrrr  6 1029  713         jsr     DecoderModuleTimerDisable    ; turn off timer
+                              715 _restore_stack
+                              717         ;///////////////// T E M P O R A R Y ////////////////////////////
+                              718         ; ***** THIS IS DONE IN CASE A BAD FILE IS ENCOUNTERED --
+                              719         ;  the Mp3 Decoder will stream through it faster, and get on
+                              720         ;  to the next song (hopefully a good one).
+                              721         ; Setup Timer0 Module for use by decoder
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01BC 0BF080 rrrrrr  6 1035  722         jsr     Mp3GetInvBitRate             ; used for timer count and time. must be called each 
+                                  time in case VBR.
+P:01BE 46F000 rrrrrr  3 1038  723         move    x:DecoderCSR,y0              ; copy contents of status register
+P:01C0 44F400 rrrrrr  3 1041  724         move    #>DecoderTimerNum,x0         ; input to timer routine
+P:01C2 4DF000 rrrrrr  3 1044  725         move    y:g_Mp3TimerCount,x1         ; mp3dec.asm fills this in
+                              726 _progtimer
+P:01C4 60F400 rrrrrr  3 1047  727         move    #_TimerCountLoaded,r0
+P:01C6 0AF080 rrrrrr  6 1053  728         jmp     SysLoadTimerCount
+                              729 _TimerCountLoaded
+                              731         ; reset the isr for next time
+P:01C8 44F400 rrrrrr  3 1056  732         move    #>DecoderTimerNum,x0
+P:01CA 60F400 rrrrrr  3 1059  733         move    #_TimerReset,r0
+P:01CC 0AF080 rrrrrr  6 1065  734         jmp     SysClearTimerIrq
+                              735 _TimerReset
+                              737         ; restore stack
+P:01CE 65F400 rrrrrr  3 1068  738         move    #Mp3DecIsrSp,r5                 ; pointer to the SP local save
+P:01D0 66F400 rrrrrr  3 1071  739         move    #_stackRestored,r6           ; setup the return address
+P:01D2 0AF080 rrrrrr  6 1077  740         jmp     RestoreSystemStack           ; restore the hardware stack
+                              741 _stackRestored
+                              743         ; restore all registers
+P:01D4 66F400 rrrrrr  3 1080  744         move    #DecoderRestoreRegReturn,r6  ; setup the return address
+P:01D6 0AF080 rrrrrr  6 1086  745         jmp     RestoreRegs                  ; restore registers
+                              746 DecoderRestoreRegReturn
+P:01D8 6EF000 rrrrrr  3 1089  747         move    y:IntL1_SaveR6,r6            ; restore minimal reg set
+                              749 ;        trace   #>$AAFFFF
+                              751         ; Determines if need to start Decoder File Read Function
+P:01DA 0B7023 rrrrrr  6 1095  752         btst    #DECODER_READ_ENABLE_BIT,x:DecoderReadStatus
+P:01DC 0AF0A0 rrrrrr  6 1101  753         jcc     _End
+                              754         
+                              755         ; Clears the enable bit
+P:01DE 0B7003 rrrrrr  6 1107  756         bchg    #DECODER_READ_ENABLE_BIT,x:DecoderReadStatus
+                              757         
+P:01E0 05707D rrrrrr  4 1111  758         movec   ssl,y:Mp3DecSaveSR     ;Saves return address and status register
+P:01E2 05707C rrrrrr  4 1115  759         movec   ssh,y:Mp3DecSavePC     ;Call back address for DecoderFileRead()
+P:01E4 000000         2 1117  760         nop
+P:01E5 05F43C rrrrrr  4 1121  761         movec   #DecoderFileRead,ssh   ;Forces DecoderFileRead call after rti
+P:01E7 000000         2 1123  762         nop
+                              763 _End
+P:01E8 000004         4 1127  764         rti                            ;Int level is dropped to 0 (user level)
+                              765                                        ;DecoderFileRead() operates at user level
+                              768 ;*******************************************************************************
+                              769 ; Name:        Mp3GetInvBitRate
+                              770 ; Type:        SubRoutine
+                              771 ;
+                              772 ; Description: Requires the decoder to be sync'd and x:Fbitrate_o to have the 
+                              773 ;              bitrate in it. Sets up the inverse of the bitrate used to create 
+                              774 ;              the song times, & number of bytes used for FFWD/RWND (based on bitrate).
+                              775 ;
+                              776 ; Inputs:      Global y:Fg_wBitRateFound
+                              777 ;
+                              778 ; Outputs:     May update global y:Mp3DecoderFfwdRwndValue
+                              779 ;              Updates    global y:SongInvBitRate
+                              780 ;              Clears condition code register's carry bit indicating SUCCESS.
+                              781 ;*******************************************************************************
+                              782 Mp3GetInvBitRate
+                              783         ; first, calculate the FFWD/RWND amount
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01E9 4CF000 rrrrrr  3 1130  784         move    y:Fg_wBitRateFound,x0       ; bitrate found by the parser - kbps
+P:01EB 46F400 0003E8  3 1133  785         move    #1000,y0                    ; to get bps
+P:01ED 2000D0         2 1135  786         mpy     x0,y0,a
+P:01EE 200022         2 1137  787         asr     a                           ; fix for sign bit
+P:01EF 210400         2 1139  788         move    a0,x0                       ; bitrate (bits per second)
+P:01F0 4EF000 rrrrrr  3 1142  789         move    y:SecondstoSkip,y0        ; project specific value
+P:01F2 2000D0         2 1144  790         mpy     x0,y0,a                     ; bitrate * 3 seconds
+P:01F3 200022         2 1146  791         asr     a                           ; fix for sign bit
+P:01F4 200022         2 1148  792         asr     a              ; divide by 8 to get bytes from bits (do 3 ASR's)
+P:01F5 200022         2 1150  793         asr     a
+P:01F6 200022         2 1152  794         asr     a
+P:01F7 200003         2 1154  795         tst     a
+                              796         ; if(A==0) Fbitrate_o is 0, so don't update (don't want to be stuck at 0)
+P:01F8 0AF0AA rrrrrr  6 1160  797         jeq     _SkipSave                   
+P:01FA 587000 rrrrrr  3 1163  798         move    a0,y:Mp3DecoderFfwdRwndValue
+                              799 _SkipSave
+                              800         ; Computation of SongInvBitrate. 
+                              801         ; The following operation ensures *all* rates are taken care of.
+                              802         ; Equivalent to previous table based approach.
+P:01FC 5E8000r        2 1165  803         move    y:<Const_001000,A               
+P:01FD 00FEB9         2 1167  804         andi    #$FE,CCR                  ; clear any carry bit if present      
+P:01FE 0618A0         4 1171  805         rep     #$18
+P:01FF 018040         2 1173  806         div     x0,A
+P:0200 200040         2 1175  807         add     x0,a 
+P:0201 587000 rrrrrr  3 1178  808         move    A0,y:SongInvBitRate
+P:0203 00000C         4 1182  809         rts       
+                              810     
+                              812         endsec

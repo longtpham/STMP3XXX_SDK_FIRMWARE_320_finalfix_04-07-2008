@@ -1,0 +1,270 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\exec\sysexecspeedclient.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;
+                                3 ;  File        : SysExecSpeedClient.asm
+                                4 ;  Description : Conditionally Increase or free the shared clock speed and 
+                                5 ;                notify menus on btn event for the Executive
+                                6 ;
+                                7 ;///////////////////////////////////////////////////////////////////////////////
+                                9     section     SYSFUN_SysExecSpeedClient
+                               11     opt     mex
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               14 ;   Includes
+                               15 ;///////////////////////////////////////////////////////////////////////////////
+                               24     list
+                               26     page    132,60,0,0,0
+                               27     
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               30 ;   External Definitions
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               41     list
+                               51 ;///////////////////////////////////////////////////////////////////////////////
+                               52 ;   External References
+                               53 ;///////////////////////////////////////////////////////////////////////////////
+                               56     list
+                               57 ;///////////////////////////////////////////////////////////////////////////////
+                               58 ;   Y Memory
+                               59 ;///////////////////////////////////////////////////////////////////////////////    
+Y:0000                         60       org     y,"SYSFUN_SysExecSpeedClient_Y":
+                               61     
+Y:0000 000000                  62 g_iIdleTargetTimeHigh   dc  0       ; Units: msec
+Y:0001 000000                  63 g_iIdleTargetTimeLow    dc  0
+                               64 BTN_ACTIVE_TIME_MS      equ 10000   ; On transition from button Q empty to !empty, 
+                               65                                     ; don't request IDLE speed until interval passes
+Y:0002 000000                  66 ExecStateBits           dc  0
+                               67 BUTTON_PENDING           equ    0      ; In ExecStateBits
+                               68 IDLE_TIMER_ACTIVE        equ    1
+                               69 NON_EXEC_SPEED_CLIENTS   equ    2
+                               70 EXEC_SPEED_CLIENT_DISABLED equ  3
+                               72 ;*******************************************************************************
+                               73 ;  P memory
+                               74 ;*******************************************************************************
+P:0000                         75       org     p,"SYSFUN_SysExecSpeedClient_P":
+                               76       
+                               77 ;///////////////////////////////////////////////////////////////////////////////
+                               78 ;   Name:           SetExecState
+                               79 ;
+                               80 ;   Type:           Internal Function
+                               81 ;
+                               82 ;   Description:    Prepare bitflags in ExecStateBits 
+                               83 ;                   BUTTON_PENDING and NON_EXEC_SPEED_CLIENTS remaining indicator
+                               84 ;
+                               85 ;   Inputs:         No register inputs. Uses Global y:ExecStateBits
+                               86 ;
+                               87 ;   Outputs:        None. Updates y:ExecStateBits
+                               88 ;
+                               89 ;   Notes:         
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               91 SetExecState
+                               92     ; Prepare bitflags in ExecStateBits for call to ExecSpeedAndBtnCheck
+P:0000 0BF080 rrrrrr  6    6   93     jsr     SysCheckForButton
+P:0002 0AF0A0 rrrrrr  6   12   94     jcc     _NoBtn
+P:0004 5CF000 rrrrrr  3   15   95     move    y:ExecStateBits,a1
+P:0006 0ACC60         4   19   96     bset    #BUTTON_PENDING,a1
+P:0007 0AF080 rrrrrr  6   25   97     jmp     _BtnIndicatorReady
+                               98 _NoBtn
+P:0009 5CF000 rrrrrr  3   28   99     move    y:ExecStateBits,a1
+P:000B 0ACC40         4   32  100     bclr    #BUTTON_PENDING,a1
+                              101 _BtnIndicatorReady    
+P:000C 5C7000 rrrrrr  3   35  102     move    a1,y:ExecStateBits
+P:000E 200013         2   37  104     clr     a
+P:000F 0BF080 rrrrrr  6   43  105     jsr     SysSpeedGetClockUserFlag  ; Indicate any non-Executive speed clients
+P:0011 200003         2   45  106     tst     a
+P:0012 0AF0AA rrrrrr  6   51  107     jeq     _NoClients
+P:0014 5CF000 rrrrrr  3   54  108     move    y:ExecStateBits,a1    
+P:0016 0ACC62         4   58  109     bset    #NON_EXEC_SPEED_CLIENTS,a1
+P:0017 0AF080 rrrrrr  6   64  110     jmp     _ClientsIndicatorReady
+                              111 _NoClients
+P:0019 5CF000 rrrrrr  3   67  112     move    y:ExecStateBits,a1   
+P:001B 0ACC42         4   71  113     bclr    #NON_EXEC_SPEED_CLIENTS,a1
+                              114 _ClientsIndicatorReady
+P:001C 5C7000 rrrrrr  3   74  115     move    a1,y:ExecStateBits
+P:001E 00000C         4   78  117     rts
+                              119 ;///////////////////////////////////////////////////////////////////////////////
+                              120 ; >
+                              121 ; Name:     _reentrant void DisableExecSpeedClient(void);
+                              122 ; Type:     API function. C or asm callable
+                              123 ; Purpose:  Optional disable call initially used by FM menu. 
+                              124 ;           ReEnableExecSpeedClient should be used also.
+                              125 ; Inputs:   None
+                              126 ; Output:   None
+                              127 ; Globals:  Sets bit y:ExecStateBits.EXEC_SPEED_CLIENT_DISABLED
+                              128 ; <
+                              129 ;///////////////////////////////////////////////////////////////////////////////
+                              130 FDisableExecSpeedClient
+                              131 DisableExecSpeedClient
+P:001F 0A7063 rrrrrr  6   84  132     bset    #EXEC_SPEED_CLIENT_DISABLED,y:ExecStateBits
+                              133     ; Clear Exec's bin semaphore via API for return to IDLE clock speed
+P:0021 46F400 000000  3   87  134     move    #>SPEED_CLIENT_EXECUTIVE,y0
+P:0023 0BF080 rrrrrr  6   93  135     jsr     SysSpeedClockFree    
+P:0025 00000C         4   97  136     rts
+                              137     
+                              138 ;///////////////////////////////////////////////////////////////////////////////
+                              139 ; >
+                              140 ; Name:     _reentrant void ReEnableExecSpeedClient(void);
+                              141 ; Type:     API function. C or asm callable
+                              142 ; Purpose:  Only needed when undoing the DisableExecSpeedClient call.
+                              143 ; Inputs:   None
+                              144 ; Output:   None
+                              145 ; Globals:  Clears bit y:ExecStateBits.EXEC_SPEED_CLIENT_DISABLED
+                              146 ; <
+                              147 ;///////////////////////////////////////////////////////////////////////////////
+                              148 FReEnableExecSpeedClient
+                              149 ReEnableExecSpeedClient
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0026 0A7043 rrrrrr  6  103  150     bclr    #EXEC_SPEED_CLIENT_DISABLED,y:ExecStateBits
+P:0028 00000C         4  107  151     rts
+                              153     
+                              154 ;///////////////////////////////////////////////////////////////////////////////
+                              155 ; Name:    ExecSpeedAndBtnCheck
+                              156 ;
+                              157 ; Purpose: Conditionally free DCLOCK & notify menus on btn event for Executive
+                              158 ;
+                              159 ; Input:   y:ExecStateBits BUTTON_PENDING & NON_EXEC_SPEED_CLIENTS are initialized
+                              160 ;          g_iIdleTargetTimeHigh/Low 
+                              161 ;
+                              162 ; Outputs: Updates flags in y:ExecStateBits, signals menu module if button pending
+                              163 ;          g_iIdleTargetTimeHigh/Low read and may be written
+                              164 ;
+                              165 ; Notes:   To be used only by the Executive process.
+                              166 ;
+                              167 ;    // Called from Exec loop. Needs periodic execution, button event detection. 
+                              168 ;    // C/psuedo conceptual model: Asm hand compilation is derived from this logic.
+                              169 ;
+                              170 ;    // Set buttonPendingFlag and nonExecClients flag
+                              171 ;
+                              172 ;    if ( (nonExecClientCount != 0) || buttonPendingFlag )
+                              173 ;        idleTimerActive = FALSE;                               
+                              174 ;
+                              175 ;    if( (idleTimerActive==FALSE)&& ((nonExecClients==0) && (buttonPendingFlag==0)) )
+                              176 ;    {  idleTimerActive = TRUE;
+                              177 ;           IdleTargetTime = t+dt;  } // all in ms
+                              178 ;
+                              179 ;    if( buttonPendingFlag )
+                              180 ;    {  // Assumes SysSetSpeed returns only after a safe settling time expires.
+                              181 ;       // Assumption allows use case: play button increase to Exec speed, WMA  
+                              182 ;       //                             decode increases DCLK again quickly.
+                              183 ;       // If assumption is ever seen to fail, 
+                              184 ;       //    Alt: if still idle 1 sec after button, increase.
+                              185 ;       if( y:ExecStateBits.EXEC_SPEED_CLIENT_DISABLED == 0 )
+                              186 ;       {   
+                              187 ;           #pragma asm
+                              188 ;           ; Does not change speed if requested = current
+                              189 ;           jsr     SysSpeedIncrease(SPEED_IDLE+1,SPEED_CLIENT_EXECUTIVE) 
+                              190 ;           #pragma endasm   
+                              191 ;       }
+                              192 ;       #pragma asm    
+                              193 ;    _signal_menus
+                              194 ;        ; signal the menu module that button event occurred
+                              195 ;        move    #>MODULE_NUM_MENU,x1
+                              196 ;        move    #>EVENT_BUTTON,x0
+                              197 ;        jsr     SignalModule
+                              198 ;        #pragma endasm   
+                              199 ;    }
+                              200 ;    if( idleTimerActive )
+                              201 ;        if (target_time_reached) 
+                              202 ;        {   IdleTimerActive = FALSE;
+                              203 ;            SysSpeedClockFree(SPEED_CLIENT_EXECUTIVE);
+                              204 ;        }
+                              205 ;    return;
+                              206 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              207 ExecSpeedAndBtnCheck
+                              208 ;    if (y:ExecStateBits.NON_EXEC_SPEED_CLIENTS ||y:ExecStateBits.BUTTON_PENDING)
+                              209 ;        idleTimerActive = FALSE;       
+P:0029 5EF000 rrrrrr  3  110  211     move    y:ExecStateBits,a
+P:002B 0BCC62         4  114  212     btst    #NON_EXEC_SPEED_CLIENTS,a1
+P:002C 0AF0A8 rrrrrr  6  120  213     jcs     _IdleTimerNotActive
+P:002E 0BCC60         4  124  214     btst    #BUTTON_PENDING,a1
+P:002F 0AF0A8 rrrrrr  6  130  215     jcs     _IdleTimerNotActive
+P:0031 0AF080 rrrrrr  6  136  216     jmp     _IdleTimerIndicated
+                              217 _IdleTimerNotActive
+P:0033 0ACC41         4  140  218     bclr    #IDLE_TIMER_ACTIVE,a1
+                              219 _IdleTimerIndicated
+P:0034 5C7000 rrrrrr  3  143  220     move    a1,y:ExecStateBits      
+                              222 ;    if( (idleTimerActive==FALSE)&& ((nonExecClientCount==0) && (buttonPendingFlag==0)) )
+                              223 ;               idleTimerActive = TRUE;
+                              224 ;               IdleTargetTime = t+dt_ms;
+P:0036 0BCC61         4  147  226     btst    #IDLE_TIMER_ACTIVE,a1
+P:0037 0AF0A8 rrrrrr  6  153  227     jcs     _NoSetTargetTime
+P:0039 0BCC62         4  157  228     btst    #NON_EXEC_SPEED_CLIENTS,a1
+P:003A 0AF0A8 rrrrrr  6  163  229     jcs     _NoSetTargetTime
+P:003C 0BCC60         4  167  230     btst    #BUTTON_PENDING,a1
+P:003D 0AF0A8 rrrrrr  6  173  231     jcs     _NoSetTargetTime    
+                              232 ;       Set Up Target Time
+                              233 ;               idleTimerActive = TRUE;
+                              234 ;               IdleTargetTime = t+dt   in ms
+P:003F 0ACC61         4  177  235     bset    #IDLE_TIMER_ACTIVE,a1
+P:0040 5C7000 rrrrrr  3  180  236     move    a1,y:ExecStateBits
+P:0042 0BF080 rrrrrr  6  186  238     jsr     SysGetCurrentTime; save time (ms) of this btn Q empty to !empty event
+P:0044 20001B         2  188  239     clr     B
+P:0045 51F400 002710  3  191  240     move    #>BTN_ACTIVE_TIME_MS,b0  
+P:0047 200010         2  193  241     add     B,A                     ; save time marking end of high speed mode.
+P:0048 5C7000 rrrrrr  3  196  242     move    a1,y:g_iIdleTargetTimeHigh
+P:004A 587000 rrrrrr  3  199  243     move    a0,y:g_iIdleTargetTimeLow
+                              244 _NoSetTargetTime
+                              246 ;   if ( buttonPending )
+                              247 ;   {    if( y:ExecStateBits.EXEC_SPEED_CLIENT_DISABLED == 0 )
+                              248 ;        {  SysSpeedIncrease(MP3_SPEED,SPEED_CLIENT_EXECUTIVE);
+                              249 ;        }
+                              250 ;        SignalModule BUTTON_PENDING   
+                              251 ;   }
+P:004C 5CF000 rrrrrr  3  202  252     move    y:ExecStateBits,a1
+P:004E 0BCC60         4  206  253     btst    #BUTTON_PENDING,a1
+P:004F 0AF0A0 rrrrrr  6  212  254     jcc     _NoButtonsPending
+P:0051 0BCC63         4  216  256     btst    #EXEC_SPEED_CLIENT_DISABLED,a1
+P:0052 0AF0A8 rrrrrr  6  222  257     jcs     _signal_menus
+                              258     ; Conditionally increase DCLK frequency for quick button response and hang avoidance.
+                              259     ; Falls back to IDLE only when all SysSpeed API managed binary semaphores are free. 
+                              260     ; Note that SysSpeedIncrease returns immediately if requested==current.
+                              261 ;  testpoint
+                              262     ; Exec's SpeedIndex must always be IDLE or IDLE+1, else speed reductions would
+                              263     ; fail while the Exec speed client holds the clock high.
+P:0054 45F400 000001  3  225  264     move    #>SPEED_IDLE+1,x1 
+P:0056 46F400 000000  3  228  265     move    #>SPEED_CLIENT_EXECUTIVE,y0    
+P:0058 0BF080 rrrrrr  6  234  266     jsr     SysSpeedIncrease
+                              268 _signal_menus              ; signal the menu module that a button event occurred
+P:005A 45F400 rrrrrr  3  237  269     move    #>MODULE_NUM_MENU,x1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:005C 44F400 000008  3  240  270     move    #>EVENT_BUTTON,x0
+P:005E 0BF080 rrrrrr  6  246  271     jsr     SignalModule
+                              272 _NoButtonsPending
+                              274 ;    if( idleTimerActive )
+                              275 ;        if (target time reached) 
+                              276 ;        {   IdleTimerActive=FALSE
+                              277 ;            SysSpeedClockFree(SPEED_CLIENT_EXECUTIVE);   }
+P:0060 5CF000 rrrrrr  3  249  278     move    y:ExecStateBits,a1
+P:0062 0BCC61         4  253  279     btst    #IDLE_TIMER_ACTIVE,a1
+P:0063 0AF0A0 rrrrrr  6  259  280     jcc     _EndTimerCheck
+P:0065 4DF000 rrrrrr  3  262  282      move    y:g_iIdleTargetTimeHigh,x1 ;system uptime at which to move to idle (ms)
+P:0067 4CF000 rrrrrr  3  265  283      move    y:g_iIdleTargetTimeLow,x0             
+P:0069 0BF080 rrrrrr  6  271  284      jsr     SysCheckTime                ; Is it time to request idle yet?
+P:006B 0AF900 rrrrrr  6  277  285      jclr    #HW_SR_C_BITPOS,sr,_EndTimerCheck
+                              287       ; We've reached target uptime (ms) for the Executive to request idle
+P:006D 5CF000 rrrrrr  3  280  288       move    y:ExecStateBits,a1
+P:006F 0ACC41         4  284  289       bclr    #IDLE_TIMER_ACTIVE,a1
+P:0070 5C7000 rrrrrr  3  287  290       move    a1,y:ExecStateBits    
+                              292 ;  testpoint
+                              293       ; Clear Exec's bin semaphore via API for return to IDLE clock speed
+P:0072 46F400 000000  3  290  294       move    #>SPEED_CLIENT_EXECUTIVE,y0
+P:0074 0BF080 rrrrrr  6  296  295       jsr     SysSpeedClockFree
+                              297 _EndTimerCheck
+P:0076 00000C         4  300  298     rts
+                              301     endsec
+                              302     

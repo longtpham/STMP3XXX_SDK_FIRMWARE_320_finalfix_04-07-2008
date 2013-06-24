@@ -1,0 +1,2572 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\make\cc4f2e3b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DD3500 -DINCLUDE_TYPE2_NAND -DINCLUDE_MLC_DESCRIPTORS
+                                3 ;          -DINCLUDE_RENESAS_DESCRIPTORS -DFAT16 -DDEBUG -DDEVICE_3500 -DENGR_BD
+                                4 ;          -DWMAAPI_NO_DRM -w68 -w66
+                                5 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\DeviceDriv
+                                  er
+                                6 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\API
+                                7 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\CH9
+                                8 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\Include
+                                9 ;          -I..\..\..\..\..\..\inc
+                               10 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500
+                               11 ;          -I -I..\output_3500\include -rr6 -rn6 -rm6 -g -O2 -R -Cs -MmxL
+                               12 
+                               19 
+                               20 ;nanddevdrvapi.c:
+                               21 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                               22 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                               23 ; 3    |//
+                               24 ; 4    |// Filename: nanddevdrvapi.c
+                               25 ; 5    |// Description: NAND Device Driver API functions
+                               26 ; 6    |///////////////////////////////////////////////////////////////////////////////
+                               27 ; 7    |
+                               28 ; 8    |#include "types.h"
+                               29 
+                               31 
+                               32 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               33 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                               34 ; 3    |//
+                               35 ; 4    |// Filename: types.h
+                               36 ; 5    |// Description: Standard data types
+                               37 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                               38 ; 7    |
+                               39 ; 8    |#ifndef _TYPES_H
+                               40 ; 9    |#define _TYPES_H
+                               41 ; 10   |
+                               42 ; 11   |// TODO:  move this outta here!
+                               43 ; 12   |#if !defined(NOERROR)
+                               44 ; 13   |#define NOERROR 0
+                               45 ; 14   |#define SUCCESS 0
+                               46 ; 15   |#endif 
+                               47 ; 16   |#if !defined(SUCCESS)
+                               48 ; 17   |#define SUCCESS  0
+                               49 ; 18   |#endif
+                               50 ; 19   |#if !defined(ERROR)
+                               51 ; 20   |#define ERROR   -1
+                               52 ; 21   |#endif
+                               53 ; 22   |#if !defined(FALSE)
+                               54 ; 23   |#define FALSE 0
+                               55 ; 24   |#endif
+                               56 ; 25   |#if !defined(TRUE)
+                               57 ; 26   |#define TRUE  1
+                               58 ; 27   |#endif
+                               59 ; 28   |
+                               60 ; 29   |#if !defined(NULL)
+                               61 ; 30   |#define NULL 0
+                               62 ; 31   |#endif
+                               63 ; 32   |
+                               64 ; 33   |#define MAX_INT     0x7FFFFF
+                               65 ; 34   |#define MAX_LONG    0x7FFFFFFFFFFF
+                               66 ; 35   |
+                               67 ; 36   |
+                               68 ; 37   |#define BYTE    unsigned char       // btVarName
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               69 ; 38   |#define CHAR    signed char         // cVarName
+                               70 ; 39   |#define USHORT  unsigned short      // usVarName
+                               71 ; 40   |#define SHORT   unsigned short      // sVarName
+                               72 ; 41   |#define WORD    unsigned int        // wVarName
+                               73 ; 42   |#define INT     signed int          // iVarName
+                               74 ; 43   |#define DWORD   unsigned long       // dwVarName
+                               75 ; 44   |#define LONG    signed long         // lVarName
+                               76 ; 45   |#define BOOL    unsigned int        // bVarName
+                               77 ; 46   |#define FRACT   _fract              // frVarName
+                               78 ; 47   |#define LFRACT  long _fract         // lfrVarName
+                               79 ; 48   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                               80 ; 49   |#define FLOAT   float               // fVarName
+                               81 ; 50   |#define DBL     double              // dVarName
+                               82 ; 51   |#define ENUM    enum                // eVarName
+                               83 ; 52   |#define CMX     _complex            // cmxVarName
+                               84 ; 53   |typedef WORD UCS3;                  // 
+                               85 ; 54   |
+                               86 ; 55   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                               87 ; 56   |// Examples of circular pointers:
+                               88 ; 57   |//    INT CIRC cpiVarName
+                               89 ; 58   |//    DWORD CIRC cpdwVarName
+                               90 ; 59   |
+                               91 ; 60   |#define RETCODE WORD                // rcVarName
+                               92 ; 61   |
+                               93 ; 62   |// generic bitfield structure
+                               94 ; 63   |struct Bitfield {
+                               95 ; 64   |    int B0  :1;
+                               96 ; 65   |    int B1  :1;
+                               97 ; 66   |    int B2  :1;
+                               98 ; 67   |    int B3  :1;
+                               99 ; 68   |    int B4  :1;
+                              100 ; 69   |    int B5  :1;
+                              101 ; 70   |    int B6  :1;
+                              102 ; 71   |    int B7  :1;
+                              103 ; 72   |    int B8  :1;
+                              104 ; 73   |    int B9  :1;
+                              105 ; 74   |    int B10 :1;
+                              106 ; 75   |    int B11 :1;
+                              107 ; 76   |    int B12 :1;
+                              108 ; 77   |    int B13 :1;
+                              109 ; 78   |    int B14 :1;
+                              110 ; 79   |    int B15 :1;
+                              111 ; 80   |    int B16 :1;
+                              112 ; 81   |    int B17 :1;
+                              113 ; 82   |    int B18 :1;
+                              114 ; 83   |    int B19 :1;
+                              115 ; 84   |    int B20 :1;
+                              116 ; 85   |    int B21 :1;
+                              117 ; 86   |    int B22 :1;
+                              118 ; 87   |    int B23 :1;
+                              119 ; 88   |};
+                              120 ; 89   |
+                              121 ; 90   |union BitInt {
+                              122 ; 91   |        struct Bitfield B;
+                              123 ; 92   |        int        I;
+                              124 ; 93   |};
+                              125 ; 94   |
+                              126 ; 95   |#define MAX_MSG_LENGTH 10
+                              127 ; 96   |struct CMessage
+                              128 ; 97   |{
+                              129 ; 98   |        unsigned int m_uLength;
+                              130 ; 99   |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              131 ; 100  |};
+                              132 ; 101  |
+                              133 ; 102  |struct MessageQueueDescriptor
+                              134 ; 103  |{
+                              135 ; 104  |        int *m_pBase;
+                              136 ; 105  |        int m_iModulo;
+                              137 ; 106  |        int m_iSize;
+                              138 ; 107  |        int *m_pHead;
+                              139 ; 108  |        int *m_pTail;
+                              140 ; 109  |};
+                              141 ; 110  |
+                              142 ; 111  |struct ModuleEntry
+                              143 ; 112  |{
+                              144 ; 113  |    int m_iSignaledEventMask;
+                              145 ; 114  |    int m_iWaitEventMask;
+                              146 ; 115  |    int m_iResourceOfCode;
+                              147 ; 116  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              148 ; 117  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              149 ; 118  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              150 ; 119  |    int m_uTimeOutHigh;
+                              151 ; 120  |    int m_uTimeOutLow;
+                              152 ; 121  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              153 ; 122  |};
+                              154 ; 123  |
+                              155 ; 124  |union WaitMask{
+                              156 ; 125  |    struct B{
+                              157 ; 126  |        int m_bNone     :1;
+                              158 ; 127  |        int m_bMessage  :1;
+                              159 ; 128  |        int m_bTimer    :1;
+                              160 ; 129  |        int m_bButton   :1;
+                              161 ; 130  |    } B;
+                              162 ; 131  |    int I;
+                              163 ; 132  |} ;
+                              164 ; 133  |
+                              165 ; 134  |
+                              166 ; 135  |struct Button {
+                              167 ; 136  |        WORD wButtonEvent;
+                              168 ; 137  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              169 ; 138  |};
+                              170 ; 139  |
+                              171 ; 140  |struct Message {
+                              172 ; 141  |        WORD wMsgLength;
+                              173 ; 142  |        WORD wMsgCommand;
+                              174 ; 143  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              175 ; 144  |};
+                              176 ; 145  |
+                              177 ; 146  |union EventTypes {
+                              178 ; 147  |        struct CMessage msg;
+                              179 ; 148  |        struct Button Button ;
+                              180 ; 149  |        struct Message Message;
+                              181 ; 150  |};
+                              182 ; 151  |
+                              183 ; 152  |
+                              184 ; 153  |
+                              185 ; 154  |
+                              186 ; 155  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error")
+                              187 ; 156  |
+                              188 ; 157  |    
+                              189 ; 158  |#endif // #ifndef _TYPES_H
+                              190 
+                              192 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              193 ; 9    |#include "nandstructs.h"
+                              194 
+                              196 
+                              197 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                              198 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                              199 ; 3    |//
+                              200 ; 4    |// Filename: nandstructs.h
+                              201 ; 5    |// Description: Structure definitions for NAND descriptors
+                              202 ; 6    |///////////////////////////////////////////////////////////////////////////////
+                              203 ; 7    |
+                              204 ; 8    |#ifndef NAND_STRUCTS_H
+                              205 ; 9    |#define NAND_STRUCTS_H 1
+                              206 ; 10   |
+                              207 ; 11   |// By design:
+                              208 ; 12   |
+                              209 ; 13   |
+                              210 ; 14   |
+                              211 ; 15   |///////////////////////////////////////////////////////////////////////////////
+                              212 ; 16   |// Sector/Page Descriptor
+                              213 ; 17   |struct NANDSectorDescriptorStruct {
+                              214 ; 18   |  WORD  iSectorTotalSize;               // Total Sector size (Data + Redundant Area)
+                              215 ; 19   |  WORD  iSectorDataSize;            // Number Data bytes per Page
+                              216 ; 20   |  WORD  iRedundantAreaSize;             // Number of bytes per Redundant/Spare Area
+                              217 ; 21   |
+                              218 ; 22   |  // A physical Page may contain multiple Sectors.  
+                              219 ; 23   |  // It is assumed that the number or Sectors per Page is always 
+                              220 ; 24   |  // a power of 2 (i.e. 1,2,4...)
+                              221 ; 25   |  // The following elements are used to help address the Sectors within a Page
+                              222 ; 26   |  WORD  iSectorToPageShift;             // Number of right shifts to compute Page Num from
+                                   Sector Num
+                              223 ; 27   |  WORD  iSectorInPageMask;              // Mask to extract "relative sector in Page" from 
+                                  absolute Sector Num
+                              224 ; 28   |};
+                              225 ; 29   |
+                              226 ; 30   |
+                              227 ; 31   |///////////////////////////////////////////////////////////////////////////////
+                              228 ; 32   |// Block Descriptor
+                              229 ; 33   |struct NANDBlockDescriptorStruct {
+                              230 ; 34   |  WORD  NumSectorsPerBlock;
+                              231 ; 35   |  WORD  PagesPerBlock;
+                              232 ; 36   |  WORD  MaxBlocksPerZone;
+                              233 ; 37   |};
+                              234 ; 38   |
+                              235 ; 39   |
+                              236 ; 40   |
+                              237 ; 41   |
+                              238 ; 42   |
+                              239 ; 43   |///////////////////////////////////////////////////////////////////////////////
+                              240 ; 44   |// RedundantArea Descriptor
+                              241 ; 45   |struct NANDRedundantAreaDescriptorStruct {
+                              242 ; 46   |                                // Describes locations of fields in the Redundant Area *wh
+                                  en it
+                              243 ; 47   |                                // is read by itself* (i.e. not as part of a FullSector re
+                                  ad).
+                              244 ; 48   |
+                              245 ; 49   |  WORD  BadBlockFlag_Offset;    // 24-bit word offset to Bad Block Flag
+                              246 ; 50   |  WORD  BadBlockFlag_ByteNum;   // byte number (0-2) of Bad Block Flag
+                              247 ; 51   |  WORD  Tag0_Offset;                    // 24-bit word offset to Tag0
+                              248 ; 52   |  WORD  Tag0_ByteNum;                   // byte number of Tag0
+                              249 ; 53   |  WORD  Tag1_Offset;                    // 24-bit word offset to Tag1
+                              250 ; 54   |  WORD  Tag1_ByteNum;                   // byte number of Tag1
+                              251 ; 55   |};
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              252 ; 56   |
+                              253 ; 57   |#define NAND_GOOD_BLOCK_VALUE   (0x0000ff)
+                              254 ; 58   |
+                              255 ; 59   |///////////////////////////////////////////////////////////////////////////////
+                              256 ; 60   |// Device Addressing Descriptor
+                              257 ; 61   |struct NANDDeviceAddressingDescriptorStruct {
+                              258 ; 62   |
+                              259 ; 63   |  WORD  iNumColumnBytes;        // Number of Column Address bytes required
+                              260 ; 64   |  WORD  iNumRowBytes;           // Number of Row Address bytes required
+                              261 ; 65   |};
+                              262 ; 66   |
+                              263 ; 67   |
+                              264 ; 68   |///////////////////////////////////////////////////////////////////////////////
+                              265 ; 69   |// NAND Command Codes Descriptor
+                              266 ; 70   |struct NANDCommandCodesStruct {
+                              267 ; 71   |
+                              268 ; 72   |  // NOTE: Command are a single byte, in the LSByte.  A value of -1 (0xffffff) indicates
+                              269 ; 73   |  //        a code is not available for the current device.
+                              270 ; 74   |
+                              271 ; 75   |  WORD iReadIDCode;                             // ReadID
+                              272 ; 76   |  WORD iReadStatusCode;             // Read Status
+                              273 ; 77   |  WORD iResetCode;                  // Reset
+                              274 ; 78   |
+                              275 ; 79   |  WORD iSerialDataInputCode;            // Serial Data Input
+                              276 ; 80   |  WORD iRead1Code;                              // Read (Mode 1)
+                              277 ; 81   |  WORD iRead1_2ndCycleCode;         // Second Cycle for Read (Type 2 NANDs)
+                              278 ; 82   |  WORD iRead2Code;                              // Read (Mode 2)
+                              279 ; 83   |  WORD iRead3Code;                              // Read (Mode 3)
+                              280 ; 84   |
+                              281 ; 85   |#ifdef NAND_WRITES_ALLOWED
+                              282 ; 86   |  WORD iPageProgramCode;                // Page Program
+                              283 ; 87   |  WORD iCacheProgramCode;           // Cache Program
+                              284 ; 88   |
+                              285 ; 89   |  // TBD: Add ReadForCopy Back 0x00 & 0x35
+                              286 ; 90   |  WORD iCopyBackProgramCode;        // Copy Back Program
+                              287 ; 91   |  // TBD: Add Copy Back Program 2nd Cycle 0x10
+                              288 ; 92   |
+                              289 ; 93   |  WORD iBlockEraseCode;             // Block Erase
+                              290 ; 94   |  WORD iBlockErase2Code;            // Block Erase 2
+                              291 ; 95   |
+                              292 ; 96   |  WORD iRandomDataInCode;           // Random Data Input
+                              293 ; 97   |
+                              294 ; 98   |  WORD iRandomDataOutCode;          // Random Data Output
+                              295 ; 99   |  WORD iRandomDataOut_2ndCycleCode; // Random Data Output 2nd Cycle
+                              296 ; 100  |
+                              297 ; 101  |  WORD iMultiPlaneBlockEraseCode;       // Multiplane Block Erase
+                              298 ; 102  |
+                              299 ; 103  |  WORD iReadMultiPlaneStatusCode;   // Read Multiplane Status
+                              300 ; 104  |#endif
+                              301 ; 105  |};
+                              302 ; 106  |
+                              303 ; 107  |
+                              304 ; 108  |
+                              305 ; 109  |///////////////////////////////////////////////////////////////////////////////
+                              306 ; 110  |// Device Driver API Functions
+                              307 ; 111  |struct NANDDeviceDriverFunctionsStruct {
+                              308 ; 112  |
+                              309 ; 113  |  _reentrant WORD (*pReadSectorData)(struct NANDDescriptorStruct _P *pNANDDevice, WORD iCh
+                                  ip,
+                              310 ; 114  |                                     WORD iSectorNum, WORD *pDataBuf, BYTE bType);
+                              311 ; 115  |//  _reentrant WORD (*pReadSectorRedundant)(struct NANDDescriptorStruct _P *pNANDDevice, W
+                                  ORD iChip, 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              312 ; 116  |//                                          WORD iSectorNum, WORD *pDataBuf);
+                              313 ; 117  |  _reentrant WORD (*pResetNand)(WORD iDeviceNum);
+                              314 ; 118  |
+                              315 ; 119  |#ifdef NAND_WRITES_ALLOWED
+                              316 ; 120  |  // WRITE Functions
+                              317 ; 121  |
+                              318 ; 122  |  _reentrant WORD (*pWriteSectorData)(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              319 ; 123  |                                      WORD iChip, 
+                              320 ; 124  |                                      WORD iSectorNum, WORD *pDataBuf);
+                              321 ; 125  |  _reentrant WORD (*pEraseBlock)(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              322 ; 126  |                                 WORD iDeviceNum, WORD iBlockNum);
+                              323 ; 127  |#endif
+                              324 ; 128  |};
+                              325 ; 129  |
+                              326 ; 130  |
+                              327 ; 131  |///////////////////////////////////////////////////////////////////////////////
+                              328 ; 132  |// Hardware API Functions
+                              329 ; 133  |struct NANDHardwareAPIFunctionsStruct {
+                              330 ; 134  |  _reentrant WORD (*pPortInit)(WORD iDeviceNum);
+                              331 ; 135  |  _reentrant WORD (*pWritePortCmd)(WORD iDeviceNum, WORD iCommandCode, WORD bDeassertCEn);
+                                  
+                              332 ; 136  |  _reentrant WORD (*pWritePortAddr)(WORD iDeviceNum, WORD iNumColBytes, 
+                              333 ; 137  |                         WORD iColumnAddress, WORD iNumRowBytes, 
+                              334 ; 138  |                         WORD iRowAddress, WORD bDeassertCEn);
+                              335 ; 139  |  _reentrant WORD (*pReadPortData)(WORD iDeviceNum, WORD iNumBytesToRead, 
+                              336 ; 140  |                                   WORD *pBuffer, WORD b16BitMode);
+                              337 ; 141  |  _reentrant WORD (*pWaitForReadyPort)(WORD iDeviceNum, WORD iTimeoutCount);
+                              338 ; 142  |  _reentrant WORD (*pPowerUpPads)(void);
+                              339 ; 143  |  _reentrant WORD (*pPowerUpPads_16bit)(void);
+                              340 ; 144  |  _reentrant WORD (*pTerminatePort)(WORD iDeviceNum);
+                              341 ; 145  |};
+                              342 ; 146  |
+                              343 ; 147  |
+                              344 ; 148  |#ifdef NAND_WRITES_ALLOWED
+                              345 ; 149  |struct NANDHardwareAPI_w_FunctionsStruct {
+                              346 ; 150  |  // WRITE Functions
+                              347 ; 151  |
+                              348 ; 152  |  _reentrant void (*pEnableWritesPort)(WORD WPnum);
+                              349 ; 153  |  _reentrant void (*pDisableWritesPort)(WORD WPnum);
+                              350 ; 154  |  _reentrant WORD (*pWriteDataPort)(WORD iDeviceNum, WORD iNumBytesToWrite, 
+                              351 ; 155  |                                            WORD *pBuffer, WORD b16BitMode);
+                              352 ; 156  |};
+                              353 ; 157  |#endif
+                              354 ; 158  |
+                              355 ; 159  |
+                              356 ; 160  |
+                              357 ; 161  |
+                              358 ; 162  |///////////////////////////////////////////////////////////////////////////////
+                              359 ; 163  |// This SubStruct is a consolidation for memory savings. 
+                              360 ; 164  |typedef struct NANDDescriptorSubStruct{
+                              361 ; 165  |    struct NANDSectorDescriptorStruct _P *pPageDescriptor;
+                              362 ; 166  |    struct NANDBlockDescriptorStruct _P *pBlockDescriptor;
+                              363 ; 167  |//    struct NANDRedundantAreaDescriptorStruct _P *pRedundantAreaDescriptor;
+                              364 ; 168  |    struct NANDDeviceDriverFunctionsStruct _P *pDeviceDriverFunctions;
+                              365 ; 169  |    struct NANDCommandCodesStruct _P *pDeviceCommandCodes;
+                              366 ; 170  |    struct NANDDeviceAddressingDescriptorStruct _P *pDeviceAddressing;    
+                              367 ; 171  |    WORD  NandType;       // = 1 (SSFDC), 2 (e.g. Samsung 1Gbit), or 3 (e.g. MLC)
+                              368 ; 172  |};
+                              369 ; 173  |
+                              370 ; 174  |// The NANDDescriptorStruct is whole NAND descriptor - includes pointers to some of the ab
+                                  ove structs
+                              371 ; 175  |typedef struct NANDDescriptorStruct {
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              372 ; 176  |  struct NANDDescriptorSubStruct _P *pNandDescriptorSubStruct; // consolidated
+                              373 ; 177  |  WORD  DataBusWidth;   // BusWidth = 8 or 16 bits
+                              374 ; 178  |                                                // Use this parameter only to initialize t
+                                  he global CurrentNANDBusWidth
+                              375 ; 179  |                                                // Some NANDs required more real time proc
+                                  ess to determine  their bus
+                              376 ; 180  |                                                // width. (see CurrentNANDBusWidth declara
+                                  tion Note for further information)
+                              377 ; 181  |//WORD  TotalSectors;   // Unused in bootmanager
+                              378 ; 182  |//WORD  TotalPages;     // Unused in bootmanager
+                              379 ; 183  |  WORD  TotalBlocks;
+                              380 ; 184  |//WORD  TotalZones;     // Unused in bootmanager
+                              381 ; 185  |} NAND_DESCRIPTOR, *P_NAND_DESCRIPTOR;
+                              382 ; 186  |
+                              383 ; 187  |
+                              384 ; 188  |
+                              385 ; 189  |typedef struct {
+                              386 ; 190  |  WORD    DeviceManufacturerCode;                 // 00:Device:Manufacturer
+                              387 ; 191  |  struct NANDDescriptorStruct _P *pNANDDescriptor;
+                              388 ; 192  |} NAND_DEVICECODE_MAP;
+                              389 ; 193  |
+                              390 ; 194  |#define TYPE1_NAND  1
+                              391 ; 195  |#define TYPE2_NAND  2
+                              392 ; 196  |#define TYPE3_NAND  3
+                              393 ; 197  |#define TYPE4_NAND  4
+                              394 ; 198  |#define TYPE5_NAND  5
+                              395 ; 199  |#define TYPE6_NAND  6
+                              396 ; 200  |#define TYPE7_NAND  7
+                              397 ; 201  |
+                              398 ; 202  |
+                              399 ; 203  |#endif
+                              400 
+                              402 
+                              403 ; 10   |#include "smequ.h"
+                              404 
+                              406 
+                              407 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              408 ; 2    |// Copyright(C) SigmaTel, Inc. 2000
+                              409 ; 3    |// STMP SmartMedia        
+                              410 ; 4    |/////////////////////////////////////////////////////////////////////////////////
+                              411 ; 5    |
+                              412 ; 6    |#if (!defined(smequ))
+                              413 ; 7    |#define smequ 1
+                              414 ; 8    |
+                              415 ; 9    |// SmartMedia SmReadParams and SmWriteParams
+                              416 ; 10   |#define SM_RWP_ADDRLOW 0
+                              417 ; 11   |#define SM_RWP_ADDRHIGH 1
+                              418 ; 12   |#define SM_RWP_PAGEBUFADDR 2
+                              419 ; 13   |#define SM_RWP_NUMBYTES 3
+                              420 ; 14   |#define SM_RWP_CARDINFO 4
+                              421 ; 15   |#define SM_RWP_FLAGS 5
+                              422 ; 16   |#define SM_RWP_STATUS 6
+                              423 ; 17   |
+                              424 ; 18   |#define SM_ICMD_MASK 0x000100
+                              425 ; 19   |#define SM_ADDRLOWBYTE_MASK 0xFFFF00
+                              426 ; 20   |#define SM_ADDRLOWBYTEUPPER_MASK 0x0000FF
+                              427 ; 21   |
+                              428 ; 22   |#define SM_BUFSHIFT 0x000080
+                              429 ; 23   |#define SM_NUMBYTESSHIFT 0x000020
+                              430 ; 24   |
+                              431 ; 25   |#define SM_RWP_FLAGS_ECCEN_MASK 0x000003
+                              432 ; 26   |#define SM_RWP_FLAGS_ECCEN00 0x000000
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              433 ; 27   |#define SM_RWP_FLAGS_ECCEN01 0x000001
+                              434 ; 28   |#define SM_RWP_FLAGS_ECCENLOW 0
+                              435 ; 29   |#define SM_RWP_FLAGS_ECCENHIGH 1
+                              436 ; 30   |#define SM_RWP_FLAGS_IDFEN 2
+                              437 ; 31   |#define SM_RWP_FLAGS_BSBEN 3
+                              438 ; 32   |#define SM_RWP_FLAGS_RTNERROR 4
+                              439 ; 33   |
+                              440 ; 34   |// SmartMedia SmCardnInfo
+                              441 ; 35   |#define SM_CI_CARDNUM 0
+                              442 ; 36   |#define SM_CI_ID 1
+                              443 ; 37   |#define SM_CI_PAGESIZE 2
+                              444 ; 38   |#define SM_CI_BLOCKSIZE 3
+                              445 ; 39   |#define SM_CI_BLOCKBYTESIZE 4
+                              446 ; 40   |#define SM_CI_CARDSIZE 5
+                              447 ; 41   |#define SM_CI_CARDMB 6
+                              448 ; 42   |#define SM_CI_STATUS 7
+                              449 ; 43   |
+                              450 ; 44   |// SmartMedia Device Codes for SM_CI_ID
+                              451 ; 45   |//mask off the manufacturer id
+                              452 ; 46   |#define SM_ID_MASK 0x00FF00    
+                              453 ; 47   |#define SM_ID_1a 0x006E00
+                              454 ; 48   |#define SM_ID_1b 0x00E800
+                              455 ; 49   |#define SM_ID_1c 0x00EC00
+                              456 ; 50   |#define SM_ID_2 0x00EA00
+                              457 ; 51   |#define SM_ID_4a 0x00E300
+                              458 ; 52   |#define SM_ID_4b 0x00E500
+                              459 ; 53   |#define SM_ID_8 0x00E600
+                              460 ; 54   |#define SM_ID_16 0x007300
+                              461 ; 55   |#define SM_ID_32 0x007500
+                              462 ; 56   |#define SM_ID_64 0x007600
+                              463 ; 57   |#define SM_ID_128 0x007900
+                              464 ; 58   |
+                              465 ; 59   |// SmReadIdParams
+                              466 ; 60   |#define SM_RID_PAGEBUFADDR 0
+                              467 ; 61   |#define SM_RID_CARDINFO 1
+                              468 ; 62   |#define SM_RID_STATUS 2
+                              469 ; 63   |
+                              470 ; 64   |// SmStatusReadParams
+                              471 ; 65   |#define SM_SR_PAGEBUFADDR 0
+                              472 ; 66   |#define SM_SR_CARDINFO 1
+                              473 ; 67   |#define SM_SR_STATUS 2
+                              474 ; 68   |
+                              475 ; 69   |// SmBlockEraseParams
+                              476 ; 70   |#define SM_BE_ADDRLOW 0
+                              477 ; 71   |#define SM_BE_ADDRHIGH 1
+                              478 ; 72   |#define SM_BE_PAGEBUFADDR 2
+                              479 ; 73   |#define SM_BE_CARDINFO 3
+                              480 ; 74   |#define SM_BE_STATUS 4
+                              481 ; 75   |
+                              482 ; 76   |#define SM_IDFZEROERRORCOUNT 4
+                              483 ; 77   |#define SM_BSBZEROERRORCOUNT 2
+                              484 ; 78   |
+                              485 ; 79   |// Card Status
+                              486 ; 80   |#define SM_CS_PASSFAIL_BIT 0
+                              487 ; 81   |#define SM_CS_READYBUSY_BIT 6
+                              488 ; 82   |#define SM_CS_WRITEPROTECT_BIT 7
+                              489 ; 83   |
+                              490 ; 84   |#define FLH_PAGEBUFSIZE 0x00B0
+                              491 ; 85   |#define SM_PAGEBUFSIZE 0x00B0
+                              492 ; 86   |// !!!!!!!!!!!!! We're assuming SmartMedia >= 4MB !!!!!!!!!!!!!!!!!!!!!!!!
+                              493 ; 87   |//4 MBytes and up
+                              494 ; 88   |#define SM_PAGESIZE 0x0200  
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              495 ; 89   |//2 MBytes and under
+                              496 ; 90   |#define SM_PAGESIZE2 0x0100  
+                              497 ; 91   |#define SM_PAGESPERBLOCK16 32
+                              498 ; 92   |#define SM_PAGESPERBLOCK8 16
+                              499 ; 93   |#define SM_PHYSBLOCKSIZE16 SM_PAGESIZE*SM_PAGESPERBLOCK16
+                              500 ; 94   |#define SM_PHYSBLOCKSIZE8 SM_PAGESIZE*SM_PAGESPERBLOCK8
+                              501 ; 95   |#define SM_PHYSBLOCKSIZE2 SM_PAGESIZE2*SM_PAGESPERBLOCK8
+                              502 ; 96   |#define SM_PAGESTATE_A 1
+                              503 ; 97   |#define SM_PAGESTATE_B 2
+                              504 ; 98   |#define SM_PAGESTATE_C 3
+                              505 ; 99   |
+                              506 ; 100  |
+                              507 ; 101  |
+                              508 ; 102  |
+                              509 ; 103  |// PageBuf offset $AC (172).
+                              510 ; 104  |#define SM_STATUS_BYTES 0xAC     
+                              511 ; 105  |//   CIS/IDI Field:
+                              512 ; 106  |//      byte 0 = Invalid Data Flag
+                              513 ; 107  |//      byte 1 = $ff
+                              514 ; 108  |//   All other pages:
+                              515 ; 109  |//      byte 0 = Data Status Byte
+                              516 ; 110  |//      byte 1 = Block Status Byte
+                              517 ; 111  |// For byte 0, if 4 or more bits are zero
+                              518 ; 112  |//   then data is invalid
+                              519 ; 113  |// For byte 1, if 2 or more bits are zero
+                              520 ; 114  |//   the block is invalid
+                              521 ; 115  |
+                              522 ; 116  |#define SM_INFO_CARD_DETECTED 0
+                              523 ; 117  |#define SM_INFO_READ_ID_TIMEOUT 1
+                              524 ; 118  |#define SM_INFO_READ_TIMEOUT 2
+                              525 ; 119  |#define SM_INFO_END_OF_BLOCKS 3
+                              526 ; 120  |#define SM_INFO_READ_ID_BAD_PROGRAMMING 4
+                              527 ; 121  |#define SM_INFO_READ_BAD_PROGRAMMING 5
+                              528 ; 122  |
+                              529 ; 123  |#endif
+                              530 ; 124  |
+                              531 ; 125  |
+                              532 
+                              534 
+                              535 ; 11   |
+                              536 ; 12   |
+                              537 ; 13   |#include "gpflash_hal.h"
+                              538 
+                              540 
+                              541 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              542 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                              543 ; 3    |//
+                              544 ; 4    |// Filename: cf_hal.h
+                              545 ; 5    |// Description: Function prototypes for Compact Flash version of NAND Hardware API
+                              546 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                              547 ; 7    |
+                              548 ; 8    |
+                              549 ; 9    |_reentrant WORD InitGPFLASHPort(WORD iDeviceNum);
+                              550 ; 10   |_reentrant WORD WriteCmdGPFLASH(WORD iDeviceNum, WORD iCommandCode, WORD bDeassertCEn);
+                              551 ; 11   |_reentrant WORD WriteAddrGPFLASH(WORD iDeviceNum, WORD iNumColBytes, WORD iColumnAddress, 
+                                  
+                              552 ; 12   |                                  WORD iNumRowBytes, WORD iRowAddress, WORD bDeassertCEn);
+                                  
+                              553 ; 13   |_reentrant WORD ReadDataGPFLASH(WORD iDeviceNum, WORD iNumBytesToRead, WORD *pBuffer, WORD
+                                   b16BitMode);
+                              554 ; 14   |
+                              555 ; 15   |_reentrant WORD WaitForReadyGPFLASH(WORD iDeviceNum, WORD iTimeoutCount);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              556 ; 16   |_reentrant WORD PowerUpFlashPads(void);
+                              557 ; 17   |_reentrant WORD PowerUpFlashPads_16bit(void);
+                              558 ; 18   |_reentrant WORD TerminateGPFLASHPort(WORD iDeviceNum);
+                              559 ; 19   |
+                              560 ; 20   |
+                              561 ; 21   |// WaitForREADY() timeout counts
+                              562 ; 22   |// These control how long we will wait for the NAND to finish some internal operation
+                              563 ; 23   |// (e.g. Read Page (to cache), Program Page (from cache), Erase Block, Reset).
+                              564 ; 24   |// NOTE: For timeouts, each "count" is on the order of 50 nsec.
+                              565 ; 25   |// (<10 instructions, at a few 10s of nanosecs each)
+                              566 ; 26   |// The settings below are probably very conservative, but still short in human time
+                              567 ; 27   |// (e.g. 2000000 counts is approx. 100 msec)
+                              568 ; 28   |#define NAND_READ_PAGE_TIMEOUT  (2000000)
+                              569 ; 29   |#define NAND_READ_REDUNDANT_TIMEOUT  (2000000)
+                              570 ; 30   |#define NAND_RESET_TIMEOUT  (2000000)
+                              571 ; 31   |
+                              572 ; 32   |#define DEASSERT_CEB_AT_END        TRUE
+                              573 ; 33   |#define LEAVE_CEB_ASSERTED_AT_END  FALSE
+                              574 ; 34   |
+                              575 
+                              577 
+                              578 ; 14   |#include "nanddevdrvapi.h"
+                              579 
+                              581 
+                              582 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              583 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              584 ; 3    |//
+                              585 ; 4    |// Filename: nanddevdrvapi.h
+                              586 ; 5    |// Description: Function prototypes for NAND Device Driver API
+                              587 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                              588 ; 7    |
+                              589 ; 8    |
+                              590 ; 9    |// TBD: Decide where the next prototype really belongs...
+                              591 ; 10   |// _reentrant struct NANDDescriptorStruct _P * NandLookupID(WORD iDeviceCode);
+                              592 ; 11   |
+                              593 ; 12   |// Used in ReadSectorData functions to determine which area is to be read (data or redunda
+                                  nt area)
+                              594 ; 13   |#define READ_TYPE_REDUNDANT_AREA        0       
+                              595 ; 14   |#define READ_TYPE_DATA_AREA             1
+                              596 ; 15   | 
+                              597 ; 16   |_reentrant WORD NANDInitInterfacePort(WORD iDeviceNum);
+                              598 ; 17   |_reentrant WORD NANDTerminateInterfacePort(WORD iDeviceNum);
+                              599 ; 18   |
+                              600 ; 19   |
+                              601 ; 20   |_reentrant WORD Sm_ReadId(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDeviceNum);
+                              602 ; 21   |
+                              603 ; 22   |
+                              604 ; 23   |_reentrant WORD NandReadSectorDataWrapper(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              605 ; 24   |                                          WORD iDeviceNum, WORD iPageNum, WORD _X *pPageBu
+                                  f);
+                              606 ; 25   |
+                              607 ; 26   |_reentrant WORD NandReadSectorRedundantWrapper(struct NANDDescriptorStruct _P *pNANDDevice
+                                  , 
+                              608 ; 27   |                                               WORD iDeviceNum, WORD iSectorNum, WORD _X *
+                                  pBuf);
+                              609 ; 28   |
+                              610 ; 29   |_reentrant WORD ResetNand(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDeviceNum);
+                              611 ; 30   |
+                              612 ; 31   |/////////////////////////////////////////////////////////////////////////////////
+                              613 ; 32   |// SmartMedia (SSFDC) Device Driver Routines
+                              614 ; 33   |_reentrant WORD Sm_ReadSectorData(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDevic
+                                  eNum, 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              615 ; 34   |                                  WORD iPageNum, WORD _X *pDataBuf, BYTE bType);
+                              616 ; 35   |
+                              617 ; 36   |//_reentrant WORD Sm_ReadSectorRedundant(struct NANDDescriptorStruct _P *pNANDDevice, WORD
+                                   iDeviceNum, 
+                              618 ; 37   |//                                       WORD iPageNum, WORD *pDataBuf);
+                              619 ; 38   |
+                              620 ; 39   |
+                              621 ; 40   |#ifdef INCLUDE_TYPE2_NAND
+                              622 ; 41   |/////////////////////////////////////////////////////////////////////////////////
+                              623 ; 42   |// Type2 NANDs (e.g. Samsung 1Gbit and 2Gbit NANDs)
+                              624 ; 43   |_reentrant WORD Type2_ReadSectorData(struct NANDDescriptorStruct _P *pNANDDesc, 
+                              625 ; 44   |                                            WORD iDeviceNum, 
+                              626 ; 45   |                                            WORD iSectorNum,
+                              627 ; 46   |                                            WORD _X *pBuf,
+                              628 ; 47   |                                            BYTE bType);
+                              629 ; 48   |
+                              630 ; 49   |//_reentrant WORD Type2_ReadSectorRedundant(struct NANDDescriptorStruct _P *pNANDDesc, 
+                              631 ; 50   |//                                            WORD iDeviceNum, 
+                              632 ; 51   |//                                            WORD iSectorNum,
+                              633 ; 52   |//                                                 WORD _X *pBuf);
+                              634 ; 53   |#endif
+                              635 ; 54   |
+                              636 ; 55   |#ifdef INCLUDE_MLC_DESCRIPTORS
+                              637 ; 56   |_reentrant WORD Type3ReadSectorData(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              638 ; 57   |                                    WORD iDeviceNum, WORD iSectorNum, 
+                              639 ; 58   |                                    WORD _X *pBuf, BYTE bType);
+                              640 ; 59   |#endif
+                              641 ; 60   |
+                              642 
+                              644 
+                              645 ; 15   |#include "NANDRA_utils.h"
+                              646 
+                              648 
+                              649 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              650 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              651 ; 3    |//
+                              652 ; 4    |// Filename: NANDRAUtils.h
+                              653 ; 5    |// Description: Defs and function prototypes for Redundant Area Access Functions
+                              654 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                              655 ; 7    |
+                              656 ; 8    |
+                              657 ; 9    |#ifndef NANDRA_UTILS_H
+                              658 ; 10   |#define NANDRA_UTILS_H 1
+                              659 ; 11   |
+                              660 ; 12   |
+                              661 ; 13   |/////////////////////////////////////////////////////////////////////////////////
+                              662 ; 14   |//  Includes
+                              663 ; 15   |/////////////////////////////////////////////////////////////////////////////////
+                              664 ; 16   |//#include "../COMMON/nandstructs.h"
+                              665 ; 17   |#include "types.h"
+                              666 
+                              668 
+                              669 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              670 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              671 ; 3    |//
+                              672 ; 4    |// Filename: types.h
+                              673 ; 5    |// Description: Standard data types
+                              674 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              675 ; 7    |
+                              676 ; 8    |#ifndef _TYPES_H
+                              677 ; 9    |#define _TYPES_H
+                              678 ; 10   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              679 ; 11   |// TODO:  move this outta here!
+                              680 ; 12   |#if !defined(NOERROR)
+                              681 ; 13   |#define NOERROR 0
+                              682 ; 14   |#define SUCCESS 0
+                              683 ; 15   |#endif 
+                              684 ; 16   |#if !defined(SUCCESS)
+                              685 ; 17   |#define SUCCESS  0
+                              686 ; 18   |#endif
+                              687 ; 19   |#if !defined(ERROR)
+                              688 ; 20   |#define ERROR   -1
+                              689 ; 21   |#endif
+                              690 ; 22   |#if !defined(FALSE)
+                              691 ; 23   |#define FALSE 0
+                              692 ; 24   |#endif
+                              693 ; 25   |#if !defined(TRUE)
+                              694 ; 26   |#define TRUE  1
+                              695 ; 27   |#endif
+                              696 ; 28   |
+                              697 ; 29   |#if !defined(NULL)
+                              698 ; 30   |#define NULL 0
+                              699 ; 31   |#endif
+                              700 ; 32   |
+                              701 ; 33   |#define MAX_INT     0x7FFFFF
+                              702 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              703 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              704 ; 36   |#define MAX_ULONG   (-1) 
+                              705 ; 37   |
+                              706 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              707 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              708 ; 40   |
+                              709 ; 41   |
+                              710 ; 42   |#define BYTE    unsigned char       // btVarName
+                              711 ; 43   |#define CHAR    signed char         // cVarName
+                              712 ; 44   |#define USHORT  unsigned short      // usVarName
+                              713 ; 45   |#define SHORT   unsigned short      // sVarName
+                              714 ; 46   |#define WORD    unsigned int        // wVarName
+                              715 ; 47   |#define INT     signed int          // iVarName
+                              716 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              717 ; 49   |#define LONG    signed long         // lVarName
+                              718 ; 50   |#define BOOL    unsigned int        // bVarName
+                              719 ; 51   |#define FRACT   _fract              // frVarName
+                              720 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              721 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              722 ; 54   |#define FLOAT   float               // fVarName
+                              723 ; 55   |#define DBL     double              // dVarName
+                              724 ; 56   |#define ENUM    enum                // eVarName
+                              725 ; 57   |#define CMX     _complex            // cmxVarName
+                              726 ; 58   |typedef WORD UCS3;                   // 
+                              727 ; 59   |
+                              728 ; 60   |#define UINT16  unsigned short
+                              729 ; 61   |#define UINT8   unsigned char   
+                              730 ; 62   |#define UINT32  unsigned long
+                              731 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              732 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              733 ; 65   |#define WCHAR   UINT16
+                              734 ; 66   |
+                              735 ; 67   |//UINT128 is 16 bytes or 6 words
+                              736 ; 68   |typedef struct UINT128_3500 {   
+                              737 ; 69   |    int val[6];     
+                              738 ; 70   |} UINT128_3500;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              739 ; 71   |
+                              740 ; 72   |#define UINT128   UINT128_3500
+                              741 ; 73   |
+                              742 ; 74   |// Little endian word packed byte strings:   
+                              743 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              744 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              745 ; 77   |// Little endian word packed byte strings:   
+                              746 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              747 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              748 ; 80   |
+                              749 ; 81   |// Declare Memory Spaces To Use When Coding
+                              750 ; 82   |// A. Sector Buffers
+                              751 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              752 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              753 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              754 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              755 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              756 ; 88   |// B. Media DDI Memory
+                              757 ; 89   |#define MEDIA_DDI_MEM _Y
+                              758 ; 90   |
+                              759 ; 91   |
+                              760 ; 92   |
+                              761 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              762 ; 94   |// Examples of circular pointers:
+                              763 ; 95   |//    INT CIRC cpiVarName
+                              764 ; 96   |//    DWORD CIRC cpdwVarName
+                              765 ; 97   |
+                              766 ; 98   |#define RETCODE INT                 // rcVarName
+                              767 ; 99   |
+                              768 ; 100  |// generic bitfield structure
+                              769 ; 101  |struct Bitfield {
+                              770 ; 102  |    unsigned int B0  :1;
+                              771 ; 103  |    unsigned int B1  :1;
+                              772 ; 104  |    unsigned int B2  :1;
+                              773 ; 105  |    unsigned int B3  :1;
+                              774 ; 106  |    unsigned int B4  :1;
+                              775 ; 107  |    unsigned int B5  :1;
+                              776 ; 108  |    unsigned int B6  :1;
+                              777 ; 109  |    unsigned int B7  :1;
+                              778 ; 110  |    unsigned int B8  :1;
+                              779 ; 111  |    unsigned int B9  :1;
+                              780 ; 112  |    unsigned int B10 :1;
+                              781 ; 113  |    unsigned int B11 :1;
+                              782 ; 114  |    unsigned int B12 :1;
+                              783 ; 115  |    unsigned int B13 :1;
+                              784 ; 116  |    unsigned int B14 :1;
+                              785 ; 117  |    unsigned int B15 :1;
+                              786 ; 118  |    unsigned int B16 :1;
+                              787 ; 119  |    unsigned int B17 :1;
+                              788 ; 120  |    unsigned int B18 :1;
+                              789 ; 121  |    unsigned int B19 :1;
+                              790 ; 122  |    unsigned int B20 :1;
+                              791 ; 123  |    unsigned int B21 :1;
+                              792 ; 124  |    unsigned int B22 :1;
+                              793 ; 125  |    unsigned int B23 :1;
+                              794 ; 126  |};
+                              795 ; 127  |
+                              796 ; 128  |union BitInt {
+                              797 ; 129  |        struct Bitfield B;
+                              798 ; 130  |        int        I;
+                              799 ; 131  |};
+                              800 ; 132  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              801 ; 133  |#define MAX_MSG_LENGTH 10
+                              802 ; 134  |struct CMessage
+                              803 ; 135  |{
+                              804 ; 136  |        unsigned int m_uLength;
+                              805 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              806 ; 138  |};
+                              807 ; 139  |
+                              808 ; 140  |typedef struct {
+                              809 ; 141  |    WORD m_wLength;
+                              810 ; 142  |    WORD m_wMessage;
+                              811 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              812 ; 144  |} Message;
+                              813 ; 145  |
+                              814 ; 146  |struct MessageQueueDescriptor
+                              815 ; 147  |{
+                              816 ; 148  |        int *m_pBase;
+                              817 ; 149  |        int m_iModulo;
+                              818 ; 150  |        int m_iSize;
+                              819 ; 151  |        int *m_pHead;
+                              820 ; 152  |        int *m_pTail;
+                              821 ; 153  |};
+                              822 ; 154  |
+                              823 ; 155  |struct ModuleEntry
+                              824 ; 156  |{
+                              825 ; 157  |    int m_iSignaledEventMask;
+                              826 ; 158  |    int m_iWaitEventMask;
+                              827 ; 159  |    int m_iResourceOfCode;
+                              828 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              829 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              830 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              831 ; 163  |    int m_uTimeOutHigh;
+                              832 ; 164  |    int m_uTimeOutLow;
+                              833 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              834 ; 166  |};
+                              835 ; 167  |
+                              836 ; 168  |union WaitMask{
+                              837 ; 169  |    struct B{
+                              838 ; 170  |        unsigned int m_bNone     :1;
+                              839 ; 171  |        unsigned int m_bMessage  :1;
+                              840 ; 172  |        unsigned int m_bTimer    :1;
+                              841 ; 173  |        unsigned int m_bButton   :1;
+                              842 ; 174  |    } B;
+                              843 ; 175  |    int I;
+                              844 ; 176  |} ;
+                              845 ; 177  |
+                              846 ; 178  |
+                              847 ; 179  |struct Button {
+                              848 ; 180  |        WORD wButtonEvent;
+                              849 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              850 ; 182  |};
+                              851 ; 183  |
+                              852 ; 184  |struct Message {
+                              853 ; 185  |        WORD wMsgLength;
+                              854 ; 186  |        WORD wMsgCommand;
+                              855 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              856 ; 188  |};
+                              857 ; 189  |
+                              858 ; 190  |union EventTypes {
+                              859 ; 191  |        struct CMessage msg;
+                              860 ; 192  |        struct Button Button ;
+                              861 ; 193  |        struct Message Message;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              862 ; 194  |};
+                              863 ; 195  |
+                              864 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              865 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              866 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              867 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              868 ; 200  |
+                              869 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              870 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              871 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              872 ; 204  |
+                              873 ; 205  |#if DEBUG
+                              874 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              875 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              876 ; 208  |#else 
+                              877 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              878 ; 210  |#define DebugBuildAssert(x)    
+                              879 ; 211  |#endif
+                              880 ; 212  |
+                              881 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              882 ; 214  |//  #pragma asm
+                              883 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              884 ; 216  |//  #pragma endasm
+                              885 ; 217  |
+                              886 ; 218  |
+                              887 ; 219  |#ifdef COLOR_262K
+                              888 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              889 ; 221  |#elif defined(COLOR_65K)
+                              890 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              891 ; 223  |#else
+                              892 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              893 ; 225  |#endif
+                              894 ; 226  |    
+                              895 ; 227  |#endif // #ifndef _TYPES_H
+                              896 
+                              898 
+                              899 ; 18   |//#include "nandddi.h"
+                              900 ; 19   |
+                              901 ; 20   |
+                              902 ; 21   |// Declare Memory Spaces To Use When Coding
+                              903 ; 22   |// A. Sector Buffers
+                              904 ; 23   |#define SECTOR_BUFFER_MEM_X _X
+                              905 ; 24   |#define SECTOR_BUFFER_MEM_Y _Y
+                              906 ; 25   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              907 ; 26   |//typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              908 ; 27   |//typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              909 ; 28   |#define SECTOR_BUFFER   (WORD SECTOR_BUFFER_MEM)
+                              910 ; 29   |// B. Media DDI Memory
+                              911 ; 30   |#define MEDIA_DDI_MEM _Y
+                              912 ; 31   |
+                              913 ; 32   |
+                              914 ; 33   |
+                              915 ; 34   |/////////////////////////////////////////////////////////////////////////////////
+                              916 ; 35   |//  Definitions
+                              917 ; 36   |/////////////////////////////////////////////////////////////////////////////////
+                              918 ; 37   |
+                              919 ; 38   |#define RA_ECC_POS                  (SectorSizeInWordsPlusOne + 2)
+                              920 ; 39   |#define WHOLE_SECTOR TRUE
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              921 ; 40   |#define RA_ONLY FALSE
+                              922 ; 41   |
+                              923 ; 42   |#define RA_CRC_OFFSET                   0
+                              924 ; 43   |#define RA_LBA_1_OFFSET                 1
+                              925 ; 44   |#define RA_STMP_TAG_1_OFFSET            1
+                              926 ; 45   |#define RA_RSI_0_OFFSET                 2
+                              927 ; 46   |#define RA_RSI_1_OFFSET                 3
+                              928 ; 47   |#define RA_CUSTOMER_BYTE_OFFSET         4
+                              929 ; 48   |#define RA_BLOCK_STATUS_OFFSET          5
+                              930 ; 49   |#define RA_LBA_0_OFFSET                 6
+                              931 ; 50   |#define RA_STMP_TAG_0_OFFSET            6
+                              932 ; 51   |#define RA_RS_ECC_OFFSET                7
+                              933 ; 52   |
+                              934 ; 53   |
+                              935 ; 54   |////////////////////ECC Error Defines///////////////////////////////////////////
+                              936 ; 55   |#define   COMPUTE_ECC_SUCCESS               0
+                              937 ; 56   |#define   COMPUTE_ECC_NOT_DONE              0x516
+                              938 ; 57   |
+                              939 ; 58   |#define   NANDHAL_ECC_NOERROR               0
+                              940 ; 59   |#define   NANDHAL_ECC_ERROR_FIXED           0x519
+                              941 ; 60   |#define   NANDHAL_ECC_FIX_FAILED            0x51A
+                              942 ; 61   |
+                              943 ; 62   |
+                              944 ; 63   |
+                              945 ; 64   |
+                              946 ; 65   |/////////////////////////////////////////////////////////////////////////////////
+                              947 ; 66   |//  Function Prototypes
+                              948 ; 67   |/////////////////////////////////////////////////////////////////////////////////
+                              949 ; 68   |WORD _reentrant NANDRA_ToStandardForm(WORD _X * pRA, BOOL bWholeSector);
+                              950 ; 69   |WORD _reentrant NANDRA_ToNANDForm(WORD _X * pRA, BOOL bWholeSector);
+                              951 ; 70   |WORD _reentrant NANDRAGetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                              952 ; 71   |                         WORD *pwValue);
+                              953 ; 72   |WORD _reentrant NANDRASetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                              954 ; 73   |                         WORD wValue);
+                              955 ; 74   |WORD _reentrant NANDRAGetCRC(WORD _X * pRA, BOOL bWholeSector,
+                              956 ; 75   |                         WORD *pwCRC);
+                              957 ; 76   |WORD _reentrant NANDRA_CRCCorrect(struct NANDDescriptorStruct _P *pNANDDesc, WORD _X * pRA
+                                  ,
+                              958 ; 77   |                          WORD iDeviceNum, WORD iSectorNum);
+                              959 ; 78   |
+                              960 ; 79   |WORD _reentrant NANDRAGetLBA(WORD _X * pRA, BOOL bWholeSector,
+                              961 ; 80   |                 WORD *pwLBA, WORD *pwLSA);
+                              962 ; 81   |
+                              963 ; 82   |WORD _reentrant NANDRAGetBlockStatus(WORD _X * pRA, BOOL bWholeSector,
+                              964 ; 83   |                         WORD *pwBlockStatus);
+                              965 ; 84   |
+                              966 ; 85   |WORD _reentrant NANDRAGetStmpCode(WORD _X * pRA, BOOL bWholeSector,
+                              967 ; 86   |                          WORD *pwStmpCode);
+                              968 ; 87   |
+                              969 ; 88   |#endif
+                              970 ; 89   |
+                              971 ; 90   |
+                              972 ; 91   |/////////////////////////////////////////////////////////////////////////////////
+                              973 ; 92   |////////////////////////////////  EOF  //////////////////////////////////////////
+                              974 ; 93   |/////////////////////////////////////////////////////////////////////////////////
+                              975 
+                              977 
+                              978 ; 16   |
+                              979 ; 17   |#ifndef SUCCESS
+                              980 ; 18   |#define SUCCESS 0
+                              981 ; 19   |#endif
+                              982 ; 20   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              983 ; 21   |#define MakerIDMask 0x0000ff
+                              984 ; 22   |#define SamsungMakerID 0x0000ec
+                              985 ; 23   |#define SandiskMakerID 0x000045
+                              986 ; 24   |#define ToshibaMakerID 0x000098
+                              987 ; 25   |#define ReadID2MLCMask 0x00000c
+                              988 ; 26   |#define ReadID2MLCValue 0x000004
+                              989 ; 27   |
+                              990 ; 28   |#define TOSHIBA_SAMSUNG_TYPE1_TYPE3_MASK        0x00c000
+                              991 ; 29   |#define READ_ID2_DATA_BUS_WIDTH_MASK            0x00C000
+                              992 ; 30   |#define READ_ID2_DATA_BUS_8BIT                          0x004000
+                              993 ; 31   |#define READ_EXT_ID_DATA_BUS_WIDTH_MASK         0x004000
+                              994 ; 32   |#define READ_EXT_ID_DATA_BUS_8BIT                       0x000000
+                              995 ; 33   |        
+                              996 ; 34   |//#define NO_SELF_CORRECTING_NAND_SECTOR_READS  1
+                              997 ; 35   |#define CRC_ECC_CORRECT 1
+                              998 ; 36   |//////////////////////////////////////////////////////////////////////////////
+                              999 ; 37   |//  Extern functions
+                             1000 ; 38   |//////////////////////////
+                             1001 ; 39   |extern RETCODE _reentrant NANDHalCorrectECC_4Bit(WORD _X * pCompleteSectorBuf);
+                             1002 ; 40   |WORD  DivideByThree(WORD wVal);
+                             1003 ; 41   |
+                             1004 ; 42   |WORD _X SectorSize;
+                             1005 ; 43   |WORD _X SectorSizeInWords;
+                             1006 ; 44   |WORD _X SectorSizeInWordsPlusOne;
+                             1007 ; 45   |
+                             1008 ; 46   |///////////////////////////////////////////////////////////////////////////////
+                             1009 ; 47   |// Private functions
+                             1010 ; 48   |#ifdef INCLUDE_TYPE2_NAND
+                             1011 ; 49   |_reentrant WORD Type2_ComputeAddress(struct NANDDescriptorStruct _P *pNANDDesc,
+                             1012 ; 50   |                                     WORD iSectorNum, WORD iByteOffset, 
+                             1013 ; 51   |                                     WORD *piColAddr, WORD *piRowAddr);
+                             1014 ; 52   |#endif
+                             1015 ; 53   |
+                             1016 ; 54   |_reentrant RETCODE DetermineNandType(WORD wNandDeviceNumber);
+                             1017 ; 55   |
+                             1018 ; 56   |void _reentrant NANDHALCommon_ReadId( WORD wChipNum ) ;
+                             1019 
+                             1082 
+                             1083 ; 57   |//_reentrant RETCODE NANDHALCommon_ReadId2(WORD wChipNum, WORD _X * pID);
+                             1084 ; 58   |//_reentrant RETCODE NANDHALCommon_ReadIdExtended(WORD wChipNum, WORD _X * pID);
+                             1085 ; 59   |_reentrant struct NANDDescriptorStruct _P * NandLookupID(NAND_DEVICECODE_MAP _P * _P pNAND
+                                  DevicesMap);
+                             1086 ; 60   |
+                             1087 ; 61   |
+                             1088 ; 62   |
+                             1089 ; 63   |
+                             1090 ; 64   |///////////////////////////////////////////////////////////////////////////////
+                             1091 ; 65   |// Hardware API Function Descriptors
+                             1092 ; 66   |
+                             1093 ; 67   |
+                             1094 ; 68   |// For the STMP3500, we always use the GPFLASH interface.  For STMP3410, we always use the
+                                   Compact Flash 
+                             1095 ; 69   |// interface.  THIS IS TRUE FOR BOOT ROM ONLY.  For non-BOOTROM code, the 3410 may use Com
+                                  pact Flash for 
+                             1096 ; 70   |// Type2 NANDs and EMC for Type1 (SmartMedia). So the determination of which interface fun
+                                  ctions to call 
+                             1097 ; 71   |// will be dynamic, and may vary with the chip/card number.  The code below, and any code 
+                                  that uses these 
+                             1098 ; 72   |// pointers may need some rewrites for non-BOOTROM use.
+                             1099 ; 73   |
+                             1100 ; 74   |
+                             1101 ; 75   |                                          // 3500 build - use GPFLASH Port
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1102 ; 76   |
+                             1103 ; 77   |_P struct NANDHardwareAPIFunctionsStruct                GPFLASHNandPortFunctions = {     /
+                                  / Use GPFLASH Interface
+                             1104 
+                             1105 
+P:0000                       1106         org     p,".pdatananddevdrvapi",init:
+                             1107 FGPFLASHNandPortFunctions:
+P:0000 rrrrrr rrrrrr         1108         dc      FInitGPFLASHPort,FWriteCmdGPFLASH,FWriteAddrGPFLASH,FReadDataGPFLASH
+       rrrrrr rrrrrr              
+P:0004 rrrrrr rrrrrr         1109         dc      FWaitForReadyGPFLASH,FPowerUpFlashPads,FPowerUpFlashPads_16bit
+       rrrrrr                     
+P:0007 rrrrrr                1110         dc      FTerminateGPFLASHPort
+                             1146 
+                             1147 ; 78   |
+                             1148 ; 79   |  InitGPFLASHPort,                      // *pPortInit(int iDeviceNum);
+                             1149 ; 80   |  WriteCmdGPFLASH,                  // *pWritePortCmd(int iDeviceNum, int iCommandCode);
+                             1150 ; 81   |  WriteAddrGPFLASH,                     // *pWritePortAddr(iDeviceNum, iNumColBytes, 
+                             1151 ; 82   |                                //                 iColumnAddress, iNumRowBytes, iRowAddre
+                                  ss);
+                             1152 ; 83   |  ReadDataGPFLASH,                      // *pReadPortData(int iDeviceNum, int iNumBytesToR
+                                  ead, 
+                             1153 ; 84   |                                // int *pBuffer, int b16BitMode);
+                             1154 ; 85   |  WaitForReadyGPFLASH,          // WORD *pWaitForReadyPort(WORD iDeviceNum, WORD iTimeoutC
+                                  ount);
+                             1155 ; 86   |
+                             1156 ; 87   |  // TBD: This needs to have a Compact Flash version and an EMC version, with appropriate 
+                                  names.
+                             1157 ; 88   |  PowerUpFlashPads,                     // WORD *pPowerUpPads(void);
+                             1158 ; 89   |  PowerUpFlashPads_16bit,           // void *pPowerUpPads_16bit(void);
+                             1159 ; 90   |  TerminateGPFLASHPort          // WORD *pTerminatePort(int iDeviceNum);
+                             1160 ; 91   |};
+                             1161 ; 92   |
+                             1162 ; 93   |
+                             1163 ; 94   |_P struct NANDHardwareAPIFunctionsStruct                * _P g_pCurrentNandPort = &GPFLASH
+                                  NandPortFunctions;
+                             1164 
+                             1165 Fg_pCurrentNandPort:
+P:0008 rrrrrr                1166         dc      FGPFLASHNandPortFunctions
+                             1171 
+                             1172 ; 95   |
+                             1173 ; 96   |
+                             1174 ; 97   |///////////////////////////////////////////////////////////////////////////////
+                             1175 ; 98   |// Private (static) variables
+                             1176 ; 99   |
+                             1177 ; 100  |                                       // Tracking for "cached" pages in Type2 NANDs
+                             1178 ; 101  |                                       // If s_bCachedPageAvailableInNAND[iDev] is TRUE, 
+                             1179 ; 102  |                                       // a Page is already available in the NAND and
+                             1180 ; 103  |                                       // can be read with Random Output commands.  The
+                             1181 ; 104  |                                       // Page Number of the cached page is given in 
+                             1182 ; 105  |                                       // s_iCachedPageNumInNAND[iDev].
+                             1183 ; 106  |//_P static WORD s_bCachedPageAvailableInNAND[4] = {0, 0, 0, 0};
+                             1184 ; 107  |//#ifdef INCLUDE_TYPE2_NAND
+                             1185 ; 108  |//_P static WORD s_iCachedPageNumInNAND[4];
+                             1186 ; 109  |//#endif
+                             1187 ; 110  |
+                             1188 ; 111  |struct
+                             1189 ; 112  |{
+                             1190 ; 113  |    // Read ID Byte 1
+                             1191 ; 114  |    WORD MakerCode              : 8;
+                             1192 ; 115  |    // Read ID Byte 2
+                             1193 ; 116  |    WORD DeviceCode             : 8;
+                             1194 ; 117  |    // Read ID Byte 3
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1195 ; 118  |    WORD InternalChipNumber     : 2;        // Number of die = (1 << n)
+                             1196 ; 119  |    WORD CellType               : 2;        // Number of bits per memory cell = ( 1 << (n+
+                                  1) )
+                             1197 ; 120  |    WORD VendorSpecific0        : 3;
+                             1198 ; 121  |    WORD CacheProgram           : 1;        // 0 == Not supported
+                             1199 ; 122  |    // Read ID Byte 4
+                             1200 ; 123  |    WORD PageSize               : 2;        // Page size in bytes = (1 << n) * 1024
+                             1201 ; 124  |    WORD RedundantAreaSize      : 1;        // Redundant area bytes per 512 data bytes = 8
+                                   * (1 << n)
+                             1202 ; 125  |    WORD Reserved0              : 1;
+                             1203 ; 126  |    WORD BlockSize              : 2;        // Block size in bytes = 64 * 1024 * (1 << n)
+                             1204 ; 127  |    WORD Organization           : 1;        // 0 == x8, 1 == x16
+                             1205 ; 128  |    WORD SamsungHSSerialAccess  : 1;        // 0 == 50/30ns, 1 == 25ns
+                             1206 ; 129  |    // Read ID Byte 5
+                             1207 ; 130  |    WORD VendorSpecific1        : 2;
+                             1208 ; 131  |    WORD PlaneNumber            : 2;        // # of planes total (see note below) = (1 << 
+                                  n)
+                             1209 ; 132  |    WORD PlaneSize              : 3;        // # of bytes per plane = 64 * 1024 * 1024 * (
+                                  1 << n)
+                             1210 ; 133  |    WORD Reserved4              : 1;
+                             1211 ; 134  |    // Read ID Byte 6
+                             1212 ; 135  |    WORD Reserved5              : 3;
+                             1213 ; 136  |    WORD ToshibaHighSpeedMode   : 1;        // 0 == Not supported
+                             1214 ; 137  |    WORD Reserved6              : 4;
+                             1215 ; 138  |} SECTOR_BUFFER_MEM ReadIDDecode;
+                             1216 ; 139  |// Note on # of planes for Toshiba Large Block MLC
+                             1217 ; 140  |//  In case of multi-stacked device, the "plane number" will show the total number of plan
+                                  es of the packaged
+                             1218 ; 141  |//  device and not the number of planes per die. (e.g. If 2 pieces of device that has 2 pl
+                                  anes were stacked
+                             1219 ; 142  |//  in a package, the plane number will show "4")
+                             1220 ; 143  |
+                             1221 ; 144  |_P struct NANDDescriptorStruct * _P pNandInitStruct;
+                             1222 ; 145  |
+                             1223 ; 146  |extern _P NAND_DEVICECODE_MAP UniqueInitDescriptorIdList[];
+                             1224 ; 147  |extern _P NAND_DEVICECODE_MAP Type1DescriptorIdList[];
+                             1225 ; 148  |#ifdef INCLUDE_TYPE2_NAND
+                             1226 ; 149  |extern _P NAND_DEVICECODE_MAP Type2DescriptorIdList[];
+                             1227 ; 150  |#endif
+                             1228 ; 151  |extern _P NAND_DEVICECODE_MAP LargeMLCDescriptorIdList[];
+                             1229 ; 152  |
+                             1230 ; 153  |extern _X WORD CurrentNANDBusWidth;
+                             1231 ; 154  |extern struct NANDDescriptorStruct _P * _X pCurrentNANDDescriptor;
+                             1232 ; 155  |
+                             1233 ; 156  |
+                             1234 ; 157  |#pragma asm
+                             1235 ;///////////////////////////////////////////////////////////////////////////////
+                             1236 ;> Name: DivideByThree
+                             1237 ;
+                             1238 ;  Type: Function
+                             1239 ;  Description:     WORD  DivideByThree(WORD wVal, WORD _Y *pRemainder);
+                             1240 ;  Inputs:          wVal (in A)          - The value to divde by 3
+                             1241 ;                   pRemainder (in R0)   - Pointer for returning the remainder
+                             1242 ;  Outputs:         Return (in A) the quotient: wVal/3
+                             1243 ;  Notes:
+                             1244 ;<
+                             1245 ;///////////////////////////////////////////////////////////////////////////////
+                             1246 FDivideByThree
+                             1247 
+                             1248 OneThird equ 0.333333333333
+                             1249 Three    equ 3
+                             1250 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1251 
+P:0009 218400         2    2 1252     move    a1,x0                           ;put the operand into x0
+P:000A 46F413 2AAAAB  3    5 1253     clr     a               #>OneThird,y0
+P:000C 2088D8         2    7 1254     mpy     x0,y0,b         x0,a0           ;b1 = wVal/3,  a0 = wVal
+                             1255 
+P:000D 21A400         2    9 1256     move    b1,x0                               ;x0 = wVal/3
+P:000E 46F432 000003  3   12 1257     asl     a               #>Three,y0      ;right shift it, so the MAC will be correct, y0 = 3
+P:0010 2000D6         2   14 1258     mac     -x0,y0,a                            ;a = 3 * (wVal/3) - wVal   (the remainder)
+                             1259 
+P:0011 200022         2   16 1260     asr     a                               ; get the right shift, now
+                             1261 
+                             1262 ;    move    a0,y:(r0)                       ;return remainder through y:(r0)
+P:0012 208E00         2   18 1263     move    x0,a                            ;and quotient in A
+P:0013 00000C         4   22 1264     rts
+                             1265 
+                             1266 
+                             1267 ; 190  |#pragma endasm
+                             1268 ; 191  |
+                             1269 ; 192  |///////////////////////////////////////////////////////////////////////////////
+                             1270 ; 193  |//> Name:        NandHalInit
+                             1271 ; 194  |//
+                             1272 ; 195  |//  Type:        Function
+                             1273 ; 196  |//  Description: Finds and reports the NAND specifications.
+                             1274 ; 197  |//  Inputs:              wNandDeviceNumber : Physical NAND number to initialize.      
+                             1275 ; 198  |//  Outputs:     Returns ERROR CODE for Error, ELSE SUCCESS plus pCurrentNANDDescriptor is
+                                   filled in
+                             1276 ; 199  |//  Notes:       Error Checking: Expects DDI to clear the pNandParams->NandType to zero be
+                                  fore first call.
+                             1277 ; 200  |//<
+                             1278 ; 201  |/////////////////////////////////////////////////////////////////////////////////
+                             1279 ; 202  |_reentrant RETCODE NandHalInit(WORD wNandDeviceNumber) {
+                             1280 
+P:0000                       1281         org     p,".ptextnanddevdrvapi":
+                             1286 FNandHalInit:
+P:0000 055F3C         2    2 1287         movec   ssh,x:(r7)+
+P:0001 205F00         2    4 1290         move    (r7)+
+                             1296 
+                             1297 ; 203  |
+                             1298 ; 204  |        RETCODE Status;
+                             1299 ; 205  |
+                             1300 ; 206  |    if(g_pCurrentNandPort->pWritePortCmd(wNandDeviceNumber, 0xFF, FALSE))
+                             1301 
+P:0002 07F095 rrrrrr  8   12 1303         movem   p:Fg_pCurrentNandPort,r5
+P:0004 000000         2   14 1304         nop
+P:0005 205D00         2   16 1305         move    (r5)+
+P:0006 07E595         6   22 1306         movem   p:(r5),r5
+P:0007 045FA0         2   24 1307         movec   m0,n7
+P:0008 000000         2   26 1308         nop
+P:0009 546F00         4   30 1309         move    a1,x:(r7+n7)
+P:000A 240000         2   32 1314         move    #0,x0
+P:000B 57F400 0000FF  3   35 1315         move    #>$FF,b
+P:000D 0BE580         4   39 1316         jsr     (r5)
+P:000E 2A0000         2   41 1319         move    #0,a2
+P:000F 200003         2   43 1320         tst     a
+P:0010 0AF0A2 rrrrrr  6   49 1321         jne     L9
+                             1322 
+                             1323 ; 207  |        return(1);
+                             1324 ; 208  |
+                             1325 ; 209  |
+                             1326 ; 210  |    // Wait for the NAND to return to READY
+                             1327 ; 211  |    if(g_pCurrentNandPort->pWaitForReadyPort(wNandDeviceNumber, NAND_RESET_TIMEOUT))
+                             1328 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0012 07F095 rrrrrr  8   57 1330         movem   p:Fg_pCurrentNandPort,r5
+P:0014 3D0400         2   59 1331         move    #4,n5
+P:0015 000000         2   61 1332         nop
+P:0016 07ED95         8   69 1333         movem   p:(r5+n5),r5
+P:0017 045FA0         2   71 1334         movec   m0,n7
+P:0018 000000         2   73 1335         nop
+P:0019 56EF00         4   77 1336         move    x:(r7+n7),a
+P:001A 57F400 1E8480  3   80 1339         move    #2000000,b
+P:001C 0BE580         4   84 1340         jsr     (r5)
+P:001D 2A0000         2   86 1343         move    #0,a2
+P:001E 200003         2   88 1344         tst     a
+P:001F 0AF0AA rrrrrr  6   94 1345         jeq     L10
+                             1346 
+                             1347 ; 212  |        return(1);
+                             1348 
+P:0021 56F400 000001  3   97 1350 L9:     move    #>1,a
+P:0023 0AF080 rrrrrr  6  103 1351         jmp     L13
+                             1352 
+                             1353 ; 213  |
+                             1354 ; 214  |        Status = DetermineNandType(wNandDeviceNumber);
+                             1355 
+P:0025 045FA0         2  105 1357 L10:    movec   m0,n7
+P:0026 000000         2  107 1358         nop
+P:0027 56EF00         4  111 1359         move    x:(r7+n7),a
+P:0028 0BF080 rrrrrr  6  117 1360         jsr     FDetermineNandType
+                             1365 
+                             1366 ; 215  |   
+                             1367 ; 216  |        if(Status != SUCCESS)
+                             1368 
+P:002A 2A0000         2  119 1370         move    #0,a2
+P:002B 200003         2  121 1371         tst     a
+                             1372 
+                             1373 ; 217  |                return(Status);
+                             1374 
+P:002C 0AF0A2 rrrrrr  6  127 1376         jne     L13
+                             1377 
+                             1378 ; 218  |
+                             1379 ; 219  |        pCurrentNANDDescriptor = pNandInitStruct;
+                             1380 
+P:002E 07F095 rrrrrr  8  135 1382         movem   p:FpNandInitStruct,r5
+P:0030 657000 rrrrrr  3  138 1383         move    r5,x:FpCurrentNANDDescriptor
+                             1384 
+                             1385 ; 220  |    SectorSize = pCurrentNANDDescriptor->pNandDescriptorSubStruct->pPageDescriptor->iSecto
+                                  rDataSize;
+                             1386 
+P:0032 07E595         6  144 1388         movem   p:(r5),r5
+P:0033 000000         2  146 1389         nop
+P:0034 07E595         6  152 1390         movem   p:(r5),r5
+P:0035 000000         2  154 1391         nop
+P:0036 205D00         2  156 1392         move    (r5)+
+P:0037 07E58E         6  162 1393         movem   p:(r5),a
+P:0038 547000 rrrrrr  3  165 1395         move    a1,x:FSectorSize
+                             1396 
+                             1397 ; 221  |    SectorSizeInWords = DivideByThree(SectorSize);
+                             1398 
+P:003A 0BF080 rrrrrr  6  171 1400         jsr     FDivideByThree
+P:003C 547000 rrrrrr  3  174 1401         move    a1,x:FSectorSizeInWords
+                             1402 
+                             1403 ; 222  |    SectorSizeInWordsPlusOne = SectorSizeInWords + 1;
+                             1404 
+P:003E 46F400 000001  3  177 1406         move    #>1,y0
+P:0040 200050         2  179 1407         add     y0,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0041 547000 rrrrrr  3  182 1408         move    a1,x:FSectorSizeInWordsPlusOne
+                             1409 
+                             1410 ; 223  |        return(SUCCESS);
+                             1411 
+P:0043 200013         2  184 1413         clr     a   
+                             1414 
+                             1415 ; 224  |}
+                             1416 
+P:0044 205700         2  186 1418 L13:    move    (r7)-
+P:0045 05FF3C         4  190 1420         movec   x:-(r7),ssh
+P:0046 000000         2  192 1423         nop
+P:0047 00000C         4  196 1424         rts
+                             1426 
+                             1427 ; 225  |
+                             1428 ; 226  |
+                             1429 ; 227  |
+                             1430 ; 228  |///////////////////////////////////////////////////////////////////////////////
+                             1431 ; 229  |//> Name:        DetermineNandType
+                             1432 ; 230  |//
+                             1433 ; 231  |//  Type:        Function
+                             1434 ; 232  |//  Description: Ping the NAND specified in the input struct and selects the appropriate
+                             1435 ; 233  |//                               NAND_INIT_DESCRIPTOR
+                             1436 ; 234  |//  Inputs:
+                             1437 ; 235  |//  Outputs:     Error Code or SUCCESS
+                             1438 ; 236  |//  Notes:       
+                             1439 ; 237  |//<
+                             1440 ; 238  |/////////////////////////////////////////////////////////////////////////////////
+                             1441 ; 239  |_reentrant RETCODE DetermineNandType(WORD wNandDeviceNumber)
+                             1442 ; 240  |{
+                             1443 
+                             1448 FDetermineNandType:
+P:0048 055F3C         2  198 1449         movec   ssh,x:(r7)+
+                             1458 
+                             1459 ; 241  |
+                             1460 ; 242  |    _P NAND_DEVICECODE_MAP  *  pNANDDeviceMap;
+                             1461 ; 243  |
+                             1462 ; 244  |        // By default always set the NAND to 8-bit bus
+                             1463 ; 245  |        CurrentNANDBusWidth = 8;
+                             1464 
+P:0049 2D0800         2  200 1466         move    #8,b1
+P:004A 557000 rrrrrr  3  203 1467         move    b1,x:FCurrentNANDBusWidth
+                             1468 
+                             1469 ; 246  |
+                             1470 ; 247  |        // Call ReadID1 to determine NAND Maker (also gets the Device number)
+                             1471 ; 248  |    NANDHALCommon_ReadId(wNandDeviceNumber);
+                             1472 
+P:004C 0BF080 rrrrrr  6  209 1474         jsr     FNANDHALCommon_ReadId
+                             1476 
+                             1477 ; 249  |
+                             1478 ; 250  |    pNandInitStruct = NandLookupID(UniqueInitDescriptorIdList);
+                             1479 
+P:004E 60F400 rrrrrr  3  212 1481         move    #FUniqueInitDescriptorIdList,r0
+P:0050 0BF080 rrrrrr  6  218 1482         jsr     FNandLookupID
+P:0052 077090 rrrrrr  8  226 1483         movem   r0,p:FpNandInitStruct
+                             1484 
+                             1485 ; 251  |    // If not found in the unique list, check the specializations
+                             1486 ; 252  |    if ( NULL == pNandInitStruct )
+                             1487 
+P:0054 220F00         2  228 1489         move    r0,b
+P:0055 20000B         2  230 1490         tst     b
+P:0056 0AF0A2 rrrrrr  6  236 1491         jne     L16
+                             1492 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1493 ; 253  |    {
+                             1494 ; 254  |        // Test for MLC
+                             1495 ; 255  |        if ( 0 != ReadIDDecode.CellType )
+                             1496 
+P:0058 57F000 rrrrrr  3  239 1498         move    x:FReadIDDecode,b
+P:005A 260C00         2  241 1499         move    #<$C,y0
+P:005B 20005E         2  243 1500         and     y0,b
+                             1501 
+                             1502 ; 256  |        {
+                             1503 ; 257  |            // Media is LBMLC
+                             1504 ; 258  |            pNANDDeviceMap = LargeMLCDescriptorIdList;
+                             1505 
+P:005C 60F400 rrrrrr  3  246 1507         move    #FLargeMLCDescriptorIdList,r0
+                             1509 
+                             1510 ; 259  |        }
+                             1511 
+P:005E 0AF0A2 rrrrrr  6  252 1513         jne     L15
+                             1514 
+                             1515 ; 260  |                else
+                             1516 ; 261  |        {
+                             1517 ; 262  |            // Media is Type 2
+                             1518 ; 263  |            pNANDDeviceMap = Type2DescriptorIdList;
+                             1519 
+P:0060 60F400 rrrrrr  3  255 1521         move    #FType2DescriptorIdList,r0
+                             1522 
+                             1523 ; 264  |        }
+                             1524 ; 265  |
+                             1525 ; 266  |        pNandInitStruct = NandLookupID(pNANDDeviceMap);
+                             1526 
+P:0062 0BF080 rrrrrr  6  261 1528 L15:    jsr     FNandLookupID
+P:0064 077090 rrrrrr  8  269 1530         movem   r0,p:FpNandInitStruct
+                             1531 
+                             1532 ; 267  |
+                             1533 ; 268  |    }
+                             1534 ; 269  |
+                             1535 ; 270  |        return(SUCCESS);        
+                             1536 
+P:0066 200013         2  271 1538 L16:    clr     a   
+                             1539 
+                             1540 ; 271  |
+                             1541 ; 272  |}
+                             1542 
+P:0067 05FF3C         4  275 1544         movec   x:-(r7),ssh
+P:0068 000000         2  277 1547         nop
+P:0069 00000C         4  281 1548         rts
+                             1550 
+                             1551 ; 273  |
+                             1552 ; 274  |
+                             1553 ; 275  |///////////////////////////////////////////////////////////////////////////////
+                             1554 ; 276  |//> Name:        NANDHALCommon_ReadId
+                             1555 ; 277  |//
+                             1556 ; 278  |//  Type:        Function
+                             1557 ; 279  |//  Description: Read the 6-byte ID from the chip.
+                             1558 ; 280  |//  Inputs:      
+                             1559 ; 281  |//  Outputs:     Returns ERROR CODE for Error, ELSE SUCCESS
+                             1560 ; 282  |//<
+                             1561 ; 283  |/////////////////////////////////////////////////////////////////////////////////
+                             1562 ; 284  |void _reentrant NANDHALCommon_ReadId( WORD wChipNum )
+                             1563 ; 285  |{
+                             1564 
+                             1569 FNANDHALCommon_ReadId:
+P:006A 055F3C         2  283 1570         movec   ssh,x:(r7)+
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:006B 205F00         2  285 1573         move    (r7)+
+                             1577 
+                             1578 ; 286  |  g_pCurrentNandPort->pWritePortCmd( wChipNum, 0x90, 0 );
+                             1579 
+P:006C 07F095 rrrrrr  8  293 1581         movem   p:Fg_pCurrentNandPort,r5
+P:006E 000000         2  295 1582         nop
+P:006F 205D00         2  297 1583         move    (r5)+
+P:0070 07E595         6  303 1584         movem   p:(r5),r5
+P:0071 045FA0         2  305 1585         movec   m0,n7
+P:0072 000000         2  307 1586         nop
+P:0073 546F00         4  311 1587         move    a1,x:(r7+n7)
+P:0074 240000         2  313 1592         move    #0,x0
+P:0075 57F400 000090  3  316 1593         move    #>144,b
+P:0077 0BE580         4  320 1594         jsr     (r5)
+                             1597 
+                             1598 ; 287  |  g_pCurrentNandPort->pWritePortAddr(wChipNum, 0, 0, 0, 0, 0);
+                             1599 
+P:0078 07F095 rrrrrr  8  328 1601         movem   p:Fg_pCurrentNandPort,r5
+P:007A 3D0200         2  330 1602         move    #2,n5
+P:007B 000000         2  332 1603         nop
+P:007C 07ED95         8  340 1604         movem   p:(r5+n5),r5
+P:007D 20001B         2  342 1605         clr     b   
+P:007E 240000         2  344 1606         move    #0,x0
+P:007F 260000         2  346 1607         move    #0,y0
+P:0080 250000         2  348 1608         move    #0,x1
+P:0081 045FA0         2  350 1609         movec   m0,n7
+P:0082 000000         2  352 1610         nop
+P:0083 56EF00         4  356 1611         move    x:(r7+n7),a
+P:0084 270000         2  358 1614         move    #0,y1
+P:0085 0BE580         4  362 1615         jsr     (r5)
+                             1618 
+                             1619 ; 288  |  g_pCurrentNandPort->pReadPortData(wChipNum, 6, (WORD _X *)&ReadIDDecode,0);
+                             1620 
+P:0086 07F094 rrrrrr  8  370 1622         movem   p:Fg_pCurrentNandPort,r4
+P:0088 3C0300         2  372 1623         move    #3,n4
+P:0089 000000         2  374 1624         nop
+P:008A 07EC95         8  382 1625         movem   p:(r4+n4),r5
+P:008B 60F400 rrrrrr  3  385 1626         move    #FReadIDDecode,r0
+P:008D 045FA0         2  387 1627         movec   m0,n7
+P:008E 000000         2  389 1628         nop
+P:008F 56EF00         4  393 1629         move    x:(r7+n7),a
+P:0090 57F400 000006  3  396 1630         move    #>6,b
+P:0092 240000         2  398 1631         move    #0,x0
+                             1632 
+                             1633 ; 289  |}
+                             1634 
+P:0093 205700         2  400 1636         move    (r7)-
+P:0094 0BE580         4  404 1638         jsr     (r5)
+P:0095 05FF3C         4  408 1644         movec   x:-(r7),ssh
+P:0096 000000         2  410 1647         nop
+P:0097 00000C         4  414 1648         rts
+                             1650 
+                             1651 ; 290  |
+                             1652 ; 291  |
+                             1653 ; 292  |/////////////////////////////////////////////////////////////////////////////////
+                             1654 ; 293  |//> Name:        NAND_INIT_DESCRIPTOR _P * NandLookupID(WORD iDeviceCode)
+                             1655 ; 294  |//
+                             1656 ; 295  |//  Type:        Function
+                             1657 ; 296  |//  Description: Search through the NAND Types table for a match to wDeviceCode
+                             1658 ; 297  |//               and return a pointer to the matching NAND Descriptor.
+                             1659 ; 298  |//               If the Table entry has an "FF" in the high byte, ignore the
+                             1660 ; 299  |//               Manufacturer ID (match any manufacturer);  otherwise, the
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1661 ; 300  |//               whole ID must match.
+                             1662 ; 301  |//  Inputs:      WORD wDeviceCode - 0x00ddmm
+                             1663 ; 302  |//                   "dd" is the Device ID
+                             1664 ; 303  |//                   "mm" is the Manufacturer ID
+                             1665 ; 304  |//  Outputs: 
+                             1666 ; 305  |//  Notes: 
+                             1667 ; 306  |//<
+                             1668 ; 307  |/////////////////////////////////////////////////////////////////////////////////
+                             1669 ; 308  |_reentrant struct NANDDescriptorStruct _P * NandLookupID(NAND_DEVICECODE_MAP _P * _P pNAND
+                                  DevicesMap) {
+                             1670 
+                             1675 FNandLookupID:
+                             1680 
+                             1681 ; 309  |
+                             1682 ; 310  |    WORD wDeviceCode = ((WORD _X *)&ReadIDDecode)[0] & 0x00FFFF;
+                             1683 
+P:0098 55F000 rrrrrr  3  417 1685         move    x:FReadIDDecode,b1
+P:009A 46F400 00FFFF  3  420 1686         move    #$FFFF,y0
+P:009C 20005E         2  422 1687         and     y0,b
+P:009D 21A600         2  424 1688         move    b1,y0
+                             1692 
+                             1693 ; 311  |        WORD wNandIdx;
+                             1694 ; 312  |
+                             1695 ; 313  |        for( wNandIdx = 0 ; pNANDDevicesMap[wNandIdx].DeviceManufacturerCode != 0x000001 ;
+                                   wNandIdx++ )
+                             1696 
+P:009E 200013         2  426 1698         clr     a   
+P:009F 47F400 000001  3  429 1700         move    #>1,y1
+P:00A1 045815         4  433 1701         lua     (r0)+,r5
+P:00A2 0AF080 rrrrrr  6  439 1702         jmp     L19
+                             1703 
+                             1704 ; 314  |        {
+                             1705 ; 315  |        if (wDeviceCode == pNANDDevicesMap[wNandIdx].DeviceManufacturerCode)
+                             1706 
+P:00A4 218500         2  441 1708 L17:    move    a1,x1
+P:00A5 200033         2  443 1709         lsl     a
+P:00A6 218400         2  445 1712         move    a1,x0
+P:00A7 209800         2  447 1713         move    x0,n0
+P:00A8 000000         2  449 1714         nop
+P:00A9 044814         4  453 1715         lua     (r0)+n0,r4
+P:00AA 000000         2  455 1716         nop
+P:00AB 07E48F         6  461 1717         movem   p:(r4),b
+P:00AC 200051         2  463 1718         tfr     y0,a
+P:00AD 2B0000         2  465 1719         move    #0,b2
+P:00AE 2A0000         2  467 1720         move    #0,a2
+P:00AF 200005         2  469 1721         cmp     b,a
+P:00B0 0AF0A2 rrrrrr  6  475 1722         jne     L18
+                             1723 
+                             1724 ; 316  |                return (pNANDDevicesMap[wNandIdx].pNANDDescriptor);
+                             1725 
+P:00B2 209D00         2  477 1727         move    x0,n5
+P:00B3 000000         2  479 1728         nop
+P:00B4 07ED90         8  487 1729         movem   p:(r5+n5),r0
+P:00B5 00000C         4  491 1731         rts
+                             1732 L18:
+P:00B6 200061         2  493 1736         tfr     x1,a
+P:00B7 200070         2  495 1737         add     y1,a
+P:00B8 218F00         2  497 1740 L19:    move    a1,b
+P:00B9 20003B         2  499 1741         lsl     b
+P:00BA 21B800         2  501 1742         move    b1,n0
+P:00BB 000000         2  503 1743         nop
+P:00BC 044814         4  507 1744         lua     (r0)+n0,r4
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00BD 000000         2  509 1745         nop
+P:00BE 07E48F         6  515 1746         movem   p:(r4),b
+P:00BF 2B0000         2  517 1747         move    #0,b2
+P:00C0 20007D         2  519 1748         cmp     y1,b
+P:00C1 0AF0A2 rrrrrr  6  525 1749         jne     L17
+                             1750 
+                             1751 ; 317  |        }
+                             1752 ; 318  |
+                             1753 ; 319  |  return(NULL);
+                             1754 
+P:00C3 300000         2  527 1756         move    #0,r0
+                             1758 
+                             1759 ; 320  |}
+                             1760 
+P:00C4 00000C         4  531 1762         rts
+                             1765 
+                             1766 ; 321  |
+                             1767 ; 322  |
+                             1768 ; 323  |
+                             1769 ; 324  |
+                             1770 ; 325  |/////////////////////////////////////////////////////////////////////////////////
+                             1771 ; 326  |//> Name: NANDInitInterfacePort
+                             1772 ; 327  |//
+                             1773 ; 328  |//  Type: Function
+                             1774 ; 329  |//  Description: 
+                             1775 ; 330  |//  Inputs: 
+                             1776 ; 331  |//  Outputs: 1 or 0
+                             1777 ; 332  |//  Notes: 
+                             1778 ; 333  |//<
+                             1779 ; 334  |/////////////////////////////////////////////////////////////////////////////////
+                             1780 ; 335  |_reentrant WORD NANDInitInterfacePort(WORD iDeviceNum) {
+                             1781 
+                             1786 FNANDInitInterfacePort:
+P:00C5 055F3C         2  533 1787         movec   ssh,x:(r7)+
+P:00C6 205F00         2  535 1790         move    (r7)+
+P:00C7 045FA0         2  537 1794         movec   m0,n7
+P:00C8 000000         2  539 1795         nop
+P:00C9 546F00         4  543 1796         move    a1,x:(r7+n7)
+                             1799 
+                             1800 ; 336  |
+                             1801 ; 337  |     g_pCurrentNandPort->pPowerUpPads();
+                             1802 
+P:00CA 07F091 rrrrrr  8  551 1804         movem   p:Fg_pCurrentNandPort,r1
+P:00CC 390500         2  553 1805         move    #5,n1
+P:00CD 000000         2  555 1806         nop
+P:00CE 07E995         8  563 1807         movem   p:(r1+n1),r5
+P:00CF 000000         2  565 1808         nop
+P:00D0 0BE580         4  569 1809         jsr     (r5)
+                             1810 
+                             1811 ; 338  |
+                             1812 ; 339  |     if (g_pCurrentNandPort->pPortInit(iDeviceNum))    // Init the NAND Port
+                             1813 
+P:00D1 07F095 rrrrrr  8  577 1815         movem   p:Fg_pCurrentNandPort,r5
+P:00D3 000000         2  579 1816         nop
+P:00D4 07E595         6  585 1817         movem   p:(r5),r5
+P:00D5 045FA0         2  587 1818         movec   m0,n7
+P:00D6 000000         2  589 1819         nop
+P:00D7 56EF00         4  593 1820         move    x:(r7+n7),a
+P:00D8 0BE580         4  597 1821         jsr     (r5)
+P:00D9 2A0000         2  599 1825         move    #0,a2
+P:00DA 200003         2  601 1826         tst     a
+                             1827 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1828 ; 340  |       return(1);
+                             1829 
+P:00DB 56F400 000001  3  604 1831         move    #>1,a
+P:00DD 0AF0A2 rrrrrr  6  610 1832         jne     L22
+                             1833 
+                             1834 ; 341  |
+                             1835 ; 342  |     return(0);
+                             1836 
+P:00DF 200013         2  612 1838         clr     a   
+                             1839 
+                             1840 ; 343  |}
+                             1841 
+P:00E0 205700         2  614 1843 L22:    move    (r7)-
+P:00E1 05FF3C         4  618 1845         movec   x:-(r7),ssh
+P:00E2 000000         2  620 1848         nop
+P:00E3 00000C         4  624 1849         rts
+                             1851 
+                             1852 ; 344  |
+                             1853 ; 345  |     
+                             1854 ; 346  |/////////////////////////////////////////////////////////////////////////////////
+                             1855 ; 347  |//> Name: NANDTerminateInterfacePort(WORD iDeviceNum)
+                             1856 ; 348  |//
+                             1857 ; 349  |//  Type: Function
+                             1858 ; 350  |//  Description: 
+                             1859 ; 351  |//  Inputs: 
+                             1860 ; 352  |//  Outputs: 1 or 0
+                             1861 ; 353  |//  Notes: 
+                             1862 ; 354  |//<
+                             1863 ; 355  |/////////////////////////////////////////////////////////////////////////////////
+                             1864 ; 356  |_reentrant WORD NANDTerminateInterfacePort(WORD iDeviceNum) {
+                             1865 
+                             1870 FNANDTerminateInterfacePort:
+P:00E4 055F3C         2  626 1871         movec   ssh,x:(r7)+
+                             1876 
+                             1877 ; 357  |
+                             1878 ; 358  |     if (g_pCurrentNandPort->pTerminatePort(iDeviceNum))    // Terminate the NAND Port
+                             1879 
+P:00E5 07F091 rrrrrr  8  634 1881         movem   p:Fg_pCurrentNandPort,r1
+P:00E7 390700         2  636 1882         move    #7,n1
+P:00E8 000000         2  638 1883         nop
+P:00E9 07E995         8  646 1884         movem   p:(r1+n1),r5
+P:00EA 000000         2  648 1885         nop
+P:00EB 0BE580         4  652 1886         jsr     (r5)
+P:00EC 2A0000         2  654 1888         move    #0,a2
+P:00ED 200003         2  656 1889         tst     a
+                             1890 
+                             1891 ; 359  |       return(1);
+                             1892 
+P:00EE 56F400 000001  3  659 1894         move    #>1,a
+P:00F0 0AF0A2 rrrrrr  6  665 1895         jne     L24
+                             1896 
+                             1897 ; 360  |
+                             1898 ; 361  |     // NOTE: Leave the pads powered up for the next guy.
+                             1899 ; 362  |
+                             1900 ; 363  |     return(0);
+                             1901 
+P:00F2 200013         2  667 1903         clr     a   
+                             1904 
+                             1905 ; 364  |}
+                             1906 
+P:00F3 05FF3C         4  671 1908 L24:    movec   x:-(r7),ssh
+P:00F4 000000         2  673 1911         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00F5 00000C         4  677 1912         rts
+                             1914 
+                             1915 ; 365  |
+                             1916 ; 366  |
+                             1917 ; 367  |
+                             1918 ; 368  |
+                             1919 ; 369  |/////////////////////////////////////////////////////////////////////////////////
+                             1920 ; 370  |//> Name: NandReadSectorDataWrapper
+                             1921 ; 371  |//
+                             1922 ; 372  |//  Type: Function
+                             1923 ; 373  |//  Description: 
+                             1924 ; 374  |//  Inputs: 
+                             1925 ; 375  |//  Outputs: 
+                             1926 ; 376  |//  Notes: 
+                             1927 ; 377  |//<
+                             1928 ; 378  |/////////////////////////////////////////////////////////////////////////////////
+                             1929 ; 379  |_reentrant WORD NandReadSectorDataWrapper(struct NANDDescriptorStruct _P *pNANDDevice, 
+                             1930 ; 380  |                                          WORD iDeviceNum, 
+                             1931 ; 381  |                                          WORD iSectorNum, 
+                             1932 ; 382  |                                          WORD _X *pBuf) 
+                             1933 ; 383  |{
+                             1934 
+                             1939 FNandReadSectorDataWrapper:
+P:00F6 055F3C         2  679 1940         movec   ssh,x:(r7)+
+P:00F7 205F00         2  681 1943         move    (r7)+
+                             1955 
+                             1956 ; 384  |    WORD wStatus;
+                             1957 ; 385  |
+                             1958 ; 386  |    wStatus = pNANDDevice->pNandDescriptorSubStruct->pDeviceDriverFunctions->pReadSectorDa
+                                  ta(pNANDDevice, 
+                             1959 ; 387  |                                                              iDeviceNum, 
+                             1960 ; 388  |                                                              iSectorNum, 
+                             1961 ; 389  |                                                              pBuf,
+                             1962 ; 390  |                                                              READ_TYPE_DATA_AREA);
+                             1963 
+P:00F8 07E095         6  687 1965         movem   p:(r0),r5
+P:00F9 3D0200         2  689 1966         move    #2,n5
+P:00FA 000000         2  691 1967         nop
+P:00FB 07ED95         8  699 1968         movem   p:(r5+n5),r5
+P:00FC 000000         2  701 1969         nop
+P:00FD 07E595         6  707 1970         movem   p:(r5),r5
+P:00FE 045FA0         2  709 1971         movec   m0,n7
+P:00FF 000000         2  711 1972         nop
+P:0100 646F00         4  715 1973         move    r4,x:(r7+n7)
+P:0101 44F400 000001  3  718 1978         move    #>1,x0
+P:0103 0BE580         4  722 1979         jsr     (r5)
+                             1986 
+                             1987 ; 391  |    // Check wStatus ReadSectorData return code. 
+                             1988 ; 392  |    //    Type 2 func (also used by type 4) returned SUCCESS or 1 if Type2_ReadFromPage er
+                                  rored.
+                             1989 ; 393  |    if(wStatus != SUCCESS) 
+                             1990 
+P:0104 2A0000         2  724 1992         move    #0,a2
+P:0105 200003         2  726 1993         tst     a
+P:0106 0AF0AA rrrrrr  6  732 1994         jeq     L25
+                             1995 
+                             1996 ; 394  |    {    return 1; // 1 means *pReadSectorData function failed with error return. 
+                             1997 
+P:0108 56F400 000001  3  735 1999         move    #>1,a
+P:010A 0AF080 rrrrrr  6  741 2001         jmp     L29
+                             2002 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2003 ; 395  |    }   // Previous ver ignored pReadSectorData return codes. Shall we continue to do that
+                                  ?
+                             2004 
+P:010C 045FA0         2  743 2006 L25:    movec   m0,n7
+P:010D 000000         2  745 2007         nop
+P:010E 60EF00         4  749 2008         move    x:(r7+n7),r0
+                             2011 
+                             2012 ; 396  |
+                             2013 ; 397  |    // May26 2004: Insert CRC/ECC correction:   For all nand types. 
+                             2014 ; 398  |    // Convert ram version of Redundant Area data to std RAM form. 
+                             2015 ; 399  |    NANDRA_ToStandardForm(pBuf, TRUE); // bWholeSector is TRUE. This always returns SUCCES
+                                  S.
+                             2016 
+P:010F 56F400 000001  3  752 2018         move    #>1,a
+P:0111 0BF080 rrrrrr  6  758 2019         jsr     FNANDRA_ToStandardForm
+                             2022 
+                             2023 ; 400  |
+                             2024 ; 401  |    //  Check & correct CRC if needed.
+                             2025 ; 402  |    //  NANDRA_CRCCorrect() returns SUCCESS, if no correction needed.
+                             2026 ; 403  |    //                  something else ??, if successfully corrected
+                             2027 ; 404  |    //                  something else ??, if correction failed
+                             2028 ; 405  |    if( (wStatus = NANDHalCorrectECC_4Bit(pBuf)) != SUCCESS)
+                             2029 
+P:0113 045FA0         2  760 2031         movec   m0,n7
+P:0114 000000         2  762 2032         nop
+P:0115 60EF00         4  766 2033         move    x:(r7+n7),r0
+P:0116 0BF080 rrrrrr  6  772 2034         jsr     FNANDHalCorrectECC_4Bit
+P:0118 2A0000         2  774 2039         move    #0,a2
+P:0119 200003         2  776 2040         tst     a
+P:011A 0AF0AA rrrrrr  6  782 2041         jeq     L27
+                             2042 
+                             2043 ; 406  |    {   if(wStatus == NANDHAL_ECC_FIX_FAILED) // If correction was needed but failed
+                             2044 
+P:011C 45F400 00051A  3  785 2046         move    #1306,x1
+P:011E 200065         2  787 2047         cmp     x1,a
+P:011F 0AF0A2 rrrrrr  6  793 2048         jne     L27
+                             2049 
+                             2050 ; 407  |           return(2); // announce "correction was needed but failed"
+                             2051 
+P:0121 56F400 000002  3  796 2053         move    #>2,a
+P:0123 0AF080 rrrrrr  6  802 2055         jmp     L29
+                             2056 
+                             2057 ; 408  |    }
+                             2058 ; 409  |
+                             2059 ; 410  |    // Data is good so convert RA back to NAND form as expected by bootmanager.
+                             2060 ; 411  |    // Check & correct ECC. No need to convert RA back to nand form
+                             2061 ; 412  |//    NANDRA_ToNANDForm(pBuf, TRUE); // bWholeSector is TRUE. This always returns SUCCESS.
+                                  
+                             2062 ; 413  |
+                             2063 ; 414  |    
+                             2064 ; 415  |    return SUCCESS;
+                             2065 
+P:0125 200013         2  804 2067 L27:    clr     a   
+                             2068 
+                             2069 ; 416  |}
+                             2070 
+P:0126 205700         2  806 2072 L29:    move    (r7)-
+P:0127 05FF3C         4  810 2074         movec   x:-(r7),ssh
+P:0128 000000         2  812 2077         nop
+P:0129 00000C         4  816 2078         rts
+                             2080 
+                             2081 ; 417  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2082 ; 418  |
+                             2083 ; 419  |/////////////////////////////////////////////////////////////////////////////////
+                             2084 ; 420  |//> Name: NandReadSectorRedundantWrapper
+                             2085 ; 421  |//
+                             2086 ; 422  |//  Type: Function
+                             2087 ; 423  |//  Description: 
+                             2088 ; 424  |//  Inputs: 
+                             2089 ; 425  |//  Outputs: 
+                             2090 ; 426  |//  Notes: 
+                             2091 ; 427  |//<
+                             2092 ; 428  |/////////////////////////////////////////////////////////////////////////////////
+                             2093 ; 429  |_reentrant WORD NandReadSectorRedundantWrapper(struct NANDDescriptorStruct _P *pNANDDevice
+                                  , 
+                             2094 ; 430  |                                       WORD iDeviceNum, WORD iSectorNum, WORD _X *pBuf) 
+                             2095 ; 431  |{
+                             2096 
+                             2101 FNandReadSectorRedundantWrapper:
+                             2110 
+                             2111 ; 432  |    return SUCCESS; // No uncorrectable errors occurred during the RA read
+                             2112 
+P:012A 200013         2  818 2114         clr     a   
+                             2116 
+                             2117 ; 433  |    
+                             2118 ; 434  |}
+                             2119 
+P:012B 00000C         4  822 2121         rts
+                             2126 
+                             2127 ; 435  |
+                             2128 ; 436  |
+                             2129 ; 437  |/////////////////////////////////////////////////////////////////////////////////
+                             2130 ; 438  |//> Name: CommonWaitThenRead
+                             2131 ; 439  |//
+                             2132 ; 440  |//  Type: Function
+                             2133 ; 441  |//  Description: 
+                             2134 ; 442  |//  Inputs: 
+                             2135 ; 443  |//  Outputs: 1 or SUCCESS
+                             2136 ; 444  |//  Notes:
+                             2137 ; 445  |//              Both types of reads require a wait for ready then read.
+                             2138 ; 446  |//<
+                             2139 ; 447  |/////////////////////////////////////////////////////////////////////////////////
+                             2140 ; 448  |_reentrant WORD CommonWaitThenRead(struct NANDDescriptorStruct _P *pNANDDevice, 
+                             2141 ; 449  |                                  WORD iDeviceNum, WORD iSize, WORD _X *pBuf)
+                             2142 ; 450  |{
+                             2143 
+                             2148 FCommonWaitThenRead:
+P:012C 055F3C         2  824 2149         movec   ssh,x:(r7)+
+P:012D 3F0300         2  826 2152         move    #3,n7
+P:012E 000000         2  828 2153         nop
+P:012F 204F00         2  830 2154         move    (r7)+n7
+P:0130 045FA0         2  832 2164         movec   m0,n7
+P:0131 000000         2  834 2165         nop
+P:0132 646F00         4  838 2166         move    r4,x:(r7+n7)
+P:0133 77F400 FFFFFE  3  841 2169         move    #-2,n7
+P:0135 000000         2  843 2170         nop
+P:0136 556F00         4  847 2171         move    b1,x:(r7+n7)
+                             2174 
+                             2175 ; 451  |  // Wait for READY line to come HIGH
+                             2176 ; 452  |  // Read could be whole page or just 
+                             2177 ; 453  |  // Redundant Area.  Use the longer timeout.
+                             2178 ; 454  |
+                             2179 ; 455  |  if(g_pCurrentNandPort->pWaitForReadyPort(iDeviceNum, NAND_READ_PAGE_TIMEOUT))
+                             2180 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  31
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0137 07F091 rrrrrr  8  855 2182         movem   p:Fg_pCurrentNandPort,r1
+P:0139 390400         2  857 2183         move    #4,n1
+P:013A 000000         2  859 2184         nop
+P:013B 07E995         8  867 2185         movem   p:(r1+n1),r5
+P:013C 77F400 FFFFFD  3  870 2186         move    #-3,n7
+P:013E 000000         2  872 2187         nop
+P:013F 546F00         4  876 2188         move    a1,x:(r7+n7)
+P:0140 57F400 1E8480  3  879 2193         move    #2000000,b
+P:0142 0BE580         4  883 2194         jsr     (r5)
+P:0143 2A0000         2  885 2198         move    #0,a2
+P:0144 200003         2  887 2199         tst     a
+P:0145 0AF0A2 rrrrrr  6  893 2200         jne     L34
+                             2201 
+                             2202 ; 456  |    return(1);
+                             2203 ; 457  |
+                             2204 ; 458  |   // Read in the bytes
+                             2205 ; 459  |  if(g_pCurrentNandPort->pReadPortData(iDeviceNum, iSize, pBuf, (CurrentNANDBusWidth==16))
+                                  )
+                             2206 
+P:0147 07F090 rrrrrr  8  901 2208         movem   p:Fg_pCurrentNandPort,r0
+P:0149 380300         2  903 2209         move    #3,n0
+P:014A 000000         2  905 2210         nop
+P:014B 07E895         8  913 2211         movem   p:(r0+n0),r5
+P:014C 57F000 rrrrrr  3  916 2212         move    x:FCurrentNANDBusWidth,b
+P:014E 45F400 000010  3  919 2213         move    #>16,x1
+P:0150 2B0000         2  921 2214         move    #0,b2
+P:0151 20006D         2  923 2215         cmp     x1,b
+P:0152 240000         2  925 2216         move    #0,x0
+P:0153 0AF0A2 rrrrrr  6  931 2217         jne     L37
+P:0155 0AC460         4  935 2218         bset    #0,x0
+P:0156 045FA0         2  937 2219 L37:    movec   m0,n7
+P:0157 000000         2  939 2220         nop
+P:0158 60EF00         4  943 2221         move    x:(r7+n7),r0
+P:0159 77F400 FFFFFE  3  946 2222         move    #-2,n7
+P:015B 000000         2  948 2223         nop
+P:015C 57EF00         4  952 2224         move    x:(r7+n7),b
+P:015D 77F400 FFFFFD  3  955 2225         move    #-3,n7
+P:015F 000000         2  957 2226         nop
+P:0160 56EF00         4  961 2227         move    x:(r7+n7),a
+P:0161 0BE580         4  965 2228         jsr     (r5)
+P:0162 2A0000         2  967 2238         move    #0,a2
+P:0163 200003         2  969 2239         tst     a
+P:0164 0AF0AA rrrrrr  6  975 2240         jeq     L35
+                             2241 
+                             2242 ; 460  |    return(1);
+                             2243 
+P:0166 56F400 000001  3  978 2245 L34:    move    #>1,a
+P:0168 0AF080 rrrrrr  6  984 2246         jmp     L36
+                             2247 
+                             2248 ; 461  |
+                             2249 ; 462  |  return SUCCESS;
+                             2250 
+P:016A 200013         2  986 2252 L35:    clr     a   
+                             2253 
+                             2254 ; 463  |}
+                             2255 
+P:016B 77F400 FFFFFC  3  989 2257 L36:    move    #-4,n7
+P:016D 000000         2  991 2258         nop
+P:016E 05EF3C         4  995 2259         movec   x:(r7+n7),ssh
+P:016F 204F00         2  997 2261         move    (r7)+n7
+P:0170 00000C         4 1001 2263         rts
+                             2265 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  32
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2266 ; 464  |
+                             2267 ; 465  |
+                             2268 ; 466  |
+                             2269 ; 467  |#ifdef INCLUDE_TYPE2_NAND
+                             2270 ; 468  |/////////////////////////////////////////////////////////////////////////////////
+                             2271 ; 469  |//> Name: Type2_ReadSectorData
+                             2272 ; 470  |//
+                             2273 ; 471  |//  Type: Function
+                             2274 ; 472  |//  Description: 
+                             2275 ; 473  |//  Inputs: 
+                             2276 ; 474  |//  Outputs: 1 or SUCCESS
+                             2277 ; 475  |//  Notes: 
+                             2278 ; 476  |//              To reduce code size for EEPROM build we combined Type2_ReadSectorData()
+                             2279 ; 477  |//              and Type2_ReadSectorRedundant(). INCLUDE_TYPE2_NAND must be defined.
+                             2280 ; 478  |//<
+                             2281 ; 479  |/////////////////////////////////////////////////////////////////////////////////
+                             2282 ; 480  |_reentrant WORD Type2_ReadSectorData(struct NANDDescriptorStruct _P *pNANDDesc, 
+                             2283 ; 481  |                                            WORD iDeviceNum, 
+                             2284 ; 482  |                                            WORD iSectorNum,
+                             2285 ; 483  |                                     WORD _X *pBuf, BYTE bType)
+                             2286 ; 484  |{
+                             2287 
+                             2292 FType2_ReadSectorData:
+P:0171 055F3C         2 1003 2293         movec   ssh,x:(r7)+
+P:0172 3F0A00         2 1005 2296         move    #10,n7
+P:0173 000000         2 1007 2297         nop
+P:0174 204F00         2 1009 2298         move    (r7)+n7
+                             2320 
+                             2321 ; 485  |
+                             2322 ; 486  |        WORD iCol;
+                             2323 ; 487  |        WORD iPageNum;
+                             2324 ; 488  |        INT iByteOffset;
+                             2325 ; 489  |        INT iSize;
+                             2326 ; 490  |    BOOL sendSecondReadCmd;
+                             2327 
+P:0175 77F400 FFFFF7  3 1012 2329         move    #-9,n7
+P:0177 000000         2 1014 2330         nop
+P:0178 546F00         4 1018 2331         move    a1,x:(r7+n7)
+P:0179 77F400 FFFFF8  3 1021 2334         move    #-8,n7
+P:017B 000000         2 1023 2335         nop
+P:017C 556F00         4 1027 2336         move    b1,x:(r7+n7)
+                             2339 
+                             2340 ; 491  |
+                             2341 ; 492  |
+                             2342 ; 493  |                iByteOffset = 0;
+                             2343 ; 494  |                iSize = pNANDDesc->pNandDescriptorSubStruct->pPageDescriptor->iSectorTotal
+                                  Size; 
+                             2344 
+P:017D 07E093         6 1033 2346         movem   p:(r0),r3
+P:017E 000000         2 1035 2347         nop
+P:017F 07E395         6 1041 2348         movem   p:(r3),r5
+P:0180 000000         2 1043 2349         nop
+P:0181 07E586         6 1049 2350         movem   p:(r5),y0
+P:0182 20C400         2 1051 2351         move    y0,x0
+                             2353 
+                             2354 ; 495  |
+                             2355 ; 496  |    switch ( pNANDDesc->pNandDescriptorSubStruct->NandType )
+                             2356 
+P:0183 3A0500         2 1053 2358         move    #5,n2
+P:0184 227200         2 1055 2359         move    r3,r2
+P:0185 000000         2 1057 2360         nop
+P:0186 204A00         2 1059 2361         move    (r2)+n2
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  33
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0187 07E28F         6 1065 2362         movem   p:(r2),b
+P:0188 56F400 000001  3 1068 2363         move    #>1,a
+P:018A 2B0000         2 1070 2364         move    #0,b2
+P:018B 20000D         2 1072 2365         cmp     a,b
+P:018C 0AF0A2 rrrrrr  6 1078 2366         jne     L69
+                             2367 
+                             2368 ; 497  |    {
+                             2369 ; 498  |    case TYPE1_NAND:
+                             2370 ; 499  |        iPageNum = iSectorNum;
+                             2371 
+P:018E 47EF00         4 1082 2373         move    x:(r7+n7),y1
+                             2377 
+                             2378 ; 500  |        iCol = 0;
+                             2379 
+P:018F 260000         2 1084 2381         move    #0,y0
+                             2384 
+                             2385 ; 501  |        sendSecondReadCmd = 0;
+                             2386 ; 502  |        break;
+                             2387 
+P:0190 0AF080 rrrrrr  6 1090 2389         jmp     L73
+                             2390 
+                             2391 ; 503  |
+                             2392 ; 504  |    default:
+                             2393 ; 505  |    case TYPE2_NAND:
+                             2394 ; 506  |    case TYPE4_NAND:
+                             2395 ; 507  |    case TYPE5_NAND:
+                             2396 ; 508  |        if ( pNANDDesc->pNandDescriptorSubStruct->pPageDescriptor->iSectorToPageShift == 0
+                                   )
+                             2397 
+                             2399 L69:
+P:0192 3D0300         2 1092 2403         move    #3,n5
+P:0193 000000         2 1094 2404         nop
+P:0194 044D12         4 1098 2405         lua     (r5)+n5,r2
+P:0195 000000         2 1100 2406         nop
+P:0196 07E28E         6 1106 2407         movem   p:(r2),a
+P:0197 2A0000         2 1108 2408         move    #0,a2
+P:0198 200003         2 1110 2409         tst     a
+P:0199 0AF0A2 rrrrrr  6 1116 2410         jne     L70
+                             2411 
+                             2412 ; 509  |            iPageNum = iSectorNum;
+                             2413 
+P:019B 47EF00         4 1120 2415         move    x:(r7+n7),y1
+P:019C 0AF080 rrrrrr  6 1126 2416         jmp     L71
+                             2417 
+                             2418 ; 510  |        else
+                             2419 ; 511  |    iPageNum = iSectorNum >> pNANDDesc->pNandDescriptorSubStruct->pPageDescriptor->iSector
+                                  ToPageShift;
+                             2420 
+P:019E 55EF00         4 1130 2422 L70:    move    x:(r7+n7),b1
+P:019F 200003         2 1132 2423         tst     a
+P:01A0 0AF0AA rrrrrr  6 1138 2424         jeq     L80
+P:01A2 06CC00 rrrrrr  6 1144 2425         do      a1,L80
+P:01A4 20002B         2 1146 2427         lsr     b
+P:01A5 000000         2 1148 2428         nop
+                         (4) 2429 L80:
+P:01A6 21A700         2 1150 2431         move    b1,y1
+                             2432 
+                             2433 ; 512  |
+                             2434 ; 513  |  iCol = (iSectorNum & pNANDDesc->pNandDescriptorSubStruct->pPageDescriptor->iSectorInPage
+                                  Mask) *
+                             2435 ; 514  |    pNANDDesc->pNandDescriptorSubStruct->pPageDescriptor->iSectorTotalSize + iByteOffset;
+                             2436 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  34
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01A7 3D0400         2 1152 2438 L71:    move    #4,n5
+P:01A8 000000         2 1154 2439         nop
+P:01A9 204D00         2 1156 2440         move    (r5)+n5
+P:01AA 07E585         6 1162 2441         movem   p:(r5),x1
+P:01AB 77F400 FFFFF8  3 1165 2442         move    #-8,n7
+P:01AD 000000         2 1167 2443         nop
+P:01AE 56EF00         4 1171 2444         move    x:(r7+n7),a
+P:01AF 200066         2 1173 2445         and     x1,a
+P:01B0 218500         2 1175 2449         move    a1,x1
+P:01B1 2000E8         2 1177 2450         mpy     x1,y0,b
+P:01B2 20002A         2 1179 2451         asr     b
+P:01B3 212D00         2 1181 2453         move    b0,b1
+P:01B4 21A600         2 1183 2454         move    b1,y0
+                             2456 
+                             2457 ; 515  |
+                             2458 ; 516  |        if ( CurrentNANDBusWidth == 16 )        // For 16-bit NANDs, the Column Address is
+                                   in Words
+                             2459 
+P:01B5 56F000 rrrrrr  3 1186 2461         move    x:FCurrentNANDBusWidth,a
+P:01B7 45F400 000010  3 1189 2462         move    #>16,x1
+P:01B9 2A0000         2 1191 2463         move    #0,a2
+P:01BA 200065         2 1193 2464         cmp     x1,a
+P:01BB 0AF0A2 rrrrrr  6 1199 2465         jne     L72
+                             2466 
+                             2467 ; 517  |    iCol = iCol>>1;                   // so divide by 2.
+                             2468 
+P:01BD 20002B         2 1201 2470         lsr     b
+P:01BE 21A600         2 1203 2471         move    b1,y0
+                             2472 
+                             2473 ; 518  |
+                             2474 ; 519  |        sendSecondReadCmd = 1;
+                             2475 
+P:01BF 290100         2 1205 2477 L72:    move    #1,b0
+                             2479 
+                             2480 ; 520  |        break;
+                             2481 ; 521  |    };
+                             2482 
+P:01C0 77F400 FFFFFB  3 1208 2484 L73:    move    #-5,n7
+P:01C2 000000         2 1210 2485         nop
+P:01C3 726F00         4 1214 2486         move    n2,x:(r7+n7)
+P:01C4 77F400 FFFFFE  3 1217 2487         move    #-2,n7
+P:01C6 000000         2 1219 2488         nop
+P:01C7 516F00         4 1223 2489         move    b0,x:(r7+n7)
+P:01C8 77F400 FFFFFD  3 1226 2492         move    #-3,n7
+P:01CA 000000         2 1228 2493         nop
+P:01CB 466F00         4 1232 2494         move    y0,x:(r7+n7)
+P:01CC 77F400 FFFFFC  3 1235 2497         move    #-4,n7
+P:01CE 000000         2 1237 2498         nop
+P:01CF 476F00         4 1241 2499         move    y1,x:(r7+n7)
+P:01D0 77F400 FFFFFA  3 1244 2502         move    #-6,n7
+P:01D2 000000         2 1246 2503         nop
+P:01D3 446F00         4 1250 2504         move    x0,x:(r7+n7)
+P:01D4 77F400 FFFFF9  3 1253 2507         move    #-7,n7
+P:01D6 000000         2 1255 2508         nop
+P:01D7 646F00         4 1259 2509         move    r4,x:(r7+n7)
+P:01D8 77F400 FFFFF6  3 1262 2512         move    #-10,n7
+P:01DA 000000         2 1264 2513         nop
+P:01DB 606F00         4 1268 2514         move    r0,x:(r7+n7)
+                             2517 
+                             2518 ; 522  |
+                             2519 ; 523  |    // Do FULL READ
+                             2520 ; 524  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  35
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2521 ; 525  |    if ( g_pCurrentNandPort->pWritePortCmd(iDeviceNum,
+                             2522 ; 526  |                                           pNANDDesc->pNandDescriptorSubStruct->pDeviceCom
+                                  mandCodes->iRead1Code, TRUE) )
+                             2523 
+P:01DC 07F095 rrrrrr  8 1276 2525         movem   p:Fg_pCurrentNandPort,r5
+P:01DE 000000         2 1278 2526         nop
+P:01DF 205D00         2 1280 2527         move    (r5)+
+P:01E0 07E592         6 1286 2528         movem   p:(r5),r2
+P:01E1 310300         2 1288 2529         move    #3,r1
+P:01E2 223B00         2 1290 2530         move    r1,n3
+P:01E3 045FA0         2 1292 2531         movec   m0,n7
+P:01E4 000000         2 1294 2532         nop
+P:01E5 736F00         4 1298 2533         move    n3,x:(r7+n7)
+P:01E6 07EB94         8 1306 2534         movem   p:(r3+n3),r4
+P:01E7 3C0400         2 1308 2535         move    #4,n4
+P:01E8 000000         2 1310 2536         nop
+P:01E9 044C15         4 1314 2537         lua     (r4)+n4,r5
+P:01EA 000000         2 1316 2538         nop
+P:01EB 07E58F         6 1322 2539         movem   p:(r5),b
+P:01EC 77F400 FFFFF7  3 1325 2540         move    #-9,n7
+P:01EE 000000         2 1327 2541         nop
+P:01EF 56EF00         4 1331 2542         move    x:(r7+n7),a
+P:01F0 44F400 000001  3 1334 2545         move    #>1,x0
+P:01F2 0BE280         4 1338 2547         jsr     (r2)
+P:01F3 2A0000         2 1340 2550         move    #0,a2
+P:01F4 200003         2 1342 2551         tst     a
+P:01F5 0AF0A2 rrrrrr  6 1348 2552         jne     L77
+                             2553 
+                             2554 ; 527  |      return(1);
+                             2555 ; 528  |
+                             2556 ; 529  |    if ( g_pCurrentNandPort->pWritePortAddr(iDeviceNum,
+                             2557 ; 530  |                                      pNANDDesc->pNandDescriptorSubStruct->pDeviceAddressi
+                                  ng->iNumColumnBytes, iCol,
+                             2558 ; 531  |                                            pNANDDesc->pNandDescriptorSubStruct->pDeviceAd
+                                  dressing->iNumRowBytes, iPageNum, (0 != sendSecondReadCmd)) )
+                             2559 
+P:01F7 07F093 rrrrrr  8 1356 2561         movem   p:Fg_pCurrentNandPort,r3
+P:01F9 3B0200         2 1358 2562         move    #2,n3
+P:01FA 000000         2 1360 2563         nop
+P:01FB 044B15         4 1364 2564         lua     (r3)+n3,r5
+P:01FC 000000         2 1366 2565         nop
+P:01FD 07E594         6 1372 2566         movem   p:(r5),r4
+P:01FE 77F400 FFFFF6  3 1375 2567         move    #-10,n7
+P:0200 000000         2 1377 2568         nop
+P:0201 65EF00         4 1381 2569         move    x:(r7+n7),r5
+P:0202 000000         2 1383 2570         nop
+P:0203 07E592         6 1389 2571         movem   p:(r5),r2
+P:0204 3A0400         2 1391 2572         move    #4,n2
+P:0205 000000         2 1393 2573         nop
+P:0206 07EA95         8 1401 2574         movem   p:(r2+n2),r5
+P:0207 000000         2 1403 2575         nop
+P:0208 07DD8F         6 1409 2576         movem   p:(r5)+,b
+P:0209 07E586         6 1415 2577         movem   p:(r5),y0
+P:020A 77F400 FFFFFE  3 1418 2578         move    #-2,n7
+P:020C 000000         2 1420 2579         nop
+P:020D 56EF00         4 1424 2580         move    x:(r7+n7),a
+P:020E 2A0000         2 1426 2581         move    #0,a2
+P:020F 200003         2 1428 2582         tst     a
+P:0210 270000         2 1430 2583         move    #0,y1
+P:0211 0AF0AA rrrrrr  6 1436 2584         jeq     L81
+P:0213 0AC760         4 1440 2585         bset    #0,y1
+P:0214 77F400 FFFFF7  3 1443 2586 L81:    move    #-9,n7
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  36
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0216 000000         2 1445 2587         nop
+P:0217 56EF00         4 1449 2588         move    x:(r7+n7),a
+P:0218 77F400 FFFFFD  3 1452 2591         move    #-3,n7
+P:021A 000000         2 1454 2592         nop
+P:021B 44EF00         4 1458 2593         move    x:(r7+n7),x0
+P:021C 77F400 FFFFFC  3 1461 2594         move    #-4,n7
+P:021E 000000         2 1463 2595         nop
+P:021F 45EF00         4 1467 2596         move    x:(r7+n7),x1
+P:0220 0BE480         4 1471 2597         jsr     (r4)
+P:0221 2A0000         2 1473 2606         move    #0,a2
+P:0222 200003         2 1475 2607         tst     a
+P:0223 0AF0A2 rrrrrr  6 1481 2608         jne     L77
+                             2609 
+                             2610 ; 532  |      return(1);
+                             2611 ; 533  |
+                             2612 ; 534  |    if ( 0 != sendSecondReadCmd )
+                             2613 
+P:0225 77F400 FFFFFE  3 1484 2615         move    #-2,n7
+P:0227 000000         2 1486 2616         nop
+P:0228 57EF00         4 1490 2617         move    x:(r7+n7),b
+P:0229 2B0000         2 1492 2618         move    #0,b2
+P:022A 20000B         2 1494 2619         tst     b
+P:022B 0AF0AA rrrrrr  6 1500 2622         jeq     L74
+                             2623 
+                             2624 ; 535  |    {
+                             2625 ; 536  |        if ( g_pCurrentNandPort->pWritePortCmd(iDeviceNum, pNANDDesc->pNandDescriptorSubSt
+                                  ruct->pDeviceCommandCodes->iRead1_2ndCycleCode, TRUE) )
+                             2626 
+P:022D 07F095 rrrrrr  8 1508 2628         movem   p:Fg_pCurrentNandPort,r5
+P:022F 000000         2 1510 2629         nop
+P:0230 045D13         4 1514 2630         lua     (r5)+,r3
+P:0231 000000         2 1516 2631         nop
+P:0232 07E393         6 1522 2632         movem   p:(r3),r3
+P:0233 77F400 FFFFF6  3 1525 2633         move    #-10,n7
+P:0235 000000         2 1527 2634         nop
+P:0236 65EF00         4 1531 2635         move    x:(r7+n7),r5
+P:0237 000000         2 1533 2636         nop
+P:0238 07E595         6 1539 2637         movem   p:(r5),r5
+P:0239 045FA0         2 1541 2638         movec   m0,n7
+P:023A 000000         2 1543 2639         nop
+P:023B 75EF00         4 1547 2640         move    x:(r7+n7),n5
+P:023C 000000         2 1549 2641         nop
+P:023D 07ED94         8 1557 2642         movem   p:(r5+n5),r4
+P:023E 77F400 FFFFFB  3 1560 2643         move    #-5,n7
+P:0240 000000         2 1562 2644         nop
+P:0241 74EF00         4 1566 2645         move    x:(r7+n7),n4
+P:0242 000000         2 1568 2646         nop
+P:0243 044C15         4 1572 2647         lua     (r4)+n4,r5
+P:0244 000000         2 1574 2648         nop
+P:0245 07E58F         6 1580 2649         movem   p:(r5),b
+P:0246 77F400 FFFFF7  3 1583 2651         move    #-9,n7
+P:0248 000000         2 1585 2652         nop
+P:0249 56EF00         4 1589 2653         move    x:(r7+n7),a
+P:024A 44F400 000001  3 1592 2656         move    #>1,x0
+P:024C 0BE380         4 1596 2657         jsr     (r3)
+P:024D 2A0000         2 1598 2660         move    #0,a2
+P:024E 200003         2 1600 2661         tst     a
+P:024F 0AF0A2 rrrrrr  6 1606 2662         jne     L77
+                             2663 
+                             2664 ; 537  |            return(1);
+                             2665 ; 538  |    }
+                             2666 ; 539  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  37
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2667 ; 540  |    // Wait for READY line to come HIGH
+                             2668 ; 541  |    if ( CommonWaitThenRead(pNANDDesc, iDeviceNum, iSize, pBuf) )
+                             2669 
+P:0251 77F400 FFFFFA  3 1609 2671 L74:    move    #-6,n7
+P:0253 000000         2 1611 2672         nop
+P:0254 57EF00         4 1615 2673         move    x:(r7+n7),b
+P:0255 77F400 FFFFF9  3 1618 2677         move    #-7,n7
+P:0257 000000         2 1620 2678         nop
+P:0258 64EF00         4 1624 2679         move    x:(r7+n7),r4
+P:0259 77F400 FFFFF7  3 1627 2680         move    #-9,n7
+P:025B 000000         2 1629 2681         nop
+P:025C 56EF00         4 1633 2682         move    x:(r7+n7),a
+P:025D 77F400 FFFFF6  3 1636 2683         move    #-10,n7
+P:025F 000000         2 1638 2684         nop
+P:0260 60EF00         4 1642 2685         move    x:(r7+n7),r0
+P:0261 0BF080 rrrrrr  6 1648 2686         jsr     FCommonWaitThenRead
+P:0263 2A0000         2 1650 2696         move    #0,a2
+P:0264 200003         2 1652 2697         tst     a
+P:0265 0AF0AA rrrrrr  6 1658 2698         jeq     L78
+                             2699 
+                             2700 ; 542  |        return(1);
+                             2701 
+P:0267 56F400 000001  3 1661 2703 L77:    move    #>1,a
+P:0269 0AF080 rrrrrr  6 1667 2704         jmp     L79
+                             2705 
+                             2706 ; 543  |
+                             2707 ; 544  |  return(0);  // Success
+                             2708 
+P:026B 200013         2 1669 2710 L78:    clr     a   
+                             2711 
+                             2712 ; 545  |}
+                             2713 
+P:026C 77F400 FFFFF5  3 1672 2715 L79:    move    #-11,n7
+P:026E 000000         2 1674 2716         nop
+P:026F 05EF3C         4 1678 2717         movec   x:(r7+n7),ssh
+P:0270 204F00         2 1680 2719         move    (r7)+n7
+P:0271 00000C         4 1684 2721         rts
+                             2723 
+                             2724 ; 546  |
+                             2725 ; 547  |#endif // #ifdef INCLUDE_TYPE2_NAND
+                             2726 ; 548  |
+                             2727 ; 549  |
+                             2728 ; 550  |
+                             2729 ; 551  |
+                             2730 ; 552  |/////////////////////////////////////////////////////////////////////////////////
+                             2731 ; 553  |//> Name: ResetNand
+                             2732 ; 554  |//
+                             2733 ; 555  |//  Type: Function
+                             2734 ; 556  |//  Description:        Send a RESET command to the specified NAND.
+                             2735 ; 557  |//  Inputs: 
+                             2736 ; 558  |//  Outputs: 
+                             2737 ; 559  |//  Notes:                      This covers all NAND types, so far.
+                             2738 ; 560  |//<
+                             2739 ; 561  |/////////////////////////////////////////////////////////////////////////////////
+                             2740 ; 562  |_reentrant WORD ResetNand(struct NANDDescriptorStruct _P *pNANDDevice, WORD iDeviceNum) {
+                             2741 
+                             2746 FResetNand:
+P:0272 055F3C         2 1686 2747         movec   ssh,x:(r7)+
+P:0273 205F00         2 1688 2750         move    (r7)+
+                             2756 
+                             2757 ; 563  |
+                             2758 ; 564  |                  // Send the RESET
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  38
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2759 ; 565  |  if(g_pCurrentNandPort->pWritePortCmd(iDeviceNum, pNANDDevice->pNandDescriptorSubStruct->
+                                  pDeviceCommandCodes->iResetCode, FALSE))
+                             2760 
+P:0274 07F095 rrrrrr  8 1696 2762         movem   p:Fg_pCurrentNandPort,r5
+P:0276 000000         2 1698 2763         nop
+P:0277 205D00         2 1700 2764         move    (r5)+
+P:0278 07E592         6 1706 2765         movem   p:(r5),r2
+P:0279 07E094         6 1712 2766         movem   p:(r0),r4
+P:027A 3C0300         2 1714 2767         move    #3,n4
+P:027B 000000         2 1716 2768         nop
+P:027C 07EC93         8 1724 2769         movem   p:(r4+n4),r3
+P:027D 3B0200         2 1726 2770         move    #2,n3
+P:027E 000000         2 1728 2771         nop
+P:027F 044B15         4 1732 2772         lua     (r3)+n3,r5
+P:0280 000000         2 1734 2773         nop
+P:0281 07E58F         6 1740 2774         movem   p:(r5),b
+P:0282 045FA0         2 1742 2775         movec   m0,n7
+P:0283 000000         2 1744 2776         nop
+P:0284 546F00         4 1748 2777         move    a1,x:(r7+n7)
+P:0285 240000         2 1750 2782         move    #0,x0
+P:0286 0BE280         4 1754 2783         jsr     (r2)
+P:0287 2A0000         2 1756 2787         move    #0,a2
+P:0288 200003         2 1758 2788         tst     a
+P:0289 0AF0A2 rrrrrr  6 1764 2789         jne     L86
+                             2790 
+                             2791 ; 566  |    return(1);
+                             2792 ; 567  |
+                             2793 ; 568  |
+                             2794 ; 569  |                  // Wait for the NAND to return to READY
+                             2795 ; 570  |          // TBD: This is OK for BootROM, but may need to be asynchronous in the SDK
+                             2796 ; 571  |  if(g_pCurrentNandPort->pWaitForReadyPort(iDeviceNum, NAND_RESET_TIMEOUT))
+                             2797 
+P:028B 07F092 rrrrrr  8 1772 2799         movem   p:Fg_pCurrentNandPort,r2
+P:028D 3A0400         2 1774 2800         move    #4,n2
+P:028E 000000         2 1776 2801         nop
+P:028F 07EA95         8 1784 2802         movem   p:(r2+n2),r5
+P:0290 045FA0         2 1786 2803         movec   m0,n7
+P:0291 000000         2 1788 2804         nop
+P:0292 56EF00         4 1792 2805         move    x:(r7+n7),a
+P:0293 57F400 1E8480  3 1795 2806         move    #2000000,b
+P:0295 0BE580         4 1799 2807         jsr     (r5)
+P:0296 2A0000         2 1801 2811         move    #0,a2
+P:0297 200003         2 1803 2812         tst     a
+P:0298 0AF0AA rrrrrr  6 1809 2813         jeq     L87
+                             2814 
+                             2815 ; 572  |    return(1);
+                             2816 
+P:029A 56F400 000001  3 1812 2818 L86:    move    #>1,a
+P:029C 0AF080 rrrrrr  6 1818 2819         jmp     L88
+                             2820 
+                             2821 ; 573  |
+                             2822 ; 574  |  return(0);
+                             2823 
+P:029E 200013         2 1820 2825 L87:    clr     a   
+                             2826 
+                             2827 ; 575  |}
+                             2828 
+P:029F 205700         2 1822 2830 L88:    move    (r7)-
+P:02A0 05FF3C         4 1826 2832         movec   x:-(r7),ssh
+P:02A1 000000         2 1828 2835         nop
+P:02A2 00000C         4 1832 2836         rts
+                             2838 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  39
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2839 ; 576  |
+                             2840 ; 577  |/////////////////////////////////////////////////////////////////////////////////
+                             2841 ; 578  |/////////////////////////////////////////////////////////////////////////////////
+                             2842 ; 579  |/////////////////////////////////////////////////////////////////////////////////
+                             2843 ; 580  |
+                             2844 ; 581  |
+                             2845 ; 582  |
+                             2846 ; 583  |
+                             2847 
+                             2853 
+                             2856 
+X:0000                       2857         org     x,".xbssnanddevdrvapi",bss:
+                             2858 FSectorSizeInWordsPlusOne:
+X:0000 RESERVED              2859         ds      1
+X:0000
+                             2864 
+P:0000                       2865         org     p,".pbssnanddevdrvapi",bss:
+                             2866 FpNandInitStruct:
+P:0000 RESERVED              2867         ds      1
+P:0000
+                             2871 
+X:0001                       2872         org     x,".xbssnanddevdrvapi",bss:
+                             2873 FSectorSizeInWords:
+X:0001 RESERVED              2874         ds      1
+X:0001
+                             2925 FReadIDDecode:
+X:0002                       2926         ds      2
+   |   RESERVED                   
+X:0003
+                             2935 FSectorSize:
+X:0004 RESERVED              2936         ds      1
+X:0004
+                             2943 
+                             2944         extern  x:FCurrentNANDBusWidth, FDivideByThree, FInitGPFLASHPort
+                             2945         extern  p:FLargeMLCDescriptorIdList, FNANDHalCorrectECC_4Bit
+                             2946         extern  FNANDRA_ToStandardForm, FPowerUpFlashPads
+                             2947         extern  FPowerUpFlashPads_16bit, FReadDataGPFLASH
+                             2948         extern  FTerminateGPFLASHPort, p:FType2DescriptorIdList
+                             2949         extern  p:FUniqueInitDescriptorIdList, FWaitForReadyGPFLASH
+                             2950         extern  FWriteAddrGPFLASH, FWriteCmdGPFLASH
+                             2951         extern  x:FpCurrentNANDDescriptor
+                             2952 
+                             2953         global  FCommonWaitThenRead, FDetermineNandType
+                             2954         global  FGPFLASHNandPortFunctions, FNANDHALCommon_ReadId
+                             2955         global  FNANDInitInterfacePort, FNANDTerminateInterfacePort
+                             2956         global  FNandHalInit, FNandLookupID, FNandReadSectorDataWrapper
+                             2957         global  FNandReadSectorRedundantWrapper, FReadIDDecode, FResetNand
+                             2958         global  FSectorSize, FSectorSizeInWords, FSectorSizeInWordsPlusOne
+                             2959         global  FType2_ReadSectorData, Fg_pCurrentNandPort
+                             2960         global  FpNandInitStruct
+                             2961 
+                             2962         local   L9, L10, L13, L15, L16, L17, L18, L19, L22, L24, L25, L27
+                             2963         local   L29, L34, L35, L36, L37, L69, L70, L71, L72, L73, L74, L77
+                             2964         local   L78, L79, L80, L81, L86, L87, L88
+                             2965 
+                             2966         calls   "DetermineNandType", "NANDHALCommon_ReadId", "NandLookupID"
+                             2967         calls   "NandHalInit", "DetermineNandType", "DivideByThree"
+                             2968         calls   "NandReadSectorDataWrapper", "NANDHalCorrectECC_4Bit"
+                             2969         calls   "NandReadSectorDataWrapper", "NANDRA_ToStandardForm"
+                             2970         calls   "Type2_ReadSectorData", "CommonWaitThenRead"
+                             2971 

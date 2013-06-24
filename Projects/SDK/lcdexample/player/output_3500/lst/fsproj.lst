@@ -1,0 +1,818 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc663b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;       fsproj.c:
+                               96 ; 1    |/*----------------------------------------------------------------------------
+                               97 ; 2    | SigmaTel Inc
+                               98 ; 3    | $Archive: /Fatfs/FileSystem/Fat32/Fsproj.c $              
+                               99 ; 4    | $Revision: 17 $                                       
+                              100 ; 5    | $Date: 9/13/03 12:23p $      
+                              101 ; 6    | Description: Fsproj.c
+                              102 ; 7    | Notes:
+                              103 ; 8    |----------------------------------------------------------------------------*/
+                              104 ; 9    |
+                              105 ; 10   |#include "fstypes.h"
+                              106 
+                              108 
+                              109 ; 1    |#ifndef _FS_TYPE_H_
+                              110 ; 2    |#define _FS_TYPE_H_
+                              111 ; 3    |
+                              112 ; 4    |#include   "types.h"
+                              113 
+                              115 
+                              116 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              117 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              118 ; 3    |//
+                              119 ; 4    |// Filename: types.h
+                              120 ; 5    |// Description: Standard data types
+                              121 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              122 ; 7    |
+                              123 ; 8    |#ifndef _TYPES_H
+                              124 ; 9    |#define _TYPES_H
+                              125 ; 10   |
+                              126 ; 11   |// TODO:  move this outta here!
+                              127 ; 12   |#if !defined(NOERROR)
+                              128 ; 13   |#define NOERROR 0
+                              129 ; 14   |#define SUCCESS 0
+                              130 ; 15   |#endif 
+                              131 ; 16   |#if !defined(SUCCESS)
+                              132 ; 17   |#define SUCCESS  0
+                              133 ; 18   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              134 ; 19   |#if !defined(ERROR)
+                              135 ; 20   |#define ERROR   -1
+                              136 ; 21   |#endif
+                              137 ; 22   |#if !defined(FALSE)
+                              138 ; 23   |#define FALSE 0
+                              139 ; 24   |#endif
+                              140 ; 25   |#if !defined(TRUE)
+                              141 ; 26   |#define TRUE  1
+                              142 ; 27   |#endif
+                              143 ; 28   |
+                              144 ; 29   |#if !defined(NULL)
+                              145 ; 30   |#define NULL 0
+                              146 ; 31   |#endif
+                              147 ; 32   |
+                              148 ; 33   |#define MAX_INT     0x7FFFFF
+                              149 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              150 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              151 ; 36   |#define MAX_ULONG   (-1) 
+                              152 ; 37   |
+                              153 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              154 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              155 ; 40   |
+                              156 ; 41   |
+                              157 ; 42   |#define BYTE    unsigned char       // btVarName
+                              158 ; 43   |#define CHAR    signed char         // cVarName
+                              159 ; 44   |#define USHORT  unsigned short      // usVarName
+                              160 ; 45   |#define SHORT   unsigned short      // sVarName
+                              161 ; 46   |#define WORD    unsigned int        // wVarName
+                              162 ; 47   |#define INT     signed int          // iVarName
+                              163 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              164 ; 49   |#define LONG    signed long         // lVarName
+                              165 ; 50   |#define BOOL    unsigned int        // bVarName
+                              166 ; 51   |#define FRACT   _fract              // frVarName
+                              167 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              168 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              169 ; 54   |#define FLOAT   float               // fVarName
+                              170 ; 55   |#define DBL     double              // dVarName
+                              171 ; 56   |#define ENUM    enum                // eVarName
+                              172 ; 57   |#define CMX     _complex            // cmxVarName
+                              173 ; 58   |typedef WORD UCS3;                   // 
+                              174 ; 59   |
+                              175 ; 60   |#define UINT16  unsigned short
+                              176 ; 61   |#define UINT8   unsigned char   
+                              177 ; 62   |#define UINT32  unsigned long
+                              178 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              179 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              180 ; 65   |#define WCHAR   UINT16
+                              181 ; 66   |
+                              182 ; 67   |//UINT128 is 16 bytes or 6 words
+                              183 ; 68   |typedef struct UINT128_3500 {   
+                              184 ; 69   |    int val[6];     
+                              185 ; 70   |} UINT128_3500;
+                              186 ; 71   |
+                              187 ; 72   |#define UINT128   UINT128_3500
+                              188 ; 73   |
+                              189 ; 74   |// Little endian word packed byte strings:   
+                              190 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              191 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              192 ; 77   |// Little endian word packed byte strings:   
+                              193 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              194 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              195 ; 80   |
+                              196 ; 81   |// Declare Memory Spaces To Use When Coding
+                              197 ; 82   |// A. Sector Buffers
+                              198 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              199 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              200 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              201 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              202 
+                              204 
+                              205 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              206 ; 88   |// B. Media DDI Memory
+                              207 ; 89   |#define MEDIA_DDI_MEM _Y
+                              208 ; 90   |
+                              209 ; 91   |
+                              210 ; 92   |
+                              211 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              212 ; 94   |// Examples of circular pointers:
+                              213 ; 95   |//    INT CIRC cpiVarName
+                              214 ; 96   |//    DWORD CIRC cpdwVarName
+                              215 ; 97   |
+                              216 ; 98   |#define RETCODE INT                 // rcVarName
+                              217 ; 99   |
+                              218 ; 100  |// generic bitfield structure
+                              219 ; 101  |struct Bitfield {
+                              220 ; 102  |    unsigned int B0  :1;
+                              221 ; 103  |    unsigned int B1  :1;
+                              222 ; 104  |    unsigned int B2  :1;
+                              223 ; 105  |    unsigned int B3  :1;
+                              224 ; 106  |    unsigned int B4  :1;
+                              225 ; 107  |    unsigned int B5  :1;
+                              226 ; 108  |    unsigned int B6  :1;
+                              227 ; 109  |    unsigned int B7  :1;
+                              228 ; 110  |    unsigned int B8  :1;
+                              229 ; 111  |    unsigned int B9  :1;
+                              230 ; 112  |    unsigned int B10 :1;
+                              231 ; 113  |    unsigned int B11 :1;
+                              232 ; 114  |    unsigned int B12 :1;
+                              233 ; 115  |    unsigned int B13 :1;
+                              234 ; 116  |    unsigned int B14 :1;
+                              235 ; 117  |    unsigned int B15 :1;
+                              236 ; 118  |    unsigned int B16 :1;
+                              237 ; 119  |    unsigned int B17 :1;
+                              238 ; 120  |    unsigned int B18 :1;
+                              239 ; 121  |    unsigned int B19 :1;
+                              240 ; 122  |    unsigned int B20 :1;
+                              241 ; 123  |    unsigned int B21 :1;
+                              242 ; 124  |    unsigned int B22 :1;
+                              243 ; 125  |    unsigned int B23 :1;
+                              244 ; 126  |};
+                              245 ; 127  |
+                              246 ; 128  |union BitInt {
+                              247 ; 129  |        struct Bitfield B;
+                              248 ; 130  |        int        I;
+                              249 ; 131  |};
+                              250 ; 132  |
+                              251 ; 133  |#define MAX_MSG_LENGTH 10
+                              252 ; 134  |struct CMessage
+                              253 ; 135  |{
+                              254 ; 136  |        unsigned int m_uLength;
+                              255 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              256 ; 138  |};
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              257 ; 139  |
+                              258 ; 140  |typedef struct {
+                              259 ; 141  |    WORD m_wLength;
+                              260 ; 142  |    WORD m_wMessage;
+                              261 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              262 ; 144  |} Message;
+                              263 ; 145  |
+                              264 ; 146  |struct MessageQueueDescriptor
+                              265 ; 147  |{
+                              266 ; 148  |        int *m_pBase;
+                              267 ; 149  |        int m_iModulo;
+                              268 ; 150  |        int m_iSize;
+                              269 ; 151  |        int *m_pHead;
+                              270 ; 152  |        int *m_pTail;
+                              271 ; 153  |};
+                              272 ; 154  |
+                              273 ; 155  |struct ModuleEntry
+                              274 ; 156  |{
+                              275 ; 157  |    int m_iSignaledEventMask;
+                              276 ; 158  |    int m_iWaitEventMask;
+                              277 ; 159  |    int m_iResourceOfCode;
+                              278 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              279 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              280 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              281 ; 163  |    int m_uTimeOutHigh;
+                              282 ; 164  |    int m_uTimeOutLow;
+                              283 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              284 ; 166  |};
+                              285 ; 167  |
+                              286 ; 168  |union WaitMask{
+                              287 ; 169  |    struct B{
+                              288 ; 170  |        unsigned int m_bNone     :1;
+                              289 ; 171  |        unsigned int m_bMessage  :1;
+                              290 ; 172  |        unsigned int m_bTimer    :1;
+                              291 ; 173  |        unsigned int m_bButton   :1;
+                              292 ; 174  |    } B;
+                              293 ; 175  |    int I;
+                              294 ; 176  |} ;
+                              295 ; 177  |
+                              296 ; 178  |
+                              297 ; 179  |struct Button {
+                              298 ; 180  |        WORD wButtonEvent;
+                              299 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              300 ; 182  |};
+                              301 ; 183  |
+                              302 ; 184  |struct Message {
+                              303 ; 185  |        WORD wMsgLength;
+                              304 ; 186  |        WORD wMsgCommand;
+                              305 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              306 ; 188  |};
+                              307 ; 189  |
+                              308 ; 190  |union EventTypes {
+                              309 ; 191  |        struct CMessage msg;
+                              310 ; 192  |        struct Button Button ;
+                              311 ; 193  |        struct Message Message;
+                              312 ; 194  |};
+                              313 ; 195  |
+                              314 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              315 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              316 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              317 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              318 ; 200  |
+                              319 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              320 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              321 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              322 ; 204  |
+                              323 ; 205  |#if DEBUG
+                              324 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              325 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              326 ; 208  |#else 
+                              327 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              328 ; 210  |#define DebugBuildAssert(x)    
+                              329 ; 211  |#endif
+                              330 ; 212  |
+                              331 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              332 ; 214  |//  #pragma asm
+                              333 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              334 ; 216  |//  #pragma endasm
+                              335 ; 217  |
+                              336 ; 218  |
+                              337 ; 219  |#ifdef COLOR_262K
+                              338 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              339 ; 221  |#elif defined(COLOR_65K)
+                              340 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              341 ; 223  |#else
+                              342 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              343 ; 225  |#endif
+                              344 ; 226  |    
+                              345 ; 227  |#endif // #ifndef _TYPES_H
+                              346 
+                              348 
+                              349 ; 5    |
+                              350 ; 6    |// move FSMEDIA_TABLE from devicetable.h  15Apr2005   First moved in SDK2.6.
+                              351 ; 7    |typedef struct
+                              352 ; 8    |{
+                              353 ; 9    |
+                              354 ; 10   |INT     _Y BytesPerSector;
+                              355 ; 11   |INT     _Y SectorsPerCluster;
+                              356 ; 12   |INT     _Y RsvdSectors;
+                              357 ; 13   |INT     _Y NoOfFATs;
+                              358 ; 14   |INT     _Y MaxRootDirEntries;
+                              359 ; 15   |LONG    _Y TotalSectors;
+                              360 ; 16   |LONG    _Y FATSize;
+                              361 ; 17   |LONG    _Y RootdirCluster;
+                              362 ; 18   |//INT   _Y FSInfoSector;
+                              363 ; 19   |//INT   _Y BkBootSector;
+                              364 ; 20   |LONG    _Y NextFreeCluster;
+                              365 ; 21   |LONG    _Y TotalFreeClusters;
+                              366 ; 22   |INT     _Y RootDirSectors;
+                              367 ; 23   |INT     _Y FIRSTDataSector;
+                              368 ; 24   |INT    _Y FATType;
+                              369 ; 25   |LONG   _Y TotalNoofclusters;
+                              370 ; 26   |INT    _Y ClusterMask;
+                              371 ; 27   |INT    _Y ClusterShift;
+                              372 ; 28   |INT    _Y SectorShift;
+                              373 ; 29   |INT    _Y SectorMask;
+                              374 ; 30   |INT    _Y DevicePresent;
+                              375 ; 31   |LONG   _Y FirRootdirsec;
+                              376 ; 32   |INT             _Y FSInfoSector;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              377 ; 33   |}FSMEDIA_TABLE;
+                              378 ; 34   |
+                              379 ; 35   |
+                              380 ; 36   |#define         MAXDEVICES              2
+                              381 ; 37   |//#define       NUMCACHES               8  // this is already in fsproj.h (2 for player 2 
+                                  for mtp as of 28jun2005) TOVERIFY 2 ok for player and mtp. 
+                              382 ; 38   |
+                              383 ; 39   |// NOTE:  This offset is the same no matter what the sector actual size!  
+                              384 ; 40   |//        TOVERIFY 3.0 doesn't have this defined but uses it in filesystempresent.c. lbmlc
+                                   def'd it here so I insert it here.
+                              385 ; 41   |#define         FATFS_SIGNATURE_OFFSET  510
+                              386 ; 42   |#define         BOOTSECTOR              0
+                              387 ; 43   |#define     FSINFOSECTOR        1
+                              388 ; 44   |
+                              389 ; 45   |#define     READ_MODE           1
+                              390 ; 46   |#define     WRITE_MODE          2
+                              391 ; 47   |#define     APPEND_MODE         4
+                              392 ; 48   |#define     SEQ_WRITE_MODE      8
+                              393 ; 49   |#define     DIRECTORY_MODE         16
+                              394 ; 50   |#define     CREATE_MODE        32
+                              395 ; 51   |
+                              396 ; 52   |#define     RPLUS               5
+                              397 ; 53   |#define     WPLUS                   6
+                              398 ; 54   |#define     APLUS               7
+                              399 ; 55   |
+                              400 ; 56   |
+                              401 ; 57   |
+                              402 ; 58   |#define     X_MEMORY            0
+                              403 ; 59   |#define     Y_MEMORY            2
+                              404 ; 60   |#define     P_MEMORY            4
+                              405 ; 61   |
+                              406 ; 62   |#define     FAT12               0 
+                              407 ; 63   |#define     FAT16               1   
+                              408 ; 64   |#define     FAT32               2 
+                              409 ; 65   |
+                              410 ; 66   |
+                              411 ; 67   |#define FAT12EOF            0x0FFF
+                              412 ; 68   |#define FAT16EOF            0xFFFF
+                              413 ; 69   |#define FAT32EOF            0x0FFFFFFF
+                              414 ; 70   |
+                              415 ; 71   |
+                              416 ; 72   |
+                              417 ; 73   |#define FAT12FREECX         0x000
+                              418 ; 74   |#define FAT16FREECX         0x0000
+                              419 ; 75   |#define FAT32FREECX         0x00000000
+                              420 ; 76   |
+                              421 ; 77   |
+                              422 ; 78   |#define  DBCS               1
+                              423 ; 79   |#define  UNICODE            2
+                              424 ; 80   |
+                              425 ; 81   |
+                              426 ; 82   |#define     CREATION_DATE       1
+                              427 ; 83   |#define     CREATION_TIME       2
+                              428 ; 84   |#define     MODIFICATION_DATE   3
+                              429 ; 85   |#define     MODIFICATION_TIME   4
+                              430 ; 86   |
+                              431 ; 87   |
+                              432 ; 88   |#define     READ_ONLY      0X01
+                              433 ; 89   |#define     HIDDEN         0X02
+                              434 ; 90   |#define     SYSTEM         0X04
+                              435 ; 91   |#define     VOLUME_ID      0X08
+                              436 ; 92   |#define     DIRECTORY      0X10
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              437 ; 93   |#define     ARCHIVE        0X20
+                              438 ; 94   |
+                              439 ; 95   |#define READCOUNTER         105
+                              440 ; 96   |#define WRITECOUNTER        100
+                              441 ; 97   |#define FLUSHCOUNTER        200
+                              442 ; 98   |
+                              443 ; 99   |
+                              444 ; 100  |#define DEFAULT_MEMORY      Y_MEMORY
+                              445 ; 101  |
+                              446 ; 102  |#define  CWD_HANDLE           0
+                              447 ; 103  |#define  DIRECTORY_HANDLE     1
+                              448 ; 104  |#define  FIRST_VALID_HANDLE   2
+                              449 ; 105  |#define  END_OF_DIR_PATH      3
+                              450 ; 106  |
+                              451 ; 107  |//Constants for Sector read and write (Normal and FAT 
+                              452 ; 108  |#define         NORMALTYPE              0
+                              453 ; 109  |#define         FATTYPE                 1
+                              454 ; 110  |#define     RAWTYPE         2
+                              455 ; 111  |
+                              456 ; 112  |#define  SHORTNAMERES_CH      6
+                              457 ; 113  |#define  LONGNAMERES_CH       9
+                              458 ; 114  |#define  MAXFILENAME_CH       260
+                              459 ; 115  |
+                              460 ; 116  |#define VOLUME_TYPE          0
+                              461 ; 117  |#define DIR_TYPE             1
+                              462 ; 118  |#define FILE_TYPE            2
+                              463 ; 119  |                                           
+                              464 ; 120  |#define WRITE_TYPE_RANDOM               0
+                              465 ; 121  |#define WRITE_TYPE_SEQ_FIRST    1
+                              466 ; 122  |#define WRITE_TYPE_SEQ_NEXT             2
+                              467 ; 123  |#define WRITE_TYPE_NOREADBACK   3
+                              468 ; 124  |                  
+                              469 ; 125  |
+                              470 ; 126  |#define     HANDLEENTRYSIZE         19
+                              471 ; 127  |
+                              472 ; 128  |// DEVICERECORDSIZE is now only defined in cachedef.h so deleted from here in first 3.1 pr
+                                  elim 
+                              473 ; 129  |
+                              474 ; 130  |#define     CACHEDESCRSIZE          8
+                              475 ; 131  |#define     CACHEBUFSIZE            705
+                              476 ; 132  |
+                              477 ; 133  |#define     UCS2s                     0
+                              478 ; 134  |#define     UCS3s                     1
+                              479 ; 135  |
+                              480 ; 136  |#define     FAT32FSIFREECOUNTSIZE       4
+                              481 ; 137  |
+                              482 ; 138  |#endif // _FS_TYPE_H_
+                              483 ; 139  |
+                              484 
+                              486 
+                              487 ; 11   |#include "fsproj.h"
+                              488 
+                              490 
+                              491 ; 1    |//------------------------------------------------------------------------------
+                              492 ; 2    |// Copyright(C) SigmaTel, Inc. 2005
+                              493 ; 3    |// Filename: fsproj.h (player lcdexample project)
+                              494 ; 4    |//------------------------------------------------------------------------------
+                              495 ; 5    |#ifndef __fsproj_h__
+                              496 ; 6    |#define __fsproj_h__
+                              497 ; 7    |// NOTE:  cachedef.h with its defaults is included here. Any defines in 
+                              498 ; 8    |// this fsproj.h supercede and are used as actual NUMHANDLES, NUMDEVICES, NUMCACHES, DRIVE
+                                  LETTERS.  
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              499 ; 9    |
+                              500 ; 10   |// TOVERIFY  large block sdk 2.6 had 16 handles while sdk3.0 had only 8.
+                              501 ; 11   |#define NUMHANDLES 8
+                              502 ; 12   |
+                              503 ; 13   |// To help non MMC/SD builds, made this 2 not 3. jun28 2005
+                              504 ; 14   |#ifdef MMC
+                              505 ; 15   |#define NUMDEVICES 3
+                              506 ; 16   |#else
+                              507 ; 17   |#define NUMDEVICES 2
+                              508 ; 18   |#endif
+                              509 ; 19   |
+                              510 ; 20   |// TOVERIFY: SDK3.0 had 4 caches here but the large block sdk had only 2 larger caches. 
+                              511 ; 21   |// Consider finding memory for 3 for performance.
+                              512 ; 22   |#define NUMCACHES  2
+                              513 ; 23   |#define DRIVELETTERS {'a','b','c'}
+                              514 ; 24   |
+                              515 ; 25   |#include "cachedef.h"
+                              516 
+                              518 
+                              519 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              520 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                              521 ; 3    |//
+                              522 ; 4    |// Filename:     cachedef.h
+                              523 ; 5    |// Description:  Constants and externs for the file system routines.
+                              524 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              525 ; 7    |
+                              526 ; 8    |// NOTE: this file is included by fsproj.h, which overrides DRIVELETTERS, NUMCACHES,
+                              527 ; 9    |// NUMDEVICES, NUMHANDLES.  the values here for these are defaults for building as
+                              528 ; 10   |// a library.
+                              529 ; 11   |
+                              530 ; 12   |#ifndef __cachedef_h__
+                              531 ; 13   |#define __cachedef_h__
+                              532 ; 14   |
+                              533 ; 15   |#ifndef NUMHANDLES
+                              534 ; 16   |#define NUMHANDLES 20  
+                              535 ; 17   |#endif
+                              536 ; 18   |
+                              537 ; 19   |#ifndef NUMDEVICES
+                              538 ; 20   |#define NUMDEVICES 1 
+                              539 ; 21   |#endif
+                              540 ; 22   |
+                              541 ; 23   |#ifndef NUMCACHES
+                              542 ; 24   |#define NUMCACHES 2 
+                              543 ; 25   |#endif
+                              544 ; 26   |
+                              545 ; 27   |#ifndef DRIVELETTERS
+                              546 ; 28   |#define DRIVELETTERS {'a','b','c'}
+                              547 ; 29   |#endif
+                              548 ; 30   |
+                              549 ; 31   |// sector size variants.
+                              550 ; 32   |#include "sectordef.h"
+                              551 
+                              553 
+                              554 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              555 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                              556 ; 3    |//
+                              557 ; 4    |// Filename:     sectordef.h
+                              558 ; 5    |// Description:  Contains structs, prototypes, equates for the NAND Hal & other 
+                              559 ; 6    |//               routines.
+                              560 ; 7    |////////////////////////////////////////////////////////////////////////////////
+                              561 ; 8    |
+                              562 ; 9    |#ifndef _SECTORDEF_H
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              563 ; 10   |#define _SECTORDEF_H
+                              564 ; 11   |
+                              565 ; 12   |    #define RAM_SECTOR_TOTAL_SIZE                 (528)
+                              566 ; 13   |    #define RAM_SECTOR_DATA_SIZE                  (512)
+                              567 ; 14   |    #define RAM_SECTOR_REDUNDANT_SIZE             (16)
+                              568 ; 15   |
+                              569 ; 16   |
+                              570 ; 17   |    #define MMC_SECTOR_TOTAL_SIZE                 (528)
+                              571 ; 18   |    #define MMC_SECTOR_DATA_SIZE                  (512)
+                              572 ; 19   |    #define MMC_SECTOR_REDUNDANT_SIZE             (16)
+                              573 ; 20   |
+                              574 ; 21   |
+                              575 ; 22   |    #define SSFDC_SECTOR_TOTAL_SIZE                 (528)
+                              576 ; 23   |    #define SSFDC_SECTOR_DATA_SIZE                  (512)
+                              577 ; 24   |    #define SSFDC_SECTOR_REDUNDANT_SIZE             (16)
+                              578 ; 25   |
+                              579 ; 26   | // Define large sector macros as small ones so sdk3.x fits in ram and mtp with small 
+                              580 ; 27   | // sector flash gets the performance boosts from optimized nand timings, etc. 
+                              581 ; 28   | // TOVERIFY: Comment out the next macro def when you want large sector support as 
+                              582 ; 29   | // in sdk2.6 and you can find the free data RAM. Or uncomment if you want to save data ra
+                                  m
+                              583 ; 30   | // and only support 512 byte sectors and their associated flash types. 
+                              584 ; 31   |//#define LARGE_SECTOR_DEFS_AS_SMALL_SECTOR
+                              585 ; 32   |#ifdef LARGE_SECTOR_DEFS_AS_SMALL_SECTOR 
+                              586 ; 33   |    #define LARGE_SECTOR_TOTAL_SIZE                 (528)
+                              587 ; 34   |    #define LARGE_SECTOR_DATA_SIZE                  (512)
+                              588 ; 35   |    #define LARGE_SECTOR_REDUNDANT_SIZE             (16)
+                              589 ; 36   |#else
+                              590 ; 37   |    // Real large sector defines to use when large sector flash support is desired.
+                              591 ; 38   |    #define LARGE_SECTOR_TOTAL_SIZE                 (2112)
+                              592 ; 39   |    #define LARGE_SECTOR_DATA_SIZE                  (2048)
+                              593 ; 40   |    #define LARGE_SECTOR_REDUNDANT_SIZE             (64)
+                              594 ; 41   |#endif
+                              595 ; 42   |    
+                              596 ; 43   |    // round up to the nearest WORD, then add one to pad for the ECC DMA bug
+                              597 ; 44   |    #define SECTOR_BUFFER_ALLOC_SIZE(a)             (((a+2)/3)+1)
+                              598 ; 45   |
+                              599 ; 46   |
+                              600 ; 47   |    // These are moved here from chkdsk.h     TOVERIFY. 
+                              601 ; 48   |    #define SEC_512_BYTES_PER_SECTOR                        SSFDC_SECTOR_DATA_SIZE
+                              602 ; 49   |        #define SEC_512_BYTES_TOTAL_SIZE                                                SS
+                                  FDC_SECTOR_TOTAL_SIZE
+                              603 ; 50   |        #define SEC_512_WORDS_TOTAL_SIZE                                                17
+                                  6
+                              604 ; 51   |    #define SEC_512_BYTES_CLUSTER_ENTRY_PER_SECTOR_SHIFT    12
+                              605 ; 52   |    #define SEC_512_BYTES_DIR_REC_PER_SECTOR                16
+                              606 ; 53   |    #define SEC_512_BYTES_WORDS_PER_SECTOR                  177
+                              607 ; 54   |    #define SEC_2K_BYTES_PER_SECTOR                         LARGE_SECTOR_DATA_SIZE
+                              608 ; 55   |        #define SEC_2K_BYTES_TOTAL_SIZE                                                 LA
+                                  RGE_SECTOR_TOTAL_SIZE
+                              609 ; 56   |    #define SEC_2K_BYTES_CLUSTER_ENTRY_PER_SECTOR_SHIFT     12
+                              610 ; 57   |    #define SEC_2K_BYTES_DIR_REC_PER_SECTOR                 64
+                              611 ; 58   |    #define SEC_2K_BYTES_WORDS_PER_SECTOR                   705
+                              612 ; 59   |    #define SEC_2K_BYTES_WORDS_PER_SECTOR_NO_RA             683
+                              613 ; 60   |
+                              614 ; 61   |    // Next 5 lines imported from nandsystemdrivewritesector.c
+                              615 ; 62   |    #define RA_ATTR_MEMORY_OFFSET           682
+                              616 ; 63   |    #define NUMBER_OF_WORDS_IN_512BYTES     171
+                              617 ; 64   |    #define NUM_ECC_DATA_IN_WORDS           3
+                              618 ; 65   |    #define SEC_512_WORD1_RA_SWAP           171
+                              619 ; 66   |    #define SEC_512_WORD2_RA_SWAP           173
+                              620 ; 67   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              621 ; 68   |#endif  // _SECTORDEF_H
+                              622 ; 69   |
+                              623 
+                              625 
+                              626 ; 33   |
+                              627 ; 34   |// in bytes?                    
+                              628 ; 35   |#define HANDLEENTRYSIZE 19
+                              629 ; 36   |
+                              630 ; 37   |// in bytes?                    
+                              631 ; 38   |#define DEVICERECORDSIZE 28 //stmp6956
+                              632 ; 39   |
+                              633 ; 40   |// in words.  todo: consider using a formula based on sizeof().
+                              634 ; 41   |#define CACHEDESCRSIZE 8 
+                              635 ; 42   |
+                              636 ; 43   |// in words, for large sectors.
+                              637 ; 44   |#define CACHEBUFSIZE 705
+                              638 ; 45   |
+                              639 ; 46   |// the number of small caches that fit into a large cache
+                              640 ; 47   |#define SSFDC_SECTORS_PER_LARGE_SECTOR 4
+                              641 ; 48   |
+                              642 ; 49   |// the amount of Y space required to cache sectors.  maximum space reserved
+                              643 ; 50   |// based on large (2k) sectors.
+                              644 ; 51   |#define XBUF_SIZE (NUMCACHES                                                   \ 
+                              645 ; 52   |                   * SSFDC_SECTORS_PER_LARGE_SECTOR                            \ 
+                              646 ; 53   |                   * SECTOR_BUFFER_ALLOC_SIZE(SSFDC_SECTOR_TOTAL_SIZE))
+                              647 ; 54   |
+                              648 ; 55   |// X space allocated for cached sector buffers.
+                              649 ; 56   |// it must be allocated outside of the file system, by the application, since
+                              650 ; 57   |// the application can override the number of entries in fsproj.h, but the file
+                              651 ; 58   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              652 ; 59   |extern INT _X bufx[];
+                              653 ; 60   |
+                              654 ; 61   |// the amount of Y space required to cache sectors. note that the maximim space
+                              655 ; 62   |// for the cache descriptor entries is the size of each entry multiplied by
+                              656 ; 63   |// the number of entries (specified for large sector entries) multiplied by
+                              657 ; 64   |// the number of small sectors that can overlay a large sector.  i.e., when the 
+                              658 ; 65   |// cache reconfigures from 2k sectors to 512 byte sectors there are 4 times as
+                              659 ; 66   |// many useable cache dscr entries available.  this declaration must accommodate
+                              660 ; 67   |// that many to ensure that sufficient space is reserved.
+                              661 ; 68   |#ifdef k_opt_dynamic_cache
+                              662 ; 69   |#define YBUF_SIZE ((NUMDEVICES * DEVICERECORDSIZE)                             \ 
+                              663 ; 70   |                   + (NUMHANDLES * HANDLEENTRYSIZE)                            \ 
+                              664 ; 71   |                   + (SSFDC_SECTORS_PER_LARGE_SECTOR * NUMCACHES * CACHEDESCRSIZE))
+                              665 ; 72   |#else
+                              666 ; 73   |#define YBUF_SIZE ((NUMDEVICES * DEVICERECORDSIZE)                             \ 
+                              667 ; 74   |                   + (NUMHANDLES * HANDLEENTRYSIZE)                            \ 
+                              668 ; 75   |                   + (NUMCACHES * CACHEDESCRSIZE))
+                              669 ; 76   |#endif
+                              670 ; 77   |
+                              671 ; 78   |
+                              672 ; 79   |// Y space allocated for file system handles and cache descriptors.
+                              673 ; 80   |// it must be allocated outside of the file system, by the application, since
+                              674 ; 81   |// the application can override the number of entries in fsproj.h, but the file
+                              675 ; 82   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              676 ; 83   |extern INT _Y bufy[];
+                              677 ; 84   |
+                              678 ; 85   |// thse must be allocated outside of the file system, by the application, since
+                              679 ; 86   |// the application can override these values in fsproj.h, but the file
+                              680 ; 87   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              681 ; 88   |extern INT DriveLetter[];
+                              682 ; 89   |extern INT maxhandles;
+                              683 ; 90   |extern INT maxdevices;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              684 ; 91   |extern INT maxcaches; 
+                              685 ; 92   |
+                              686 ; 93   |#endif // __cachedef_h__
+                              687 ; 94   |
+                              688 ; 95   |
+                              689 
+                              691 
+                              692 ; 26   |
+                              693 ; 27   |// TOVERIFY  Don't think we need fstypes.h. Was added by HK patch of 2.521. See stmp000069
+                                  65 description. 
+                              694 ; 28   |//           Macro desired to be included by HK patch was moved to cachedef.h during 2.6 d
+                                  evelopment.
+                              695 ; 29   |//#include "fstypes.h"
+                              696 ; 30   |
+                              697 ; 31   |// TOVERIFY:   TODO: DELETE LINES below until the #endif
+                              698 ; 32   |//extern INT DriveLetter[];
+                              699 ; 33   |//
+                              700 ; 34   |//extern INT maxhandles;
+                              701 ; 35   |//extern INT maxdevices;
+                              702 ; 36   |//extern INT maxcaches; 
+                              703 ; 37   |
+                              704 ; 38   |// The cache buffers are allocated in the X memory
+                              705 ; 39   |//extern int _X bufx[NUMCACHES*CACHEBUFSIZE];
+                              706 ; 40   |
+                              707 ; 41   |// All other global, custom configurable data is in Y memory.
+                              708 ; 42   |// Two handles are reserved by the file system, so the number of handles must be more than
+                                   2
+                              709 ; 43   |//extern int _Y bufy[NUMDEVICES*DEVICERECORDSIZE + NUMHANDLES*HANDLEENTRYSIZE + NUMCACHES*
+                                  CACHEDESCRSIZE];
+                              710 ; 44   |
+                              711 ; 45   |#endif // __fsproj_h__
+                              712 ; 46   |//---eof------------------------------------------------------------------------
+                              713 ; 47   |
+                              714 
+                              716 
+                              717 ; 12   |
+                              718 ; 13   |
+                              719 ; 14   |
+                              720 ; 15   |
+                              721 ; 16   |INT maxhandles = NUMHANDLES;
+                              722 
+                              723 
+Y:0000                        724         org     y,".ydatafsproj",init:
+                              725 Fmaxhandles:
+Y:0000 000008                 726         dc      $000008
+                              729 
+                              730 ; 17   |INT maxdevices = NUMDEVICES;
+                              731 
+                              732 Fmaxdevices:
+Y:0001 000003                 733         dc      $000003
+                              736 
+                              737 ; 18   |INT maxcaches  = NUMCACHES; 
+                              738 
+                              739 Fmaxcaches:
+Y:0002 000002                 740         dc      $000002
+                              743 
+                              744 ; 19   |INT DriveLetter[] = DRIVELETTERS;
+                              745 
+                              746 FDriveLetter:
+Y:0003 000061 000062          747         dc      $000061,$000062,$000063
+       000063                     
+                              751 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              752 ; 20   |// The cache buffers are allocated in the X memory.
+                              753 ; 21   |int _X bufx[XBUF_SIZE];
+                              754 ; 22   |// All other global, custom configurable data is in Y memory.
+                              755 ; 23   |int _Y bufy[YBUF_SIZE];
+                              756 ; 24   |//---eof------------------------------------------------------------------------
+                              757 ; 25   |
+                              758 
+                              760 
+                              764 
+Y:0000                        765         org     y,".ybssfsproj",bss:
+Y:0000                        766 Fbufy:  ds      252
+   |   RESERVED                   
+Y:00FB
+                              770 
+X:0000                        771         org     x,".xbssfsproj",bss:
+X:0000                        772 Fbufx:  ds      1416
+   |   RESERVED                   
+X:0587
+                              773 
+                              774         global  FDriveLetter, Fbufx, Fbufy, Fmaxcaches, Fmaxdevices
+                              775         global  Fmaxhandles
+                              776 

@@ -1,0 +1,147 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\algorithms\decoders\stfm\src\sw_stereopath_xcall_asm.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;////////////////////////////////////////////////////////////////////////////////
+                                2 ;// Copyright(C) SigmaTel, Inc. 2005
+                                3 ;//
+                                4 ;// File :         sw_stereopath_xcall_asm.asm
+                                5 ;// Description:   This file contain assembly implementation for
+                                6 ;//                               IIR filter for stereo path.
+                                7 ;////////////////////////////////////////////////////////////////////////////////
+                                9 ;////////////////////////////////////////////////////////////////////////////
+                               10 ; Global definitions
+                               11 ;////////////////////////////////////////////////////////////////////////////
+                               23         
+                               24 ;///////////////////////////////////////////////////////////////////////////////////
+                               25 ; Local labels
+                               26 ;///////////////////////////////////////////////////////////////////////////////////
+X:0000                         27         org     x,".xdatasw_stereopath_xcall_asm":
+                               28 ;///////////////////////////////////////////////////////////////////////////////////
+                               29 ;xdata          ds              1
+                               30 ;///////////////////////////////////////////////////////////////////////////////////
+Y:0000                         31         org     y,".ydatasw_stereopath_xcall_asm":
+                               32 ;///////////////////////////////////////////////////////////////////////////////////
+                               33 ;ydata          ds              2
+                               34 ;///////////////////////////////////////////////////////////////////////////////////
+                               36 ;/////////////////////////////////////////////////////////////////////////////////
+                               37 ;// Name:           sw_stereopath_xcall_asm
+                               38 ;//
+                               39 ;//  Type:           Function
+                               40 ;//  Description:    This function is assembly implementation of stereo path.
+                               41 ;//
+                               42 ;//  Inputs:         int * pDin_X --pointer to circular input buffer in _X memory.   r0, m0
+                               43 ;//                             Data is left justified in the word.
+                               44 ;//                             The data order is: LPR0, LMR0, LPR1, LMR1, LPR2, LMR2, ...
+                               45 ;//
+                               46 ;//                              int * pDout_Y --pointer to circularoutput buffer in _Y memory. r4
+                                  , m4
+                               47 ;//                             Data is left justified in the word.  
+                               48 ;//                             The data order is: L0, R0, L1, R1, L2, R2, ...
+                               49 ;//
+                               50 ;//                             int samples_per_block --number of samples per block, A1
+                               51 ;//                                         must be a multiple of 16
+                               52 ;//                  
+                               53 ;//
+                               54 ;//  Outputs:        r0, r4 point to next element in input and output buffers
+                               55 ;//                  
+                               56 ;//
+                               57 ;//  Notes:        m4 not preserved  
+                               58 ;/////////////////////////////////////////////////////////////////////////////////
+                               59    
+P:0000                         60    org     p,".ptextsw_stereopath_xcall_asm":
+                               62     
+                               63 ;Fsw_stereopath_xcall_asm:
+                               64 StfmLowPassFilter:
+                               65    
+                               66  ; Optimized Filter
+                               67    
+P:0000 229100         2    2   68         move    r4,r1                       ;Output buffer in r1
+P:0001 0461A4         2    4   69     movec   m4,m1
+                               70         
+P:0002 63F400 rrrrrr  3    7   71         move    #FIIRFiltCoeff,r3   ; pass the address into r3, not the value at the filter coef a
+                                  ddress
+                               72         
+P:0004 6CF000 rrrrrr  3   10   73         move    y:FLPR_PtrXUpdate,r4
+P:0006 6AF000 rrrrrr  3   13   74         move    y:FLPR_PtrYUpdate,r2
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0008 6DF000 rrrrrr  3   16   75         move    y:FLMR_PtrXUpdate,r5
+P:000A 6EF000 rrrrrr  3   19   76         move    y:FLMR_PtrYUpdate,r6
+                               77                 
+P:000C 4DF000 rrrrrr  3   22   78         move    y:FgLPR_Mult_fract,x1         ; gain factors
+P:000E 4FF000 rrrrrr  3   25   79     move        y:FgLMR_Mult_fract,y1
+                               80     
+P:0010 0504A4         2   27   81     movec       #4,m4
+P:0011 0463A4         2   29   82         movec   m4,m3
+P:0012 0462A4         2   31   83         movec   m4,m2
+P:0013 0466A3         2   33   84         movec   m3,m6
+P:0014 0465A3         2   35   85         movec   m3,m5
+P:0015 44D800         2   37   87         move    x:(r0)+,x0                  ;This is a part of Doloop, moved outside the Do loop
+P:0016 06CC00 rrrrrr  6   43   89         do              A1,_DO_LOOP_END
+                               91 ;   LPR path filter
+P:0018 4C7C00         4   47   93         move    x0,y:-(r4)                                                                        
+                                                    
+P:0019 F09B00         2   49   94         move    x:(r3)+,x0                              y:(r4)+,y0
+P:001A F09BD0         2   51   95         mpy             x0,y0,A                                 x:(r3)+,x0                        
+                                          y:(r4)+,y0
+P:001B F09BD2         2   53   96         mac             x0,y0,A                                 x:(r3)+,x0                        
+                                          y:(r4)+,y0
+P:001C F09BD2         2   55   97         mac             x0,y0,A                                 x:(r3)+,x0                        
+                                          y:(r4)+,y0
+P:001D F09BD2         2   57   98         mac             x0,y0,A                                 x:(r3)+,x0                        
+                                          y:(r4)+,y0
+P:001E 55D8D2         2   59   99         mac             x0,y0,A                             x:(r0)+,B1
+P:001F 200032         2   61  100         asl             A                       ;A1,y0        ; Stmp00011112 change to double the 
+                                  gain 
+P:0020 218600         2   63  101     move        A1,y0                                                           
+P:0021 5C7A00         4   67  102         move    A1,y:-(r2)                                                      
+P:0022 5D7DE0         4   71  103         mpy             x1,y0,A                                 B1,y:-(r5)                  ;A = L
+                                  PR_Data = gLPR_Mult * IIRFilter_output
+                              105 ;   LMR path filter
+P:0023 F0BB00         2   73  107         move    x:(r3)+,x0                              y:(r5)+,y0
+P:0024 F0BBD8         2   75  108         mpy             x0,y0,B                                 x:(r3)+,x0                        
+                                          y:(r5)+,y0
+P:0025 F0BBDA         2   77  109         mac             x0,y0,B                                 x:(r3)+,x0                        
+                                          y:(r5)+,y0
+P:0026 F0BBDA         2   79  110         mac             x0,y0,B                                 x:(r3)+,x0                        
+                                          y:(r5)+,y0
+P:0027 F0BBDA         2   81  111         mac             x0,y0,B                                 x:(r3)+,x0                        
+                                          y:(r5)+,y0
+P:0028 218EDA         2   83  112         mac             x0,y0,B                                 A1,A                              
+                                                                          
+P:0029 20003A         2   85  113         asl             B                                               ;B1,x0         ;Stmp000111
+                                  12 change to double the gain
+P:002A 21A400         2   87  114     move    B1,x0                                                                       
+P:002B 5D7EC8         4   91  115     mpy         x0,y1,B                                 B1,y:-(r6)                      ; B = LMR_
+                                  Data = gLMR_Mult * IIRFilter_output                       
+P:002C 21AF00         2   93  116     move        B1,B
+P:002D 44D818         2   95  117     add         A,B                                             x:(r0)+,x0                      ;*
+                                  pFilteredOutput++ = Left channel  = (LPR_Data + LMR_Data);    
+                              118     ;move       x:(r0)+,x0                      ;*pFilteredOutput++ = Left channel  = (LPR_Data + 
+                                  LMR_Data);    
+                              119    
+P:002E 5D5916         2   97  120     subl        B,A                   B1,y:(r1)+
+                              121     ;move       B1,y:(r1)+                      ;*pFilteredOutput++ = Right channel = (LPR_Data - 
+                                  LMR_Data);                                                                                      
+P:002F 5C5900         2   99  122     move        A1,y:(r1)+                              
+                        (56)  124 _DO_LOOP_END:
+P:0030 205000         2  101  126     move        x:(r0)-                     ;This will compensate for extra increment of r0 regist
+                                  er
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0031 6C7000 rrrrrr  3  104  127         move    r4,y:FLPR_PtrXUpdate
+P:0033 6A7000 rrrrrr  3  107  128         move    r2,y:FLPR_PtrYUpdate
+P:0035 6D7000 rrrrrr  3  110  129         move    r5,y:FLMR_PtrXUpdate
+P:0037 6E7000 rrrrrr  3  113  130         move    r6,y:FLMR_PtrYUpdate
+P:0039 223400         2  115  131     move    r1,r4
+P:003A 0463A7         2  117  133         movec   m7,m3
+P:003B 0464A7         2  119  134         movec   m7,m4
+P:003C 0466A7         2  121  135         movec   m7,m6
+P:003D 0462A7         2  123  136         movec   m7,m2
+P:003E 0465A7         2  125  137         movec   m7,m5
+P:003F 00000C         4  129  139         rts                                                     

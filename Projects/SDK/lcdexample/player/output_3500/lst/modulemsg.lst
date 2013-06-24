@@ -1,0 +1,500 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\system\modulemsg.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : modulemsg.asm
+                                5 ;  Description : Message queue descriptor and module table declaration
+                                6 ;                for project
+                                7 ;///////////////////////////////////////////////////////////////////////////////
+                                9     section SYSPLAYER_ModuleMsg
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;  Macros
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               17     list
+                               19 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;   Includes
+                               21 ;///////////////////////////////////////////////////////////////////////////////
+                               27     list
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               30 ;   External Definitions
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               33     ;Variables in Y
+                               76     ;menu globals
+                               89     ;Equates
+                              121 ;///////////////////////////////////////////////////////////////////////////////
+                              122 ;   External References
+                              123 ;///////////////////////////////////////////////////////////////////////////////
+                              126     list
+                              141 ;Tuner externs
+                              172 ;///////////////////////////////////////////////////////////////////////////////
+                              173 ;   Equates
+                              174 ;///////////////////////////////////////////////////////////////////////////////
+                              176     ; Message Queue Size
+                              177 MSG_QUEUE_SIZE_DECODER      equ     32
+                              178 MSG_QUEUE_MODULO_DECODER    equ     MSG_QUEUE_SIZE_DECODER-1
+                              180 MSG_QUEUE_SIZE_CAPTURE      equ     32
+                              181 MSG_QUEUE_MODULO_CAPTURE    equ     MSG_QUEUE_SIZE_CAPTURE-1
+                              183 ; Ken 2005/7/28 03:51
+                              185 MSG_QUEUE_SIZE_DISPLAY          equ     144
+                              189 ; Ken 2005/7/28 03:51
+                              190 MSG_QUEUE_MODULO_DISPLAY        equ     MSG_QUEUE_SIZE_DISPLAY-1
+                              192 MSG_QUEUE_SIZE_MIXER        equ     32
+                              193 MSG_QUEUE_MODULO_MIXER      equ     MSG_QUEUE_SIZE_MIXER-1
+                              195 MSG_QUEUE_SIZE_SYSTEM       equ     32
+                              196 MSG_QUEUE_MODULO_SYSTEM     equ     MSG_QUEUE_SIZE_SYSTEM-1
+                              198 MSG_QUEUE_SIZE_MENU         equ     64
+                              199 MSG_QUEUE_MODULO_MENU       equ     MSG_QUEUE_SIZE_MENU-1
+                              201 MSG_QUEUE_SIZE_GEQ          equ     32
+                              202 MSG_QUEUE_MODULO_GEQ        equ     MSG_QUEUE_SIZE_GEQ-1
+                              205 MSG_QUEUE_SIZE_TUNER equ 32
+                              209 MSG_QUEUE_SIZE_SOFT_TIMERS equ 32
+                              213 MSG_QUEUE_SIZE_MUSICLIB_PLAY        equ     32
+                              214 MSG_QUEUE_MODULO_MUSICLIB_PLAY         equ     MSG_QUEUE_SIZE_MUSICLIB_PLAY-1
+                              216 MSG_QUEUE_SIZE_MUSICLIB_BROWSE              equ     32
+                              217 MSG_QUEUE_MODULO_MUSICLIB_BROWSE         equ     MSG_QUEUE_SIZE_MUSICLIB_BROWSE-1
+                              218 MSG_QUEUE_SIZE_MUSICLIB_PLAYALLNEXT         equ     16
+                              219 MSG_QUEUE_MODULO_MUSICLIB_PLAYALLNEXT         equ     MSG_QUEUE_SIZE_MUSICLIB_PLAYALLNEXT-1
+                              220 MSG_QUEUE_SIZE_MUSICLIB_PLAYALLPREV         equ     16
+                              221 MSG_QUEUE_MODULO_MUSICLIB_PLAYALLPREV         equ     MSG_QUEUE_SIZE_MUSICLIB_PLAYALLPREV-1
+                              222 MSG_QUEUE_SIZE_MUSICLIB_SHUFFLE             equ     16
+                              223 MSG_QUEUE_MODULO_MUSICLIB_SHUFFLE         equ     MSG_QUEUE_SIZE_MUSICLIB_SHUFFLE-1
+                              224 MSG_QUEUE_SIZE_MUSICLIB_VOICE       equ     32
+                              225 MSG_QUEUE_MODULO_MUSICLIB_VOICE         equ     MSG_QUEUE_SIZE_MUSICLIB_VOICE-1
+                              226 MSG_QUEUE_SIZE_MUSICLIB_VOICEPLAY           equ     32
+                              227 MSG_QUEUE_MODULO_MUSICLIB_VOICEPLAY         equ     MSG_QUEUE_SIZE_MUSICLIB_VOICEPLAY-1
+                              229 MSG_QUEUE_SIZE_MUSICLIB_MERGE       equ     32
+                              230 MSG_QUEUE_MODULO_MUSICLIB_MERGE         equ     MSG_QUEUE_SIZE_MUSICLIB_MERGE-1
+                              240 ;///////////////////////////////////////////////////////////////////////////////
+                              241 ;  X memory
+                              242 ;///////////////////////////////////////////////////////////////////////////////
+                              245 ;///////////////////////////////////////////////////////////////////////////////
+                              246 ;  Y memory
+                              247 ;///////////////////////////////////////////////////////////////////////////////
+                              249     ; Message Queues
+Y:0000                        250     org     y,"SYSPLAYER_MsgQueue_decoder_Y":
+Y:0000                        251 DecoderMsgQueue         dsm     MSG_QUEUE_SIZE_DECODER
+   |   RESERVED                   
+Y:001F
+Y:0000                        253     org     y,"SYSPLAYER_MsgQueue_encoder_Y":
+Y:0000                        254 CaptureMsgQueue         dsm     MSG_QUEUE_SIZE_CAPTURE
+   |   RESERVED                   
+Y:001F
+Y:0000                        256     org     y,"SYSPLAYER_MsgQueue_display_Y":
+Y:0000                        257 DisplayMsgQueue             dsm     MSG_QUEUE_SIZE_DISPLAY
+   |   RESERVED                   
+Y:008F
+Y:0000                        259     org     y,"SYSPLAYER_MsgQueue_mixer_Y":
+Y:0000                        260 MixerMsgQueue           dsm     MSG_QUEUE_SIZE_MIXER
+   |   RESERVED                   
+Y:001F
+Y:0000                        262     org     y,"SYSPLAYER_MsgQueue_system_Y":
+Y:0000                        263 SystemMsgQueue          dsm     MSG_QUEUE_SIZE_SYSTEM
+   |   RESERVED                   
+Y:001F
+Y:0000                        265     org     y,"SYSPLAYER_MsgQueue_menu_Y":
+Y:0000                        266 MenuMsgQueue            dsm     MSG_QUEUE_SIZE_MENU
+   |   RESERVED                   
+Y:003F
+Y:0000                        268     org     y,"SYSPLAYER_MsgQueue_geq_Y":
+Y:0000                        269 GeqMsgQueue            dsm     MSG_QUEUE_SIZE_GEQ
+   |   RESERVED                   
+Y:001F
+Y:0000                        271     org     y,"SYSPLAYER_MsgQueue_FMTuner_Y":
+Y:0000                        272 TunerMsgQueue       dsm     MSG_QUEUE_SIZE_TUNER
+   |   RESERVED                   
+Y:001F
+Y:0000                        274     org     y,"SYSPLAYER_MsgQueue_SoftTimer_Y":
+Y:0000                        275 SoftTimerMsgQueue       dsm     MSG_QUEUE_SIZE_SOFT_TIMERS
+   |   RESERVED                   
+Y:001F
+Y:0000                        277     org     y,"SYSPLAYER_MsgQueue_MusicLib_Browse_Y":
+Y:0000                        278 MusicLibBrowseMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_BROWSE
+   |   RESERVED                   
+Y:001F
+Y:0000                        280     org     y,"SYSPLAYER_MsgQueue_MusicLib_Play_Y":
+Y:0000                        281 MusicLibPlayMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_PLAY
+   |   RESERVED                   
+Y:001F
+Y:0000                        283     org     y,"SYSPLAYER_MsgQueue_MusicLib_PlayAllNext_Y":
+Y:0000                        284 MusicLibPlayAllNextMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_PLAYALLNEXT
+   |   RESERVED                   
+Y:000F
+Y:0000                        286     org     y,"SYSPLAYER_MsgQueue_MusicLib_PlayAllPrev_Y":
+Y:0000                        287 MusicLibPlayAllPrevMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_PLAYALLPREV
+   |   RESERVED                   
+Y:000F
+Y:0000                        289     org     y,"SYSPLAYER_MsgQueue_MusicLib_Shuffle_Y":
+Y:0000                        290 MusicLibShuffleMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_SHUFFLE
+   |   RESERVED                   
+Y:000F
+Y:0000                        292     org     y,"SYSPLAYER_MsgQueue_MusicLib_Voice_Y":
+Y:0000                        293 MusicLibVoiceMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_VOICE
+   |   RESERVED                   
+Y:001F
+Y:0000                        295     org     y,"SYSPLAYER_MsgQueue_MusicLib_Merge_Y":
+Y:0000                        296 MusicLibMergeMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_MERGE
+   |   RESERVED                   
+Y:001F
+Y:0000                        298     org     y,"SYSPLAYER_MsgQueue_MusicLib_VoicePlay_Y":
+Y:0000                        299 MusicLibVoicePlayMsgQueue       dsm     MSG_QUEUE_SIZE_MUSICLIB_VOICEPLAY
+   |   RESERVED                   
+Y:001F
+                              307 ;----------------------------------------------------
+                              310 ;----------------------------------------------------
+Y:0000                        311     org     y,"SYSPLAYER_ModuleMsg_Y":
+                              312 ModuleRouterTable
+Y:0000 rrrrrr                 313                         dc      MSG_TYPE_DECODER|DecoderQueueDescriptor
+Y:0001 000000                 314                         dc      MODULE_NUM_DECODER
+Y:0002 rrrrrr                 315                         dc      MSG_TYPE_ENCODER|CaptureQueueDescriptor
+Y:0003 000001                 316                         dc      MODULE_NUM_CAPTURE
+Y:0004 rrrrrr                 317                         dc      MSG_TYPE_PARSER|MenuQueueDescriptor
+Y:0005 000005                 318                         dc      MODULE_NUM_MENU
+Y:0006 rrrrrr                 319                         dc      MSG_TYPE_LCD|FDisplayQueueDescriptor
+Y:0007 000002                 320                         dc      MODULE_NUM_DISPLAY
+Y:0008 rrrrrr                 321                         dc      MSG_TYPE_MIXER|MixerQueueDescriptor
+Y:0009 000003                 322                         dc      MODULE_NUM_MIXER
+Y:000A rrrrrr                 323                         dc      MSG_TYPE_SYSTEM|SystemQueueDescriptor
+Y:000B 000004                 324                         dc      MODULE_NUM_SYSTEM
+Y:000C rrrrrr                 325                         dc      MSG_TYPE_MENU|MenuQueueDescriptor
+Y:000D 000005                 326                         dc      MODULE_NUM_MENU
+Y:000E rrrrrr                 327                         dc      MSG_TYPE_SOFT_TIMER|Fglb_SoftTimerQueueDescriptor
+Y:000F 000006                 328                         dc      MODULE_NUM_SOFT_TIMER
+Y:0010 rrrrrr                 330                         dc      MSG_TYPE_TUNER|TunerQueueDescriptor
+Y:0011 000007                 331                         dc      MODULE_NUM_FMTUNER
+Y:0012 rrrrrr                 333                         dc      MSG_TYPE_GEQ|GeqQueueDescriptor
+Y:0013 000008                 334                         dc      MODULE_NUM_GEQ
+Y:0014 rrrrrr                 336                         dc      MSG_TYPE_MUSICLIB_BROWSE|MusicLibBrowseQueueDescriptor
+Y:0015 00000A                 337                         dc      MODULE_NUM_MUSICLIB_BROWSE
+Y:0016 rrrrrr                 338                         dc      MSG_TYPE_MUSICLIB_PLAY|MusicLibPlayQueueDescriptor
+Y:0017 000009                 339                         dc      MODULE_NUM_MUSICLIB_PLAY
+Y:0018 rrrrrr                 340                         dc      MSG_TYPE_MUSICLIB_PLAYALLNEXT|MusicLibPlayAllNextQueueDescriptor
+Y:0019 00000B                 341                         dc      MODULE_NUM_MUSICLIB_PLAYALLNEXT
+Y:001A rrrrrr                 342                         dc      MSG_TYPE_MUSICLIB_PLAYALLPREV|MusicLibPlayAllPrevQueueDescriptor
+Y:001B 00000C                 343                         dc      MODULE_NUM_MUSICLIB_PLAYALLPREV
+Y:001C rrrrrr                 344                         dc      MSG_TYPE_MUSICLIB_SHUFFLE|MusicLibShuffleQueueDescriptor
+Y:001D 00000D                 345                         dc      MODULE_NUM_MUSICLIB_SHUFFLE
+Y:001E rrrrrr                 346                         dc      MSG_TYPE_MUSICLIB_VOICE|MusicLibVoiceQueueDescriptor
+Y:001F 00000E                 347                         dc      MODULE_NUM_MUSICLIB_VOICE
+Y:0020 rrrrrr                 348                         dc      MSG_TYPE_MUSICLIB_VOICEPLAY|MusicLibVoicePlayQueueDescriptor
+Y:0021 00000F                 349                         dc      MODULE_NUM_MUSICLIB_VOICEPLAY
+Y:0022 rrrrrr                 351                         dc      MSG_TYPE_MUSICLIB_MERGE|MusicLibMergeQueueDescriptor
+Y:0023 000010                 352                         dc      MODULE_NUM_MUSICLIB_MERGE
+                              361 EndModuleRouterTable
+                              362 ROUTER_TABLE_SIZE       EQU     (EndModuleRouterTable-ModuleRouterTable)/2
+                              364 ;----------------------------------------------------
+                              366     ; Array of buffer descriptors for the message queues
+                              367     ; It is important that these descriptors are in the same
+                              368     ; order as the message types as defined in msgequ.inc
+                              369     ; After each queue descriptor you must define a constant specifying the first
+                              370     ; command supported for the module using this queue.
+Y:0024 rrrrrr                 372 DecoderQueueDescriptor  dc      DecoderMsgQueue             ; buffer base address
+Y:0025 00001F                 373                         dc      MSG_QUEUE_MODULO_DECODER    ; buffer modulo
+Y:0026 000020                 374                         dc      MSG_QUEUE_SIZE_DECODER      ; buffer queue size
+Y:0027 rrrrrr                 375                         dc      DecoderMsgQueue             ; buffer head ptr
+Y:0028 rrrrrr                 376                         dc      DecoderMsgQueue             ; buffer tail ptr
+Y:0029 rrrrrr                 378 CaptureQueueDescriptor  dc      CaptureMsgQueue
+Y:002A 00001F                 379                         dc      MSG_QUEUE_MODULO_CAPTURE
+Y:002B 000020                 380                         dc      MSG_QUEUE_SIZE_CAPTURE
+Y:002C rrrrrr                 381 CaptureHeadPtr          dc      CaptureMsgQueue
+Y:002D rrrrrr                 382 CaptureTailPtr          dc      CaptureMsgQueue
+Y:002E rrrrrr                 384 FDisplayQueueDescriptor      dc      DisplayMsgQueue
+Y:002F 00008F                 385                         dc      MSG_QUEUE_MODULO_DISPLAY
+Y:0030 000090                 386                         dc      MSG_QUEUE_SIZE_DISPLAY
+Y:0031 rrrrrr                 387                         dc      DisplayMsgQueue
+Y:0032 rrrrrr                 388                         dc      DisplayMsgQueue
+Y:0033 rrrrrr                 390 MixerQueueDescriptor    dc      MixerMsgQueue
+Y:0034 00001F                 391                         dc      MSG_QUEUE_MODULO_MIXER
+Y:0035 000020                 392                         dc      MSG_QUEUE_SIZE_MIXER
+Y:0036 rrrrrr                 393                         dc      MixerMsgQueue
+Y:0037 rrrrrr                 394                         dc      MixerMsgQueue
+Y:0038 rrrrrr                 396 SystemQueueDescriptor   dc      SystemMsgQueue
+Y:0039 00001F                 397                         dc      MSG_QUEUE_MODULO_SYSTEM
+Y:003A 000020                 398                         dc      MSG_QUEUE_SIZE_SYSTEM
+Y:003B rrrrrr                 399                         dc      SystemMsgQueue
+Y:003C rrrrrr                 400                         dc      SystemMsgQueue
+Y:003D rrrrrr                 402 MenuQueueDescriptor     dc      MenuMsgQueue
+Y:003E 00003F                 403                         dc      MSG_QUEUE_MODULO_MENU
+Y:003F 000040                 404                         dc      MSG_QUEUE_SIZE_MENU
+Y:0040 rrrrrr                 405 MenuHeadPtr             dc      MenuMsgQueue
+Y:0041 rrrrrr                 406 MenuTailPtr             dc      MenuMsgQueue
+Y:0042 rrrrrr                 408 GeqQueueDescriptor      dc      GeqMsgQueue
+Y:0043 00001F                 409                         dc      MSG_QUEUE_MODULO_GEQ
+Y:0044 000020                 410                         dc      MSG_QUEUE_SIZE_GEQ
+Y:0045 rrrrrr                 411                         dc      GeqMsgQueue
+Y:0046 rrrrrr                 412                         dc      GeqMsgQueue
+Y:0047 rrrrrr                 414 TunerQueueDescriptor    dc      TunerMsgQueue
+Y:0048 00001F                 415                         dc      MSG_QUEUE_SIZE_TUNER-1
+Y:0049 000020                 416                         dc      MSG_QUEUE_SIZE_TUNER
+Y:004A rrrrrr                 417                         dc      TunerMsgQueue
+Y:004B rrrrrr                 418                         dc      TunerMsgQueue
+Y:004C rrrrrr                 420 Fglb_SoftTimerQueueDescriptor dc     SoftTimerMsgQueue
+Y:004D 00001F                 421                         dc      MSG_QUEUE_SIZE_SOFT_TIMERS-1
+Y:004E 000020                 422                         dc      MSG_QUEUE_SIZE_SOFT_TIMERS
+Y:004F rrrrrr                 423                         dc      SoftTimerMsgQueue
+Y:0050 rrrrrr                 424                         dc      SoftTimerMsgQueue
+Y:0051 rrrrrr                 426 MusicLibBrowseQueueDescriptor    dc      MusicLibBrowseMsgQueue
+Y:0052 00001F                 427                         dc      MSG_QUEUE_SIZE_MUSICLIB_BROWSE-1
+Y:0053 000020                 428                         dc      MSG_QUEUE_SIZE_MUSICLIB_BROWSE
+Y:0054 rrrrrr                 429                         dc      MusicLibBrowseMsgQueue
+Y:0055 rrrrrr                 430                         dc      MusicLibBrowseMsgQueue
+Y:0056 rrrrrr                 432 MusicLibPlayQueueDescriptor    dc      MusicLibPlayMsgQueue
+Y:0057 00001F                 433                         dc      MSG_QUEUE_SIZE_MUSICLIB_PLAY-1
+Y:0058 000020                 434                         dc      MSG_QUEUE_SIZE_MUSICLIB_PLAY
+Y:0059 rrrrrr                 435                         dc      MusicLibPlayMsgQueue
+Y:005A rrrrrr                 436                         dc      MusicLibPlayMsgQueue
+Y:005B rrrrrr                 438 MusicLibPlayAllNextQueueDescriptor    dc      MusicLibPlayAllNextMsgQueue
+Y:005C 00000F                 439                         dc      MSG_QUEUE_SIZE_MUSICLIB_PLAYALLNEXT-1
+Y:005D 000010                 440                         dc      MSG_QUEUE_SIZE_MUSICLIB_PLAYALLNEXT
+Y:005E rrrrrr                 441                         dc      MusicLibPlayAllNextMsgQueue
+Y:005F rrrrrr                 442                         dc      MusicLibPlayAllNextMsgQueue
+Y:0060 rrrrrr                 444 MusicLibPlayAllPrevQueueDescriptor    dc      MusicLibPlayAllPrevMsgQueue
+Y:0061 00000F                 445                         dc      MSG_QUEUE_SIZE_MUSICLIB_PLAYALLPREV-1
+Y:0062 000010                 446                         dc      MSG_QUEUE_SIZE_MUSICLIB_PLAYALLPREV
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0063 rrrrrr                 447                         dc      MusicLibPlayAllPrevMsgQueue
+Y:0064 rrrrrr                 448                         dc      MusicLibPlayAllPrevMsgQueue
+Y:0065 rrrrrr                 450 MusicLibShuffleQueueDescriptor    dc      MusicLibShuffleMsgQueue
+Y:0066 00000F                 451                         dc      MSG_QUEUE_SIZE_MUSICLIB_SHUFFLE-1
+Y:0067 000010                 452                         dc      MSG_QUEUE_SIZE_MUSICLIB_SHUFFLE
+Y:0068 rrrrrr                 453                         dc      MusicLibShuffleMsgQueue
+Y:0069 rrrrrr                 454                         dc      MusicLibShuffleMsgQueue
+Y:006A rrrrrr                 456 MusicLibVoiceQueueDescriptor    dc      MusicLibVoiceMsgQueue
+Y:006B 00001F                 457                         dc      MSG_QUEUE_SIZE_MUSICLIB_VOICE-1
+Y:006C 000020                 458                         dc      MSG_QUEUE_SIZE_MUSICLIB_VOICE
+Y:006D rrrrrr                 459                         dc      MusicLibVoiceMsgQueue
+Y:006E rrrrrr                 460                         dc      MusicLibVoiceMsgQueue
+Y:006F rrrrrr                 462 MusicLibVoicePlayQueueDescriptor    dc      MusicLibVoicePlayMsgQueue
+Y:0070 00001F                 463                         dc      MSG_QUEUE_SIZE_MUSICLIB_VOICEPLAY-1
+Y:0071 000020                 464                         dc      MSG_QUEUE_SIZE_MUSICLIB_VOICEPLAY
+Y:0072 rrrrrr                 465                         dc      MusicLibVoicePlayMsgQueue
+Y:0073 rrrrrr                 466                         dc      MusicLibVoicePlayMsgQueue
+Y:0074 rrrrrr                 469 MusicLibMergeQueueDescriptor    dc      MusicLibMergeMsgQueue
+Y:0075 00001F                 470                         dc      MSG_QUEUE_SIZE_MUSICLIB_MERGE-1
+Y:0076 000020                 471                         dc      MSG_QUEUE_SIZE_MUSICLIB_MERGE
+Y:0077 rrrrrr                 472                         dc      MusicLibMergeMsgQueue
+Y:0078 rrrrrr                 473                         dc      MusicLibMergeMsgQueue
+                              490     ;!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                              491     ; Module table
+                              492     ; !!!!!!!!!!!! These must match the module order in the ModuleTable below
+                              493 MODULE_NUM_DECODER      equ     0
+                              494 MODULE_NUM_CAPTURE      equ     1
+                              495 MODULE_NUM_DISPLAY      equ     2
+                              496 MODULE_NUM_MIXER        equ     3
+                              497 MODULE_NUM_SYSTEM       equ     4
+                              498 MODULE_NUM_MENU         equ     5
+                              499 MODULE_NUM_SOFT_TIMER   equ     6
+                              501 MODULE_NUM_FMTUNER      equ     7
+                              502 MODULE_NUM_GEQ          equ     8
+                              504 MODULE_NUM_MUSICLIB_PLAY     equ     9
+                              505 MODULE_NUM_MUSICLIB_BROWSE    equ     10
+                              506 MODULE_NUM_MUSICLIB_PLAYALLNEXT     equ     11
+                              507 MODULE_NUM_MUSICLIB_PLAYALLPREV     equ     12
+                              508 MODULE_NUM_MUSICLIB_SHUFFLE     equ    13
+                              509 MODULE_NUM_MUSICLIB_VOICE    equ     14
+                              510 MODULE_NUM_MUSICLIB_VOICEPLAY    equ     15
+                              512 MODULE_NUM_MUSICLIB_MERGE     equ     16
+                              513 MODULE_COUNT            equ     17
+                              553     ; Size of a module table entry
+                              554 MODULE_ENTRY_SIZE       equ     9
+Y:0000                        556         org     y,"SYSPLAYER_ModuleTable_Y":
+                              558 ModuleTable
+                              560 ModuleTableDecoder
+                              561     ; Decoder module
+Y:0000 000000                 562     dc  0                               ; Event signal
+Y:0001 800000                 563     dc  EVENT_INIT                      ; Event wait
+                              564 FDecoderResourcePtr
+                              565 DecoderResourcePtr
+Y:0002 000094                 566     dc  RSRC_DECMOD_CODE                ; Resource number of code
+Y:0003 rrrrrr                 567     dc  DecoderQueueDescriptor          ; Message queue descriptor
+                              568 DecoderProcessPtr
+Y:0004 000000                 569     dc  0                               ; Event processing routine - populated by init routine
+Y:0005 rrrrrr                 570     dc  F_lc_u_bP_Module_overlay+1
+Y:0006 000000                 571     dc  0                               ; Signal Timer High
+Y:0007 000000                 572     dc  0                               ; Signal Timer Low
+Y:0008 rrrrrr                 573     dc  EmptyFunction                   ; BackGround Processing routine
+                              575     ; Capture module
+                              576 ModuleTableEncoder
+Y:0009 000000                 577     dc  0                               ; Event signal
+Y:000A 800000                 578     dc  EVENT_INIT                      ; Event wait
+                              579 EncoderResourcePtr
+Y:000B 0000A1                 580     dc  RSRC_ENC_ADPCM_MOD_CODE         ; Resource number of code
+Y:000C rrrrrr                 581     dc  CaptureQueueDescriptor          ; Message queue descriptor
+                              582 EncoderProcessPtr
+Y:000D 000000                 583     dc  0                               ; Event processing routine - populated by init routine
+Y:000E rrrrrr                 584     dc  F_lc_u_bP_Module_overlay+1
+Y:000F 000000                 585     dc  0                               ; Signal Timer High
+Y:0010 000000                 586     dc  0                               ; Signal Timer Low
+Y:0011 rrrrrr                 587     dc  EmptyFunction                   ; BackGround Processing routine
+                              589     ; Display module
+                              590 ModuleTableDisplay
+Y:0012 800001                 591     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0013 800002                 592     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0014 000023                 593     dc  RSRC_DISPLAY_MODULE             ; Resource number of code
+Y:0015 rrrrrr                 594     dc  FDisplayQueueDescriptor          ; Message queue descriptor
+Y:0016 rrrrrr                 595     dc  FDisplayProcessQueue            ; Event processing routine
+Y:0017 rrrrrr                 596     dc  FDisplayModuleInit              ; Initialization routine
+Y:0018 000000                 597     dc  0                               ; Signal Timer High
+Y:0019 000000                 598     dc  0                               ; Signal Timer Low
+Y:001A rrrrrr                 599     dc  EmptyFunction                   ; BackGround Processing routine
+                              601     ; Mixer module
+                              602 ModuleTableMixer
+Y:001B 800001                 603     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:001C 800002                 604     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:001D 000091                 605     dc  RSRC_MIXMOD_CODE                ; Resource number of code
+Y:001E rrrrrr                 606     dc  MixerQueueDescriptor            ; Message queue descriptor
+Y:001F rrrrrr                 607     dc  MixerProcessQueue               ; Event processing routine
+Y:0020 rrrrrr                 608     dc  MixerInit                       ; Initialization routine
+Y:0021 000000                 609     dc  0                               ; Signal Timer High
+Y:0022 000000                 610     dc  0                               ; Signal Timer Low
+Y:0023 rrrrrr                 611     dc  EmptyFunction                   ; BackGround Processing routine
+                              613     ; System module
+                              614 ModuleTableSystem
+Y:0024 800001                 615     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0025 800003                 616     dc  EVENT_INIT|EVENT_MESSAGE|EVENT_NONE ; Event wait
+Y:0026 000012                 617         dc  RSRC_SYSMOD_CODE            ; Resource number of code
+Y:0027 rrrrrr                 618     dc  SystemQueueDescriptor           ; Message queue descriptor
+Y:0028 rrrrrr                 619     dc  FSystemModuleProcessQueue       ; Event processing routine
+Y:0029 rrrrrr                 620     dc  FSystemModuleInit               ; Initialization routine
+Y:002A 000000                 621     dc  0                               ; Signal Timer High
+Y:002B 000000                 622     dc  0                               ; Signal Timer Low
+Y:002C rrrrrr                 623     dc  EmptyFunction                   ; BackGround Processing routine
+                              625     ; Menu module
+                              626 ModuleTableMenus
+                              627 MenuTableMenuPtr
+                              628 MenuEventSignalMask
+Y:002D 800001                 629     dc  EVENT_INIT|EVENT_NONE               ; Event signal
+                              630 MenuEventWaitMask
+Y:002E 800003                 631     dc  EVENT_INIT|EVENT_MESSAGE|EVENT_NONE ; Event wait
+                              632 FMenuResourcePtr
+                              633 MenuResourcePtr
+Y:002F 000078                 634     dc  RSRC_MAIN_MENU_CODE_BANK            ; Resource number of code
+Y:0030 rrrrrr                 635     dc  MenuQueueDescriptor                 ; Message queue descriptor
+                              636 MenuProcessEventRoutinePtr
+Y:0031 rrrrrr                 637     dc  UserTaskKernel                      ; Event processing routine
+                              638 MenuInit
+Y:0032 rrrrrr                 639     dc  InitUserTask                        ; Initialization routine
+                              640 MenuTimerHigh
+Y:0033 000000                 641     dc  0                                   ; Signal Timer High
+                              642 MenuTimerLow
+Y:0034 000000                 643     dc  0                                   ; Signal Timer Low
+Y:0035 rrrrrr                 644     dc  EmptyFunction                       ; BackGround Processing routine
+                              646 Fglb_uSoftTimerModuleEntry
+Y:0036 800000                 647     dc  EVENT_INIT                      ; Event signal
+Y:0037 800002                 648     dc  EVENT_INIT|EVENT_MESSAGE                   ; Event wait
+Y:0038 00000E                 649     dc  RSRC_SOFT_TIMER_MODULE_CODE     ; Resource number of code
+Y:0039 rrrrrr                 650     dc  Fglb_SoftTimerQueueDescriptor   ; Message queue descriptor
+Y:003A rrrrrr                 651     dc  FSoftTimerModuleProcessQueue    ; Event processing routine
+Y:003B rrrrrr                 652     dc  FSoftTimerModuleInit            ; Initialization routine
+Y:003C 000000                 653     dc  0                               ; Signal Timer High
+Y:003D 000000                 654     dc  0                               ; Signal Timer Low
+Y:003E rrrrrr                 655     dc  EmptyFunction                   ; BackGround Processing routine
+                              659 TunerModuleEntry
+Y:003F 800000                 660     dc  EVENT_INIT                      ; Event signal
+Y:0040 800002                 661     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0041 000092                 662     dc  RSRC_TUNER_MODULE               ; Resource number of code
+Y:0042 rrrrrr                 663     dc  TunerQueueDescriptor            ; Message queue descriptor
+Y:0043 rrrrrr                 665     dc  FTunerModuleProcessQueue        ; Event processing routine
+Y:0044 rrrrrr                 666     dc  FTunerModuleInit                ; Initialization routine
+Y:0045 000000                 668     dc  0                               ; Signal Timer High
+Y:0046 000000                 669     dc  0                               ; Signal Timer Low
+Y:0047 rrrrrr                 670     dc  EmptyFunction                   ; BackGround Processing routine
+                              673 ModuleTableGeq
+                              674 GeqTableGeqPtr
+Y:0048 800001                 675     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0049 800002                 676     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+                              677 GeqResourcePtr
+Y:004A 000093                 678     dc  RSRC_GEQOVERLAY_CODE            ; Resource number of code
+Y:004B rrrrrr                 679     dc  GeqQueueDescriptor              ; Message queue descriptor
+                              680 GeqProcessEventRoutinePtr
+Y:004C rrrrrr                 681     dc  GeqOverlayModule                ; Event processing routine
+Y:004D rrrrrr                 682     dc  GeqInit                         ; Initialization routine
+Y:004E 000000                 683     dc  0                               ; Signal Timer High
+Y:004F 000000                 684     dc  0                               ; Signal Timer Low
+Y:0050 rrrrrr                 685     dc  EmptyFunction                   ; BackGround Processing routine
+                              687 MusicLibPlayModuleEntry
+Y:0051 800001                 688     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0052 800002                 689     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0053 0003D2                 690     dc  RSRC_MUSICLIB_PLAY_MODULE           ; Resource number of code
+Y:0054 rrrrrr                 691     dc  MusicLibPlayQueueDescriptor         ; Message queue descriptor
+Y:0055 rrrrrr                 692     dc  FMusicLibPlayModuleProcessQueue     ; Event processing routine
+Y:0056 rrrrrr                 693     dc  FMusicLibPlayModuleInit             ; Initialization routine
+Y:0057 000000                 694     dc  0                               ; Signal Timer High
+Y:0058 000000                 695     dc  0                               ; Signal Timer Low
+Y:0059 rrrrrr                 696     dc  EmptyFunction                   ; BackGround Processing routine
+                              698 MusicLibBrowseModuleEntry
+Y:005A 800001                 699     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:005B 800002                 700     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:005C 0003D1                 701     dc  RSRC_MUSICLIB_BROWSE_MODULE           ; Resource number of code
+Y:005D rrrrrr                 702     dc  MusicLibBrowseQueueDescriptor         ; Message queue descriptor
+Y:005E rrrrrr                 703     dc  FMusicLibBrowseModuleProcessQueue     ; Event processing routine
+Y:005F rrrrrr                 704     dc  FMusicLibBrowseModuleInit             ; Initialization routine
+Y:0060 000000                 705     dc  0                               ; Signal Timer High
+Y:0061 000000                 706     dc  0                               ; Signal Timer Low
+Y:0062 rrrrrr                 707     dc  EmptyFunction                   ; BackGround Processing routine
+                              709 MusicLibPlayAllNextModuleEntry
+Y:0063 800001                 710     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0064 800002                 711     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0065 0003D3                 712     dc  RSRC_MUSICLIB_PLAYALLNEXT_MODULE           ; Resource number of code
+Y:0066 rrrrrr                 713     dc  MusicLibPlayAllNextQueueDescriptor         ; Message queue descriptor
+Y:0067 rrrrrr                 714     dc  FMusicLibPlayAllNextModuleProcessQueue     ; Event processing routine
+Y:0068 rrrrrr                 715     dc  FMusicLibPlayAllNextModuleInit             ; Initialization routine
+Y:0069 000000                 716     dc  0                               ; Signal Timer High
+Y:006A 000000                 717     dc  0                               ; Signal Timer Low
+Y:006B rrrrrr                 718     dc  EmptyFunction                   ; BackGround Processing routine
+                              720 MusicLibPlayAllPrevModuleEntry
+Y:006C 800001                 721     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:006D 800002                 722     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:006E 0003D4                 723     dc  RSRC_MUSICLIB_PLAYALLPREV_MODULE           ; Resource number of code
+Y:006F rrrrrr                 724     dc  MusicLibPlayAllPrevQueueDescriptor         ; Message queue descriptor
+Y:0070 rrrrrr                 725     dc  FMusicLibPlayAllPrevModuleProcessQueue     ; Event processing routine
+Y:0071 rrrrrr                 726     dc  FMusicLibPlayAllPrevModuleInit             ; Initialization routine
+Y:0072 000000                 727     dc  0                               ; Signal Timer High
+Y:0073 000000                 728     dc  0                               ; Signal Timer Low
+Y:0074 rrrrrr                 729     dc  EmptyFunction                   ; BackGround Processing routine
+                              731 MusicLibShuffleModuleEntry
+Y:0075 800001                 732     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0076 800002                 733     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0077 0003D5                 734     dc  RSRC_MUSICLIB_SHUFFLE_MODULE           ; Resource number of code
+Y:0078 rrrrrr                 735     dc  MusicLibShuffleQueueDescriptor         ; Message queue descriptor
+Y:0079 rrrrrr                 736     dc  FMusicLibShuffleModuleProcessQueue     ; Event processing routine
+Y:007A rrrrrr                 737     dc  FMusicLibShuffleModuleInit             ; Initialization routine
+Y:007B 000000                 738     dc  0                               ; Signal Timer High
+Y:007C 000000                 739     dc  0                               ; Signal Timer Low
+Y:007D rrrrrr                 740     dc  EmptyFunction                   ; BackGround Processing routine
+                              742 MusicLibVoiceModuleEntry
+Y:007E 800001                 743     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:007F 800002                 744     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0080 0003F5                 745     dc  RSRC_MUSICLIB_VOICE_MODULE           ; Resource number of code
+Y:0081 rrrrrr                 746     dc  MusicLibVoiceQueueDescriptor         ; Message queue descriptor
+Y:0082 rrrrrr                 747     dc  FMusicLibVoiceModuleProcessQueue     ; Event processing routine
+Y:0083 rrrrrr                 748     dc  FMusicLibVoiceModuleInit             ; Initialization routine
+Y:0084 000000                 749     dc  0                               ; Signal Timer High
+Y:0085 000000                 750     dc  0                               ; Signal Timer Low
+Y:0086 rrrrrr                 751     dc  EmptyFunction                   ; BackGround Processing routine
+                              753 MusicLibVoicePlayModuleEntry
+Y:0087 800001                 754     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0088 800002                 755     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0089 0003F6                 756     dc  RSRC_MUSICLIB_VOICEPLAY_MODULE           ; Resource number of code
+Y:008A rrrrrr                 757     dc  MusicLibVoicePlayQueueDescriptor         ; Message queue descriptor
+Y:008B rrrrrr                 758     dc  FMusicLibVoicePlayModuleProcessQueue     ; Event processing routine
+Y:008C rrrrrr                 759     dc  FMusicLibVoicePlayModuleInit             ; Initialization routine
+Y:008D 000000                 760     dc  0                               ; Signal Timer High
+Y:008E 000000                 761     dc  0                               ; Signal Timer Low
+Y:008F rrrrrr                 762     dc  EmptyFunction                   ; BackGround Processing routine
+                              764 MusicLibMergeModuleEntry
+Y:0090 800001                 765     dc  EVENT_INIT|EVENT_NONE           ; Event signal
+Y:0091 800002                 766     dc  EVENT_INIT|EVENT_MESSAGE        ; Event wait
+Y:0092 0003F8                 767     dc  RSRC_MUSICLIB_MERGE_MODULE           ; Resource number of code
+Y:0093 rrrrrr                 768     dc  MusicLibMergeQueueDescriptor         ; Message queue descriptor
+Y:0094 rrrrrr                 769     dc  FMusicLibMergeModuleProcessQueue     ; Event processing routine
+Y:0095 rrrrrr                 770     dc  FMusicLibMergeModuleInit             ; Initialization routine
+Y:0096 000000                 771     dc  0                               ; Signal Timer High
+Y:0097 000000                 772     dc  0                               ; Signal Timer Low
+Y:0098 rrrrrr                 773     dc  EmptyFunction                   ; BackGround Processing routine
+                              799     endsec

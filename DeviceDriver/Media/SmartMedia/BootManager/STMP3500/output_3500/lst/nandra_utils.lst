@@ -1,0 +1,1630 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\make\cc4f303b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DD3500 -DINCLUDE_TYPE2_NAND -DINCLUDE_MLC_DESCRIPTORS
+                                3 ;          -DINCLUDE_RENESAS_DESCRIPTORS -DFAT16 -DDEBUG -DDEVICE_3500 -DENGR_BD
+                                4 ;          -DWMAAPI_NO_DRM -w68 -w66
+                                5 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\DeviceDriv
+                                  er
+                                6 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\API
+                                7 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\CH9
+                                8 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\Include
+                                9 ;          -I..\..\..\..\..\..\inc
+                               10 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500
+                               11 ;          -I -I..\output_3500\include -rr6 -rn6 -rm6 -g -O2 -R -Cs -MmxL
+                               12 
+                               19 
+                               20 ; nandra_utils.c:
+                               21 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                               22 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                               23 ; 3    |//
+                               24 ; 4    |// Filename: NandRA_utils.c
+                               25 ; 5    |// Description: Redundant Area Utility (access) routine
+                               26 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                               27 ; 7    |
+                               28 ; 8    |
+                               29 ; 9    |
+                               30 ; 10   |/////////////////////////////////////////////////////////////////////////////////
+                               31 ; 11   |//  Include Files
+                               32 ; 12   |/////////////////////////////////////////////////////////////////////////////////
+                               33 ; 13   |
+                               34 ; 14   |#include "types.h"
+                               35 
+                               37 
+                               38 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               39 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                               40 ; 3    |//
+                               41 ; 4    |// Filename: types.h
+                               42 ; 5    |// Description: Standard data types
+                               43 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                               44 ; 7    |
+                               45 ; 8    |#ifndef _TYPES_H
+                               46 ; 9    |#define _TYPES_H
+                               47 ; 10   |
+                               48 ; 11   |// TODO:  move this outta here!
+                               49 ; 12   |#if !defined(NOERROR)
+                               50 ; 13   |#define NOERROR 0
+                               51 ; 14   |#define SUCCESS 0
+                               52 ; 15   |#endif 
+                               53 ; 16   |#if !defined(SUCCESS)
+                               54 ; 17   |#define SUCCESS  0
+                               55 ; 18   |#endif
+                               56 ; 19   |#if !defined(ERROR)
+                               57 ; 20   |#define ERROR   -1
+                               58 ; 21   |#endif
+                               59 ; 22   |#if !defined(FALSE)
+                               60 ; 23   |#define FALSE 0
+                               61 ; 24   |#endif
+                               62 ; 25   |#if !defined(TRUE)
+                               63 ; 26   |#define TRUE  1
+                               64 ; 27   |#endif
+                               65 ; 28   |
+                               66 ; 29   |#if !defined(NULL)
+                               67 ; 30   |#define NULL 0
+                               68 ; 31   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               69 ; 32   |
+                               70 ; 33   |#define MAX_INT     0x7FFFFF
+                               71 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                               72 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                               73 ; 36   |#define MAX_ULONG   (-1) 
+                               74 ; 37   |
+                               75 ; 38   |#define WORD_SIZE   24              // word size in bits
+                               76 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                               77 ; 40   |
+                               78 ; 41   |
+                               79 ; 42   |#define BYTE    unsigned char       // btVarName
+                               80 ; 43   |#define CHAR    signed char         // cVarName
+                               81 ; 44   |#define USHORT  unsigned short      // usVarName
+                               82 ; 45   |#define SHORT   unsigned short      // sVarName
+                               83 ; 46   |#define WORD    unsigned int        // wVarName
+                               84 ; 47   |#define INT     signed int          // iVarName
+                               85 ; 48   |#define DWORD   unsigned long       // dwVarName
+                               86 ; 49   |#define LONG    signed long         // lVarName
+                               87 ; 50   |#define BOOL    unsigned int        // bVarName
+                               88 ; 51   |#define FRACT   _fract              // frVarName
+                               89 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                               90 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                               91 ; 54   |#define FLOAT   float               // fVarName
+                               92 ; 55   |#define DBL     double              // dVarName
+                               93 ; 56   |#define ENUM    enum                // eVarName
+                               94 ; 57   |#define CMX     _complex            // cmxVarName
+                               95 ; 58   |typedef WORD UCS3;                   // 
+                               96 ; 59   |
+                               97 ; 60   |#define UINT16  unsigned short
+                               98 ; 61   |#define UINT8   unsigned char   
+                               99 ; 62   |#define UINT32  unsigned long
+                              100 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              101 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              102 ; 65   |#define WCHAR   UINT16
+                              103 ; 66   |
+                              104 ; 67   |//UINT128 is 16 bytes or 6 words
+                              105 ; 68   |typedef struct UINT128_3500 {   
+                              106 ; 69   |    int val[6];     
+                              107 ; 70   |} UINT128_3500;
+                              108 ; 71   |
+                              109 ; 72   |#define UINT128   UINT128_3500
+                              110 ; 73   |
+                              111 ; 74   |// Little endian word packed byte strings:   
+                              112 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              113 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              114 ; 77   |// Little endian word packed byte strings:   
+                              115 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              116 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              117 ; 80   |
+                              118 ; 81   |// Declare Memory Spaces To Use When Coding
+                              119 ; 82   |// A. Sector Buffers
+                              120 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              121 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              122 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              123 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              124 
+                              126 
+                              127 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              128 ; 88   |// B. Media DDI Memory
+                              129 ; 89   |#define MEDIA_DDI_MEM _Y
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              130 ; 90   |
+                              131 ; 91   |
+                              132 ; 92   |
+                              133 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              134 ; 94   |// Examples of circular pointers:
+                              135 ; 95   |//    INT CIRC cpiVarName
+                              136 ; 96   |//    DWORD CIRC cpdwVarName
+                              137 ; 97   |
+                              138 ; 98   |#define RETCODE INT                 // rcVarName
+                              139 ; 99   |
+                              140 ; 100  |// generic bitfield structure
+                              141 ; 101  |struct Bitfield {
+                              142 ; 102  |    unsigned int B0  :1;
+                              143 ; 103  |    unsigned int B1  :1;
+                              144 ; 104  |    unsigned int B2  :1;
+                              145 ; 105  |    unsigned int B3  :1;
+                              146 ; 106  |    unsigned int B4  :1;
+                              147 ; 107  |    unsigned int B5  :1;
+                              148 ; 108  |    unsigned int B6  :1;
+                              149 ; 109  |    unsigned int B7  :1;
+                              150 ; 110  |    unsigned int B8  :1;
+                              151 ; 111  |    unsigned int B9  :1;
+                              152 ; 112  |    unsigned int B10 :1;
+                              153 ; 113  |    unsigned int B11 :1;
+                              154 ; 114  |    unsigned int B12 :1;
+                              155 ; 115  |    unsigned int B13 :1;
+                              156 ; 116  |    unsigned int B14 :1;
+                              157 ; 117  |    unsigned int B15 :1;
+                              158 ; 118  |    unsigned int B16 :1;
+                              159 ; 119  |    unsigned int B17 :1;
+                              160 ; 120  |    unsigned int B18 :1;
+                              161 ; 121  |    unsigned int B19 :1;
+                              162 ; 122  |    unsigned int B20 :1;
+                              163 ; 123  |    unsigned int B21 :1;
+                              164 ; 124  |    unsigned int B22 :1;
+                              165 ; 125  |    unsigned int B23 :1;
+                              166 ; 126  |};
+                              167 ; 127  |
+                              168 ; 128  |union BitInt {
+                              169 ; 129  |        struct Bitfield B;
+                              170 ; 130  |        int        I;
+                              171 ; 131  |};
+                              172 ; 132  |
+                              173 ; 133  |#define MAX_MSG_LENGTH 10
+                              174 ; 134  |struct CMessage
+                              175 ; 135  |{
+                              176 ; 136  |        unsigned int m_uLength;
+                              177 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              178 ; 138  |};
+                              179 ; 139  |
+                              180 ; 140  |typedef struct {
+                              181 ; 141  |    WORD m_wLength;
+                              182 ; 142  |    WORD m_wMessage;
+                              183 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              184 ; 144  |} Message;
+                              185 ; 145  |
+                              186 ; 146  |struct MessageQueueDescriptor
+                              187 ; 147  |{
+                              188 ; 148  |        int *m_pBase;
+                              189 ; 149  |        int m_iModulo;
+                              190 ; 150  |        int m_iSize;
+                              191 ; 151  |        int *m_pHead;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              192 ; 152  |        int *m_pTail;
+                              193 ; 153  |};
+                              194 ; 154  |
+                              195 ; 155  |struct ModuleEntry
+                              196 ; 156  |{
+                              197 ; 157  |    int m_iSignaledEventMask;
+                              198 ; 158  |    int m_iWaitEventMask;
+                              199 ; 159  |    int m_iResourceOfCode;
+                              200 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              201 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              202 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              203 ; 163  |    int m_uTimeOutHigh;
+                              204 ; 164  |    int m_uTimeOutLow;
+                              205 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              206 ; 166  |};
+                              207 ; 167  |
+                              208 ; 168  |union WaitMask{
+                              209 ; 169  |    struct B{
+                              210 ; 170  |        unsigned int m_bNone     :1;
+                              211 ; 171  |        unsigned int m_bMessage  :1;
+                              212 ; 172  |        unsigned int m_bTimer    :1;
+                              213 ; 173  |        unsigned int m_bButton   :1;
+                              214 ; 174  |    } B;
+                              215 ; 175  |    int I;
+                              216 ; 176  |} ;
+                              217 ; 177  |
+                              218 ; 178  |
+                              219 ; 179  |struct Button {
+                              220 ; 180  |        WORD wButtonEvent;
+                              221 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              222 ; 182  |};
+                              223 ; 183  |
+                              224 ; 184  |struct Message {
+                              225 ; 185  |        WORD wMsgLength;
+                              226 ; 186  |        WORD wMsgCommand;
+                              227 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              228 ; 188  |};
+                              229 ; 189  |
+                              230 ; 190  |union EventTypes {
+                              231 ; 191  |        struct CMessage msg;
+                              232 ; 192  |        struct Button Button ;
+                              233 ; 193  |        struct Message Message;
+                              234 ; 194  |};
+                              235 ; 195  |
+                              236 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              237 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              238 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              239 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              240 ; 200  |
+                              241 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              242 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              243 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              244 ; 204  |
+                              245 ; 205  |#if DEBUG
+                              246 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              247 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              248 ; 208  |#else 
+                              249 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              250 ; 210  |#define DebugBuildAssert(x)    
+                              251 ; 211  |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              252 ; 212  |
+                              253 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              254 ; 214  |//  #pragma asm
+                              255 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              256 ; 216  |//  #pragma endasm
+                              257 ; 217  |
+                              258 ; 218  |
+                              259 ; 219  |#ifdef COLOR_262K
+                              260 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              261 ; 221  |#elif defined(COLOR_65K)
+                              262 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              263 ; 223  |#else
+                              264 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              265 ; 225  |#endif
+                              266 ; 226  |    
+                              267 ; 227  |#endif // #ifndef _TYPES_H
+                              268 
+                              270 
+                              271 ; 15   |//#include "ddildl.h"
+                              272 ; 16   |#include "..\..\COMMON\nandstructs.h"
+                              273 
+                              275 
+                              276 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                              277 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                              278 ; 3    |//
+                              279 ; 4    |// Filename: nandstructs.h
+                              280 ; 5    |// Description: Structure definitions for NAND descriptors
+                              281 ; 6    |///////////////////////////////////////////////////////////////////////////////
+                              282 ; 7    |
+                              283 ; 8    |#ifndef NAND_STRUCTS_H
+                              284 ; 9    |#define NAND_STRUCTS_H 1
+                              285 ; 10   |
+                              286 ; 11   |// By design:
+                              287 ; 12   |
+                              288 ; 13   |
+                              289 ; 14   |
+                              290 ; 15   |///////////////////////////////////////////////////////////////////////////////
+                              291 ; 16   |// Sector/Page Descriptor
+                              292 ; 17   |struct NANDSectorDescriptorStruct {
+                              293 ; 18   |  WORD  iSectorTotalSize;               // Total Sector size (Data + Redundant Area)
+                              294 ; 19   |  WORD  iSectorDataSize;            // Number Data bytes per Page
+                              295 ; 20   |  WORD  iRedundantAreaSize;             // Number of bytes per Redundant/Spare Area
+                              296 ; 21   |
+                              297 ; 22   |  // A physical Page may contain multiple Sectors.  
+                              298 ; 23   |  // It is assumed that the number or Sectors per Page is always 
+                              299 ; 24   |  // a power of 2 (i.e. 1,2,4...)
+                              300 ; 25   |  // The following elements are used to help address the Sectors within a Page
+                              301 ; 26   |  WORD  iSectorToPageShift;             // Number of right shifts to compute Page Num from
+                                   Sector Num
+                              302 ; 27   |  WORD  iSectorInPageMask;              // Mask to extract "relative sector in Page" from 
+                                  absolute Sector Num
+                              303 ; 28   |};
+                              304 ; 29   |
+                              305 ; 30   |
+                              306 ; 31   |///////////////////////////////////////////////////////////////////////////////
+                              307 ; 32   |// Block Descriptor
+                              308 ; 33   |struct NANDBlockDescriptorStruct {
+                              309 ; 34   |  WORD  NumSectorsPerBlock;
+                              310 ; 35   |  WORD  PagesPerBlock;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              311 ; 36   |  WORD  MaxBlocksPerZone;
+                              312 ; 37   |};
+                              313 ; 38   |
+                              314 ; 39   |
+                              315 ; 40   |
+                              316 ; 41   |
+                              317 ; 42   |
+                              318 ; 43   |///////////////////////////////////////////////////////////////////////////////
+                              319 ; 44   |// RedundantArea Descriptor
+                              320 ; 45   |struct NANDRedundantAreaDescriptorStruct {
+                              321 ; 46   |                                // Describes locations of fields in the Redundant Area *wh
+                                  en it
+                              322 ; 47   |                                // is read by itself* (i.e. not as part of a FullSector re
+                                  ad).
+                              323 ; 48   |
+                              324 ; 49   |  WORD  BadBlockFlag_Offset;    // 24-bit word offset to Bad Block Flag
+                              325 ; 50   |  WORD  BadBlockFlag_ByteNum;   // byte number (0-2) of Bad Block Flag
+                              326 ; 51   |  WORD  Tag0_Offset;                    // 24-bit word offset to Tag0
+                              327 ; 52   |  WORD  Tag0_ByteNum;                   // byte number of Tag0
+                              328 ; 53   |  WORD  Tag1_Offset;                    // 24-bit word offset to Tag1
+                              329 ; 54   |  WORD  Tag1_ByteNum;                   // byte number of Tag1
+                              330 ; 55   |};
+                              331 ; 56   |
+                              332 ; 57   |#define NAND_GOOD_BLOCK_VALUE   (0x0000ff)
+                              333 ; 58   |
+                              334 ; 59   |///////////////////////////////////////////////////////////////////////////////
+                              335 ; 60   |// Device Addressing Descriptor
+                              336 ; 61   |struct NANDDeviceAddressingDescriptorStruct {
+                              337 ; 62   |
+                              338 ; 63   |  WORD  iNumColumnBytes;        // Number of Column Address bytes required
+                              339 ; 64   |  WORD  iNumRowBytes;           // Number of Row Address bytes required
+                              340 ; 65   |};
+                              341 ; 66   |
+                              342 ; 67   |
+                              343 ; 68   |///////////////////////////////////////////////////////////////////////////////
+                              344 ; 69   |// NAND Command Codes Descriptor
+                              345 ; 70   |struct NANDCommandCodesStruct {
+                              346 ; 71   |
+                              347 ; 72   |  // NOTE: Command are a single byte, in the LSByte.  A value of -1 (0xffffff) indicates
+                              348 ; 73   |  //        a code is not available for the current device.
+                              349 ; 74   |
+                              350 ; 75   |  WORD iReadIDCode;                             // ReadID
+                              351 ; 76   |  WORD iReadStatusCode;             // Read Status
+                              352 ; 77   |  WORD iResetCode;                  // Reset
+                              353 ; 78   |
+                              354 ; 79   |  WORD iSerialDataInputCode;            // Serial Data Input
+                              355 ; 80   |  WORD iRead1Code;                              // Read (Mode 1)
+                              356 ; 81   |  WORD iRead1_2ndCycleCode;         // Second Cycle for Read (Type 2 NANDs)
+                              357 ; 82   |  WORD iRead2Code;                              // Read (Mode 2)
+                              358 ; 83   |  WORD iRead3Code;                              // Read (Mode 3)
+                              359 ; 84   |
+                              360 ; 85   |#ifdef NAND_WRITES_ALLOWED
+                              361 ; 86   |  WORD iPageProgramCode;                // Page Program
+                              362 ; 87   |  WORD iCacheProgramCode;           // Cache Program
+                              363 ; 88   |
+                              364 ; 89   |  // TBD: Add ReadForCopy Back 0x00 & 0x35
+                              365 ; 90   |  WORD iCopyBackProgramCode;        // Copy Back Program
+                              366 ; 91   |  // TBD: Add Copy Back Program 2nd Cycle 0x10
+                              367 ; 92   |
+                              368 ; 93   |  WORD iBlockEraseCode;             // Block Erase
+                              369 ; 94   |  WORD iBlockErase2Code;            // Block Erase 2
+                              370 ; 95   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              371 ; 96   |  WORD iRandomDataInCode;           // Random Data Input
+                              372 ; 97   |
+                              373 ; 98   |  WORD iRandomDataOutCode;          // Random Data Output
+                              374 ; 99   |  WORD iRandomDataOut_2ndCycleCode; // Random Data Output 2nd Cycle
+                              375 ; 100  |
+                              376 ; 101  |  WORD iMultiPlaneBlockEraseCode;       // Multiplane Block Erase
+                              377 ; 102  |
+                              378 ; 103  |  WORD iReadMultiPlaneStatusCode;   // Read Multiplane Status
+                              379 ; 104  |#endif
+                              380 ; 105  |};
+                              381 ; 106  |
+                              382 ; 107  |
+                              383 ; 108  |
+                              384 ; 109  |///////////////////////////////////////////////////////////////////////////////
+                              385 ; 110  |// Device Driver API Functions
+                              386 ; 111  |struct NANDDeviceDriverFunctionsStruct {
+                              387 ; 112  |
+                              388 ; 113  |  _reentrant WORD (*pReadSectorData)(struct NANDDescriptorStruct _P *pNANDDevice, WORD iCh
+                                  ip,
+                              389 ; 114  |                                     WORD iSectorNum, WORD *pDataBuf, BYTE bType);
+                              390 ; 115  |//  _reentrant WORD (*pReadSectorRedundant)(struct NANDDescriptorStruct _P *pNANDDevice, W
+                                  ORD iChip, 
+                              391 ; 116  |//                                          WORD iSectorNum, WORD *pDataBuf);
+                              392 ; 117  |  _reentrant WORD (*pResetNand)(WORD iDeviceNum);
+                              393 ; 118  |
+                              394 ; 119  |#ifdef NAND_WRITES_ALLOWED
+                              395 ; 120  |  // WRITE Functions
+                              396 ; 121  |
+                              397 ; 122  |  _reentrant WORD (*pWriteSectorData)(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              398 ; 123  |                                      WORD iChip, 
+                              399 ; 124  |                                      WORD iSectorNum, WORD *pDataBuf);
+                              400 ; 125  |  _reentrant WORD (*pEraseBlock)(struct NANDDescriptorStruct _P *pNANDDevice, 
+                              401 ; 126  |                                 WORD iDeviceNum, WORD iBlockNum);
+                              402 ; 127  |#endif
+                              403 ; 128  |};
+                              404 ; 129  |
+                              405 ; 130  |
+                              406 ; 131  |///////////////////////////////////////////////////////////////////////////////
+                              407 ; 132  |// Hardware API Functions
+                              408 ; 133  |struct NANDHardwareAPIFunctionsStruct {
+                              409 ; 134  |  _reentrant WORD (*pPortInit)(WORD iDeviceNum);
+                              410 ; 135  |  _reentrant WORD (*pWritePortCmd)(WORD iDeviceNum, WORD iCommandCode, WORD bDeassertCEn);
+                                  
+                              411 ; 136  |  _reentrant WORD (*pWritePortAddr)(WORD iDeviceNum, WORD iNumColBytes, 
+                              412 ; 137  |                         WORD iColumnAddress, WORD iNumRowBytes, 
+                              413 ; 138  |                         WORD iRowAddress, WORD bDeassertCEn);
+                              414 ; 139  |  _reentrant WORD (*pReadPortData)(WORD iDeviceNum, WORD iNumBytesToRead, 
+                              415 ; 140  |                                   WORD *pBuffer, WORD b16BitMode);
+                              416 ; 141  |  _reentrant WORD (*pWaitForReadyPort)(WORD iDeviceNum, WORD iTimeoutCount);
+                              417 ; 142  |  _reentrant WORD (*pPowerUpPads)(void);
+                              418 ; 143  |  _reentrant WORD (*pPowerUpPads_16bit)(void);
+                              419 ; 144  |  _reentrant WORD (*pTerminatePort)(WORD iDeviceNum);
+                              420 ; 145  |};
+                              421 ; 146  |
+                              422 ; 147  |
+                              423 ; 148  |#ifdef NAND_WRITES_ALLOWED
+                              424 ; 149  |struct NANDHardwareAPI_w_FunctionsStruct {
+                              425 ; 150  |  // WRITE Functions
+                              426 ; 151  |
+                              427 ; 152  |  _reentrant void (*pEnableWritesPort)(WORD WPnum);
+                              428 ; 153  |  _reentrant void (*pDisableWritesPort)(WORD WPnum);
+                              429 ; 154  |  _reentrant WORD (*pWriteDataPort)(WORD iDeviceNum, WORD iNumBytesToWrite, 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              430 ; 155  |                                            WORD *pBuffer, WORD b16BitMode);
+                              431 ; 156  |};
+                              432 ; 157  |#endif
+                              433 ; 158  |
+                              434 ; 159  |
+                              435 ; 160  |
+                              436 ; 161  |
+                              437 ; 162  |///////////////////////////////////////////////////////////////////////////////
+                              438 ; 163  |// This SubStruct is a consolidation for memory savings. 
+                              439 ; 164  |typedef struct NANDDescriptorSubStruct{
+                              440 ; 165  |    struct NANDSectorDescriptorStruct _P *pPageDescriptor;
+                              441 ; 166  |    struct NANDBlockDescriptorStruct _P *pBlockDescriptor;
+                              442 ; 167  |//    struct NANDRedundantAreaDescriptorStruct _P *pRedundantAreaDescriptor;
+                              443 ; 168  |    struct NANDDeviceDriverFunctionsStruct _P *pDeviceDriverFunctions;
+                              444 ; 169  |    struct NANDCommandCodesStruct _P *pDeviceCommandCodes;
+                              445 ; 170  |    struct NANDDeviceAddressingDescriptorStruct _P *pDeviceAddressing;    
+                              446 ; 171  |    WORD  NandType;       // = 1 (SSFDC), 2 (e.g. Samsung 1Gbit), or 3 (e.g. MLC)
+                              447 ; 172  |};
+                              448 ; 173  |
+                              449 ; 174  |// The NANDDescriptorStruct is whole NAND descriptor - includes pointers to some of the ab
+                                  ove structs
+                              450 ; 175  |typedef struct NANDDescriptorStruct {
+                              451 ; 176  |  struct NANDDescriptorSubStruct _P *pNandDescriptorSubStruct; // consolidated
+                              452 ; 177  |  WORD  DataBusWidth;   // BusWidth = 8 or 16 bits
+                              453 ; 178  |                                                // Use this parameter only to initialize t
+                                  he global CurrentNANDBusWidth
+                              454 ; 179  |                                                // Some NANDs required more real time proc
+                                  ess to determine  their bus
+                              455 ; 180  |                                                // width. (see CurrentNANDBusWidth declara
+                                  tion Note for further information)
+                              456 ; 181  |//WORD  TotalSectors;   // Unused in bootmanager
+                              457 ; 182  |//WORD  TotalPages;     // Unused in bootmanager
+                              458 ; 183  |  WORD  TotalBlocks;
+                              459 ; 184  |//WORD  TotalZones;     // Unused in bootmanager
+                              460 ; 185  |} NAND_DESCRIPTOR, *P_NAND_DESCRIPTOR;
+                              461 ; 186  |
+                              462 ; 187  |
+                              463 ; 188  |
+                              464 ; 189  |typedef struct {
+                              465 ; 190  |  WORD    DeviceManufacturerCode;                 // 00:Device:Manufacturer
+                              466 ; 191  |  struct NANDDescriptorStruct _P *pNANDDescriptor;
+                              467 ; 192  |} NAND_DEVICECODE_MAP;
+                              468 ; 193  |
+                              469 ; 194  |#define TYPE1_NAND  1
+                              470 ; 195  |#define TYPE2_NAND  2
+                              471 ; 196  |#define TYPE3_NAND  3
+                              472 ; 197  |#define TYPE4_NAND  4
+                              473 ; 198  |#define TYPE5_NAND  5
+                              474 ; 199  |#define TYPE6_NAND  6
+                              475 ; 200  |#define TYPE7_NAND  7
+                              476 ; 201  |
+                              477 ; 202  |
+                              478 ; 203  |#endif
+                              479 
+                              481 
+                              482 ; 17   |#include "NANDRA_utils.h"
+                              483 
+                              485 
+                              486 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              487 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              488 ; 3    |//
+                              489 ; 4    |// Filename: NANDRAUtils.h
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              490 ; 5    |// Description: Defs and function prototypes for Redundant Area Access Functions
+                              491 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                              492 ; 7    |
+                              493 ; 8    |
+                              494 ; 9    |#ifndef NANDRA_UTILS_H
+                              495 ; 10   |#define NANDRA_UTILS_H 1
+                              496 ; 11   |
+                              497 ; 12   |
+                              498 ; 13   |/////////////////////////////////////////////////////////////////////////////////
+                              499 ; 14   |//  Includes
+                              500 ; 15   |/////////////////////////////////////////////////////////////////////////////////
+                              501 ; 16   |//#include "../COMMON/nandstructs.h"
+                              502 ; 17   |#include "types.h"
+                              503 
+                              505 
+                              506 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              507 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              508 ; 3    |//
+                              509 ; 4    |// Filename: types.h
+                              510 ; 5    |// Description: Standard data types
+                              511 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              512 ; 7    |
+                              513 ; 8    |#ifndef _TYPES_H
+                              514 ; 9    |#define _TYPES_H
+                              515 ; 10   |
+                              516 ; 11   |// TODO:  move this outta here!
+                              517 ; 12   |#if !defined(NOERROR)
+                              518 ; 13   |#define NOERROR 0
+                              519 ; 14   |#define SUCCESS 0
+                              520 ; 15   |#endif 
+                              521 ; 16   |#if !defined(SUCCESS)
+                              522 ; 17   |#define SUCCESS  0
+                              523 ; 18   |#endif
+                              524 ; 19   |#if !defined(ERROR)
+                              525 ; 20   |#define ERROR   -1
+                              526 ; 21   |#endif
+                              527 ; 22   |#if !defined(FALSE)
+                              528 ; 23   |#define FALSE 0
+                              529 ; 24   |#endif
+                              530 ; 25   |#if !defined(TRUE)
+                              531 ; 26   |#define TRUE  1
+                              532 ; 27   |#endif
+                              533 ; 28   |
+                              534 ; 29   |#if !defined(NULL)
+                              535 ; 30   |#define NULL 0
+                              536 ; 31   |#endif
+                              537 ; 32   |
+                              538 ; 33   |#define MAX_INT     0x7FFFFF
+                              539 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              540 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              541 ; 36   |#define MAX_ULONG   (-1) 
+                              542 ; 37   |
+                              543 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              544 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              545 ; 40   |
+                              546 ; 41   |
+                              547 ; 42   |#define BYTE    unsigned char       // btVarName
+                              548 ; 43   |#define CHAR    signed char         // cVarName
+                              549 ; 44   |#define USHORT  unsigned short      // usVarName
+                              550 ; 45   |#define SHORT   unsigned short      // sVarName
+                              551 ; 46   |#define WORD    unsigned int        // wVarName
+                              552 ; 47   |#define INT     signed int          // iVarName
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              553 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              554 ; 49   |#define LONG    signed long         // lVarName
+                              555 ; 50   |#define BOOL    unsigned int        // bVarName
+                              556 ; 51   |#define FRACT   _fract              // frVarName
+                              557 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              558 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              559 ; 54   |#define FLOAT   float               // fVarName
+                              560 ; 55   |#define DBL     double              // dVarName
+                              561 ; 56   |#define ENUM    enum                // eVarName
+                              562 ; 57   |#define CMX     _complex            // cmxVarName
+                              563 ; 58   |typedef WORD UCS3;                   // 
+                              564 ; 59   |
+                              565 ; 60   |#define UINT16  unsigned short
+                              566 ; 61   |#define UINT8   unsigned char   
+                              567 ; 62   |#define UINT32  unsigned long
+                              568 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              569 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              570 ; 65   |#define WCHAR   UINT16
+                              571 ; 66   |
+                              572 ; 67   |//UINT128 is 16 bytes or 6 words
+                              573 ; 68   |typedef struct UINT128_3500 {   
+                              574 ; 69   |    int val[6];     
+                              575 ; 70   |} UINT128_3500;
+                              576 ; 71   |
+                              577 ; 72   |#define UINT128   UINT128_3500
+                              578 ; 73   |
+                              579 ; 74   |// Little endian word packed byte strings:   
+                              580 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              581 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              582 ; 77   |// Little endian word packed byte strings:   
+                              583 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              584 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              585 ; 80   |
+                              586 ; 81   |// Declare Memory Spaces To Use When Coding
+                              587 ; 82   |// A. Sector Buffers
+                              588 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              589 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              590 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              591 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              592 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              593 ; 88   |// B. Media DDI Memory
+                              594 ; 89   |#define MEDIA_DDI_MEM _Y
+                              595 ; 90   |
+                              596 ; 91   |
+                              597 ; 92   |
+                              598 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              599 ; 94   |// Examples of circular pointers:
+                              600 ; 95   |//    INT CIRC cpiVarName
+                              601 ; 96   |//    DWORD CIRC cpdwVarName
+                              602 ; 97   |
+                              603 ; 98   |#define RETCODE INT                 // rcVarName
+                              604 ; 99   |
+                              605 ; 100  |// generic bitfield structure
+                              606 ; 101  |struct Bitfield {
+                              607 ; 102  |    unsigned int B0  :1;
+                              608 ; 103  |    unsigned int B1  :1;
+                              609 ; 104  |    unsigned int B2  :1;
+                              610 ; 105  |    unsigned int B3  :1;
+                              611 ; 106  |    unsigned int B4  :1;
+                              612 ; 107  |    unsigned int B5  :1;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              613 ; 108  |    unsigned int B6  :1;
+                              614 ; 109  |    unsigned int B7  :1;
+                              615 ; 110  |    unsigned int B8  :1;
+                              616 ; 111  |    unsigned int B9  :1;
+                              617 ; 112  |    unsigned int B10 :1;
+                              618 ; 113  |    unsigned int B11 :1;
+                              619 ; 114  |    unsigned int B12 :1;
+                              620 ; 115  |    unsigned int B13 :1;
+                              621 ; 116  |    unsigned int B14 :1;
+                              622 ; 117  |    unsigned int B15 :1;
+                              623 ; 118  |    unsigned int B16 :1;
+                              624 ; 119  |    unsigned int B17 :1;
+                              625 ; 120  |    unsigned int B18 :1;
+                              626 ; 121  |    unsigned int B19 :1;
+                              627 ; 122  |    unsigned int B20 :1;
+                              628 ; 123  |    unsigned int B21 :1;
+                              629 ; 124  |    unsigned int B22 :1;
+                              630 ; 125  |    unsigned int B23 :1;
+                              631 ; 126  |};
+                              632 ; 127  |
+                              633 ; 128  |union BitInt {
+                              634 ; 129  |        struct Bitfield B;
+                              635 ; 130  |        int        I;
+                              636 ; 131  |};
+                              637 ; 132  |
+                              638 ; 133  |#define MAX_MSG_LENGTH 10
+                              639 ; 134  |struct CMessage
+                              640 ; 135  |{
+                              641 ; 136  |        unsigned int m_uLength;
+                              642 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              643 ; 138  |};
+                              644 ; 139  |
+                              645 ; 140  |typedef struct {
+                              646 ; 141  |    WORD m_wLength;
+                              647 ; 142  |    WORD m_wMessage;
+                              648 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              649 ; 144  |} Message;
+                              650 ; 145  |
+                              651 ; 146  |struct MessageQueueDescriptor
+                              652 ; 147  |{
+                              653 ; 148  |        int *m_pBase;
+                              654 ; 149  |        int m_iModulo;
+                              655 ; 150  |        int m_iSize;
+                              656 ; 151  |        int *m_pHead;
+                              657 ; 152  |        int *m_pTail;
+                              658 ; 153  |};
+                              659 ; 154  |
+                              660 ; 155  |struct ModuleEntry
+                              661 ; 156  |{
+                              662 ; 157  |    int m_iSignaledEventMask;
+                              663 ; 158  |    int m_iWaitEventMask;
+                              664 ; 159  |    int m_iResourceOfCode;
+                              665 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              666 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              667 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              668 ; 163  |    int m_uTimeOutHigh;
+                              669 ; 164  |    int m_uTimeOutLow;
+                              670 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              671 ; 166  |};
+                              672 ; 167  |
+                              673 ; 168  |union WaitMask{
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              674 ; 169  |    struct B{
+                              675 ; 170  |        unsigned int m_bNone     :1;
+                              676 ; 171  |        unsigned int m_bMessage  :1;
+                              677 ; 172  |        unsigned int m_bTimer    :1;
+                              678 ; 173  |        unsigned int m_bButton   :1;
+                              679 ; 174  |    } B;
+                              680 ; 175  |    int I;
+                              681 ; 176  |} ;
+                              682 ; 177  |
+                              683 ; 178  |
+                              684 ; 179  |struct Button {
+                              685 ; 180  |        WORD wButtonEvent;
+                              686 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              687 ; 182  |};
+                              688 ; 183  |
+                              689 ; 184  |struct Message {
+                              690 ; 185  |        WORD wMsgLength;
+                              691 ; 186  |        WORD wMsgCommand;
+                              692 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              693 ; 188  |};
+                              694 ; 189  |
+                              695 ; 190  |union EventTypes {
+                              696 ; 191  |        struct CMessage msg;
+                              697 ; 192  |        struct Button Button ;
+                              698 ; 193  |        struct Message Message;
+                              699 ; 194  |};
+                              700 ; 195  |
+                              701 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              702 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              703 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              704 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              705 ; 200  |
+                              706 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              707 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              708 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              709 ; 204  |
+                              710 ; 205  |#if DEBUG
+                              711 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              712 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              713 ; 208  |#else 
+                              714 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              715 ; 210  |#define DebugBuildAssert(x)    
+                              716 ; 211  |#endif
+                              717 ; 212  |
+                              718 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              719 ; 214  |//  #pragma asm
+                              720 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              721 ; 216  |//  #pragma endasm
+                              722 ; 217  |
+                              723 ; 218  |
+                              724 ; 219  |#ifdef COLOR_262K
+                              725 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              726 ; 221  |#elif defined(COLOR_65K)
+                              727 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              728 ; 223  |#else
+                              729 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              730 ; 225  |#endif
+                              731 ; 226  |    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              732 ; 227  |#endif // #ifndef _TYPES_H
+                              733 
+                              735 
+                              736 ; 18   |//#include "nandddi.h"
+                              737 ; 19   |
+                              738 ; 20   |
+                              739 ; 21   |// Declare Memory Spaces To Use When Coding
+                              740 ; 22   |// A. Sector Buffers
+                              741 ; 23   |#define SECTOR_BUFFER_MEM_X _X
+                              742 ; 24   |#define SECTOR_BUFFER_MEM_Y _Y
+                              743 ; 25   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              744 ; 26   |//typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              745 ; 27   |//typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              746 ; 28   |#define SECTOR_BUFFER   (WORD SECTOR_BUFFER_MEM)
+                              747 ; 29   |// B. Media DDI Memory
+                              748 ; 30   |#define MEDIA_DDI_MEM _Y
+                              749 ; 31   |
+                              750 ; 32   |
+                              751 ; 33   |
+                              752 ; 34   |/////////////////////////////////////////////////////////////////////////////////
+                              753 ; 35   |//  Definitions
+                              754 ; 36   |/////////////////////////////////////////////////////////////////////////////////
+                              755 ; 37   |
+                              756 ; 38   |#define RA_ECC_POS                  (SectorSizeInWordsPlusOne + 2)
+                              757 ; 39   |#define WHOLE_SECTOR TRUE
+                              758 ; 40   |#define RA_ONLY FALSE
+                              759 ; 41   |
+                              760 ; 42   |#define RA_CRC_OFFSET                   0
+                              761 ; 43   |#define RA_LBA_1_OFFSET                 1
+                              762 ; 44   |#define RA_STMP_TAG_1_OFFSET            1
+                              763 ; 45   |#define RA_RSI_0_OFFSET                 2
+                              764 ; 46   |#define RA_RSI_1_OFFSET                 3
+                              765 ; 47   |#define RA_CUSTOMER_BYTE_OFFSET         4
+                              766 ; 48   |#define RA_BLOCK_STATUS_OFFSET          5
+                              767 ; 49   |#define RA_LBA_0_OFFSET                 6
+                              768 ; 50   |#define RA_STMP_TAG_0_OFFSET            6
+                              769 ; 51   |#define RA_RS_ECC_OFFSET                7
+                              770 ; 52   |
+                              771 ; 53   |
+                              772 ; 54   |////////////////////ECC Error Defines///////////////////////////////////////////
+                              773 ; 55   |#define   COMPUTE_ECC_SUCCESS               0
+                              774 ; 56   |#define   COMPUTE_ECC_NOT_DONE              0x516
+                              775 ; 57   |
+                              776 ; 58   |#define   NANDHAL_ECC_NOERROR               0
+                              777 ; 59   |#define   NANDHAL_ECC_ERROR_FIXED           0x519
+                              778 ; 60   |#define   NANDHAL_ECC_FIX_FAILED            0x51A
+                              779 ; 61   |
+                              780 ; 62   |
+                              781 ; 63   |
+                              782 ; 64   |
+                              783 ; 65   |/////////////////////////////////////////////////////////////////////////////////
+                              784 ; 66   |//  Function Prototypes
+                              785 ; 67   |/////////////////////////////////////////////////////////////////////////////////
+                              786 ; 68   |WORD _reentrant NANDRA_ToStandardForm(WORD _X * pRA, BOOL bWholeSector);
+                              787 ; 69   |WORD _reentrant NANDRA_ToNANDForm(WORD _X * pRA, BOOL bWholeSector);
+                              788 ; 70   |WORD _reentrant NANDRAGetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                              789 ; 71   |                         WORD *pwValue);
+                              790 ; 72   |WORD _reentrant NANDRASetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                              791 ; 73   |                         WORD wValue);
+                              792 ; 74   |WORD _reentrant NANDRAGetCRC(WORD _X * pRA, BOOL bWholeSector,
+                              793 ; 75   |                         WORD *pwCRC);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              794 ; 76   |WORD _reentrant NANDRA_CRCCorrect(struct NANDDescriptorStruct _P *pNANDDesc, WORD _X * pRA
+                                  ,
+                              795 ; 77   |                          WORD iDeviceNum, WORD iSectorNum);
+                              796 ; 78   |
+                              797 ; 79   |WORD _reentrant NANDRAGetLBA(WORD _X * pRA, BOOL bWholeSector,
+                              798 ; 80   |                 WORD *pwLBA, WORD *pwLSA);
+                              799 ; 81   |
+                              800 ; 82   |WORD _reentrant NANDRAGetBlockStatus(WORD _X * pRA, BOOL bWholeSector,
+                              801 ; 83   |                         WORD *pwBlockStatus);
+                              802 ; 84   |
+                              803 ; 85   |WORD _reentrant NANDRAGetStmpCode(WORD _X * pRA, BOOL bWholeSector,
+                              804 ; 86   |                          WORD *pwStmpCode);
+                              805 ; 87   |
+                              806 ; 88   |#endif
+                              807 ; 89   |
+                              808 ; 90   |
+                              809 ; 91   |/////////////////////////////////////////////////////////////////////////////////
+                              810 ; 92   |////////////////////////////////  EOF  //////////////////////////////////////////
+                              811 ; 93   |/////////////////////////////////////////////////////////////////////////////////
+                              812 
+                              814 
+                              815 ; 18   |//#include "nanddevdrvapi.h"
+                              816 ; 19   |
+                              817 ; 20   |
+                              818 ; 21   |extern WORD _X SectorSize;
+                              819 ; 22   |extern WORD _X SectorSizeInWordsPlusOne;
+                              820 ; 23   |/////////////////////////////////////////////////////////////////////////////////
+                              821 ; 24   |//  Functions
+                              822 ; 25   |/////////////////////////////////////////////////////////////////////////////////
+                              823 ; 26   |
+                              824 ; 27   |
+                              825 ; 28   |/////////////////////////////////////////////////////////////////////////////////
+                              826 ; 29   |//  Globals
+                              827 ; 30   |/////////////////////////////////////////////////////////////////////////////////
+                              828 ; 31   |
+                              829 ; 32   |/////////////////////////////////////////////////////////////////////////////////
+                              830 ; 33   |//  Defines
+                              831 ; 34   |/////////////////////////////////////////////////////////////////////////////////
+                              832 ; 35   |
+                              833 ; 36   |
+                              834 ; 37   |//#define BLOCK_STATUS_MAJORITY    1  // not enough room for this.
+                              835 ; 38   |
+                              836 ; 39   |// Get Byte from Array macro.
+                              837 ; 40   |
+                              838 ; 41   |_asmfunc BYTE GetByteFromArrayInX( void _X * p,int n);
+                              839 ; 42   |_asmfunc void PutByteInArrayInX( void _X * p,int n, int newchar);
+                              840 ; 43   |
+                              841 ; 44   |/////////////////////////////////////////////////////////////////////////////////
+                              842 ; 45   |//  Layout 2
+                              843 ; 46   |//
+                              844 ; 47   |//  Layout 2 is a new Redundant Area Layout, which is no longer SSFDC-compliant (SmartMedi
+                                  a).
+                              845 ; 48   |//
+                              846 ; 49   |//  Layout 2 always uses Reed-Solomon ECC, which uses a 9 byte parity code.  The ECC is 
+                              847 ; 50   |//  performed over the first 519 bytes of the 528-byte sector;  the remaining 9 bytes are
+                              848 ; 51   |//  the parity code, itself.  This provides ECC protection for the "data" bytes in the 
+                              849 ; 52   |//  Redundant Area (e.g. Block Status and LBA).
+                              850 ; 53   |//
+                              851 ; 54   |//  Since applications just read the Redundant Area in many cases (e.g. to search for
+                              852 ; 55   |//  STMP blocks ot to build a USectors Map), additional protection of the "data" in the
+                              853 ; 56   |//  R.A. is provided by a CRC byte.  This byte provides a data integrity check for the oth
+                                  er
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              854 ; 57   |//  6 "data" bytes.  If you read an R.A. and the CRC check fails, you can read the whole 
+                              855 ; 58   |//  528-byte sector and use the Reed Solomon ECC to correct the errors.
+                              856 ; 59   |//
+                              857 ; 60   |//  The ECC hardware requires that the data and parity bytes each be in contiguous blocks
+                              858 ; 61   |//  of RAM (they don't have to be adjacent to each other).  But the STMP3500 Boot ROM expe
+                                  cts
+                              859 ; 62   |//  the STMP Tag to be in bytes 518 and 519 of the sector, which does not leave a block of
+                                   9
+                              860 ; 63   |//  contiguous bytes to hold the ECC parity.  So bytes have to be "juggled", one way or an
+                                  other.
+                              861 ; 64   |//  An efficient way of doing this is to swap bytes 513-515 with bytes 519-521.  In one fo
+                                  rm,
+                              862 ; 65   |//  Layout 2S ("Standard"), the 519 data bytes are contiguous, followed by 9 contiguous EC
+                                  C
+                              863 ; 66   |//  parity bytes. In the other form, Layout 2N (the image stored on NAND), the STMP Tag by
+                                  tes
+                              864 ; 67   |//  and Block Status bytes are in the positions expected by the Boot ROM, bootmanager, and
+                                  
+                              865 ; 68   |//  Boot EEPROM.  The nice feature of these two layouts is that switching between them req
+                                  uires
+                              866 ; 69   |//  just a single 24-bit WORD swap (WORD 171 with WORD 173), which is much quicker than sw
+                                  apping
+                              867 ; 70   |//  individual bytes around.
+                              868 ; 71   |//
+                              869 ; 72   |//  Another advantage of Layout 2S is that the CRC calculation can be done on two WORDS (1
+                                  71 & 
+                              870 ; 73   |//  172), instead of extracting individual bytes.  The CRC "check" will normally be done f
+                                  rom
+                              871 ; 74   |//  a 16-byte version of the R.A., in the Layout 2S form;  so it will require addressing 
+                              872 ; 75   |//  individual bytes.
+                              873 ; 76   |//
+                              874 ; 77   |//  THE RULE HERE IS THAT WE DON'T DO ANY OPERATIONS EXCEPT *SWAP* ON THE "2N" FORM OF LAY
+                                  OUT 2.
+                              875 ; 78   |//
+                              876 ; 79   |//  This rule might not be followed in the bootmanager, Boot EPROM, and Boot ROM code.  Th
+                                  at 
+                              877 ; 80   |//  remains to be seen.
+                              878 ; 81   |//
+                              879 ; 82   |//
+                              880 ; 83   |//  Offset is from 512 for small sectors, 2048 for large sectors
+                              881 ; 84   |//
+                              882 ; 85   |//  Layout 2S ("Standard")
+                              883 ; 86   |//   0          RA CRC
+                              884 ; 87   |//   1      LBA 1 / STMP Tag 1
+                              885 ; 88   |//   2      RSI 0
+                              886 ; 89   |//   3      RSI 1
+                              887 ; 90   |//   4      Customer Byte
+                              888 ; 91   |//   5      Block Status
+                              889 ; 92   |//   6      LBA 0 / STMP Tag 0
+                              890 ; 93   |//   7      RS_ECC 0
+                              891 ; 94   |//   8      RS_ECC 1
+                              892 ; 95   |//   9      RS_ECC 2
+                              893 ; 96   |//  10      RS_ECC 3
+                              894 ; 97   |//  11      RS_ECC 4
+                              895 ; 98   |//  12      RS_ECC 5
+                              896 ; 99   |//  13      RS_ECC 6
+                              897 ; 100  |//  14      RS_ECC 7
+                              898 ; 101  |//  15      RS_ECC 8
+                              899 ; 102  |//
+                              900 ; 103  |//  Layout 2N ("NAND")
+                              901 ; 104  |//   0      RA CRC
+                              902 ; 105  |//   1      RS_ECC 0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              903 ; 106  |//   2      RS_ECC 1
+                              904 ; 107  |//   3      RS_ECC 2
+                              905 ; 108  |//   4      Customer Byte
+                              906 ; 109  |//   5      Block Status
+                              907 ; 110  |//   6      LBA 0 / STMP Tag 0
+                              908 ; 111  |//   7      LBA 1 / STMP Tag 1
+                              909 ; 112  |//   8      RSI 0
+                              910 ; 113  |//   9      RSI 1
+                              911 ; 114  |//  10      RS_ECC 3
+                              912 ; 115  |//  11      RS_ECC 4
+                              913 ; 116  |//  12      RS_ECC 5
+                              914 ; 117  |//  13      RS_ECC 6
+                              915 ; 118  |//  14      RS_ECC 7
+                              916 ; 119  |//  15      RS_ECC 8
+                              917 ; 120  |//
+                              918 ; 121  |//
+                              919 ; 122  |//  Definitions:
+                              920 ; 123  |//      RA CRC - CRC parity for 6 "data" bytes in the Redundant Area
+                              921 ; 124  |//              LBA    - Logical Block Address (which block in the Region, starting at 0)
+                              922 ; 125  |//      RSI    - Relative Sector Index (which sector in the block, starting at 0)
+                              923 ; 126  |//      RS_ECC - Reed-Solomon Error Correction Code parity bytes (0-8)
+                              924 ; 127  |//
+                              925 ; 128  |/////////////////////////////////////////////////////////////////////////////////
+                              926 ; 129  |
+                              927 ; 130  |
+                              928 ; 131  |
+                              929 ; 132  |
+                              930 ; 133  |
+                              931 ; 134  |// Defines of offsets, relative to the beginning of the Redundant Area
+                              932 ; 135  |// Layout 2
+                              933 ; 136  |
+                              934 ; 137  |
+                              935 ; 138  |// The RA CRC covers bytes 1-6
+                              936 ; 139  |#define RA_CRC_DATA_OFFSET      1
+                              937 ; 140  |#define RA_CRC_SIZE             6
+                              938 ; 141  |
+                              939 ; 142  |/////////////////////////////////////////////////////////////////////////////////
+                              940 ; 143  |//  IMPORTANT: The SWAP definitions below assume Layout 2S and 2N, as described 
+                              941 ; 144  |//  above.  If the layouts are changed, these values, or even the whole NANDRaSwap()
+                              942 ; 145  |//  routine may need to be changed.
+                              943 ; 146  |/////////////////////////////////////////////////////////////////////////////////
+                              944 ; 147  |
+                              945 ; 148  |#define RA_SWAP_WORD_OFFSET_1   0
+                              946 ; 149  |#define RA_SWAP_WORD_OFFSET_2   2
+                              947 ; 150  |#define RA_SWAP_BYTE_OFFSET_1   1
+                              948 ; 151  |#define RA_SWAP_BYTE_OFFSET_2   7
+                              949 ; 152  |
+                              950 ; 153  |
+                              951 ; 154  |
+                              952 ; 155  |
+                              953 ; 156  |
+                              954 ; 157  |/////////////////////////////////////////////////////////////////////////////////
+                              955 ; 158  |//> Name: NANDRA_ToStandardForm
+                              956 ; 159  |//
+                              957 ; 160  |//  Type: Function
+                              958 ; 161  |//  Description:        Convert from "NAND" form to "Standard" (internal) form
+                              959 ; 162  |//  Inputs:         pRA  - Pointer to whole Sector (528 bytes) or to isolated 
+                              960 ; 163  |//                         Redundant Area buffer (16 bytes)
+                              961 ; 164  |//                  bWholeSector - TRUE if pRA points to a whole Sector
+                              962 ; 165  |//  Outputs:        SUCCESS/?
+                              963 ; 166  |//  Notes:          Just swap the Redundant Area between Layout 2S and Layout 2N.
+                              964 ; 167  |//                  ASSUMES RA IS IN "NAND" FROM - DOESN'T CHECK.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              965 ; 168  |//<
+                              966 ; 169  |/////////////////////////////////////////////////////////////////////////////////
+                              967 ; 170  |WORD _reentrant NANDRA_ToStandardForm(WORD _X * pRA, BOOL bWholeSector) {
+                              968 
+P:0000                        969         org     p,".ptextnandra_utils":
+                              976 FNANDRA_ToStandardForm:
+                              987 
+                              988 ; 171  |
+                              989 ; 172  |  WORD wTmp1, wTmp2;
+                              990 ; 173  |  int i;
+                              991 ; 174  |
+                              992 ; 175  |#if 0
+                              993 ; 176  |  if (bWholeSector) {      // Assuming 1 WORD, aligned
+                              994 ; 177  |    short sIndex1, sIndex2;
+                              995 ; 178  |    sIndex1 = sIndex2 = SectorSizeInWordsPlusOne;
+                              996 ; 179  |    sIndex1 += RA_SWAP_WORD_OFFSET_1;
+                              997 ; 180  |    sIndex2 += RA_SWAP_WORD_OFFSET_2;
+                              998 ; 181  |
+                              999 ; 182  |    wTmp1 = pRA[sIndex1];
+                             1000 ; 183  |    pRA[sIndex1] = pRA[sIndex2];
+                             1001 ; 184  |    pRA[sIndex2] = wTmp1;
+                             1002 ; 185  |  }
+                             1003 ; 186  |  else {  // 16-byte R.A.  Access byte-by-byte
+                             1004 ; 187  |    for (i=0; i<3; i++) {  // Assuming 3 consecutive bytes!!
+                             1005 ; 188  |      wTmp1 = GetByteFromArrayInX(pRA, RA_SWAP_BYTE_OFFSET_1 + i );
+                             1006 ; 189  |      wTmp2 = GetByteFromArrayInX(pRA, RA_SWAP_BYTE_OFFSET_2 + i );
+                             1007 ; 190  |
+                             1008 ; 191  |      PutByteInArrayInX(pRA, RA_SWAP_BYTE_OFFSET_1 + i, wTmp2);
+                             1009 ; 192  |      PutByteInArrayInX(pRA, RA_SWAP_BYTE_OFFSET_2 + i, wTmp1);
+                             1010 ; 193  |    }
+                             1011 ; 194  |  }
+                             1012 ; 195  |#else
+                             1013 ; 196  |  if (bWholeSector) {      // Assuming 1 WORD, aligned
+                             1014 
+P:0000 2A0000         2    2 1016         move    #0,a2
+P:0001 200003         2    4 1017         tst     a
+P:0002 0AF0AA rrrrrr  6   10 1018         jeq     L3
+                             1020 
+                             1021 ; 197  |    short sIndex1, sIndex2;
+                             1022 ; 198  |    sIndex1 = sIndex2 = SectorSizeInWordsPlusOne;
+                             1023 
+P:0004 57F000 rrrrrr  3   13 1029         move    x:FSectorSizeInWordsPlusOne,b
+P:0006 21A700         2   15 1031         move    b1,y1
+                             1033 
+                             1034 ; 199  |    sIndex1 += RA_SWAP_WORD_OFFSET_1;
+                             1035 ; 200  |    sIndex2 += RA_SWAP_WORD_OFFSET_2;
+                             1036 
+P:0007 46F400 000002  3   18 1038         move    #>2,y0
+P:0009 200058         2   20 1039         add     y0,b
+                             1040 
+                             1041 ; 201  |
+                             1042 ; 202  |    wTmp1 = pRA[sIndex1];
+                             1043 
+P:000A 20F800         2   22 1045         move    y1,n0
+P:000B 000000         2   24 1046         nop
+P:000C 044815         4   28 1047         lua     (r0)+n0,r5
+P:000D 000000         2   30 1048         nop
+P:000E 44E500         2   32 1049         move    x:(r5),x0
+                             1051 
+                             1052 ; 203  |    pRA[sIndex1] = pRA[sIndex2];
+                             1053 
+P:000F 21B800         2   34 1055         move    b1,n0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0010 000000         2   36 1056         nop
+P:0011 044814         4   40 1057         lua     (r0)+n0,r4
+P:0012 000000         2   42 1058         nop
+P:0013 55E400         2   44 1059         move    x:(r4),b1
+P:0014 556500         2   46 1061         move    b1,x:(r5)
+                             1062 
+                             1063 ; 204  |    pRA[sIndex2] = wTmp1;
+                             1064 
+P:0015 446400         2   48 1066         move    x0,x:(r4)
+                             1069 
+                             1070 ; 205  |  }
+                             1071 
+P:0016 0AF080 rrrrrr  6   54 1073         jmp     L4
+                             1074 
+                             1075 ; 206  |  else {  // 16-byte R.A.  Access byte-by-byte
+                             1076 ; 207  |    wTmp1 = pRA[0] & 0x00FFFF;
+                             1077 
+P:0018 55E000         2   56 1079 L3:     move    x:(r0),b1
+P:0019 45F400 00FFFF  3   59 1080         move    #$FFFF,x1
+P:001B 21AE00         2   61 1081         move    b1,a
+P:001C 200066         2   63 1082         and     x1,a
+P:001D 218400         2   65 1084         move    a1,x0
+                             1085 
+                             1086 ; 208  |    pRA[0] = (pRA[0] & 0xFF0000) | (pRA[3] & 0x00FFFF);
+                             1087 
+P:001E 26FF00         2   67 1089         move    #<$FF,y0
+P:001F 20005E         2   69 1090         and     y0,b
+P:0020 21AC00         2   71 1091         move    b1,a1
+P:0021 380300         2   73 1092         move    #3,n0
+P:0022 000000         2   75 1093         nop
+P:0023 044815         4   79 1094         lua     (r0)+n0,r5
+P:0024 000000         2   81 1095         nop
+P:0025 55E500         2   83 1096         move    x:(r5),b1
+P:0026 20006E         2   85 1097         and     x1,b
+P:0027 21A700         2   87 1098         move    b1,y1
+P:0028 200072         2   89 1099         or      y1,a
+P:0029 546000         2   91 1100         move    a1,x:(r0)
+                             1101 
+                             1102 ; 209  |    pRA[3] = (pRA[3] & 0xFF0000) | wTmp1;
+                             1103 
+P:002A 55E500         2   93 1105         move    x:(r5),b1
+P:002B 20005E         2   95 1106         and     y0,b
+P:002C 20004A         2   97 1107         or      x0,b
+P:002D 556500         2   99 1108         move    b1,x:(r5)
+                             1109 
+                             1110 ; 210  |
+                             1111 ; 211  |    wTmp1 = pRA[1] & 0xFF0000;
+                             1112 
+P:002E 045815         4  103 1114         lua     (r0)+,r5
+P:002F 000000         2  105 1115         nop
+P:0030 54E500         2  107 1116         move    x:(r5),a1
+P:0031 218D00         2  109 1117         move    a1,b1
+P:0032 200056         2  111 1118         and     y0,a
+P:0033 218700         2  113 1119         move    a1,y1
+                             1122 
+                             1123 ; 212  |    pRA[1] = (pRA[1] & 0x00FFFF) | (pRA[4] & 0xFF0000);
+                             1124 
+P:0034 20006E         2  115 1126         and     x1,b
+P:0035 21AC00         2  117 1127         move    b1,a1
+P:0036 380400         2  119 1128         move    #4,n0
+P:0037 000000         2  121 1129         nop
+P:0038 204800         2  123 1130         move    (r0)+n0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0039 55E000         2  125 1132         move    x:(r0),b1
+P:003A 20005E         2  127 1133         and     y0,b
+P:003B 21A400         2  129 1134         move    b1,x0
+P:003C 200042         2  131 1135         or      x0,a
+P:003D 546500         2  133 1136         move    a1,x:(r5)
+                             1137 
+                             1138 ; 213  |    pRA[4] = (pRA[4] & 0x00FFFF) | wTmp1;
+                             1139 
+P:003E 55E000         2  135 1141         move    x:(r0),b1
+P:003F 20006E         2  137 1142         and     x1,b
+P:0040 20007A         2  139 1143         or      y1,b
+P:0041 556000         2  141 1144         move    b1,x:(r0)
+                             1145 
+                             1146 ; 214  |  }
+                             1147 ; 215  |#endif
+                             1148 ; 216  |  return SUCCESS;
+                             1149 
+P:0042 200013         2  143 1151 L4:     clr     a   
+                             1152 
+                             1153 ; 217  |}
+                             1154 
+P:0043 00000C         4  147 1156         rts
+                             1159 
+                             1160 ; 218  |
+                             1161 ; 219  |
+                             1162 ; 220  |
+                             1163 ; 221  |
+                             1164 ; 222  |
+                             1165 ; 223  |/////////////////////////////////////////////////////////////////////////////////
+                             1166 ; 224  |//> Name: NANDRAGetByte
+                             1167 ; 225  |//
+                             1168 ; 226  |//  Type: Function
+                             1169 ; 227  |//  Description:        Get a specified byte from the Redundant Area
+                             1170 ; 228  |//  Inputs:         pRA  - Pointer to whole Sector or to isolated
+                             1171 ; 229  |//                         Redundant Area buffer
+                             1172 ; 230  |//                  wByteOffsetInRA - 0=beginning of the RA
+                             1173 ; 231  |//                  bWholeSector - TRUE if pRA points to a whole Sector
+                             1174 ; 232  |//                  pwValue - WORD to return byte value in
+                             1175 ; 233  |//  Outputs:            SUCCESS/?
+                             1176 ; 234  |//  Notes: 
+                             1177 ; 235  |//<
+                             1178 ; 236  |/////////////////////////////////////////////////////////////////////////////////
+                             1179 ; 237  |WORD _reentrant NANDRAGetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                             1180 ; 238  |                         WORD *pwValue) {
+                             1181 
+                             1186 FNANDRAGetByte:
+P:0044 055F3C         2  149 1187         movec   ssh,x:(r7)+
+P:0045 205F00         2  151 1190         move    (r7)+
+                             1202 
+                             1203 ; 239  |
+                             1204 ; 240  |  int iOffset = bWholeSector ? SectorSize : 0;
+                             1205 
+P:0046 2A0000         2  153 1207         move    #0,a2
+P:0047 200003         2  155 1208         tst     a
+P:0048 2C0000         2  157 1209         move    #0,a1
+P:0049 0AF0AA rrrrrr  6  163 1210         jeq     L8
+P:004B 54F000 rrrrrr  3  166 1211         move    x:FSectorSize,a1
+P:004D 045FA0         2  168 1213 L8:     movec   m0,n7
+P:004E 000000         2  170 1214         nop
+P:004F 646F00         4  174 1215         move    r4,x:(r7+n7)
+P:0050 218600         2  176 1218         move    a1,y0
+                             1221 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1222 ; 241  |
+                             1223 ; 242  |  *pwValue = GetByteFromArrayInX(pRA, wByteOffsetInRA + iOffset);
+                             1224 
+P:0051 200058         2  178 1226         add     y0,b
+P:0052 21AE00         2  180 1228         move    b1,a
+P:0053 0BF080 rrrrrr  6  186 1229         jsr     GetByteFromArrayInX
+P:0055 045FA0         2  188 1231         movec   m0,n7
+P:0056 000000         2  190 1232         nop
+P:0057 65EF00         4  194 1233         move    x:(r7+n7),r5
+P:0058 000000         2  196 1234         nop
+P:0059 546500         2  198 1235         move    a1,x:(r5)
+                             1238 
+                             1239 ; 243  |
+                             1240 ; 244  |  return SUCCESS;
+                             1241 
+P:005A 200013         2  200 1243         clr     a   
+                             1244 
+                             1245 ; 245  |}
+                             1246 
+P:005B 204F00         2  202 1248         move    (r7)+n7
+P:005C 05FF3C         4  206 1250         movec   x:-(r7),ssh
+P:005D 000000         2  208 1253         nop
+P:005E 00000C         4  212 1254         rts
+                             1257 
+                             1258 ; 246  |
+                             1259 ; 247  |
+                             1260 ; 248  |/////////////////////////////////////////////////////////////////////////////////
+                             1261 ; 249  |//> Name: NANDRAGetBlockStatus
+                             1262 ; 250  |//
+                             1263 ; 251  |//  Type: Function
+                             1264 ; 252  |//  Description:        Get Block Status (Good Block = 0xFF, else BAD) 
+                             1265 ; 253  |//  Inputs:         pRA  - Pointer to whole Sector (528 bytes) or to isolated 
+                             1266 ; 254  |//                         Redundant Area buffer (16 bytes)
+                             1267 ; 255  |//                  bWholeSector - TRUE if pRA points to a whole Sector
+                             1268 ; 256  |//                  pwBlockStatus - WORD to return Block Status byte in
+                             1269 ; 257  |//  Outputs:            SUCCESS/?
+                             1270 ; 258  |//  Notes: 
+                             1271 ; 259  |//<
+                             1272 ; 260  |/////////////////////////////////////////////////////////////////////////////////
+                             1273 ; 261  |WORD _reentrant NANDRAGetBlockStatus(WORD _X * pRA, BOOL bWholeSector,
+                             1274 ; 262  |                         WORD *pwBlockStatus){
+                             1275 
+                             1280 FNANDRAGetBlockStatus:
+P:005F 055F3C         2  214 1281         movec   ssh,x:(r7)+
+                             1290 
+                             1291 ; 263  |
+                             1292 ; 264  |  NANDRAGetByte(pRA, bWholeSector, RA_BLOCK_STATUS_OFFSET, pwBlockStatus);
+                             1293 
+P:0060 57F400 000005  3  217 1295         move    #>5,b
+P:0062 0BF080 rrrrrr  6  223 1296         jsr     FNANDRAGetByte
+                             1300 
+                             1301 ; 265  |
+                             1302 ; 266  |  return SUCCESS;
+                             1303 
+P:0064 200013         2  225 1305         clr     a   
+                             1306 
+                             1307 ; 267  |}
+                             1308 
+P:0065 05FF3C         4  229 1310         movec   x:-(r7),ssh
+P:0066 000000         2  231 1313         nop
+P:0067 00000C         4  235 1314         rts
+                             1316 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1317 ; 268  |
+                             1318 ; 269  |
+                             1319 ; 270  |/////////////////////////////////////////////////////////////////////////////////
+                             1320 ; 271  |//> Name:  NANDRAGetLBA
+                             1321 ; 272  |//
+                             1322 ; 273  |//  Type: Function
+                             1323 ; 274  |//  Description:        Get Logical Block Address and "Relative" Sector Index
+                             1324 ; 275  |//  Inputs:         pRA  - Pointer to whole Sector or to isolated
+                             1325 ; 276  |//                         Redundant Area buffer
+                             1326 ; 277  |//                  bWholeSector - TRUE if pRA points to a whole Sector
+                             1327 ; 278  |//                  pwLBA - WORD to return the Logical Block Address in
+                             1328 ; 279  |//                  pwLSA - WORD to return the Sector Index, within the block
+                             1329 ; 280  |//  Outputs:        SUCCESS/?
+                             1330 ; 281  |//  Notes: 
+                             1331 ; 282  |//<
+                             1332 ; 283  |/////////////////////////////////////////////////////////////////////////////////
+                             1333 ; 284  |WORD _reentrant NANDRAGetLBA(WORD _X * pRA, BOOL bWholeSector,
+                             1334 ; 285  |                 WORD *pwLBA, WORD *pwLSA) {
+                             1335 
+                             1340 FNANDRAGetLBA:
+P:0068 055F3C         2  237 1341         movec   ssh,x:(r7)+
+P:0069 3F0500         2  239 1344         move    #5,n7
+P:006A 000000         2  241 1345         nop
+P:006B 204F00         2  243 1346         move    (r7)+n7
+                             1358 
+                             1359 ; 286  |
+                             1360 ; 287  |  int iOffset = bWholeSector ? SectorSize : 0;
+                             1361 
+P:006C 2A0000         2  245 1363         move    #0,a2
+P:006D 200003         2  247 1364         tst     a
+P:006E 2D0000         2  249 1365         move    #0,b1
+P:006F 0AF0AA rrrrrr  6  255 1366         jeq     L10
+P:0071 55F000 rrrrrr  3  258 1367         move    x:FSectorSize,b1
+P:0073 77F400 FFFFFC  3  261 1368 L10:    move    #-4,n7
+P:0075 000000         2  263 1369         nop
+P:0076 616F00         4  267 1370         move    r1,x:(r7+n7)
+P:0077 77F400 FFFFFB  3  270 1373         move    #-5,n7
+P:0079 000000         2  272 1374         nop
+P:007A 646F00         4  276 1375         move    r4,x:(r7+n7)
+P:007B 21A600         2  278 1378         move    b1,y0
+                             1380 
+                             1381 ; 288  |
+                             1382 ; 289  |  *pwLBA = GetByteFromArrayInX(pRA, RA_LBA_0_OFFSET + iOffset) +
+                             1383 ; 290  |           GetByteFromArrayInX(pRA, RA_LBA_1_OFFSET + iOffset) * 0x100;
+                             1384 
+P:007C 56F400 000006  3  281 1386         move    #>6,a
+P:007E 77F400 FFFFFD  3  284 1387         move    #-3,n7
+P:0080 000000         2  286 1388         nop
+P:0081 466F00         4  290 1389         move    y0,x:(r7+n7)
+P:0082 200050         2  292 1390         add     y0,a
+P:0083 77F400 FFFFFE  3  295 1394         move    #-2,n7
+P:0085 000000         2  297 1395         nop
+P:0086 606F00         4  301 1396         move    r0,x:(r7+n7)
+P:0087 0BF080 rrrrrr  6  307 1398         jsr     GetByteFromArrayInX
+P:0089 045FA0         2  309 1399         movec   m0,n7
+P:008A 000000         2  311 1400         nop
+P:008B 546F00         4  315 1401         move    a1,x:(r7+n7)
+P:008C 56F400 000001  3  318 1402         move    #>1,a
+P:008E 77F400 FFFFFD  3  321 1403         move    #-3,n7
+P:0090 000000         2  323 1404         nop
+P:0091 44EF00         4  327 1405         move    x:(r7+n7),x0
+P:0092 200040         2  329 1406         add     x0,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0093 77F400 FFFFFE  3  332 1407         move    #-2,n7
+P:0095 000000         2  334 1408         nop
+P:0096 60EF00         4  338 1409         move    x:(r7+n7),r0
+P:0097 0BF080 rrrrrr  6  344 1410         jsr     GetByteFromArrayInX
+P:0099 218600         2  346 1411         move    a1,y0
+P:009A 045FA0         2  348 1412         movec   m0,n7
+P:009B 000000         2  350 1413         nop
+P:009C 51EF00         4  354 1414         move    x:(r7+n7),b0
+P:009D 0110EA         2  356 1415         mac     y0,#16,b
+P:009E 77F400 FFFFFB  3  359 1416         move    #-5,n7
+P:00A0 000000         2  361 1417         nop
+P:00A1 65EF00         4  365 1418         move    x:(r7+n7),r5
+P:00A2 000000         2  367 1419         nop
+P:00A3 516500         2  369 1420         move    b0,x:(r5)
+                             1423 
+                             1424 ; 291  |
+                             1425 ; 292  |  *pwLSA = GetByteFromArrayInX(pRA, RA_RSI_0_OFFSET + iOffset) +
+                             1426 ; 293  |           GetByteFromArrayInX(pRA, RA_RSI_1_OFFSET + iOffset) * 0x100;
+                             1427 
+P:00A4 56F400 000002  3  372 1429         move    #>2,a
+P:00A6 77F400 FFFFFD  3  375 1430         move    #-3,n7
+P:00A8 000000         2  377 1431         nop
+P:00A9 57EF00         4  381 1432         move    x:(r7+n7),b
+P:00AA 200010         2  383 1433         add     b,a
+P:00AB 77F400 FFFFFE  3  386 1434         move    #-2,n7
+P:00AD 000000         2  388 1435         nop
+P:00AE 60EF00         4  392 1436         move    x:(r7+n7),r0
+P:00AF 0BF080 rrrrrr  6  398 1437         jsr     GetByteFromArrayInX
+P:00B1 045FA0         2  400 1439         movec   m0,n7
+P:00B2 000000         2  402 1440         nop
+P:00B3 546F00         4  406 1441         move    a1,x:(r7+n7)
+P:00B4 46F400 000003  3  409 1442         move    #>3,y0
+P:00B6 77F400 FFFFFD  3  412 1443         move    #-3,n7
+P:00B8 000000         2  414 1444         nop
+P:00B9 56EF00         4  418 1445         move    x:(r7+n7),a
+P:00BA 200050         2  420 1446         add     y0,a
+P:00BB 77F400 FFFFFE  3  423 1450         move    #-2,n7
+P:00BD 000000         2  425 1451         nop
+P:00BE 60EF00         4  429 1452         move    x:(r7+n7),r0
+P:00BF 0BF080 rrrrrr  6  435 1453         jsr     GetByteFromArrayInX
+P:00C1 218500         2  437 1454         move    a1,x1
+P:00C2 045FA0         2  439 1455         movec   m0,n7
+P:00C3 000000         2  441 1456         nop
+P:00C4 51EF00         4  445 1457         move    x:(r7+n7),b0
+P:00C5 0110FA         2  447 1458         mac     x1,#16,b
+P:00C6 77F400 FFFFFC  3  450 1459         move    #-4,n7
+P:00C8 000000         2  452 1460         nop
+P:00C9 65EF00         4  456 1461         move    x:(r7+n7),r5
+P:00CA 000000         2  458 1462         nop
+P:00CB 516500         2  460 1463         move    b0,x:(r5)
+                             1466 
+                             1467 ; 294  |
+                             1468 ; 295  |  return SUCCESS;
+                             1469 
+P:00CC 200013         2  462 1471         clr     a   
+                             1472 
+                             1473 ; 296  |}
+                             1474 
+P:00CD 77F400 FFFFFA  3  465 1476         move    #-6,n7
+P:00CF 000000         2  467 1477         nop
+P:00D0 05EF3C         4  471 1478         movec   x:(r7+n7),ssh
+P:00D1 204F00         2  473 1480         move    (r7)+n7
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00D2 00000C         4  477 1482         rts
+                             1485 
+                             1486 ; 297  |
+                             1487 ; 298  |
+                             1488 ; 299  |/////////////////////////////////////////////////////////////////////////////////
+                             1489 ; 300  |//> Name: NANDRAGetStmpCode
+                             1490 ; 301  |//
+                             1491 ; 302  |//  Type: Function
+                             1492 ; 303  |//  Description:        Get System Block Stmp code (e.g. "ST", "MP", etc.) 
+                             1493 ; 304  |//  Inputs:         pRA  - Pointer to whole Sector or to isolated
+                             1494 ; 305  |//                         Redundant Area buffer
+                             1495 ; 306  |//                  bWholeSector - TRUE if pRA points to a whole Sector
+                             1496 ; 307  |//                  pwStmpCode - Pointer to WORD to return the STMP code (in lower two byt
+                                  es)
+                             1497 ; 308  |//  Outputs: 
+                             1498 ; 309  |//  Notes: 
+                             1499 ; 310  |//<
+                             1500 ; 311  |/////////////////////////////////////////////////////////////////////////////////
+                             1501 ; 312  |WORD _reentrant NANDRAGetStmpCode(WORD _X * pRA, BOOL bWholeSector,
+                             1502 ; 313  |                          WORD *pwStmpCode) {
+                             1503 
+                             1508 FNANDRAGetStmpCode:
+P:00D3 055F3C         2  479 1509         movec   ssh,x:(r7)+
+P:00D4 3F0400         2  481 1512         move    #4,n7
+P:00D5 000000         2  483 1513         nop
+P:00D6 204F00         2  485 1514         move    (r7)+n7
+                             1524 
+                             1525 ; 314  |
+                             1526 ; 315  |  int iOffset = bWholeSector ? SectorSize : 0;
+                             1527 
+P:00D7 2A0000         2  487 1529         move    #0,a2
+P:00D8 200003         2  489 1530         tst     a
+P:00D9 2F0000         2  491 1531         move    #0,b
+P:00DA 0AF0AA rrrrrr  6  497 1532         jeq     L12
+P:00DC 57F000 rrrrrr  3  500 1533         move    x:FSectorSize,b
+P:00DE 77F400 FFFFFC  3  503 1534 L12:    move    #-4,n7
+P:00E0 000000         2  505 1535         nop
+P:00E1 646F00         4  509 1536         move    r4,x:(r7+n7)
+                             1540 
+                             1541 ; 316  |
+                             1542 ; 317  |  *pwStmpCode = GetByteFromArrayInX(pRA, RA_STMP_TAG_0_OFFSET + iOffset) + 
+                             1543 ; 318  |                (GetByteFromArrayInX(pRA, RA_STMP_TAG_1_OFFSET + iOffset) << 8);
+                             1544 
+P:00E2 56F400 000006  3  512 1546         move    #>6,a
+P:00E4 77F400 FFFFFD  3  515 1547         move    #-3,n7
+P:00E6 000000         2  517 1548         nop
+P:00E7 556F00         4  521 1549         move    b1,x:(r7+n7)
+P:00E8 200010         2  523 1550         add     b,a
+P:00E9 77F400 FFFFFE  3  526 1554         move    #-2,n7
+P:00EB 000000         2  528 1555         nop
+P:00EC 606F00         4  532 1556         move    r0,x:(r7+n7)
+P:00ED 0BF080 rrrrrr  6  538 1558         jsr     GetByteFromArrayInX
+P:00EF 045FA0         2  540 1559         movec   m0,n7
+P:00F0 000000         2  542 1560         nop
+P:00F1 546F00         4  546 1561         move    a1,x:(r7+n7)
+P:00F2 47F400 000001  3  549 1562         move    #>1,y1
+P:00F4 77F400 FFFFFD  3  552 1563         move    #-3,n7
+P:00F6 000000         2  554 1564         nop
+P:00F7 56EF00         4  558 1565         move    x:(r7+n7),a
+P:00F8 200070         2  560 1566         add     y1,a
+P:00F9 77F400 FFFFFE  3  563 1570         move    #-2,n7
+P:00FB 000000         2  565 1571         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00FC 60EF00         4  569 1572         move    x:(r7+n7),r0
+P:00FD 0BF080 rrrrrr  6  575 1573         jsr     GetByteFromArrayInX
+P:00FF 060880 rrrrrr  6  581 1574         do      #8,L13
+P:0101 200033         2  583 1576         lsl     a
+P:0102 000000         2  585 1577         nop
+                         (4) 1578 L13:
+P:0103 045FA0         2  587 1580         movec   m0,n7
+P:0104 000000         2  589 1581         nop
+P:0105 57EF00         4  593 1582         move    x:(r7+n7),b
+P:0106 200018         2  595 1583         add     a,b
+P:0107 77F400 FFFFFC  3  598 1584         move    #-4,n7
+P:0109 000000         2  600 1585         nop
+P:010A 65EF00         4  604 1586         move    x:(r7+n7),r5
+P:010B 000000         2  606 1587         nop
+P:010C 556500         2  608 1588         move    b1,x:(r5)
+                             1591 
+                             1592 ; 319  |
+                             1593 ; 320  |  return SUCCESS;
+                             1594 
+P:010D 200013         2  610 1596         clr     a   
+                             1597 
+                             1598 ; 321  |}
+                             1599 
+P:010E 77F400 FFFFFB  3  613 1601         move    #-5,n7
+P:0110 000000         2  615 1602         nop
+P:0111 05EF3C         4  619 1603         movec   x:(r7+n7),ssh
+P:0112 204F00         2  621 1605         move    (r7)+n7
+P:0113 00000C         4  625 1607         rts
+                             1610 
+                             1611 ; 322  |
+                             1612 ; 323  |
+                             1613 ; 324  |
+                             1614 ; 325  |/*
+                             1615 ; 326  |ComputeCRC
+                             1616 ; 327  |CheckCRC
+                             1617 ; 328  |ComputeECC
+                             1618 ; 329  |CorrectECC
+                             1619 ; 330  |MarkBad
+                             1620 ; 331  |*/
+                             1621 ; 332  |
+                             1622 ; 333  |#if 1
+                             1623 ; 334  |#pragma asm
+                             1624 
+                             1625 OneThird equ 0.333333333333
+                             1626 
+                             1627     ;
+                             1628     ; A contains the byteCounter  (It will not work if A2 is non zero!)
+                             1629     ; return value: A1 contains the result. 
+                             1630     ; A contains the byteCounter
+                             1631 GetByteFromArrayInX:
+                             1632 FGetByteFromArrayInX:
+P:0114 11F41B 2AAAAB  3  628 1633     clr B     A,x0       #>OneThird,y1                
+P:0116 44F4C0 200000  3  631 1634     mpy  x0,y1,A  #>$200000,x0
+P:0118 210D00         2  633 1635     move A0,B1
+P:0119 21982B         2  635 1636     lsr  B  A1,n0                    ; Avoid sign.
+P:011A 47F44D 0000FF  3  638 1637     cmp  x0,B #>$ff,y1
+P:011C 0AF0A9 rrrrrr  6  644 1638     jlt Get_CaseA                   
+P:011E 44F400 400000  3  647 1639     move #>$400000,x0
+P:0120 44E84D         4  651 1640     cmp x0,B X:(r0+n0),x0
+P:0121 0AF0A9 rrrrrr  6  657 1641     jlt Get_CaseB
+                             1642 
+                             1643     ; Case C follows.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1644     ; In this case data is in upper 8 bits
+                             1645 Get_CaseC
+P:0123 0110D0         2  659 1646     mpy #16,x0,A  
+P:0124 200076         2  661 1647     and y1,A
+P:0125 218E00         2  663 1648     move    A1,A
+P:0126 00000C         4  667 1649     rts
+                             1650  
+                             1651 Get_CaseB    ; Case B: Middle byte
+P:0127 0108D0         2  669 1652     mpy  #8,x0,A 
+P:0128 200076         2  671 1653     and y1,A  
+P:0129 218E00         2  673 1654     move    A1,A
+P:012A 00000C         4  677 1655     rts
+                             1656  
+                             1657 Get_CaseA
+                             1658     ;Case A
+                             1659     ;Lower Byte
+P:012B 56E800         4  681 1660     move    X:(r0+n0),A
+P:012C 200076         2  683 1661     and y1,A
+P:012D 218E00         2  685 1662     move    A1,A
+P:012E 00000C         4  689 1663     rts
+                             1664 
+                             1665     
+                             1666 
+                             1667 ; 378  |#pragma endasm
+                             1668 ; 379  |#endif
+                             1669 ; 380  |/////////////////////////////////////////////////////////////////////////////////
+                             1670 ; 381  |////////////////////////////////  EOF  //////////////////////////////////////////
+                             1671 ; 382  |/////////////////////////////////////////////////////////////////////////////////
+                             1672 
+                             1676 
+                             1677         extern  GetByteFromArrayInX, x:FSectorSize
+                             1678         extern  x:FSectorSizeInWordsPlusOne
+                             1679 
+                             1680         global  FNANDRAGetBlockStatus, FNANDRAGetByte, FNANDRAGetLBA
+                             1681         global  FNANDRAGetStmpCode, FNANDRA_ToStandardForm
+                             1682 
+                             1683         local   L3, L4, L8, L10, L12, L13
+                             1684 
+                             1685         calls   "NANDRAGetBlockStatus", "NANDRAGetByte"
+                             1686         calls   "NANDRAGetByte", "GetByteFromArrayInX"
+                             1687         calls   "NANDRAGetLBA", "GetByteFromArrayInX"
+                             1688         calls   "NANDRAGetStmpCode", "GetByteFromArrayInX"
+                             1689 

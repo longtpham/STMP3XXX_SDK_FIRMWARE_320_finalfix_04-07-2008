@@ -1,0 +1,286 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\sysmem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ;  File        : sysmem.asm
+                                5 ;  Description : System memory declarations
+                                6 ;  !!!!!!!! IMPORTANT !!!!!!!! if change memory location or add/remove variables
+                                7 ;  !!!!!!!!!!!!!!!!!!!!!!!!!!!    update sysmem.h and sysmem.xref
+                                9     section SYSFUN_SysMem
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;   Macros
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               15 ;///////////////////////////////////////////////////////////////////////////////
+                               16 ;   Includes
+                               17 ;///////////////////////////////////////////////////////////////////////////////
+                               25     list
+                               27 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;   External Definitions
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               31     ;Functions
+                               32     ;       None
+                               34     ;Variables in X        
+                               54     ;Variables in Y        
+                               69     ; TIME_FIX
+                               92     ; NEW_TIME - For VBR
+                               99     ; This variable was originally from decodermem.asm 
+                              101         
+                              126     ; stmp6964
+                              134       
+                              136         ; add wma
+                              139 ;///////////////////////////////////////////////////////////////////////////////
+                              140 ;   External References
+                              141 ;///////////////////////////////////////////////////////////////////////////////
+                              146     list
+                              148 ;///////////////////////////////////////////////////////////////////////////////
+                              149 ;   Equates
+                              150 ;///////////////////////////////////////////////////////////////////////////////
+                              151         
+                              152 ;///////////////////////////////////////////////////////////////////////////////
+                              153 ;   X Memory
+                              154 ;///////////////////////////////////////////////////////////////////////////////
+                              155         
+X:0000                        156     org     x,"SYSFUN_SysMem_X":
+                              158 Fg_wDecoderCSR
+X:0000 000040                 159 DecoderCSR          dc      ($000000)|(1<<Stop)
+                              161 Fg_wDecoderSR
+X:0001 000040                 162 DecoderSR           dc      ($000000)|(1<<Stop)
+                              164 ; DECODE2EOF
+                              165 Fg_wDecoderCSR2
+X:0002 000000                 166 DecoderCSR2         dc      ($000000)
+                              168 Fg_wEncoderSR
+X:0003 000040                 169 EncoderSR           dc      ($000000)|(1<<Stop)
+                              171 Fg_wDecAdpcmFlags
+X:0004 000000                 172 DecAdpcmFlags       dc      0
+                              174 Fg_wRecStartTimeHigh
+X:0005 000000                 175 RecStartTimeHigh    dc      0
+                              177 Fg_wRecStartTimeLow
+X:0006 000000                 178 RecStartTimeLow     dc      0
+                              180 Fg_wSysError
+X:0007 000000                 181 SysError            dc      0              ; store system error here before jmp to SystemError
+                              220         
+X:0000                        221     org     x,"SYSFUN_SysMem_2_X":
+                              223     buffer  M,SCRATCH_USER_X_SIZE
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              224 Fg_wUserScratchX
+                              225 UserScratchX
+X:0000 DEC0DE                 226     bsc     SCRATCH_USER_X_SIZE,$dec0de
+   |   REPEATS                    
+X:00FF
+                              227     endbuf
+X:0000                        242     org     x,"SYSFUN_SysMem_4_X":
+                              249 Fg_wNextVoiceNumValue
+X:0000 000000                 250 NextVoiceNumValue       dc      0
+                              251 Fg_wEncAdpcmSave_r7
+X:0001 000000                 252 EncAdpcmSave_r7         dc      $0      ; Akshay's code was written
+                              253 Fg_wEncAdpcmSave_m7
+X:0002 000000                 254 EncAdpcmSave_m7         dc      $0      ;  before we implemented the
+                              255                                         ;  stack in r7.
+                              257 Fg_wEncModuleState
+X:0003 000000                 258 EncModuleState          dc      0
+                              259 Fg_wEncoderCSR
+X:0004 000000                 260 EncoderCSR              dc      0
+                              264 ;///////////////////////////////////////////////////////////////////////////////
+                              265 ;   Y Memory
+                              266 ;///////////////////////////////////////////////////////////////////////////////
+                              267         
+Y:0000                        268     org     y,"SYSFUN_SysMem_Y":
+                              270 ; This variable was moved from decodermem.asm since it was conflicting with 
+                              271 ; Encoder memory usage
+                              272 WmaDecoderEventValue
+                              273 AdpcmDecoderEventValue
+                              274 Mp3DecoderEventValue 
+Y:0000 000002                 275 AudibleMp3DecoderEventValue dc      EVENT_MESSAGE       ; message to return to executive
+                              282  
+                              283 Fg_wAdpcmSecondstoSkip
+Y:0001 000001                 284 AdpcmSecondstoSkip        dc      SECONDS_TO_SKIP
+                              286 Fg_wSecondsToSkip
+Y:0002 000001                 287 SecondstoSkip           dc      SECONDS_TO_SKIP
+                              288    
+                              289 Fg_VolumeBias
+Y:0003 000000                 290 g_VolumeBias            dc      0
+                              292 g_AudibleMp3TimerCount
+Y:0004 001D4C                 293 g_Mp3TimerCount         dc      7500              ; timer count value is loaded here
+                              295 Fg_wCurrentRoutinePtr
+Y:0005 FFFFFF                 296 CurrentRoutinePtr       dc      $ffffff
+                              298 Fg_wSystemFileHandle
+Y:0006 000001                 299 SystemFileHandle        dc      1
+                              301 FAdpcmDecoderFileHandle
+                              302 FMp3DecoderFileHandle
+                              303 AudibleMp3DecoderFileHandle
+                              304 Mp3DecoderFileHandle;    dc      0          ; the handle assigned by FileOpen //;added
+                              305 FWmaDecoderFileHandle
+                              306 WmaDecoderFileHandle;    dc      0          ;the handle assigned by FileOpen //;added
+Y:0007 000000                 307 AdpcmDecoderFileHandle    dc      0          ; the handle assigned by FileOpen//;added
+                              309 WmaDecoderFileHandle2;    dc      0          ;the handle assigned by FileOpen //;added
+Y:0008 000000                 310 FWmaDecoderFileHandle2    dc      0          ;the handle assigned by FileOpen //;added
+                              321 ; This counts song bytes read from mp3 file into our Mp3DecSrcBuf
+                              322 Fg_wSongByteTotalHigh
+Y:0009 000000                 323 SongByteTotalHigh       dc      0       ; high word of total bytes decoded (fread) this song
+                              324 Fg_wSongByteTotalLow
+Y:000A 000000                 325 SongByteTotalLow        dc      0       ; low word of total bytes decoded (fread) this song
+                              327 ; Counts bytes sent to MP3 decoder. TIME_FIX Resolves low bitrate encoding issues. 
+                              328 ; Needed for current-time calculations which are displayed and determines song end.
+                              329 Fg_wSongByteTotalConsumedHigh
+Y:000B 000000                 330 SongByteTotalConsumedHigh       dc      0  ; high word of total bytes decoded this song.
+                              331 Fg_wSongByteTotalConsumedLow
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:000C 000000                 332 SongByteTotalConsumedLow        dc      0  ; low word of total bytes decoded this song
+                              334 Fg_wSongByteLengthHigh
+Y:000D 000000                 335 SongByteLengthHigh      dc      0       ; the number of bytes in the entire song (MSBs)
+                              336 Fg_wSongByteLengthLow
+Y:000E 000000                 337 SongByteLengthLow       dc      0       ; the number of bytes in the entire song (LSBs)
+                              338 Fg_wInvSampleRate
+Y:000F 000000                 339 InvSampleRate        dc      0          ; inverse of the adpcm sample rate
+                              340 ; GDA_20010530
+                              341 Fg_wCurrentSongBad
+Y:0010 000000                 342 CurrentSongBad       dc      0          ; Non-zero if current song was found to be corrupted, zero
+                                  -length, etc.
+                              343                                         ;  If set, code should avoid trying to read the file.
+Y:0011 000000                 344 Fg_iSongType            dc              0                       ; For curreny song type           
+                                                                                  
+                              345                                                                                    
+                              346 Fg_wSongInvBitRatePtr
+Y:0012 000000                 347 SongInvBitRatePtr       dc      0       ; ptr to inv bitrate location when song is opened
+                              349 FJanusDRMLicExpired
+Y:0013 000000                 350 JanusDRMLicExpired      dc      0
+                              352 FLicenseDeleted
+Y:0014 000000                 353 LicenseDeleted      dc      0
+                              361         ; add wma -- stores inverse of bitrate here for wma
+Y:0015 000000                 362 SongInvBitRate          dc      0       ; ** TEMP** until wma updated like mp3 
+                              365 Fg_wPrevInvBitRatePtr
+Y:0016 000000                 366 PrevInvBitRatePtr       dc      0       ; ptr to save the previous value of the SongInvBitRatePtr
+                              369 Fg_wCurrentDirDevId
+Y:0017 000000                 370 CurrentDirDevId      dc      0          ; device id of the directory (card #)
+                              372 Fg_wAccumulatedMSecs      
+Y:0018 000000                 373 AccumulatedMSecs        dc      0          ; NEW_TIME - VBR Play Start Time.
+                              375 Fg_wAccumulatedSecs      
+Y:0019 000000                 376 AccumulatedSecs         dc      0          ; NEW_TIME - VBR Playing Time.
+                              378 Fg_wDeltaTimeStampMsec      
+Y:001A 000000                 379 DeltaTimeStampMsec      dc      0           ; VBR TIME - keep track of the last time stamp (msecs)
+                                  .
+                              381 Fg_wVBRSignature
+Y:001B 000000                 382 VBRSignature            dc      0           ;NEW_TIME - VBR flag - non-zero if VBR.
+                              384 Fg_wEncoderMode
+Y:001C 000000                 385 g_wEncoderMode          dc      0
+                              387 FMp3DecoderStartFrameFilePosition 
+Y:001D                        388 FAudibleMp3DecoderStartFrameFilePosition ds 2
+   |   RESERVED                   
+Y:001E
+                              391 ;///////////////////////////////////////////////////////////////////////////////
+                              392 ; Scratch area stuff
+                              394 Fg_wUserScratchXDescriptor
+Y:001F rrrrrr                 395 UserScratchXDescriptor  dc      UserScratchX
+Y:0020 0000FF                 396                         dc      SCRATCH_USER_X_MODULO
+Y:0021 000100                 397                         dc      SCRATCH_USER_X_SIZE
+Y:0022 rrrrrr                 398                         dc      UserScratchX
+Y:0023 rrrrrr                 399                         dc      UserScratchX
+                              400 Fg_wUserScratchYDescriptor
+Y:0024 rrrrrr                 401 UserScratchYDescriptor  dc      UserScratchY
+Y:0025 0001FF                 402                         dc      SCRATCH_USER_Y_MODULO
+Y:0026 000200                 403                         dc      SCRATCH_USER_Y_SIZE
+Y:0027 rrrrrr                 404                         dc      UserScratchY
+Y:0028 rrrrrr                 405                         dc      UserScratchY
+                              407 ; Static encoder variables
+                              408 ; file name to encode to is 10 words (30 bytes) long.
+                              409 Fg_EncFileNameString
+Y:0029 000000 000000          410 EncFileNameString       dc      0,0,0,0,0,0,0,0,0,0
+       000000 000000              
+       000000 000000              
+       000000 000000              
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+       000000 000000              
+                              411                         
+                              413 Fg_wEncFileHandle
+                              414 FAdpcmEncFileHandle;added
+                              415 AdpcmEncFileHandle
+                              416 FileHandle
+                              417 MP3EncFileHandle;               dc      0
+Y:0033 000000                 418 EncFileHandle           dc      0
+                              420 Fg_wEncAdpcmOvlSave_sp
+Y:0034 000000                 421 EncAdpcmOvlSave_sp      dc      $0                                                    
+                              423 Fg_wRootDirectory
+Y:0035 00002F                 424 RootDirectory           dc      DirectorySeparator
+Y:0000                        426     org     y,"SYSFUN_SysMem_mod_Y":
+                              427     buffer  M,SCRATCH_USER_Y_SIZE
+                              428 Fg_wUserScratchY
+                              429 UserScratchY
+Y:0000 DEC0DE                 430     bsc     SCRATCH_USER_Y_SIZE,$dec0de
+   |   REPEATS                    
+Y:01FF
+                              431     endbuf
+Y:0000                        433      org     y,"ENCAPP_EncMem_Static":
+                              435 Fg_wEncCurrentDeviceNum
+Y:0000 000000                 436 EncCurrentDeviceNum     dc      0
+                              438 Fg_wEncADCGain
+Y:0001 00000D                 439 EncAdcGain                      DC          DEFAULT_ADPCM_ADCGAIN
+                              441 Fg_wEncADCSRR
+Y:0002 0EA000                 442 EncADCSRR                       DC          DEFAULT_ADPCM_ADCSRR
+                              444 ; The Menu will set these values, so that the Encoder knows what to do.
+                              445 Fg_wEncFormatTag
+Y:0003 000002                 446 g_wEncFormatTag                         dc                 $2           ; FormatTag = $11 for IMA 
+                                  ADPCM, 2 = MSADPCM,1=PCM
+                              447 Fg_wEncNumberOfChannels
+Y:0004 000001                 448 g_wEncNumberOfChannels                  dc                 1
+                              449 Fg_wEncSamplingRate
+Y:0005 003E80                 450 g_wEncSamplingRate                      dc                 16000
+                              451 Fg_wEncPCMBits
+Y:0006 000010                 452 g_wEncPCMBits                           dc                 16        ; Number of bits for PCM reco
+                                  rding
+                              453 Fg_wEncBitRate
+Y:0007 01F400                 454 g_wEncBitRate                           dc                 128000
+                              456 FEncoderWritesWaiting
+Y:0008 000000                 457 EncoderWritesWaiting        dc      0   ; Count of buffers waiting to be written. 
+Y:0009 000000                 458 gEncoderWriteStatus         dc      0   ; WriteToDisk semaphore.
+Y:000A 000000                 459 EncoderFileWriteIsrSp:      dc      0
+Y:000B RESERVED               461 PCMEncSavePC:               ds      1
+Y:000B
+Y:000C RESERVED               462 PCMEncSaveSR:               ds      1
+Y:000C
+Y:000D 000000                 464 Fg_iEncTotalSeconds    dc  0
+Y:000E 000000                 465 Fg_iEncCurrentSeconds  dc  0
+                              468 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              469 ; stmp6964
+                              471 Fg_wSamplingRateIndex           
+Y:000F RESERVED               472 g_wSamplingRateIndex            ds  0
+Y:000E
+                              474 Fg_wDACGain
+Y:000F 000001                 475 DacGain                         DC          1
+                              477 Fg_wEncSamplingRateIdx       
+Y:0010 000000                 478 g_wEncSamplingRateIdx           DC 0
+                              481 Fg_wEncADCLChOffset             ; Left Channel (1)
+Y:0011 000000                 482 EncAdcLChOffset                 DC 0
+                              484 Fg_wEncADCRChOffset             ; Right Channel (1)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0012 000000                 485 EncAdcRChOffset                 DC 0
+                              487 ;Fg_wADCLChOffset                ; Left Channel
+                              488 ;AdcLChOffset                    DC          500,1333,11000,6941,0,5100,0
+                              489 ;AdcLChOffset                    DC          500,1333,3000,5941,0,4100,0
+                              490 ;AdcLChOffset                    DC          0,0,0,0,0,0,0
+                              491 ;AdcLChOffset                    DC          1000,1333,4000,4555,-2424,3000,14000
+                              492 ;AdcLChOffset                    DC          1000,1333,4000,12000,12400,10000,14000
+                              494 ;Fg_wADCRChOffset                ; Right Channel
+                              495 ;AdcRChOffset                    DC          9000,7600,12250,7250,0,3600,0
+                              496 ;AdcRChOffset                    DC          9000,7600,12250,7250,0,3600,0
+                              497 ;AdcRChOffset                    DC          0,0,0,0,0,0,0
+                              498 ;AdcRChOffset                    DC         9000,8600,10250,17500,20000,18500,14000
+                              499 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              501 ;///////////////////////////////////////////////////////////////////////////////
+                              502 ;   P Memory
+                              503 ;///////////////////////////////////////////////////////////////////////////////
+                              505     endsec

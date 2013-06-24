@@ -1,0 +1,270 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\imaadpcm\dec_adpcm_nonoverlay.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000/2001
+                                3 ;
+                                4 ; STMP3400 ISR-level Decoder Module (CANNOT be overlayed)
+                                5 ;///////////////////////////////////////////////////////////////////////////////
+                                6         section DECAPP_DecAdpcmImaNonOverlay
+                                9 ;///////////////////////////////////////////////////////////////////////////////
+                               10 ;   External Definitions
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   External References
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19         ; System Functions
+                               26         ; Decoder Module
+                               38         ; Parser Module
+                               41         ; File System
+                               47 ;///////////////////////////////////////////////////////////////////////////////
+                               48 ;   Includes
+                               49 ;///////////////////////////////////////////////////////////////////////////////
+                               62         list
+                               63         page    132,60,0,0,0
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               66 ;  Macros
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               72     list
+                               75 ;///////////////////////////////////////////////////////////////////////////////
+                               76 ;   Code
+                               77 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         78         org     p,"DECAPP_DecAdpcmImaNonOverlay_P":
+                               81 ;*******************************************************************************
+                               82 ; DecAdpcmImaModuleTimerDisable Routine
+                               83 ;*******************************************************************************
+                               84 DecAdpcmImaModuleTimerDisable
+                               85         ; CANNOT be overlayed, called by ISR.
+                               87         ; Hardware Workaround -- Disable IVL at HW_IPR
+P:0000 200013         2    2   88         clr     a
+P:0001 54F400 FF3FFF  3    5   89         move    #>DECODER_IVL_MASK,a1
+P:0003 44F000 00FFFF  3    8   90         move    x:HW_IPR,x0
+                               91         push    x0
+P:0005 4C5F00         2   10   91     move    x0,y:(r7)+
+P:0006 200046         2   12   92         and     x0,a
+P:0007 547000 00FFFF  3   15   93         move    a1,x:HW_IPR                     ; disables decoder timer IVL
+                               95         ; Disable Timer0 Module for use by decoder
+P:0009 44F400 rrrrrr  3   18   96         move    #>DecoderTimerNum,x0
+P:000B 60F400 rrrrrr  3   21   97         move    #_TimerDisabled,r0
+P:000D 0AF080 rrrrrr  6   27   98         jmp     SysDisableTimer
+                               99 _TimerDisabled
+                              101         ; Hardware Workaround -- Restore IVL at HW_IPR
+                              102         pop     x0
+P:000F 4CFF00         4   31  102     move    y:-(r7),x0
+P:0010 447000 00FFFF  3   34  103         move    x0,x:HW_IPR                      ; re-enables the IVL line of decoder
+P:0012 00000C         4   38  105         rts
+                              110 ;;***********************************************************************
+                              111 ;  Function:
+                              112 ;        DecAdpcmProcess
+                              113 ;  Description:
+                              114 ;      Main function
+                              115 ;  Parameters passed: 
+                              116 ;      None
+                              117 ;;***********************************************************************
+                              119 DecAdpcmProcess
+                              120                 ; No need to check the input buffer.
+                              121                 ; We use the pull model, so we are never starved of input data.
+                              122         ; Get empty space from sink buffer
+P:0013 0BF080 rrrrrr  6   44  123                 jsr             SysAllLinear
+P:0015 64F400 rrrrrr  3   47  124         move    #g_AdpcmDecSinkBufDescriptor,r4
+P:0017 0BF080 rrrrrr  6   53  125         jsr     GetEmptySpace
+                              127                 ; SamplestoDecode is different for different algorithms.
+                              128                 ; Last block is handled differently
+P:0019 5FF000 rrrrrr  3   56  129         move   y:SamplestoDecode,B
+P:001B 4CF000 rrrrrr  3   59  130                 move    y:Fg_Wave_wChannels,x0
+P:001D 06C420         4   63  131                 rep        x0
+P:001E 20003A         2   65  132                 asl        B
+P:001F 20002A         2   67  133                 asr        B
+P:0020 200005         2   69  134         cmp    B,A
+P:0021 0AF0A1 rrrrrr  6   75  135         jge    _EnoughOutputSpace
+P:0023 00000C         4   79  136         rts   
+                              138 _EnoughOutputSpace
+                              140                 ; Update the SongByte pointer
+P:0024 4CF000 rrrrrr  3   82  141                 move    y:inputbufsize,x0
+P:0026 250013         2   84  142                 clr     A               #0,x1
+P:0027 58F000 rrrrrr  3   87  143                 move    y:SongByteTotalLow,A0
+P:0029 5CF000 rrrrrr  3   90  144         move    y:SongByteTotalHigh,A1
+P:002B 200020         2   92  145                 add             x,A
+P:002C 587000 rrrrrr  3   95  146                 move    A0,y:SongByteTotalLow
+P:002E 5C7000 rrrrrr  3   98  147         move    A1,y:SongByteTotalHigh
+                              149         ;added code start
+P:0030 5DF000 rrrrrr  3  101  150         move    y:SongByteLengthHigh,b1   ; high bytes of song length
+P:0032 59F000 rrrrrr  3  104  151         move    y:SongByteLengthLow,b0    ; low bytes of song length
+P:0034 20000D         2  106  152         cmp     a,b
+P:0035 0AF0A7 rrrrrr  6  112  153         jgt     _do_src_buf_check         ; jump & continue if decode limit in b > a
+P:0037 597000 rrrrrr  3  115  154         move    b0,y:SongByteTotalLow
+P:0039 5D7000 rrrrrr  3  118  155         move    b1,y:SongByteTotalHigh
+P:003B 200013         2  120  156         clr     a
+P:003C 587000 rrrrrr  3  123  157         move    a0,y:inputbufsize
+                              158     
+                              159 _do_src_buf_check
+                              160         ; added code end
+                              162         ; So read in the data
+                              163                 ; Typical data read is block align size. 
+                              164                 ; Take care of last block which may be smaller.
+P:003E 5EF000 rrrrrr  3  126  165                 move    y:inputbufsize,A
+P:0040 60F400 rrrrrr  3  129  166                 move    #>g_AdpcmDataSrc_buf,r0
+P:0042 0BF080 rrrrrr  6  135  167         jsr     SysAllLinear
+P:0044 0BF080 rrrrrr  6  141  168         jsr     FWave_Fill_Input_Bitstream_Buffer  ; checks if buffer full, reads in more if not
+                              169                                                   ; returns with A1 = num bytes read
+P:0046 200003         2  143  171                 tst     A; This will handle the case where return value is zero due to EOF or some other scenario
+P:0047 0AF0A7 rrrrrr  6  149  172                 jgt     _ContinueDecoding
+P:0049 4C8000r        2  151  173                 move    y:<Const_000001,x0
+P:004A 4C7000 rrrrrr  3  154  174                 move    x0,y:Last_block_flag
+                              176 ;        jcc     _ContinueDecoding
+P:004C 0A702D rrrrrr  6  160  177         bset    #EndOfSong,x:DecoderCSR ; Signal the top level modules to stop Decoding.
+P:004E 5EF000 rrrrrr  3  163  178                 move    y:Last_block_flag,A
+P:0050 200003         2  165  179         tst     A               
+P:0051 0AF0A2 rrrrrr  6  171  180         jne     _Exit
+P:0053 0A7037 rrrrrr  6  177  181         bset    #FileReadError,x:DecoderCSR ; failed to read data
+P:0055 0AF080 rrrrrr  6  183  182         jmp     _Exit
+                              184 _ContinueDecoding
+P:0057 60F400 rrrrrr  3  186  185                 move    #>g_AdpcmDataSrc_buf,r0
+P:0059 05F064 rrrrrr  4  190  186         movec   y:g_pAdpcmDecSinkBufMod,m4 ; m4=modulo of the sink buffer
+P:005B 6CF000 rrrrrr  3  193  187         move    y:g_pAdpcmDecSinkBufHead,r4 ; r4=sink buffer head ptr
+P:005D 6EF000 rrrrrr  3  196  188                 move    y:AdpcmDecoderPointer,r6
+P:005F 5EF000 rrrrrr  3  199  189                 move    y:SamplestoDecode,A
+                              190                 ; Call the appropriate Decoder
+P:0061 0BE680         4  203  191                 jsr             (r6)
+P:0062 5EF000 rrrrrr  3  206  192                 move    y:SamplestoDecode,A
+P:0064 4CF000 rrrrrr  3  209  193                 move    y:Fg_Wave_wChannels,x0
+P:0066 06C420         4  213  194                 rep        x0
+P:0067 200032         2  215  195                 asl             A               
+P:0068 6CF022 rrrrrr  3  218  196                 asr             A               y:g_pAdpcmDecSinkBufHead,r4
+P:006A 21DC00         2  220  197                 move    A,n4
+P:006B 000000         2  222  198                 nop
+P:006C 204C00         2  224  199                 move    (r4)+n4
+P:006D 6C7000 rrrrrr  3  227  200         move    r4,y:g_pAdpcmDecSinkBufHead
+P:006F 058064r        2  229  201         movec   y:<Const_ffffff,m4 ; Modulo back to linear
+                              202         ; Was this the last block?
+P:0070 5EF000 rrrrrr  3  232  203                 move    y:Last_block_flag,A
+P:0072 200003         2  234  204         tst     A               
+P:0073 0AF0AA rrrrrr  6  240  205         jeq     _ComputeSamplesLeft
+                              206                 ; This was the last block
+P:0075 0A702D rrrrrr  6  246  207         bset    #EndOfSong,x:DecoderCSR ; Signal the top level modules to stop Decoding.
+P:0077 0AF080 rrrrrr  6  252  208         jmp     _Exit
+                              209 _ComputeSamplesLeft
+                              210                 ; Prepare for the next block.
+P:0079 5EF000 rrrrrr  3  255  211                 move    y:(Fg_Wave_datachunksize+1),A
+P:007B 58F000 rrrrrr  3  258  212                 move    y:Fg_Wave_datachunksize,A0
+P:007D 250000         2  260  213                 move    #0,x1
+P:007E 4CF000 rrrrrr  3  263  214                 move    y:Fg_Wave_wBlockAlign,x0
+P:0080 200024         2  265  215                 sub             x,A
+P:0081 587000 rrrrrr  3  268  216                 move    A0,y:Fg_Wave_datachunksize
+P:0083 5C7000 rrrrrr  3  271  217                 move    A1,y:(Fg_Wave_datachunksize+1)
+P:0085 0AF0A7 rrrrrr  6  277  218                 jgt             _Continue
+                              219                 ; Else this is the last block. Handle the last block correctly.
+P:0087 4C8000r        2  279  220                 move    y:<Const_000001,x0
+P:0088 4C7000 rrrrrr  3  282  221                 move    x0,y:Last_block_flag
+P:008A 5FF000 rrrrrr  3  285  222                 move    y:Fg_Wave_wFormatTag,B
+                              223                 ; First Parameter is A = Fg_Wave_datachunksize
+P:008C 0BF080 rrrrrr  6  291  224                 jsr             FGetSamplestoDecodeLastBlock
+P:008E 5E7000 rrrrrr  3  294  225                 move    A,y:SamplestoDecode
+P:0090 5EF000 rrrrrr  3  297  226                 move    y:(Fg_Wave_datachunksize+1),A
+P:0092 58F000 rrrrrr  3  300  227                 move    y:Fg_Wave_datachunksize,A0
+P:0094 250000         2  302  228                 move    #0,x1
+P:0095 4CF000 rrrrrr  3  305  229                 move    y:Fg_Wave_wBlockAlign,x0
+P:0097 200020         2  307  230                 add             x,A
+P:0098 587000 rrrrrr  3  310  231                 move    A0,y:inputbufsize
+                              232 _Continue
+                              233 _Exit
+P:009A 00000C         4  314  234         rts
+                              239 ;*******************************************************************************
+                              240 ; DecAdpcmImaModuleIsr
+                              241 ;*******************************************************************************
+                              242 DecAdpcmImaModuleIsr
+                              244         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              245         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              246         ; will be popped back off System Stack Low (SSL).
+                              247         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              248         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:009B 00BFB8         2  316  249         andi #$BF,mr
+P:009C 4C7000 rrrrrr  3  319  251         move    x0,y:IntL1_SaveR6           ; save x0 state
+                              252         ; Check if spurious interrupt. If so exit ...
+P:009E 44F000 00F302  3  322  253         move    x:HW_ICLSTATUS0R,x0
+P:00A0 0AC42D rrrrrr  6  328  254         jset    #HW_ICLSTATUS0R_SST13_BITPOS,x0,_ContinueIsr
+                              255         ; None of the above, exit interruption
+P:00A2 4CF000 rrrrrr  3  331  256         move    y:IntL1_SaveR6,x0           ; restore x0 state
+P:00A4 000004         4  335  257         rti
+                              259 _ContinueIsr
+P:00A5 4CF000 rrrrrr  3  338  260         move    y:IntL1_SaveR6,x0           ; restore x0 state
+                              262         ; save off all registers
+P:00A7 6E7000 rrrrrr  3  341  263         move    r6,y:IntL1_SaveR6            ; r6 used for return mechanism
+P:00A9 66F400 rrrrrr  3  344  264         move    #_DecoderSaveRegReturn,r6    ; setup the return address
+P:00AB 0AF080 rrrrrr  6  350  265         jmp     SaveRegs                     ; save the remaining registers
+                              266 _DecoderSaveRegReturn
+                              268         ; save off stack
+P:00AD 66F400 rrrrrr  3  353  269         move    #_DecoderSaveStackReturn,r6  ; setup the return address
+P:00AF 65F400 rrrrrr  3  356  270         move    #AdpcmDecIsrSp,r5                 ; pointer to the SP local save
+P:00B1 0AF080 rrrrrr  6  362  271         jmp     SaveSystemStack              ; save the hardware stack
+                              272 _DecoderSaveStackReturn
+                              274 _DecoderStateMachine
+P:00B3 44F000 rrrrrr  3  365  275         move    x:DecoderCSR,x0
+P:00B5 0AC426 rrrrrr  6  371  276         jset    #Stop,x0,_IsrStopSequence
+P:00B7 0AC425 rrrrrr  6  377  277         jset    #Pause,x0,_IsrPauseSequence
+                              279 _IsrPlaySequence
+P:00B9 0AC46C         4  381  280         bset    #Play,x0
+P:00BA 447000 rrrrrr  3  384  281         move    x0,x:DecoderCSR
+                              283         ; Set the status register
+P:00BC 0A7006 rrrrrr  6  390  284         bclr    #Stop,x:DecoderSR
+P:00BE 0A7005 rrrrrr  6  396  285         bclr    #Pause,x:DecoderSR
+P:00C0 0A702C rrrrrr  6  402  286         bset    #Play,x:DecoderSR
+                              288         ; enable the dac
+P:00C2 44F000 00F800  3  405  289         move    x:HW_DACCSR,x0
+                              290 ; GDA_20010530        jset    #HW_DACCSR_TXEN_BITPOS,x0,_callDecoder
+P:00C4 0AC420 rrrrrr  6  411  291         jset    #HW_DACCSR_TXEN_BITPOS,x0,_checkFileOK
+P:00C6 0A7020 00F800  6  417  292         bset    #HW_DACCSR_TXEN_BITPOS,x:HW_DACCSR
+                              294 _checkFileOK                ; GDA_20010530
+P:00C8 4CF000 rrrrrr  3  420  295     move    y:CurrentSongBad,x0
+P:00CA 0AC400 rrrrrr  6  426  296     jclr    #0,x0,_callDecoder
+P:00CC 0A702D rrrrrr  6  432  297         bset    #EndOfSong,x:DecoderCSR     ; force to end of bad file
+P:00CE 0AF080 rrrrrr  6  438  298         jmp     _IsrStopSequence
+                              299     
+                              300 _callDecoder
+P:00D0 0BF080 rrrrrr  6  444  301         jsr     DecAdpcmProcess
+                              302 _getMoreBytes
+P:00D2 44F000 rrrrrr  3  447  303         move    x:DecoderCSR,x0
+P:00D4 0AC437 rrrrrr  6  453  304         jset    #FileReadError,x0,_IsrStopSequence
+P:00D6 0AC40D rrrrrr  6  459  305         jclr    #EndOfSong,x0,_restore_stack   ; continue decoding song if bit not yet set
+                              307 _IsrStopSequence
+                              308         ; Set the status register
+P:00D8 0A7026 rrrrrr  6  465  309         bset    #Stop,x:DecoderSR
+P:00DA 0A7005 rrrrrr  6  471  310         bclr    #Pause,x:DecoderSR
+P:00DC 0A700C rrrrrr  6  477  311         bclr    #Play,x:DecoderSR
+P:00DE 0AF080 rrrrrr  6  483  312         jmp     _decoderTimerOff
+                              314 _IsrPauseSequence
+                              315         ; Set the status register
+P:00E0 0A7025 rrrrrr  6  489  316         bset    #Pause,x:DecoderSR
+P:00E2 0A700C rrrrrr  6  495  317         bclr    #Play,x:DecoderSR
+                              320 _decoderTimerOff
+                              321         ; if done decoding song, turn timer off
+                              322         ; user level will turn dac off before advancing to next song
+P:00E4 44F000 rrrrrr  3  498  323         move    x:DecoderCSR,x0
+P:00E6 0AC44C         4  502  324         bclr    #Play,x0                     ; clear to avoid "Pause" on next song
+P:00E7 447000 rrrrrr  3  505  325         move    x0,x:DecoderCSR
+P:00E9 0BF080 rrrrrr  6  511  327         jsr     DecAdpcmImaModuleTimerDisable ; turn off timer
+                              329 _restore_stack
+                              330         ; reset the isr for next time
+P:00EB 44F400 rrrrrr  3  514  331         move    #>DecoderTimerNum,x0
+P:00ED 60F400 rrrrrr  3  517  332         move    #_TimerReset,r0
+P:00EF 0AF080 rrrrrr  6  523  333         jmp     SysClearTimerIrq
+                              334 _TimerReset
+                              335         ; restore stack
+P:00F1 65F400 rrrrrr  3  526  336         move    #AdpcmDecIsrSp,r5                 ; pointer to the SP local save
+P:00F3 66F400 rrrrrr  3  529  337         move    #_stackRestored,r6           ; setup the return address
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00F5 0AF080 rrrrrr  6  535  338         jmp     RestoreSystemStack           ; restore the hardware stack
+                              339 _stackRestored
+                              340         ; restore all registers
+P:00F7 66F400 rrrrrr  3  538  341         move    #DecoderRestoreRegReturn,r6  ; setup the return address
+P:00F9 0AF080 rrrrrr  6  544  342         jmp     RestoreRegs                  ; restore registers
+                              343 DecoderRestoreRegReturn
+P:00FB 6EF000 rrrrrr  3  547  344         move    y:IntL1_SaveR6,r6            ; restore minimal reg set
+P:00FD 000004         4  551  345         rti
+                              347 ;--------------------------------------------------
+                              349     
+                              350         endsec

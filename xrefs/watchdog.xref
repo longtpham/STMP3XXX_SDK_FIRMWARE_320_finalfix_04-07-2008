@@ -1,0 +1,12 @@
+    IF (!@def(WATCHDOG_XREF))
+WATCHDOG_XREF equ 1
+
+    IF (@DEF('DEVICE_3410')||@DEF('DEVICE_3310'))
+        extern Fg_wSoftWatchdog
+        extern Fg_wWatchdogTimeoutValue
+        extern FSetWatchdogTimeout
+        extern FTickleWatchdog
+
+    ENDIF 
+
+    ENDIF ;(!@def(WATCHDOG_XREF))

@@ -1,0 +1,1044 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\common\bootmanager.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2004
+                                3 ;
+                                4 ;  File        : bootmanager.asm
+                                5 ;  Description : BootManager main program and when built with EEPROM option
+                                6 ;                this serves as the EEPROM stored program that boots STMP
+                                7 ;                and includes USB boot (recovery mode).
+                                8 ;///////////////////////////////////////////////////////////////////////////////
+                                9 
+                               11 
+                               12 ;*******************************************************************************
+                               13 ;  Include files
+                               14 ;*******************************************************************************
+                               15 
+                               38 
+                               39 ;*******************************************************************************
+                               40 ;  Extern definitions
+                               41 ;*******************************************************************************
+                               42 
+                               43     global    BootManager
+                               44     global    ROM_SIZE
+                               45     global    LoadRoutinePtrs
+                               46     global    MainLoop
+                               47     global    Getkey
+                               48     global    DecryptWord
+                               49     global    UpdateCheckSum
+                               50     global    Booty
+                               53         global    VERSION_MAJOR
+                               54         global    VERSION_MIDDLE
+                               55         global    VERSION_MINOR
+                               57 
+                               58 ;///////////////////////////////////////////////////////////////////////////////
+                               59 ;   External References
+                               60 ;///////////////////////////////////////////////////////////////////////////////
+                               61 
+                               68 
+                               69     extern      L1DataStack
+                               70 
+                               71     extern      b1p8Volts
+                               72     extern      SaveCommand ; debugging
+                               76 
+                               77 ;*******************************************************************************
+                               78 ;  Constants
+                               79 ;*******************************************************************************
+                               80 
+                               81 ; Component version number of the boot manager (booty booter).
+                               82 ; Note: bootmanager 3.110.011 is source code equal to the 3.101.103 release  NO LEADING ZEROS IN V
+                                  ERSION
+                               85 VERSION_MAJOR       equ     3
+                               86 VERSION_MIDDLE      equ     200
+                               87 VERSION_MINOR       equ     910
+                               89 
+                               90 ; Version of the data that the booty booter processes
+                               91 BOOTY_VERSION       equ     $000200
+                               92 
+                               98                                            ; 3500 build
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               99 ROM_SIZE                equ     12*1024
+                              100 
+                              102 
+                              110 
+                              111 
+                              113 HW_BOOT_MODE_BIT_3_GPIO equ     HW_GPIO_003     ; LCD.D3
+                              115 
+                              116 ; Number of loop iterations needed to wait for the PLL and DC-DC to settle
+                              117 ; Count = Delay * 24.576MHz / 3  (Delay is in seconds)
+                              118 SETTLING_COUNT  equ     10000           ; 1.23 ms
+                              119 
+                              120 ;PLL Settings for Clock Speed Up
+                              121 PLL_PDIV        equ     17              ; (17+33)*(24/20) = 60
+                              122 PLL_DDIV        equ     0               ; 60 / (2^0) = 60 MHz
+                              123 
+                              124 ;Battery Thresholds for brownout and fast boot
+                              125 ;Event 1 - 1.2V for Fast Boot.  Event 2 - 0.9V for Battery BO
+                              126 BATTERY_THRESHOLD       equ     $096069
+                              127 
+                              128 ;*******************************************************************************
+                              129 ;  X memory
+                              130 ;*******************************************************************************
+                              131 
+                              132 ;*******************************************************************************
+                              133 ;  Y memory
+                              134 ;*******************************************************************************
+                              135 
+                              136 ;*******************************************************************************
+                              137 ;  P memory
+                              138 ;*******************************************************************************
+                              139 
+                              140 ;*******************************************************************************
+                              141 ;   Boot loader
+                              142 ;
+                              143 ;*******************************************************************************
+                              144 ; The boot loader is able to load code into p, x, and/or y memory.  It is also
+                              145 ; capable of initializing a specified block of memory to a constant value.
+                              146 ; Each transfer is preceded by a header that defines the target memory, the
+                              147 ; base address, and the optional initialization constant if appropriate.
+                              148 ;
+                              149 ;
+                              150 ;   Word 0             Mc3 Mc2 Mc1 Mc0 x x x x a15 a14 a13 a12 a11 a10 a9 a8 a7 a6 a5 a4 a3 a2 a1 
+                                  a0
+                              151 ;   Word 1             x   x   x   x   x x x x l15 l14 l13 l12 l11 l10 l9 l8 l7 l6 l5 l4 l3 l2 l1 
+                                  l0
+                              152 ;   Word (optional)    D23-D0
+                              153 ;
+                              154 ;        Mc3 Mc2 Mc1 Mc0
+                              155 ;            (P) (X) (Y)
+                              156 ;         0   0   0   0         Unused
+                              157 ;         0   0   0   1         load into Y memory
+                              158 ;         0   0   1   0         load into X memory
+                              159 ;         0   0   1   1         load into L memory (XY memory)
+                              160 ;         0   1   0   0         load into P memory
+                              161 ;         0   1   0   1         Unused
+                              162 ;         0   1   1   0         Unused
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              163 ;         0   1   1   1         Unused
+                              164 ;         1   0   0   0         Unused
+                              165 ;         1   0   0   1         init Y memory with data value
+                              166 ;         1   0   1   0         init X memory with data value
+                              167 ;         1   0   1   1         init L memory with data value
+                              168 ;         1   1   0   0         init P memory with data value
+                              169 ;         1   1   0   1         Unused
+                              170 ;         1   1   1   0         Unused
+                              171 ;         1   1   1   1         BootLoad complete, exit and execute loaded program
+                              172 
+P:0000                        173     org p,"EXEC_Vectors_P":
+                              174 
+P:0000 0AF080 rrrrrr  6    6  175     jmp     Booty
+                              176 
+                              177 
+                              183 
+P:0000                        184     org p,"VDDIO_BO_Vector_P":
+                              185     ; VDDIO Brownout
+P:0000 0AF080 rrrrrr  6    6  186     jmp     VDDIOBrownout
+                              187 
+P:0000                        188     org p,"BOOTMANAGER_P":
+                              189 
+                              190 
+                              191 ;///////////////////////////////////////////////////////////////////////////////
+                              192 ; Booty code
+                              193 ;///////////////////////////////////////////////////////////////////////////////
+                              194 ; This entry point is used when the BootManager is called by another function.
+                              195 ;   Typically called by USB MSC in Win98 because that OS does not have native
+                              196 ;   MSC support. a1 = SmBlockTag
+                              197 ;   BootManager must be located at p:$80
+                              198 BootManager
+P:0000 07708C rrrrrr  8    8  199         movem   a1,p:TempBlockTagSave
+P:0002 20001B         2   10  200         clr     b                       ; reset the stack pointer
+P:0003 04CFBB         2   12  201         movec   b,sp
+P:0004 0BF080 rrrrrr  6   18  202         jsr     BootyInit
+P:0006 07F08C rrrrrr  8   26  203         movem   p:TempBlockTagSave,a1
+P:0008 547000 rrrrrr  3   29  204         move    a1,x:SmBlockTag         ; save the block tag
+P:000A 0AF080 rrrrrr  6   35  205         jmp     LoadRoutinePtrs
+                              206 TempBlockTagSave
+P:000C 000000                 207         dc      0
+                              208 
+                              209 ; This entry point is used when the BootManager is loaded from ROM
+                              210 Booty
+                              211         ; init the software stack
+P:000D 67F400 rrrrrr  3   38  212         move    #>L1DataStack,r7
+                              213 
+P:000F 05F427 FFFFFF  4   42  214         movec   #-1,m7
+P:0011 0466A7         2   44  215         movec   m7,m6
+P:0012 0465A7         2   46  216         movec   m7,m5
+P:0013 0464A7         2   48  217         movec   m7,m4
+P:0014 0463A7         2   50  218         movec   m7,m3
+P:0015 0462A7         2   52  219         movec   m7,m2
+P:0016 0461A7         2   54  220         movec   m7,m1
+P:0017 0460A7         2   56  221         movec   m7,m0
+                              222 
+                              223 ;;;;;;;;;;;;;;;;;;  Add Battery BO ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              224          ;Skip if connected to 5V
+P:0018 44F000 00F200  3   59  225          move    x:HW_USBCSR,x0
+P:001A 0BC477         4   63  226          btst   #HW_USBCSR_VBUSSENSE_BITPOS,x0
+P:001B 0AF0A8 rrrrrr  6   69  277     jcs _SkipBattBO
+                              279 
+                              280 _CheckBattBO
+                              281          ;Init battery brownout and shutdown if too low
+P:001D 0BF080 rrrrrr  6   75  282          jsr InitBatteryBrownout
+                              283 
+                              284          ; Test Battery Threshold1 to allow player to boot at low battery levels.
+                              285          ; If greater than threshold, speed up the clock
+P:001F 0B7022 00FA22  6   81  286          btst    #HW_BATT_RESULT_GT_EVENT1_BITPOS,x:HW_BATT_RESULT
+P:0021 0AF0A0 rrrrrr  6   87  287          jcc     _SkipClockSpeedUp
+                              288 ;     jmp     _SkipClockSpeedUp
+                              289 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              290 
+                              291 _SkipBattBO
+                              293     ; Speed Up the DCLK to 60 Mhz
+                              294     ; This will speed up USB connection
+                              295 ;~~~~~~~~~~~~~~~~~~~~ CHANGING PLL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+P:0023 0A702C 00FA1D  6   93  296         bset    #HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_BITPOS,x:HW_VDD5V_PWR_CHARGE
+                              297 
+                              298         ; USB Pll is programmed to its default value of 60Mhz
+                              299 
+                              300         ; From Steve Vu information
+P:0025 0A7020 00FA00  6   99  301         bset    #HW_CCR_CKRST_BITPOS,x:HW_CCR           ; Enables writes to Clock Control Register
+                                  
+P:0027 0A7022 00FA00  6  105  302         bset    #HW_CCR_PLLEN_BITPOS,x:HW_CCR           ; Enable (old 3410) PLL because the MUX
+                              303                                                         ; switching from old Pll to new (USB) PLL
+                              304                                                         ; requires a clock during this phase (prev
+                                  ents glitches)
+                              305 
+                              306         ; otherwise using system clock to reduce power consumption.
+P:0029 44F400 FE0FFF  3  108  307                 move #HW_CCR_PDIV_CLRMASK,x0
+P:002B 56F000 00FA00  3  111  308                 move  x:HW_CCR,a
+P:002D 200046         2  113  309                 and x0,a
+P:002E 44F400 002000  3  116  310                 move #>$002000,x0
+P:0030 200042         2  118  311                 or  x0,a
+P:0031 547000 00FA00  3  121  312                 move a1,x:HW_CCR
+                              313 
+P:0033 06E8A3         4  125  314                 rep #1000
+P:0034 000000         2  127  315           nop
+                              316 
+                              317                 ; ** NOTE ** There is currently no provision here for the case where the lock bit 
+                                  is not
+                              318                 ; set within the above loop counter time. It just falls through to _locked
+                              319                 ; Something should be done in the case of the bit not locking.
+                              320 
+                              321 _locked2
+P:0035 0A7028 00FA00  6  133  322         bset    #HW_CCR_CKSRC_BITPOS,x:HW_CCR               ; Route clock from Crystal to PLL
+                              323 
+                              325 ;--------------------- End PLL Settings ---------------------------------------
+                              326 
+                              327 _SkipClockSpeedUp
+                              328     ; init all variables
+P:0037 0BF080 rrrrrr  6  139  329     jsr     BootyInit
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              330 
+                              336 
+                              337 
+                              338     ; Find out if we're loading the Player (STMPCode00Blocks) or the DCC
+                              339     ;   (STMPCode01Blocks) image.
+                              340 STMP_CODE_00_BLOCKS     equ     $000000
+                              341 STMP_CODE_01_BLOCKS     equ     $000001
+P:0039 0BF080 rrrrrr  6  145  342         jsr     DetectUsb
+P:003B 0AF0A0 rrrrrr  6  151  343         jcc     _boot_player
+P:003D 44F400 000001  3  154  344         move    #>STMP_CODE_01_BLOCKS,x0
+P:003F 0AF080 rrrrrr  6  160  345         jmp     _set_block_tag
+                              346 _boot_player
+P:0041 44F400 000000  3  163  347         move    #>STMP_CODE_00_BLOCKS,x0
+                              348 _set_block_tag
+P:0043 447000 rrrrrr  3  166  349         move    x0,x:SmBlockTag
+                              350 
+                              351 LoadRoutinePtrs
+                              352                 ; Don't need to set FlashInit_1p8V as the 1.8V init routine,
+                              353                 ; because b1p8Volts flag is handled in the BootyInit routine
+                              354                 ; FlashInitPort1 will work for either NAND voltage, because
+                              355                 ; FlashInit_1p8V simply sets b1p8Volts, then calls FlashInitPort1
+                              356 
+P:0045 44F400 rrrrrr  3  169  360         move    #>FlashInitPort1_Boot,x0         ; get init routine address
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\common\bootmanager.asm: line 360 : inserted "extern FlashInitPort1_Boot"
+P:0047 447000 rrrrrr  3  172  362         move    x0,x:InitRoutine        ; save init routine address in memory
+P:0049 44F400 rrrrrr  3  175  363         move    #>FlashReceive1,x0              ; get receive routine address
+P:004B 447000 rrrrrr  3  178  364         move    x0,x:ReceiveRoutine     ; save receive routine address in memory
+P:004D 44F400 rrrrrr  3  181  365         move    #>FlashExit1,x0              ; get exit routine address
+P:004F 447000 rrrrrr  3  184  366         move    x0,x:ExitRoutine        ; save exit routine address in memory
+                              367 
+P:0051 44F400 rrrrrr  3  187  371         move    #>FlashError1_Boot,x0         ; get error routine address
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\common\bootmanager.asm: line 371 : inserted "extern FlashError1_Boot"
+P:0053 447000 rrrrrr  3  190  373         move    x0,x:ErrorRoutine       ; save error routine address in memory
+                              374 
+                              375 RunInitRoutine
+P:0055 66F000 rrrrrr  3  193  376         move    x:InitRoutine,r6        ; r6=pointer to the port init routine
+P:0057 000000         2  195  377         nop
+P:0058 0BE680         4  199  378         jsr     (r6)                    ; call the port init routine
+                              379 
+                              380 ; init the software stack
+P:0059 67F400 rrrrrr  3  202  381         move    #>L1DataStack,r7
+                              382 
+P:005B 05F427 FFFFFF  4  206  383         movec   #-1,m7
+P:005D 0466A7         2  208  384         movec   m7,m6
+P:005E 0465A7         2  210  385         movec   m7,m5
+P:005F 0464A7         2  212  386         movec   m7,m4
+P:0060 0463A7         2  214  387         movec   m7,m3
+P:0061 0462A7         2  216  388         movec   m7,m2
+P:0062 0461A7         2  218  389         movec   m7,m1
+P:0063 0460A7         2  220  390         movec   m7,m0
+                              391 
+                              392 Getkey
+P:0064 0BF080 rrrrrr  6  226  393         jsr     GetCipherKey            ; get the cipher key... duh.
+                              394 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0066 0BF080 rrrrrr  6  232  395         jsr     GetCheckSumTarget       ; get the checksum target
+                              396 
+P:0068 0BF080 rrrrrr  6  238  397         jsr     VerifyVersion           ; make sure the code version matches this
+                              398 
+                              399                                         ;   chip revision
+                              400 MainLoop
+                              401         ; receive first word (opcode plus address)
+P:006A 66F000 rrrrrr  3  241  402         move    x:ReceiveRoutine,r6     ; r6=pointer to the receive port routine
+P:006C 000000         2  243  403         nop
+P:006D 0BF080 rrrrrr  6  249  404         jsr     GetWord                 ; get the next word
+P:006F 208700         2  251  405         move    x0,y1                   ; y1=copy of original command word
+                              406 
+                              407         ;move    x0,x:SaveCommand        ; FOO: Debugging
+                              408 
+                              409 _DontStop
+                              410         ; get the address to initialize
+P:0070 54F400 00FFFF  3  254  411         move    #>$00ffff,a1            ; this could have been done with move x0,rx which would tr
+                                  uncate the MSByte
+P:0072 200046         2  256  412         and     x0,a                    ; but this would not be compatible with future 24 bit addr
+                                  ess machines
+P:0073 547000 rrrrrr  3  259  413         move    a1,x:InitPtr            ; save a copy in memory
+                              414 
+                              415         ; check if cmd opcode = $f (done)
+P:0075 46F400 000008  3  262  416         move    #>$8,y0
+P:0077 2000B0         2  264  417         mpy     y1,y0,a
+P:0078 46F400 00000F  3  267  418         move    #>$0f,y0
+P:007A 200056         2  269  419         and     y0,a
+P:007B 218E00         2  271  420         move    a1,a
+P:007C 45F400 00000F  3  274  421         move    #>$f,x1
+P:007E 200065         2  276  422         cmp     x1,a
+P:007F 0AF0AA rrrrrr  6  282  423         jeq     Reboot
+                              424 
+                              425         ; get # of words to initialize
+                              426         push    y1
+P:0081 475F00         2  284  426     move    y1,x:(r7)+
+P:0082 0BF080 rrrrrr  6  290  427         jsr     GetWord                 ; get the next word
+                              428         pop     y1
+P:0084 47FF00         4  294  428     move    x:-(r7),y1
+P:0085 447000 rrrrrr  3  297  429         move    x0,x:InitCount          ; x0=number of words to initialize
+                              430 
+                              431         ; switch statement for command
+P:0087 46F400 000008  3  300  432         move    #>$8,y0
+P:0089 2000B0         2  302  433         mpy     y1,y0,a
+P:008A 46F400 00000F  3  305  434         move    #>$0f,y0
+P:008C 200056         2  307  435         and     y0,a
+P:008D 218E00         2  309  436         move    a1,a
+P:008E 47F400 000001  3  312  437         move     #>$1,y1
+P:0090 200075         2  314  438         cmp     y1,a
+P:0091 0AF0AA rrrrrr  6  320  439         jeq     LoadYmem
+P:0093 47F400 000002  3  323  440         move     #>$2,y1
+P:0095 200075         2  325  441         cmp     y1,a
+P:0096 0AF0AA rrrrrr  6  331  442         jeq     LoadXmem
+P:0098 47F400 000003  3  334  443         move     #>$3,y1
+P:009A 200075         2  336  444         cmp     y1,a
+P:009B 0AF0AA rrrrrr  6  342  445         jeq     LoadLmem
+P:009D 47F400 000004  3  345  446         move     #>$4,y1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:009F 200075         2  347  447         cmp     y1,a
+P:00A0 0AF0AA rrrrrr  6  353  448         jeq     LoadPmem
+P:00A2 47F400 000009  3  356  449         move     #>$9,y1
+P:00A4 200075         2  358  450         cmp     y1,a
+P:00A5 0AF0AA rrrrrr  6  364  451         jeq     InitYmem
+P:00A7 47F400 00000A  3  367  452         move     #>$a,y1
+P:00A9 200075         2  369  453         cmp     y1,a
+P:00AA 0AF0AA rrrrrr  6  375  454         jeq     InitXmem
+P:00AC 47F400 00000B  3  378  455         move     #>$b,y1
+P:00AE 200075         2  380  456         cmp     y1,a
+P:00AF 0AF0AA rrrrrr  6  386  457         jeq     InitLmem
+P:00B1 47F400 00000C  3  389  458         move     #>$c,y1
+P:00B3 200075         2  391  459         cmp     y1,a
+P:00B4 0AF0AA rrrrrr  6  397  460         jeq     InitPmem
+P:00B6 47F400 00000F  3  400  461         move     #>$f,y1
+P:00B8 200075         2  402  462         cmp     y1,a
+P:00B9 0AF0AA rrrrrr  6  408  463         jeq     Reboot
+                              464         ; Invalid command!
+P:00BB 0A7020rrrrrrr  6  414  465         bset    #BOOT_INFO_INVALID_COMMAND,x:BootInfo
+P:00BD 60F000 rrrrrr  3  417  466         move    x:ErrorRoutine,r0
+P:00BF 000000         2  419  467         nop
+P:00C0 0AE080         4  423  468         jmp     (r0)
+                              469 
+                              470         ; Y memory code lode
+                              471 LoadYmem
+P:00C1 62F000 rrrrrr  3  426  472         move    x:InitPtr,r2
+P:00C3 46F000 rrrrrr  3  429  473         move    x:InitCount,y0
+P:00C5 05F422 00FFFF  4  433  474         movec   #$ffff,m2
+P:00C7 06C600 rrrrrr  6  439  475         do      y0,_LoadYmemLoop
+                              476         push    r2
+P:00C9 625F00         2  441  476     move    r2,x:(r7)+
+P:00CA 0BF080 rrrrrr  6  447  477         jsr     GetWord                 ; x0=data to initialize memory with
+                              478         pop     r2
+P:00CC 62FF00         4  451  478     move    x:-(r7),r2
+P:00CD 000000         2  453  479         nop
+P:00CE 4C5A00         2  455  480         move    x0,y:(r2)+              ; init memory with value
+                        (16)  481 _LoadYmemLoop
+P:00CF 0AF080 rrrrrr  6  461  482         jmp     MainLoop
+                              483 
+                              484         ; X memory code lode
+                              485 LoadXmem
+P:00D1 62F000 rrrrrr  3  464  486         move    x:InitPtr,r2
+P:00D3 46F000 rrrrrr  3  467  487         move    x:InitCount,y0
+P:00D5 05F422 00FFFF  4  471  488         movec   #$ffff,m2
+P:00D7 06C600 rrrrrr  6  477  489         do      y0,_LoadXmemLoop
+                              490         push    r2
+P:00D9 625F00         2  479  490     move    r2,x:(r7)+
+P:00DA 0BF080 rrrrrr  6  485  491         jsr     GetWord                 ; x0=data to initialize memory with
+                              492         pop     r2
+P:00DC 62FF00         4  489  492     move    x:-(r7),r2
+P:00DD 000000         2  491  493         nop
+P:00DE 445A00         2  493  494         move    x0,x:(r2)+              ; init memory with value
+                        (16)  495 _LoadXmemLoop
+P:00DF 0AF080 rrrrrr  6  499  496         jmp     MainLoop
+                              497 
+                              498 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              499         ; L memory code lode
+                              500 LoadLmem
+P:00E1 62F000 rrrrrr  3  502  501         move    x:InitPtr,r2
+P:00E3 46F000 rrrrrr  3  505  502         move    x:InitCount,y0
+P:00E5 05F422 00FFFF  4  509  503         movec   #$ffff,m2
+P:00E7 06C600 rrrrrr  6  515  504         do      y0,_LoadLmemLoop
+                              505         push    r2
+P:00E9 625F00         2  517  505     move    r2,x:(r7)+
+P:00EA 0BF080 rrrrrr  6  523  506         jsr     GetWord                 ; x0=data to initialize memory with
+P:00EC 447000 rrrrrr  3  526  507         move    x0,x:LmemSaveHigh
+P:00EE 0BF080 rrrrrr  6  532  508         jsr     GetWord                 ; x0=data to initialize memory with
+                              509         pop     r2
+P:00F0 62FF00         4  536  509     move    x:-(r7),r2
+P:00F1 200013         2  538  510         clr     a
+P:00F2 54F000 rrrrrr  3  541  511         move    x:LmemSaveHigh,a1
+P:00F4 208800         2  543  512         move    x0,a0                    ; a10=data to initialize memory with
+P:00F5 405A00         2  545  513         move    a10,L:(r2)+              ; init memory with value
+                        (30)  514 _LoadLmemLoop
+P:00F6 0AF080 rrrrrr  6  551  515         jmp     MainLoop
+                              516 
+                              517 
+                              518         ; P memory code lode
+                              519 LoadPmem
+P:00F8 62F000 rrrrrr  3  554  520         move    x:InitPtr,r2
+P:00FA 46F000 rrrrrr  3  557  521         move    x:InitCount,y0
+P:00FC 05F422 00FFFF  4  561  522         movec   #$ffff,m2
+P:00FE 06C600 rrrrrr  6  567  523         do      y0,_LoadPmemLoop
+                              524         push    r2
+P:0100 625F00         2  569  524     move    r2,x:(r7)+
+P:0101 0BF080 rrrrrr  6  575  525         jsr     GetWord                 ; x0=data to initialize memory with
+                              526         pop     r2
+P:0103 62FF00         4  579  526     move    x:-(r7),r2
+P:0104 000000         2  581  527         nop
+P:0105 075A84         6  587  528         movem   x0,p:(r2)+          ; init memory with value
+                        (20)  529 _LoadPmemLoop
+P:0106 0AF080 rrrrrr  6  593  530         jmp     MainLoop
+                              531 
+                              532         ; Y memory initialization
+                              533 InitYmem
+P:0108 0BF080 rrrrrr  6  599  534         jsr     GetWord                 ; x0=data to initialize memory with
+P:010A 62F000 rrrrrr  3  602  535         move    x:InitPtr,r2
+P:010C 46F000 rrrrrr  3  605  536         move    x:InitCount,y0
+P:010E 05F422 00FFFF  4  609  537         movec   #$ffff,m2
+P:0110 06C600 rrrrrr  6  615  538         do      y0,_InitYmemLoop
+P:0112 4C5A00         2  617  539         move    x0,y:(r2)+          ; init memory with value
+P:0113 000000         2  619  540         nop
+                         (4)  541 _InitYmemLoop
+P:0114 0AF080 rrrrrr  6  625  542         jmp     MainLoop
+                              543 
+                              544         ; X memory initialization
+                              545 InitXmem
+P:0116 0BF080 rrrrrr  6  631  546         jsr     GetWord                 ; x0=data to initialize memory with
+P:0118 62F000 rrrrrr  3  634  547         move    x:InitPtr,r2
+P:011A 46F000 rrrrrr  3  637  548         move    x:InitCount,y0
+P:011C 05F422 00FFFF  4  641  549         movec   #$ffff,m2
+P:011E 06C600 rrrrrr  6  647  550         do      y0,_InitXmemLoop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0120 445A00         2  649  551         move    x0,x:(r2)+          ; init memory with value
+P:0121 000000         2  651  552         nop
+                         (4)  553 _InitXmemLoop
+P:0122 0AF080 rrrrrr  6  657  554         jmp     MainLoop
+                              555 
+                              556         ; L memory initialization
+                              557 InitLmem
+P:0124 0BF080 rrrrrr  6  663  558         jsr     GetWord                 ; x0=data to initialize memory with
+P:0126 447000 rrrrrr  3  666  559         move    x0,x:LmemSaveHigh
+P:0128 0BF080 rrrrrr  6  672  560         jsr     GetWord                 ; x0=data to initialize memory with
+P:012A 200013         2  674  561         clr     a
+P:012B 54F000 rrrrrr  3  677  562         move    x:LmemSaveHigh,a1
+P:012D 208800         2  679  563         move    x0,a0               ; a10=data to init L memory with
+P:012E 62F000 rrrrrr  3  682  564         move    x:InitPtr,r2
+P:0130 46F000 rrrrrr  3  685  565         move    x:InitCount,y0
+P:0132 05F422 00FFFF  4  689  566         movec   #$ffff,m2
+P:0134 06C600 rrrrrr  6  695  567         do      y0,_InitLmemLoop
+P:0136 405A00         2  697  568         move    a10,L:(r2)+          ; init memory with value
+P:0137 000000         2  699  569         nop
+                         (4)  570 _InitLmemLoop
+P:0138 0AF080 rrrrrr  6  705  571         jmp     MainLoop
+                              572 
+                              573         ; P memory initialization
+                              574 InitPmem
+P:013A 0BF080 rrrrrr  6  711  575         jsr     GetWord                 ; x0=data to initialize memory with
+P:013C 62F000 rrrrrr  3  714  576         move    x:InitPtr,r2
+P:013E 46F000 rrrrrr  3  717  577         move    x:InitCount,y0
+P:0140 05F422 00FFFF  4  721  578         movec   #$ffff,m2
+P:0142 06C600 rrrrrr  6  727  579         do      y0,_InitPmemLoop
+P:0144 075A84         6  733  580         movem   x0,p:(r2)+          ; init memory with value
+P:0145 000000         2  735  581         nop
+                         (8)  582 _InitPmemLoop
+P:0146 0AF080 rrrrrr  6  741  583         jmp     MainLoop
+                              584 
+                              585 ;///////////////////////////////////////////////////////////////////////////////
+                              586 ; Reboot
+                              587 ;///////////////////////////////////////////////////////////////////////////////
+                              588 Reboot
+                              589 
+P:0148 0BF080 rrrrrr  6  747  590         jsr     ValidateCheckSum
+P:014A 65F000 rrrrrr  3  750  591         move    x:ExitRoutine,r5        ; r5=pointer to the exit routine for port
+P:014C 000000         2  752  592         nop
+P:014D 0BE580         4  756  593         jsr     (r5)                    ; call the exit routine, on return, port will be disabled
+                              594 
+                              595         ; Get off the high-speed PLL before switching to player/usbmsc
+                              597                 ;Clear Battery settings
+P:014E 44F400 000C00  3  759  598                 move    #>$000c00,x0
+P:0150 447000 00FA20  3  762  599                 move    x0,x:HW_BATT_CTRL
+                              600                 ;clear Battery BO
+                              601                 ;set to clear IRQ event in HW_BATT_RESULT
+P:0152 0A7034 00FA22  6  768  602         bset    #HW_BATT_RESULT_IRQ_EVENT0_BITPOS,x:HW_BATT_RESULT
+P:0154 0ABF03         4  772  603                 bclr    #HW_IPR_IRQB_BITPOS,x:HW_IPR
+                              604 
+P:0155 0A7020 00FA00  6  778  605         bset    #HW_CCR_CKRST_BITPOS,x:HW_CCR                   ; Enable writes to the HW_CCR regi
+                                  ster
+P:0157 0A7022 00FA00  6  784  606                 bset    #HW_CCR_PLLEN_BITPOS,x:HW_CCR                   ; Enable the system PLL
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0159 0A7004 00FA00  6  790  607                 bclr    #HW_CCR_PLL_SOURCE_SEL_BITPOS,x:HW_CCR          ; Select the system PLL as
+                                   the clock source
+                              608 
+P:015B 44F400 800000  3  793  609         move    #>$800000,x0
+P:015D 447000 00F210  3  796  610         move    x0,x:HW_USBPHY_BASEADDR                         ; Force all high-speed PLL regs to
+                                   default state
+                              611 
+                              612 ;        ; Turn off I2C clocks per procedure in STMP00002736 HW defect.
+                              613 ;          This procedure can't be used since it makes usbmsc eeprom boot fail
+                              614 ;            if player is running and we attach usb.
+                              615 ;            We might simply need more code to enable i2c if this disable is used.
+                              616 ;        bset    #HW_I2CCSR_TREQ_BITPOS,x:HW_I2CCSR
+                              617 ;        bclr    #HW_I2CCSR_TREQ_BITPOS,x:HW_I2CCSR
+                              618 ;        bset    #HW_I2CCSR_I2C_EN_BITPOS,x:HW_I2CCSR
+                              619 ;        bclr    #HW_I2CCSR_ACKF_BITPOS,x:HW_I2CCSR
+                              621 
+                              622 
+                              623 ;test for nikhil's sim
+P:015F 0AFA40         4  800  624         bclr    #0,omr
+P:0160 0C0000         4  804  625         jmp     $0
+                              626 ;--end test
+P:0161 0AF080 rrrrrr  6  810  627         jmp *
+                              628 
+                              629 
+                              630 
+                              631 ;///////////////////////////////////////////////////////////////////////////////
+                              632 ;   DetectUsb
+                              633 ;
+                              634 ;       Return Carry = 1 if USB is detected, Carry = 0 otherwise
+                              635 ;///////////////////////////////////////////////////////////////////////////////
+                              636 DetectUsb
+                              637 
+                              670 
+                              676 
+                              677                         ; Check for +5V connected, and from what source
+                              678                         ; If +5V not present, USB not connected
+                              679                         ; If +5V present, USB or Charger connected
+P:0163 44F000 00F200  3  813  680             move    x:HW_USBCSR,x0
+P:0165 0BC477         4  817  681                         btst    #HW_USBCSR_VBUSSENSE_BITPOS,x0
+P:0166 0AF0A0 rrrrrr  6  823  682             jcc         DetectUsbExit
+                              683 
+                              684                 ; +5V present, so arbitrate USB vs Charger
+                              685                 ; if 5V is present, turn on PWDN_ON_IOBRNOUT
+P:0168 0A702D 00FA1D  6  829  686                 bset    #HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_BITPOS,x:HW_VDD5V_PWR_CHARGE
+                              687 
+                              688                 ; Enable USB plug in detect circuitry
+P:016A 0A702C 00F200  6  835  689                 bset    #HW_USBCSR_PLUGGEDIN_EN_BITPOS,x:HW_USBCSR
+                              690 
+                              691                         ; Datasheet states to wait at least 1ms before relying on the
+                              692                         ; USBCSR_PLUGGEDIN bit. At 60MHz, this is 60,000 cycles.
+                              693                         ; nop instruction = 2 cycles, 3750*8*2 = 60,000
+P:016C 06A6AE         4  839  694                 rep #3750
+P:016D 000000         2  841  695                 nop
+P:016E 06A6AE         4  845  696                 rep #3750    ; note: toverify4   sdk2.6 had only the first rep loop and commented 
+                                  out the others but we likely need them for the full 1ms delay. See comment above. Also we run at 6
+                                  8mHz so we need more looping still.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:016F 000000         2  847  697                 nop
+P:0170 06A6AE         4  851  698                 rep #3750
+P:0171 000000         2  853  699                 nop
+P:0172 06A6AE         4  857  700                 rep #3750
+P:0173 000000         2  859  701                 nop
+P:0174 06A6AE         4  863  702                 rep #3750
+P:0175 000000         2  865  703                 nop
+P:0176 06A6AE         4  869  704                 rep #3750
+P:0177 000000         2  871  705                 nop
+P:0178 06A6AE         4  875  706                 rep #3750
+P:0179 000000         2  877  707                 nop
+P:017A 06A6AE         4  881  708                 rep #3750
+P:017B 000000         2  883  709                 nop
+                              710 
+                              711                 ; Check USB plugged-in detection
+P:017C 44F000 00F200  3  886  712                 move    x:HW_USBCSR,x0
+                              713 
+                              715                 ; Disable USB plug in detect circuitry
+P:017E 0A700C 00F200  6  892  716                 bclr    #HW_USBCSR_PLUGGEDIN_EN_BITPOS,x:HW_USBCSR
+                              718 
+                              719                 ; Reflect the USBCSR_PLUGGEDIN bit on the Carry bit
+P:0180 0BC46D         4  896  720                 btst    #HW_USBCSR_PLUGGEDIN_BITPOS,x0
+                              721 
+                              722 DetectUsbExit
+                              723 
+                              724                         ; Return C=1 if USB plugged in, C=0 if no 5V or 5V alternate source
+                              725 
+                              727 
+P:0181 00000C         4  900  729     rts
+                              730 
+                              731 ;///////////////////////////////////////////////////////////////////////////////
+                              732 ;   InitBatteryBrownout
+                              733 ;
+                              734 ;///////////////////////////////////////////////////////////////////////////////
+                              735 InitBatteryBrownout
+                              736         ;Set Battery CTRL Bits
+P:0182 44F400 000056  3  903  737    move    #>$000056,x0
+P:0184 447000 00FA20  3  906  738    move    x0,x:HW_BATT_CTRL
+                              739 
+                              740    ;wait for battery to settle before setting IRQ's
+P:0186 06A6AE         4  910  741    rep #3750
+P:0187 000000         2  912  742    nop
+                              743 
+                              744    ;Set the thresholds for fast boot and brownout.
+P:0188 44F400 096069  3  915  745    move    #>BATTERY_THRESHOLD,x0
+P:018A 447000 00FA21  3  918  746    move    x0,x:HW_BATT_THRSH
+                              747 
+                              748    ;Set the polarity
+P:018C 0A7016 00FA20  6  924  749    bclr    #22,x:HW_BATT_CTRL
+                              750 
+                              751    ;Clear the IRQ0 Flag (set to clear)
+P:018E 0A7034 00FA22  6  930  752    bset    #HW_BATT_RESULT_IRQ_EVENT0_BITPOS,x:HW_BATT_RESULT
+                              753 
+                              754    ;Turn on IRQ
+P:0190 0A7034 00FA20  6  936  755    bset    #20,x:HW_BATT_CTRL
+                              756 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              757    ;Init Brownout interrupt
+                              758    ; init the vector addresses
+P:0192 44F400 0BF080  3  939  759    move    #>$bf080,x0             ; opcode for JSR
+P:0194 310A00         2  941  760    move    #HW_IVECIRQB,r1
+P:0195 71F400 rrrrrr  3  944  761    move    #>SysBrownOutIsr,n1
+P:0197 075984         6  950  762    movem   x0,p:(r1)+
+P:0198 076199         6  956  763    movem   n1,p:(r1)
+                              764 
+P:0199 0ABF23         4  960  765    bset    #HW_IPR_IRQB_BITPOS,x:HW_IPR
+                              766 
+                              767    ; Init the SR bits
+P:019A 0444B9         2  962  768    movec   sr,x0
+P:019B 0AC448         4  966  769    bclr    #HW_SR_IM0_BITPOS,x0
+P:019C 0AC449         4  970  770    bclr    #HW_SR_IM1_BITPOS,x0
+P:019D 04C4B9         2  972  771    movec   x0,sr
+                              772 
+P:019E 00000C         4  976  773    rts
+                              774 
+                              775 ;///////////////////////////////////////////////////////////////////////////////
+                              776 ;   SysBrownOutIsr
+                              777 ;
+                              778 ;///////////////////////////////////////////////////////////////////////////////
+                              779 SysBrownOutIsr
+                              780                 ; Prepare chip for shutdown
+P:019F 0A7020 00FA00  6  982  781         bset    #HW_CCR_CKRST_BITPOS,x:HW_CCR                   ; Enable writes to the HW_CCR regi
+                                  ster
+P:01A1 0A7022 00FA00  6  988  782                 bset    #HW_CCR_PLLEN_BITPOS,x:HW_CCR                   ; Enable the system PLL
+P:01A3 0A7004 00FA00  6  994  783                 bclr    #HW_CCR_PLL_SOURCE_SEL_BITPOS,x:HW_CCR          ; Select the system PLL as
+                                   the clock source
+                              784 
+P:01A5 44F400 800000  3  997  785         move    #>$800000,x0
+P:01A7 447000 00F210  3 1000  786         move    x0,x:HW_USBPHY_BASEADDR                         ; Force all high-speed PLL regs to
+                                   default state
+                              787                 ; turn off the DCDC converter
+P:01A9 0A7031 00FA00  6 1006  788         bset    #HW_CCR_PWDN_BITPOS,x:HW_CCR    ; If using the DCDC converter then
+                              789                                                 ; the part will turn off.  If not
+                              790                                                 ; using the DCDC converter then
+                              791                                                 ; the part will just kinda stop
+                              792                                                 ; working :)
+P:01AB 0AF080 rrrrrr  6 1012  793 _loop  jmp _loop                                                        ; must stop here
+                              794 
+                              795 
+P:01AD 000004         4 1016  796         rti
+                              797 
+                              798 ;///////////////////////////////////////////////////////////////////////////////
+                              799 ;   DelayLongBReg
+                              800 ;
+                              801 ;///////////////////////////////////////////////////////////////////////////////
+                              802 DelayLongBReg
+P:01AE 00000B         2 1018  803     dec b
+P:01AF 0AF0A2 rrrrrr  6 1024  804     jne DelayLongBReg
+P:01B1 00000C         4 1028  805     rts
+                              806 
+                              807 ;///////////////////////////////////////////////////////////////////////////////
+                              808 ;   BootyInit
+                              809 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              810 BootyInit
+                              811     ; clear out all the variables
+P:01B2 45F400 rrrrrr  3 1031  812     move    #BOOT_RSRV_SIZE,x1
+P:01B4 60F400 rrrrrr  3 1034  813     move    #BOOT_RSRV_START,r0
+P:01B6 05F420 00FFFF  4 1038  814     movec   #>$ffff,m0
+P:01B8 44F400 000000  3 1041  815     move    #>$000000,x0
+P:01BA 06C500 rrrrrr  6 1047  816     do      x1,_end_init
+P:01BC 445800         2 1049  817         move    x0,x:(r0)+
+P:01BD 000000         2 1051  818         nop
+                         (4)  819 _end_init
+P:01BE 000000         2 1053  820     nop
+                              821 
+                              823         ; Setup GP Flash for 3500
+P:01BF 0A7031 00F0C1  6 1059  824         bset    #HW_GPFLASH_CSR1_MUX_BITPOS,x:HW_GPFLASH_CSR1R
+                              826 
+                              827 
+P:01C1 0A7030 00FA0E  6 1065  828     bset    #HW_DCDC_VDDIO_BROWNOUT_ENABLE_BITPOS,x:HW_DCDC_VDDIO
+                              829 
+P:01C3 44F400 000200  3 1068  830     move    #>BOOTY_VERSION,x0
+P:01C5 447000 rrrrrr  3 1071  831     move    x0,x:BootyVersion
+P:01C7 200013         2 1073  832     clr     a
+P:01C8 567000 rrrrrr  3 1076  833     move    a,x:BootInfo
+P:01CA 05F423 FFFFFF  4 1080  834     movec   #-1,m3                  ; make m3 linear, used in bset addressing
+                              835 
+                              836     ; Setup some timeout variables
+P:01CC 44F400 rrrrrr  3 1083  837     move    #>TIMEOUT_SLOW_HIGH,x0
+P:01CE 447000 rrrrrr  3 1086  838     move    x0,x:TimeOutInitHigh
+P:01D0 44F400 rrrrrr  3 1089  839     move    #>TIMEOUT_SLOW_LOW,x0
+P:01D2 447000 rrrrrr  3 1092  840     move    x0,x:TimeOutInitLow
+                              841 
+                              843         ; Before powering up the GPIO, determine from mode bit 3 if this is a 1.8V
+                              844         ; NAND (0) or 3.3V NAND (1)
+                              845         ; ** Note that other boot modes in the 3500 also use bit 3 = 0, so if this becomes
+                              846         ; an issue, then more arbitration needs to be done here
+                              847         ; Using this simple method to minimize memory usage
+                              848 
+                              849         ; Power up mode pin 3, enable it as an input, and check it.
+P:01D4 0A7023 00F409  6 1098  850         bset    #HW_BOOT_MODE_BIT_3_GPIO,x:HW_GP0PWR    ; Power up the pin
+P:01D6 0A7003 00F403  6 1104  851         bclr    #HW_BOOT_MODE_BIT_3_GPIO,x:HW_GP0DOER   ; Configure as an input
+P:01D8 0A7023 00F400  6 1110  852         bset    #HW_BOOT_MODE_BIT_3_GPIO,x:HW_GP0ENR    ; Enable the pin as a GPIO
+P:01DA 000000         2 1112  853         nop                                                                                       
+                                          ; Necessary?
+P:01DB 0B7023 00F402  6 1118  854         btst    #HW_BOOT_MODE_BIT_3_GPIO,x:HW_GP0DIR    ; Get the state of the pin
+P:01DD 000000         2 1120  855         nop                                                                                       
+                                          ; Necessary?
+P:01DE 0AF0A8 rrrrrr  6 1126  856         jcs     NANDIs3_3V                                                              ; If 1, th
+                                  en 3.3V NAND boot
+                              857 
+                              858 NANDIs1_8V
+                              859 
+                              860 CF_8_BIT_1p8VOLTS       equ     $3f
+                              861         ; Setup proper voltage on Flash before turning the drivers on.
+                              862         ; Enables all GPFLASH lines EXCEPT the extra 8 data lines as 1.8V
+P:01E0 56F400 00003F  3 1129  863         move    #>CF_8_BIT_1p8VOLTS,a
+P:01E2 567000 00FA30  3 1132  864         move    a,x:HW_GLUE_1_8V_PAD_EN
+                              865 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              866         ;Set the 1.8V flag (clear by default)
+P:01E4 56F400 000001  3 1135  867         move    #>1,a
+P:01E6 07708E rrrrrr  8 1143  868         movem   a,p:b1p8Volts
+                              869 
+                              870 NANDIs3_3V
+                              871 
+                              873 
+                              874     ; Enable HOLD switch GPIO before powering up. If it is not set-up as a GPIO, it
+                              875         ; will drive low.  This will cause excessive current if the HOLD switch is on .
+P:01E8 0A702B 00F410  6 1149  876         bset #HW_GP_B11_BITPOS,x:HW_GP1ENR
+                              877 
+                              878     ; Power Up All Pads
+                              879     ; Don't power up GP0 because this will power the data and sclock pins of
+                              880     ; the MMC - Sometimes Renesas will brownout and get into Reset/Power/Reset
+                              881     ; loop.
+                              882 ;    move    a1,x:HW_GP0PWR
+                              883 ;    move    a1,x:HW_GP1PWR  ;Stmp 9048 : Commented out this line and added the following 2 lines 
+                                  for TB5 USB compliance.
+                              884 ;    move    #0,a1
+P:01EA 54F400 2370FF  3 1152  885         move    #>$2370ff,a1
+P:01EC 547000 00F419  3 1155  886         move    a1,x:HW_GP1PWR
+                              887 ;; GP52 can be MMC_WP(I). If power up it is CF_IORDn(O), there will be conflict and draw excessive
+                                   current
+                              888 ;    move    #-1,a1
+P:01EE 54F400 FFFFEF  3 1158  889     move    #$ffffef,a1
+P:01F0 547000 00F429  3 1161  890     move    a1,x:HW_GP2PWR
+                              891 
+P:01F2 00000C         4 1165  892     rts
+                              893 
+                              894 ;///////////////////////////////////////////////////////////////////////////////
+                              895 ;   GetCipherKey
+                              896 ;///////////////////////////////////////////////////////////////////////////////
+                              897 GetCipherKey
+                              898     ; cipher key is always the first word
+P:01F3 66F000 rrrrrr  3 1168  899     move    x:ReceiveRoutine,r6     ; r6=pointer to the receive port routine
+P:01F5 000000         2 1170  900     nop
+P:01F6 0BE680         4 1174  901     jsr     (r6)                    ; call the receive routine, on return x0=received word
+P:01F7 447000 rrrrrr  3 1177  902     move    x0,x:CipherKey          ; save it, duh.
+P:01F9 00000C         4 1181  903     rts
+                              904 
+                              905 ;///////////////////////////////////////////////////////////////////////////////
+                              906 ;   GetWord
+                              907 ; Entry:
+                              908 ;   r6 = Receive routine ptr
+                              909 ; Exit:
+                              910 ;   r6 = Receive routine ptr
+                              911 ;   x0 = PlainText
+                              912 ;///////////////////////////////////////////////////////////////////////////////
+                              913 GetWord
+P:01FA 0BE680         4 1185  914     jsr     (r6)                    ; call the receive routine, on return x0=received word
+P:01FB 0BF080 rrrrrr  6 1191  915     jsr     DecryptWord             ; decrypt it... duh!
+P:01FD 0BF080 rrrrrr  6 1197  916     jsr     UpdateCheckSum          ; add it to the running checksum
+                              917     ; update the word count
+P:01FF 20001B         2 1199  918     clr     b
+P:0200 51F000 rrrrrr  3 1202  919     move    x:WordCount,b0
+P:0202 000009         2 1204  920     inc     b
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0203 517000 rrrrrr  3 1207  921     move    b0,x:WordCount
+P:0205 00000C         4 1211  922     rts
+                              923 
+                              924 ;///////////////////////////////////////////////////////////////////////////////
+                              925 ;   DecryptWord
+                              926 ; Entry:
+                              927 ;   x0 = CipherText
+                              928 ; Exit:
+                              929 ;   x0 = PlainText
+                              930 ;///////////////////////////////////////////////////////////////////////////////
+                              931 DecryptWord
+P:0206 57F000 rrrrrr  3 1214  932     move    x:CipherKey,b
+P:0208 20000B         2 1216  933     tst     b
+P:0209 0AF0A2 rrrrrr  6 1222  934     jne     _key_is_one
+                              935     ; key is zero
+P:020B 0AF940         4 1226  936     bclr    #HW_SR_C_BITPOS,sr
+P:020C 0AF080 rrrrrr  6 1232  937     jmp     _shift_it
+                              938 _key_is_one
+P:020E 20001B         2 1234  939     clr     b
+P:020F 0AF960         4 1238  940     bset    #HW_SR_C_BITPOS,sr
+                              941 _shift_it
+P:0210 208F00         2 1240  942     move    x0,b
+P:0211 20003F         2 1242  943     rol     b
+P:0212 21A400         2 1244  944     move    b1,x0
+P:0213 0BF960         4 1248  945     btst    #HW_SR_C_BITPOS,sr
+P:0214 0AF0A8 rrrrrr  6 1254  946     jcs     _new_key_is_one
+P:0216 20001B         2 1256  947     clr     b
+P:0217 577000 rrrrrr  3 1259  948     move    b,x:CipherKey
+P:0219 00000C         4 1263  949     rts
+                              950 _new_key_is_one
+P:021A 57F400 000001  3 1266  951     move    #>$000001,b
+P:021C 557000 rrrrrr  3 1269  952     move    b1,x:CipherKey
+P:021E 00000C         4 1273  953     rts
+                              954 
+                              955 ;///////////////////////////////////////////////////////////////////////////////
+                              956 ;   UpdateCheckSum
+                              957 ; Entry:
+                              958 ;   x0 = data
+                              959 ; Exit:
+                              960 ;   x0 = data
+                              961 ;///////////////////////////////////////////////////////////////////////////////
+                              962 UpdateCheckSum
+P:021F 20001B         2 1275  963     clr     b
+P:0220 55F000 rrrrrr  3 1278  964     move    x:CheckSum,b1
+P:0222 200048         2 1280  965     add     x0,b
+P:0223 557000 rrrrrr  3 1283  966     move    b1,x:CheckSum
+P:0225 00000C         4 1287  967     rts
+                              968 
+                              969 ;///////////////////////////////////////////////////////////////////////////////
+                              970 ;   GetCheckSumTarget
+                              971 ;///////////////////////////////////////////////////////////////////////////////
+                              972 GetCheckSumTarget
+                              973     ; checksum target is always the second word
+P:0226 66F000 rrrrrr  3 1290  974     move    x:ReceiveRoutine,r6     ; r6=pointer to the receive port routine
+P:0228 000000         2 1292  975     nop
+P:0229 0BE680         4 1296  976     jsr     (r6)                    ; call the receive routine, on return x0=received word
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:022A 0BF080 rrrrrr  6 1302  977     jsr     DecryptWord             ; decrypt it
+P:022C 447000 rrrrrr  3 1305  978     move    x0,x:CheckSumTarget     ; save it, duh.
+P:022E 44F400 000000  3 1308  979     move    #>$000000,x0            ; clear out the running checksum
+P:0230 447000 rrrrrr  3 1311  980     move    x0,x:CheckSum
+P:0232 00000C         4 1315  981     rts
+                              982 
+                              983 ;///////////////////////////////////////////////////////////////////////////////
+                              984 ;   ValidateCheckSum
+                              985 ;///////////////////////////////////////////////////////////////////////////////
+                              986 ValidateCheckSum
+P:0233 44F000 rrrrrr  3 1318  987     move    x:CheckSum,x0
+P:0235 56F000 rrrrrr  3 1321  988     move    x:CheckSumTarget,a
+P:0237 200045         2 1323  989     cmp     x0,a
+P:0238 0AF0A2 rrrrrr  6 1329  990     jne     _uh_oh
+P:023A 00000C         4 1333  991     rts
+                              992 _uh_oh
+                              993     ; the checksum is bad!
+P:023B 44F000 rrrrrr  3 1336  994     move    x:BootInfo,x0
+P:023D 0AC460r        4 1340  995     bset    #BOOT_INFO_CHECKSUM,x0
+P:023E 447000 rrrrrr  3 1343  996     move    x0,x:BootInfo
+P:0240 66F000 rrrrrr  3 1346  997     move    x:ErrorRoutine,r6
+P:0242 000000         2 1348  998     nop
+P:0243 0AE680         4 1352  999     jmp     (r6)
+                             1000 
+                             1001 ;///////////////////////////////////////////////////////////////////////////////
+                             1002 ;   VerifyVersion
+                             1003 ;///////////////////////////////////////////////////////////////////////////////
+                             1004 VerifyVersion
+                             1005     ; version is always the third word
+P:0244 66F000 rrrrrr  3 1355 1006     move    x:ReceiveRoutine,r6     ; r6=pointer to the receive port routine
+P:0246 000000         2 1357 1007     nop
+P:0247 0BF080 rrrrrr  6 1363 1008     jsr     GetWord
+P:0249 200013         2 1365 1009     clr     a
+P:024A 54F000 rrrrrr  3 1368 1010     move    x:BootyVersion,a1
+P:024C 200045         2 1370 1011     cmp     x0,a
+P:024D 0AF0A2 rrrrrr  6 1376 1012     jne     _uh_oh
+P:024F 00000C         4 1380 1013     rts
+                             1014 _uh_oh
+                             1015     ; well, this just won't do!
+                             1016 ;    move    #BootInfo,r3           ; m3 is linear from BootyInit
+                             1017 ;    nop
+                             1018 ;    bset    #BOOT_INFO_VERSION,x:(r3)
+P:0250 0A7020rrrrrrr  6 1386 1019     bset    #BOOT_INFO_VERSION,x:BootInfo
+                             1020     ; move on
+P:0252 66F000 rrrrrr  3 1389 1021     move    x:ErrorRoutine,r6      ; r6=pointer to the errir routine
+P:0254 000000         2 1391 1022     nop
+P:0255 0AE680         4 1395 1023     jmp     (r6)
+                             1024 
+                             1025 
+                             1026 ;///////////////////////////////////////////////////////////////////////////////
+                             1027 ;   SetupTimeOut
+                             1028 ;  The timer decrements a 48-bit acc value that is initialized as follows:
+                             1029 ;       a2 = 0
+                             1030 ;       a1 = number of ticks
+                             1031 ;       a0 = 0
+                             1032 ;  Therefore, a tick is equal to 2^24 dec operations on a.  Assuming a one-cycle
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1033 ;    timeout loop gives:
+                             1034 ;       (1/24.576Mhz)*(2^24) = 682.7ms per tick
+                             1035 ;    or
+                             1036 ;       (1/48Mhz)*(2^24) = 349.5ms per tick
+                             1037 ;  5 minute timeout => 5*60=300s
+                             1038 ;  23 instructions for 24.576MHz timeout loop
+                             1039 ;   1. 300s/682.7ms=439.4 ticks for a one-cycle timeout loop, or
+                             1040 ;     439.4/23=19.1 ticks for a 23-cycle loop.
+                             1041 ;   2. 300s/349.5ms=858.4 ticks for a one-cycle timeout loop, or
+                             1042 ;     858.4/????=???? ticks for a ?-cycle loop.
+                             1043 ;///////////////////////////////////////////////////////////////////////////////
+                             1044 SetupTimeOut
+P:0256 45F000 rrrrrr  3 1398 1045     move    x:TimeOutInitHigh,x1
+P:0258 457000 rrrrrr  3 1401 1046     move    x1,x:TimeOutHigh
+P:025A 45F000 rrrrrr  3 1404 1047     move    x:TimeOutInitLow,x1
+P:025C 457000 rrrrrr  3 1407 1048     move    x1,x:TimeOutLow
+P:025E 00000C         4 1411 1049     rts
+                             1050 
+                             1051 ;///////////////////////////////////////////////////////////////////////////////
+                             1052 ;   CheckTimeOut
+                             1053 ;///////////////////////////////////////////////////////////////////////////////
+                             1054 CheckTimeOut
+P:025F 20001B         2 1413 1055     clr     b                       ; 1
+P:0260 55F000 rrrrrr  3 1416 1056     move    x:TimeOutHigh,b1        ; 2
+P:0262 51F000 rrrrrr  3 1419 1057     move    x:TimeOutLow,b0         ; 2
+P:0264 00000B         2 1421 1058     dec     b                       ; 1
+P:0265 0AF0AA rrrrrr  6 1427 1059     jeq     _timed_out              ; 2
+P:0267 557000 rrrrrr  3 1430 1060     move    b1,x:TimeOutHigh        ; 2
+P:0269 517000 rrrrrr  3 1433 1061     move    b0,x:TimeOutLow         ; 2
+P:026B 0AF940         4 1437 1062     bclr    #0,sr                    ; 1
+P:026C 00000C         4 1441 1063     rts                             ; 1
+                             1064 _timed_out
+P:026D 51F000 rrrrrr  3 1444 1065     move    x:BootInfo,b0
+P:026F 0AC960r        4 1448 1066     bset    #BOOT_INFO_TIMEOUT,b0
+P:0270 517000 rrrrrr  3 1451 1067     move    b0,x:BootInfo
+P:0272 0AF960         4 1455 1068     bset    #0,sr
+P:0273 00000C         4 1459 1069     rts
+                             1070 
+                             1071 
+                             1178 
+                             1179 ;///////////////////////////////////////////////////////////////////////////////
+                             1180 ;   ChangeToBootUsb
+                             1181 ;///////////////////////////////////////////////////////////////////////////////
+                             1182 ChangeToBootUsb
+P:0274 44F000 rrrrrr  3 1462 1183     move    x:BootInfo,x0
+P:0276 56F400 800000  3 1465 1184     move    #>$800000,a
+P:0278 200046         2 1467 1185     and     x0,a
+P:0279 547000 rrrrrr  3 1470 1186     move    a1,x:BootInfo
+P:027B 0500BB         2 1472 1187     movec   #0,sp                       ; clear the hardware stack
+P:027C 44F400 rrrrrr  3 1475 1188     move    #>UsbInitPort,x0            ; get init routine address
+P:027E 447000 rrrrrr  3 1478 1189     move    x0,x:InitRoutine            ; save init routine address in memory
+P:0280 44F400 rrrrrr  3 1481 1190     move    #>UsbReceive,x0             ; get receive routine address
+P:0282 447000 rrrrrr  3 1484 1191     move    x0,x:ReceiveRoutine         ; save receive routine address in memory
+P:0284 44F400 rrrrrr  3 1487 1192     move    #>UsbExit,x0                ; get exit routine address
+P:0286 447000 rrrrrr  3 1490 1193     move    x0,x:ExitRoutine            ; save exit routine address in memory
+P:0288 44F400 rrrrrr  3 1493 1194     move    #>UsbError,x0               ; get error routine address
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:028A 447000 rrrrrr  3 1496 1195     move    x0,x:ErrorRoutine           ; save error routine address in memory
+P:028C 0AF080 rrrrrr  6 1502 1196     jmp     RunInitRoutine              ; do it!
+                             1197 
+                             1198 ;///////////////////////////////////////////////////////////////////////////////
+                             1199 ;   VDDIO Brownout Detect
+                             1200 ;   Since the WP line is always high, we need to force it low here.
+                             1201 ;///////////////////////////////////////////////////////////////////////////////
+                             1202 VDDIOBrownout
+                             1203 
+                             1204     ; Disable Write Protect - Renesas has RES# tied to WP#
+P:028E 0A7020 00F420  6 1508 1205     bset    #HW_GP_B0_BITPOS,x:HW_GP2ENR
+P:0290 0A7000 00F421  6 1514 1206     bclr    #HW_GP_B0_BITPOS,x:HW_GP2DOR
+P:0292 0A7020 00F423  6 1520 1207     bset    #HW_GP_B0_BITPOS,x:HW_GP2DOER
+                             1208 
+P:0294 20001B         2 1522 1209     clr     b
+P:0295 51F400 01E000  3 1525 1210     move    #>WAIT_10_MS,b0
+P:0297 20003A         2 1527 1211     asl     b
+P:0298 20003A         2 1529 1212     asl     b
+P:0299 20003A         2 1531 1213     asl     b                       ; delay for 80ms
+P:029A 0BF080 rrrrrr  6 1537 1214     jsr     DelayLongBReg
+                             1215 
+P:029C 0AF080 rrrrrr  6 1543 1216     jmp     Booty

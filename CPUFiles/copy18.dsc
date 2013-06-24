@@ -1,0 +1,34 @@
+copy .ptextjpegdecodedisplay;
+copy .ptextdjcommon;
+copy .ptextdjmain;
+copy .ptextdjhuff;
+copy .ptextdjidct;
+copy .ptextdjcolor;
+copy .ptextdjbmp;
+copy .ptextglobals;
+copy .ptextdjinit;
+
+copy .ybssglobals.Jpeg_Dec_input_buffer_array;
+copy .ybssjpegdecodedisplay.InputBuffer;
+copy .yconstjpegdecodedisplay;
+copy .ydataglobals;
+copy .yovldjmain;
+copy .ybssdjinit;
+copy .ybssjpegdecodedisplay;
+copy .yovljpegdecodedisplay;
+copy .ydatadjcolor;
+copy .yconstdjmain;
+copy .yconstdjinit;
+copy .yconstglobals;
+copy .ydatadjidct;
+copy .yovldjcommon;
+copy .ydatadjmain;
+copy .ybssglobals;
+copy .yovldjinit;
+copy .ydatadjhuff;
+
+copy .xbssglobals;
+copy .xdataglobals;
+copy .xdatadjhuff;
+copy SMVADPCM_Tables_X;
+copy DECAPP_DecSmvAdpcmMem_X;

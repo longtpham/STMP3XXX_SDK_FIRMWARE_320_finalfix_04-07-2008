@@ -1,0 +1,446 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfd2ecb.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;         rand.c:
+                               96 ; 1    |/*
+                               97 ; 2    | *  File: Rand.c 
+                               98 ; 3    | *
+                               99 ; 4    | *  Mix multiple hardware sources with sequences for Random Number Generation
+                              100 ; 5    | */
+                              101 ; 6    |
+                              102 ; 7    |#include "types.h"
+                              103 
+                              105 
+                              106 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              107 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              108 ; 3    |//
+                              109 ; 4    |// Filename: types.h
+                              110 ; 5    |// Description: Standard data types
+                              111 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              112 ; 7    |
+                              113 ; 8    |#ifndef _TYPES_H
+                              114 ; 9    |#define _TYPES_H
+                              115 ; 10   |
+                              116 ; 11   |// TODO:  move this outta here!
+                              117 ; 12   |#if !defined(NOERROR)
+                              118 ; 13   |#define NOERROR 0
+                              119 ; 14   |#define SUCCESS 0
+                              120 ; 15   |#endif 
+                              121 ; 16   |#if !defined(SUCCESS)
+                              122 ; 17   |#define SUCCESS  0
+                              123 ; 18   |#endif
+                              124 ; 19   |#if !defined(ERROR)
+                              125 ; 20   |#define ERROR   -1
+                              126 ; 21   |#endif
+                              127 ; 22   |#if !defined(FALSE)
+                              128 ; 23   |#define FALSE 0
+                              129 ; 24   |#endif
+                              130 ; 25   |#if !defined(TRUE)
+                              131 ; 26   |#define TRUE  1
+                              132 ; 27   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              133 ; 28   |
+                              134 ; 29   |#if !defined(NULL)
+                              135 ; 30   |#define NULL 0
+                              136 ; 31   |#endif
+                              137 ; 32   |
+                              138 ; 33   |#define MAX_INT     0x7FFFFF
+                              139 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              140 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              141 ; 36   |#define MAX_ULONG   (-1) 
+                              142 ; 37   |
+                              143 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              144 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              145 ; 40   |
+                              146 ; 41   |
+                              147 ; 42   |#define BYTE    unsigned char       // btVarName
+                              148 ; 43   |#define CHAR    signed char         // cVarName
+                              149 ; 44   |#define USHORT  unsigned short      // usVarName
+                              150 ; 45   |#define SHORT   unsigned short      // sVarName
+                              151 ; 46   |#define WORD    unsigned int        // wVarName
+                              152 ; 47   |#define INT     signed int          // iVarName
+                              153 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              154 ; 49   |#define LONG    signed long         // lVarName
+                              155 ; 50   |#define BOOL    unsigned int        // bVarName
+                              156 ; 51   |#define FRACT   _fract              // frVarName
+                              157 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              158 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              159 ; 54   |#define FLOAT   float               // fVarName
+                              160 ; 55   |#define DBL     double              // dVarName
+                              161 ; 56   |#define ENUM    enum                // eVarName
+                              162 ; 57   |#define CMX     _complex            // cmxVarName
+                              163 ; 58   |typedef WORD UCS3;                   // 
+                              164 ; 59   |
+                              165 ; 60   |#define UINT16  unsigned short
+                              166 ; 61   |#define UINT8   unsigned char   
+                              167 ; 62   |#define UINT32  unsigned long
+                              168 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              169 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              170 ; 65   |#define WCHAR   UINT16
+                              171 ; 66   |
+                              172 ; 67   |//UINT128 is 16 bytes or 6 words
+                              173 ; 68   |typedef struct UINT128_3500 {   
+                              174 ; 69   |    int val[6];     
+                              175 ; 70   |} UINT128_3500;
+                              176 ; 71   |
+                              177 ; 72   |#define UINT128   UINT128_3500
+                              178 ; 73   |
+                              179 ; 74   |// Little endian word packed byte strings:   
+                              180 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              181 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              182 ; 77   |// Little endian word packed byte strings:   
+                              183 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              184 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              185 ; 80   |
+                              186 ; 81   |// Declare Memory Spaces To Use When Coding
+                              187 ; 82   |// A. Sector Buffers
+                              188 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              189 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              190 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              191 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              192 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              194 
+                              195 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              196 ; 88   |// B. Media DDI Memory
+                              197 ; 89   |#define MEDIA_DDI_MEM _Y
+                              198 ; 90   |
+                              199 ; 91   |
+                              200 ; 92   |
+                              201 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              202 ; 94   |// Examples of circular pointers:
+                              203 ; 95   |//    INT CIRC cpiVarName
+                              204 ; 96   |//    DWORD CIRC cpdwVarName
+                              205 ; 97   |
+                              206 ; 98   |#define RETCODE INT                 // rcVarName
+                              207 ; 99   |
+                              208 ; 100  |// generic bitfield structure
+                              209 ; 101  |struct Bitfield {
+                              210 ; 102  |    unsigned int B0  :1;
+                              211 ; 103  |    unsigned int B1  :1;
+                              212 ; 104  |    unsigned int B2  :1;
+                              213 ; 105  |    unsigned int B3  :1;
+                              214 ; 106  |    unsigned int B4  :1;
+                              215 ; 107  |    unsigned int B5  :1;
+                              216 ; 108  |    unsigned int B6  :1;
+                              217 ; 109  |    unsigned int B7  :1;
+                              218 ; 110  |    unsigned int B8  :1;
+                              219 ; 111  |    unsigned int B9  :1;
+                              220 ; 112  |    unsigned int B10 :1;
+                              221 ; 113  |    unsigned int B11 :1;
+                              222 ; 114  |    unsigned int B12 :1;
+                              223 ; 115  |    unsigned int B13 :1;
+                              224 ; 116  |    unsigned int B14 :1;
+                              225 ; 117  |    unsigned int B15 :1;
+                              226 ; 118  |    unsigned int B16 :1;
+                              227 ; 119  |    unsigned int B17 :1;
+                              228 ; 120  |    unsigned int B18 :1;
+                              229 ; 121  |    unsigned int B19 :1;
+                              230 ; 122  |    unsigned int B20 :1;
+                              231 ; 123  |    unsigned int B21 :1;
+                              232 ; 124  |    unsigned int B22 :1;
+                              233 ; 125  |    unsigned int B23 :1;
+                              234 ; 126  |};
+                              235 ; 127  |
+                              236 ; 128  |union BitInt {
+                              237 ; 129  |        struct Bitfield B;
+                              238 ; 130  |        int        I;
+                              239 ; 131  |};
+                              240 ; 132  |
+                              241 ; 133  |#define MAX_MSG_LENGTH 10
+                              242 ; 134  |struct CMessage
+                              243 ; 135  |{
+                              244 ; 136  |        unsigned int m_uLength;
+                              245 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              246 ; 138  |};
+                              247 ; 139  |
+                              248 ; 140  |typedef struct {
+                              249 ; 141  |    WORD m_wLength;
+                              250 ; 142  |    WORD m_wMessage;
+                              251 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              252 ; 144  |} Message;
+                              253 ; 145  |
+                              254 ; 146  |struct MessageQueueDescriptor
+                              255 ; 147  |{
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              256 ; 148  |        int *m_pBase;
+                              257 ; 149  |        int m_iModulo;
+                              258 ; 150  |        int m_iSize;
+                              259 ; 151  |        int *m_pHead;
+                              260 ; 152  |        int *m_pTail;
+                              261 ; 153  |};
+                              262 ; 154  |
+                              263 ; 155  |struct ModuleEntry
+                              264 ; 156  |{
+                              265 ; 157  |    int m_iSignaledEventMask;
+                              266 ; 158  |    int m_iWaitEventMask;
+                              267 ; 159  |    int m_iResourceOfCode;
+                              268 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              269 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              270 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              271 ; 163  |    int m_uTimeOutHigh;
+                              272 ; 164  |    int m_uTimeOutLow;
+                              273 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              274 ; 166  |};
+                              275 ; 167  |
+                              276 ; 168  |union WaitMask{
+                              277 ; 169  |    struct B{
+                              278 ; 170  |        unsigned int m_bNone     :1;
+                              279 ; 171  |        unsigned int m_bMessage  :1;
+                              280 ; 172  |        unsigned int m_bTimer    :1;
+                              281 ; 173  |        unsigned int m_bButton   :1;
+                              282 ; 174  |    } B;
+                              283 ; 175  |    int I;
+                              284 ; 176  |} ;
+                              285 ; 177  |
+                              286 ; 178  |
+                              287 ; 179  |struct Button {
+                              288 ; 180  |        WORD wButtonEvent;
+                              289 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              290 ; 182  |};
+                              291 ; 183  |
+                              292 ; 184  |struct Message {
+                              293 ; 185  |        WORD wMsgLength;
+                              294 ; 186  |        WORD wMsgCommand;
+                              295 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              296 ; 188  |};
+                              297 ; 189  |
+                              298 ; 190  |union EventTypes {
+                              299 ; 191  |        struct CMessage msg;
+                              300 ; 192  |        struct Button Button ;
+                              301 ; 193  |        struct Message Message;
+                              302 ; 194  |};
+                              303 ; 195  |
+                              304 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              305 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              306 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              307 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              308 ; 200  |
+                              309 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              310 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              311 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              312 ; 204  |
+                              313 ; 205  |#if DEBUG
+                              314 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              315 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              316 ; 208  |#else 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              317 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              318 ; 210  |#define DebugBuildAssert(x)    
+                              319 ; 211  |#endif
+                              320 ; 212  |
+                              321 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              322 ; 214  |//  #pragma asm
+                              323 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              324 ; 216  |//  #pragma endasm
+                              325 ; 217  |
+                              326 ; 218  |
+                              327 ; 219  |#ifdef COLOR_262K
+                              328 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              329 ; 221  |#elif defined(COLOR_65K)
+                              330 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              331 ; 223  |#else
+                              332 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              333 ; 225  |#endif
+                              334 ; 226  |    
+                              335 ; 227  |#endif // #ifndef _TYPES_H
+                              336 
+                              338 
+                              339 ; 8    |#include "rand_internal.h"
+                              340 
+                              342 
+                              343 ; 1    |#ifndef __RAND_INTERNAL_H
+                              344 ; 2    |#define __RAND_INTERNAL_H
+                              345 ; 3    |
+                              346 ; 4    |
+                              347 ; 5    |extern WORD g_RandWorkingValue;  
+                              348 ; 6    |
+                              349 ; 7    |#endif
+                              350 
+                              352 
+                              353 ; 9    |
+                              354 ; 10   |#pragma optimize 1
+                              356 ; 11   |
+                              357 ; 12   |WORD g_RandWorkingValue= 1;  
+                              358 
+                              359 
+Y:0000                        360         org     y,".ydatarand",init:
+                              361 Fg_RandWorkingValue:
+Y:0000 000001                 362         dc      $000001
+                              365 
+                              366 ; 13   |
+                              367 ; 14   |
+                              368 ; 15   |/*//////////////////////////////////////////////////////////////////////////////
+                              369 ; 16   |//
+                              370 ; 17   |//>  Name:          WORD _reentrant rand(void);
+                              371 ; 18   |//
+                              372 ; 19   |//   Type:          Function
+                              373 ; 20   |//
+                              374 ; 21   |//   Description:   Returns a positive pseudo random WORD from 0 to MAX_INT. 
+                              375 ; 22   |//
+                              376 ; 23   |//   Inputs:        none
+                              377 ; 24   |//
+                              378 ; 25   |//   Outputs:       a pseudo random WORD 
+                              379 ; 26   |//
+                              380 ; 27   |//   Notes:         this implementation is based on an ANSI definition.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              381 ; 28   |//   Global usage:  g_RandWorkingValue; 
+                              382 ; 29   |//<
+                              383 ; 30   |///////////////////////////////////////////////////////////////////////////////*/
+                              384 ; 31   |WORD _reentrant rand( void )
+                              385 ; 32   |{
+                              386 
+P:0000                        387         org     p,".ptextrand":
+                              392 Frand:
+                              393 
+                              394 ; 33   |        g_RandWorkingValue= g_RandWorkingValue* 1103515245 + 12345;
+                              395 
+                              415 
+                              416 ; 34   |        return( (unsigned int)(g_RandWorkingValue/65536) & (32768 - 1));
+                              417 
+                              423 
+                              424 ; 35   |}
+                              425 
+P:0000 250000         2    2  398         move    #0,x1
+P:0001 4CF000 rrrrrr  3    5  397         move    y:Fg_RandWorkingValue,x0
+P:0003 47F400 000041  3    8  399         move    #>$41,y1
+P:0005 46F400 C64E6D  3   11  400         move    #$C64E6D,y0
+P:0007 0040F8         2   13  401         ori     #$40,mr
+P:0008 000000         2   15  401         nop             ; (inserted)
+P:0009 2000D0         2   17  403         mpy     y0,x0,a
+P:000A 2109E2         2   19  404         mac     x1,y0,a a0,b0
+P:000B 2000C2         2   21  405         mac     x0,y1,a
+P:000C 210DF2         2   23  406         mac     y1,x1,a a0,b1
+P:000D 00BFB8         2   25  407         andi    #$BF,mr
+P:000E 210B00         2   27  408         move    a0,b2
+P:000F 46F42A 007FFF  3   30  409         asr     b	                #$7FFF,y0
+P:0011 2E0000         2   32  410         move    #0,a
+P:0012 50F400 003039  3   35  411         move    #12345,a0
+P:0014 200018         2   37  412         add     a,b
+P:0015 212700         2   39  413         move    b0,y1
+P:0016 0110C0         2   41  419         mpy     y1,#16,a
+P:0017 4F7056 rrrrrr  3   44  421         and     y0,a	                y1,y:Fg_RandWorkingValue
+P:0019 218E00         2   46  422         move    a1,a
+P:001A 00000C         4   50  427         rts
+                              429 
+                              430 ; 36   |
+                              431 ; 37   |
+                              432 ; 38   |
+                              433 
+                              435 
+                              436         global  Fg_RandWorkingValue, Frand
+                              437 

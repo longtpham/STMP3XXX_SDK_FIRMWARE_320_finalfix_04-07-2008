@@ -1,0 +1,731 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\stmp3500\gpflash_hal.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ; Filename: gpflash_hal.asm
+                                5 ; Description: GPFLASH Interface Hardware Abstration Layer
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7 
+                                9 
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Includes
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 
+                               20 
+                               21         section BOOTROM_FLASH
+                               22 
+                               23 ;///////////////////////////////////////////////////////////////////////////////
+                               24 ;   External Definitions
+                               25 ;///////////////////////////////////////////////////////////////////////////////
+                               26 
+                               27     global  InitGPFLASHPort
+                               28     global  FInitGPFLASHPort
+                               29     global  TerminateGPFLASHPort
+                               30     global  FTerminateGPFLASHPort
+                               31     global  WriteCmdGPFLASH
+                               32     global  FWriteCmdGPFLASH
+                               33     global  WriteAddrGPFLASH
+                               34     global  FWriteAddrGPFLASH
+                               35     global  ReadDataGPFLASH
+                               36     global  FReadDataGPFLASH
+                               37     global  WaitForReadyGPFLASH
+                               38     global  FWaitForReadyGPFLASH
+                               39 
+                               40 
+                               41 ;///////////////////////////////////////////////////////////////////////////////
+                               42 ;   External References
+                               43 ;///////////////////////////////////////////////////////////////////////////////
+                               44     EXTERN    DelayLongBReg
+                               48     
+                               49 
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               51 ;   Equates
+                               52 ;///////////////////////////////////////////////////////////////////////////////
+                               53                             ; A DMA transfer should never really time out, unless the GPFLASH
+                               54                             ; hardware is broken or it gets programmed incorrectly.  Otherwise,
+                               55                             ; the appropriate number of strobes will happen, whether or not the
+                               56                             ; flash chip is ready.  So set this timeout for as long as possible
+                               57                             ; and don't expect it to ever happen.
+                               58 NAND_XFER_TIMEOUT       equ     $7fffff
+                               59 
+                               60 ;///////////////////////////////////////////////////////////////////////////////
+                               61 ;   X Memory
+                               62 ;
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+                               64         
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               66 ;   Y Memory
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               68         
+                               69 ;///////////////////////////////////////////////////////////////////////////////
+                               70 ;   Code
+                               71 ;///////////////////////////////////////////////////////////////////////////////
+                               72 
+P:0000                         73     org     p,"BOOTROM_Flash_P":
+                               74 
+                               75 
+                               76 ;///////////////////////////////////////////////////////////////////////////////
+                               77 ;   Notes
+                               78 ;
+                               79 ;   FOO - This code should be optimized when adapted to SDK device drivers.
+                               80 ;         There are many quick-and-dirty bits in here, such as doing "REP-SHIFT"
+                               81 ;         loops instead of multiplies.  And so on...
+                               82 ;///////////////////////////////////////////////////////////////////////////////
+                               83 
+                               84 
+                               85 ; Set GPFlash port for worst-case 4 nand multinand for now.
+                               86 ;    ifdef @('NAND1')
+                               87 ;GPFLASH_PERIOD      equ     $302
+                               88 ;    else
+                               89 ;    ifdef @('NAND2')
+                               90 ;GPFLASH_PERIOD      equ     $304
+                               91 ;    else
+                               92 ;    ifdef @('NAND4')
+                               93 ;GPFLASH_PERIOD      equ     $305
+                               94 ;    else
+                               95 ;GPFLASH_PERIOD       equ     $302
+                               96 ;    endif   
+                               97 ;    endif   
+                               98 ;    endif   
+                               99 GPFLASH_PERIOD      equ     $305
+                              100 
+                              101 ;///////////////////////////////////////////////////////////////////////////////
+                              102 ;> Name: InitGPFLASHPort
+                              103 ;
+                              104 ;  Type: Function
+                              105 ;  Description: 
+                              106 ;  Inputs: 
+                              107 ;           A   -   Card number
+                              108 ;  Outputs: 
+                              109 ;  Notes:   C callable:  void  InitGPFLASHPort(int iCardNumber)
+                              110 ;<
+                              111 ;///////////////////////////////////////////////////////////////////////////////
+                              112 FInitGPFLASHPort
+                              113 InitGPFLASHPort
+                              114     
+                              115     ; set the GPFlash pads to 8mA
+P:0000 56F400 000007  3    3  116     move    #>7,a
+P:0002 567000 00F40A  3    6  117     move    a,x:HW_GP08MA
+P:0004 567000 00F41A  3    9  118     move    a,x:HW_GP18MA
+P:0006 567000 00F42A  3   12  119     move    a,x:HW_GP28MA
+P:0008 567000 00F43A  3   15  120     move    a,x:HW_GP38MA
+                              121     
+                              122     ; set the GPFlash timing to something safe enough for four nands
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:000A 0A700D 00F0C0  6   21  123     bclr    #HW_GPFLASH_CSR0_CLK_DISABLE_BITPOS,x:HW_GPFLASH_CSR0R
+P:000C 56F400 000305  3   24  124     move    #>GPFLASH_PERIOD,a
+P:000E 567000 00F0C5  3   27  125     move    a,x:HW_GPFLASH_TIMING2R    
+                              126     
+P:0010 20001B         2   29  127     clr     b
+P:0011 51F400 01E000  3   32  128     move    #>WAIT_10_MS,b0
+P:0013 20003A         2   34  129     asl     b                       ; delay for ~20ms
+P:0014 0BF080 rrrrrr  6   40  130     jsr     DelayLongBReg
+                              131     
+                              132     ; Disable Write Protect# (High) - Renesas has RES# tied to WP#
+P:0016 0A702C 00F0C1  6   46  133     bset    #HW_GPFLASH_CSR1_WP0_BITPOS,x:HW_GPFLASH_CSR1R
+P:0018 0A7031 00F0C1  6   52  134     bset    #HW_GPFLASH_CSR1_MUX_BITPOS,x:HW_GPFLASH_CSR1R
+                              135     
+P:001A 20001B         2   54  136     clr     b
+P:001B 51F400 01E000  3   57  137     move    #>WAIT_10_MS,b0
+P:001D 20003A         2   59  138     asl     b                       ; delay for ~20ms
+P:001E 0BF080 rrrrrr  6   65  139     jsr     DelayLongBReg
+                              140     
+P:0020 200013         2   67  141     clr     a                       ; Status - SUCCESS
+                              142 
+P:0021 00000C         4   71  143     rts
+                              144 
+                              145 
+                              146 
+                              147 ;///////////////////////////////////////////////////////////////////////////////
+                              148 ;> Name: TerminateGPFLASHPort
+                              149 ;
+                              150 ;  Type: Function
+                              151 ;  Description: 
+                              152 ;  Inputs: 
+                              153 ;           A   -   Card number
+                              154 ;  Outputs: 
+                              155 ;  Notes:   C callable:  void  InitGPFLASHPort(int iCardNumber)
+                              156 ;<
+                              157 ;///////////////////////////////////////////////////////////////////////////////
+                              158 FTerminateGPFLASHPort
+                              159 TerminateGPFLASHPort
+                              160 
+                              161     ; No pins to return to default state
+                              162 
+P:0022 200013         2   73  163     clr     a                       ; Status - SUCCESS
+                              164 
+P:0023 00000C         4   77  165     rts
+                              166 
+                              167 
+                              168 
+                              169 
+                              170 
+                              171 ;///////////////////////////////////////////////////////////////////////////////
+                              172 ;> Name: WriteCmdGPFLASH
+                              173 ;
+                              174 ;  Type: Function
+                              175 ;  Description: 
+                              176 ;  Inputs: 
+                              177 ;           A   -   Current Device Number
+                              178 ;           B   -   NAND Command Code   (e.g. $70 for Read Status)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              179 ;           X0  -   Deassert CEn at end, if this flag is non-zero
+                              180 ;  Outputs: 
+                              181 ;  Notes:       C-callable:     int WriteCmdGPFLASH(int iDeviceNum, int iCommandCode)
+                              182 ;<
+                              183 ;///////////////////////////////////////////////////////////////////////////////
+                              184 FWriteCmdGPFLASH
+                              185 WriteCmdGPFLASH
+                              186 
+                              187 CSR0_CMD_SETUP  equ (HW_GPFLASH_CSR0_WRITE+HW_GPFLASH_CSR0_CLEAR_INT+HW_GPFLASH_CSR0_CMD_XFER+HW_G
+                                  PFLASH_CLOCK_ENABLE)
+                              188 
+                              189 
+                              190 CSR1_CMD_SETUP  equ (HW_GPFLASH_USE_X_MEMORY+HW_GPFLASH_START_BYTE_LSB+HW_GPFLASH_MUX_GPFLASH_ACCE
+                                  SS+HW_GPFLASH_8BIT_ACCESS)
+                              191 
+                              192 
+                              193 
+                              194 
+P:0024 22F000         2   79  195     move    r7,r0                   ; Save stack pointer;  will point to Command buffer
+                              196     push    b1                      ; Store the command in the command buffer
+P:0025 555F00         2   81  196     move    b1,x:(r7)+
+                              197 
+                              198     push    a                       ; Save Device Number
+P:0026 565F00         2   83  198     move    a,x:(r7)+
+                              199 
+                              200 
+                              201 
+                              202 
+                              203     ;///////////  Setup CSR0    ///////////////
+                              204 
+P:0027 57F400 000008  3   86  205     move    #>CSR0_CMD_SETUP,b           ; Set up CSR0
+                              206 
+P:0029 208E00         2   88  207     move    x0,a                        ; if (DeassrtCEn)
+P:002A 200003         2   90  208     tst     a
+P:002B 0AF0AA rrrrrr  6   96  209     jeq     _set_CSR0                   ;   Set CEB CTRL to "go HIGH at end"
+P:002D 0ACD6C         4  100  210         bset    #HW_GPFLASH_CSR0_CEB_CTRL_BITPOS,b1
+                              211 _set_CSR0 
+P:002E 577000 00F0C0  3  103  212     move    b,x:HW_GPFLASH_CSR0R
+                              213 
+                              214 
+                              215 
+                              216 
+                              217 
+                              218     ;///////////  Setup CSR1 ///////////////
+                              219     pop     a                               ; Restore DeviceNum
+P:0030 56FF00         4  107  219     move    x:-(r7),a
+P:0031 45F400 000003  3  110  220     move    #>3,x1                           ; Mask DeviceNum, just for safety
+P:0033 200066         2  112  221     and     x1,a
+P:0034 0608A0         4  116  222     rep     #HW_GPFLASH_CSR1_CEB_BITPOS     ; Then shift it to the right position (CEB)
+P:0035 200032         2  118  223         asl a
+                              224 
+P:0036 45F400 020000  3  121  225     move    #>CSR1_CMD_SETUP,x1             ; Then add the rest of the CSR1 setup
+P:0038 200062         2  123  226     or      x1,a
+                              227 
+                              228     push    a
+P:0039 565F00         2  125  228     move    a,x:(r7)+
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:003A 56F000 00F0C1  3  128  229     move    x:HW_GPFLASH_CSR1R,a            ; Read current CSR1
+P:003C 45F400 083000  3  131  230     move    #>HW_GPFLASH_WPn_MASK,x1        ; Keep just the WPn bits
+P:003E 200066         2  133  231     and     x1,a
+                              232     pop     x1                              ; Combine with the new settings
+P:003F 45FF00         4  137  232     move    x:-(r7),x1
+P:0040 200062         2  139  233     or      x1,a                            
+                              234 
+P:0041 547000 00F0C1  3  142  235     move    a1,x:HW_GPFLASH_CSR1R           ; And stuff the register
+                              236 
+                              237 
+                              238 
+                              239 
+                              240     ;///////////  Setup DMA     ///////////////
+P:0043 607000 00F0C2  3  145  241     move    r0,x:HW_GPFLASH_DMA_ADDR        ; Point to Command on stack
+                              242 
+                              243 
+                              244 
+                              245     ;///////////  Setup DMA     ///////////////
+P:0045 46F400 000001  3  148  246     move    #>1,y0
+P:0047 467000 00F0C3  3  151  247     move    y0,x:HW_GPFLASH_XFER_SIZER
+                              248 
+                              249 
+                              250 
+                              251     ;///////////  Setup Timing  ///////////////
+                              252     ; ??
+                              253     ;   LEAVE TIMING SETUP AT DEFAULT SETTINGS, FOR NOW
+                              254 
+                              255 
+                              256 
+                              257 
+                              258     ;///////////  Setup Busy    ///////////////
+                              259     ; ??
+                              260     ;   NO BUSY INTERRUPTS, FOR NOW
+                              261 
+P:0049 200013         2  153  262     clr     a
+P:004A 567000 00F0C6  3  156  263     move    a,x:HW_GPFLASH_TIMINGBUSYR
+                              264 
+                              265 
+                              266 
+                              267     ;///////////  Kick the operation    ///////////////
+P:004C 0ACD60         4  160  268     bset    #HW_GPFLASH_CSR0_KICK_BITPOS,b1     ; CSR0 setup still in B, Add "KICK" bit
+P:004D 577000 00F0C0  3  163  269     move    b,x:HW_GPFLASH_CSR0R
+                              270 
+                              271 
+                              272 
+                              273 
+                              274 
+                              275     ;///////////  Wait for COMPLETE    ///////////////
+P:004F 0BF080 rrrrrr  6  169  276     jsr     WaitForComplete
+                              277 
+                              278 
+                              279     pop     b                       ; Pop the Command buffer off the stack
+P:0051 57FF00         4  173  279     move    x:-(r7),b
+                              280 
+P:0052 200013         2  175  281     clr     a                       ; Return SUCCESS
+                              282 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0053 00000C         4  179  283     rts
+                              284 
+                              285 
+                              286 
+                              287 
+                              288 
+                              289 
+                              290 
+                              291 ;///////////////////////////////////////////////////////////////////////////////
+                              292 ;> Name: WriteAddrGPFLASH
+                              293 ;
+                              294 ;  Type: Function
+                              295 ;  Description: 
+                              296 ;  Inputs: 
+                              297 ;           A   -   Current Device Number
+                              298 ;           B   -   Number of Column Address bytes
+                              299 ;           X0  -   Column Address (byte offset into Page)
+                              300 ;           Y0  -   Number of Row Address bytes
+                              301 ;           X1  -   Row Address (Page number)
+                              302 ;           Y1  -   Deassert CEn at end, if this flag is non-zero
+                              303 ;  Outputs: 
+                              304 ;  Notes:   C-callable: int WriteAddrGPFLASH(iDeviceNum, iNumColBytes, iColumnAddress,
+                              305 ;                                                   iNumRowBytes, iRowAddress)
+                              306 ;<
+                              307 ;///////////////////////////////////////////////////////////////////////////////
+                              308 FWriteAddrGPFLASH
+                              309 WriteAddrGPFLASH
+                              310 
+                              311 CSR0_ADDR_SETUP  equ    (HW_GPFLASH_CSR0_WRITE+HW_GPFLASH_CSR0_CLEAR_INT+HW_GPFLASH_CSR0_ADDR_XFER
+                                  +HW_GPFLASH_CLOCK_ENABLE)
+                              312 CSR1_ADDR_SETUP  equ    (HW_GPFLASH_USE_X_MEMORY+HW_GPFLASH_START_BYTE_LSB+HW_GPFLASH_MUX_GPFLASH_
+                                  ACCESS+HW_GPFLASH_8BIT_ACCESS)
+                              313 
+                              314 
+                              315                         ; The Column Address and Row Address are passed in separately.
+                              316                         ; For use with the GPFLASH, these need to be concatenated into
+                              317                         ; one continuous DMA transfer;  otherwise, the ALE line may cause
+                              318                         ; trouble.
+                              319 
+                              320                         ; The size each address (Column and Row) can be from 0-3 bytes.
+                              321                         ; So the complete address can be up to two 24-bit words.  The
+                              322                         ; ordering is that the LSB of the Column Address (if present)
+                              323                         ; goes in the LSB of the first (lower address) word.  Next come
+                              324                         ; the rest of the Column address bytes (if present), then the
+                              325                         ; Row address bytes.  So, depending on the sizes of each address,
+                              326                         ; the second word may not be used.  (The DMA setup will take care 
+                              327                         ; of this.
+                              328 
+                              329                         ; To deal with this, the code below loads the Row address into the
+                              330                         ; low word of a 56-bit accumulator.  Then it shifts this up 8 bits
+                              331                         ; for each byte in the Column Address (if any).  Then it adds in the
+                              332                         ; Column address in the low word.
+                              333 
+                              334                         ; This assumes that the Column address has no extraneous data in
+                              335                         ; any unused higher bytes, which should be true when called from C.
+                              336 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              337 
+P:0054 22F000         2  181  338     move    r7,r0                   ; Save ptr to Addr DMA buffer (to be)
+P:0055 205F00         2  183  339     move    (r7)+
+P:0056 205F00         2  185  340     move    (r7)+
+                              341 
+                              342     push    a1                      ; Save Device Number
+P:0057 545F00         2  187  342     move    a1,x:(r7)+
+                              343 
+P:0058 200013         2  189  344     clr     a
+P:0059 20A800         2  191  345     move    x1,a0                   ; A = Row Addr (in LSW)
+                              346 
+P:005A 21A500         2  193  347     move    b1,x1                   ; Save nColBytes in x1, so we can use B
+                              348 
+P:005B 20000B         2  195  349     tst     b
+P:005C 0AF0AA rrrrrr  6  201  350     jeq     ColsDone                ; if (nColBytes>0) {
+P:005E 06CD00 rrrrrr  6  207  351     do      b1,ColLoop              ;   for (each Col addr byte) {
+P:0060 0608A0         4  211  352         rep #8                      ;       shift row addr left one byte
+P:0061 200032         2  213  353             asl a
+P:0062 000000         2  215  354     nop                             
+P:0063 000000         2  217  354         nop             ; (inserted)
+                        (10)  355 ColLoop                             ;   }
+                              356 
+P:0064 20001B         2  219  357     clr     b
+P:0065 208900         2  221  358     move    x0,b0                   ;   B0 = Col Addr
+P:0066 200010         2  223  359     add     b,a                     ;   A = A + B  // Full Address (Rows and Cols)
+                              360 ColsDone                            ; }
+                              361 
+P:0067 221100         2  225  362     move    r0,r1                   ; save ptr to DMA buffer
+P:0068 505800         2  227  363     move    a0,x:(r0)+              ; put Addr into DMA buffer
+P:0069 545800         2  229  364     move    a1,x:(r0)+
+                              365 
+P:006A 20CE00         2  231  366     move    y0,a
+P:006B 200060         2  233  367     add     x1,a
+P:006C 21C400         2  235  368     move    a,x0                    ; x0 = NRowBytes + NColBytes
+                              369 
+                              370 
+                              371 
+                              372 
+                              373 
+                              374 
+                              375     ;///////////  Setup CSR0    ///////////////
+P:006D 56F400 010008  3  238  376     move    #>CSR0_ADDR_SETUP,a
+                              377 
+P:006F 20EF00         2  240  378     move    y1,b                            ; if (DeassrtCEn)
+P:0070 20000B         2  242  379     tst     b
+P:0071 0AF0AA rrrrrr  6  248  380     jeq     _set_CSR0                       ;   Set CEB CTRL to "go HIGH at end"
+P:0073 0ACC6C         4  252  381         bset    #HW_GPFLASH_CSR0_CEB_CTRL_BITPOS,a1
+                              382 _set_CSR0 
+P:0074 547000 00F0C0  3  255  383     move    a1,x:HW_GPFLASH_CSR0R           ; and stuff the register
+                              384 
+                              385     pop     x1                              ; x1 = Device Number
+P:0076 45FF00         4  259  385     move    x:-(r7),x1
+                              386 
+                              387     push    a1                              ; Save CSR0settings for later
+P:0077 545F00         2  261  387     move    a1,x:(r7)+
+                              388 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              389 
+                              390 
+                              391     ;///////////  Setup CSR1 ///////////////
+P:0078 20AE00         2  263  392     move    x1,a                            ; A = Device Number
+                              393 
+P:0079 45F400 000003  3  266  394     move    #>3,x1                           ; Mask DeviceNum, just for safety
+P:007B 200066         2  268  395     and     x1,a
+P:007C 0608A0         4  272  396     rep     #HW_GPFLASH_CSR1_CEB_BITPOS     ; Then shift it to the right position (CEB)
+P:007D 200032         2  274  397         asl a
+                              398 
+P:007E 45F400 020000  3  277  399     move    #>CSR1_ADDR_SETUP,x1            ; Then add the rest of the CSR1 setup
+P:0080 200062         2  279  400     or      x1,a
+                              401 
+                              402     push    a
+P:0081 565F00         2  281  402     move    a,x:(r7)+
+P:0082 56F000 00F0C1  3  284  403     move    x:HW_GPFLASH_CSR1R,a             ; Read current CSR1
+P:0084 45F400 083000  3  287  404     move    #>HW_GPFLASH_WPn_MASK,x1         ; Keep just the WPn bits
+P:0086 200066         2  289  405     and     x1,a
+                              406     pop     x1                               ; Combine with the new settings
+P:0087 45FF00         4  293  406     move    x:-(r7),x1
+P:0088 200062         2  295  407     or      x1,a                            
+                              408 
+P:0089 547000 00F0C1  3  298  409     move    a1,x:HW_GPFLASH_CSR1R            ; And stuff the register
+                              410 
+                              411 
+                              412 
+                              413 
+                              414 
+                              415     ;///////////  Setup DMA     ///////////////
+P:008B 617000 00F0C2  3  301  416     move    r1,x:HW_GPFLASH_DMA_ADDR        ; Point to Command on stack
+                              417 
+                              418 
+                              419 
+                              420 
+                              421     ;///////////  Setup XFER SIZE     ///////////////
+P:008D 208E00         2  303  422     move    x0,a                            ; Put xfer size (NColBytes+NRowBytes)
+P:008E 567000 00F0C3  3  306  423     move    a,x:HW_GPFLASH_XFER_SIZER
+                              424 
+                              425 
+                              426 
+                              427     ;///////////  Setup Timing  ///////////////
+                              428     ; ??
+                              429     ;   LEAVE TIMING SETUP AT DEFAULT SETTINGS, FOR NOW
+                              430 
+                              431 
+                              432 
+                              433 
+                              434 
+                              435     ;///////////  Setup Busy    ///////////////
+                              436     ; ??
+                              437     ;   NO BUSY INTERRUPTS, FOR NOW
+                              438 
+P:0090 20001B         2  308  439     clr     b
+P:0091 577000 00F0C6  3  311  440     move    b,x:HW_GPFLASH_TIMINGBUSYR
+                              441 
+                              442 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              443 
+                              444 
+                              445 
+                              446     ;///////////  Kick the operation    ///////////////
+                              447     pop     a                                   ; Restore CSR0 settings
+P:0093 56FF00         4  315  447     move    x:-(r7),a
+P:0094 0ACC60         4  319  448     bset    #HW_GPFLASH_CSR0_KICK_BITPOS,a1     ; Add "KICK" bit
+P:0095 567000 00F0C0  3  322  449     move    a,x:HW_GPFLASH_CSR0R
+                              450 
+                              451 
+                              452 
+                              453 
+                              454 
+                              455 
+                              456     ;///////////  Wait for COMPLETE    ///////////////
+                              457 _wait
+P:0097 0BF080 rrrrrr  6  328  458     jsr     WaitForComplete
+                              459 
+                              460 
+                              461     pop     a                               ; Release the DMA buffer
+P:0099 56FF00         4  332  461     move    x:-(r7),a
+                              462     pop     a
+P:009A 56FF00         4  336  462     move    x:-(r7),a
+                              463 
+P:009B 200013         2  338  464     clr     a                               ; return SUCCESS
+P:009C 00000C         4  342  465     rts
+                              466 
+                              467 
+                              468 
+                              469 
+                              470 
+                              471 
+                              472 ;///////////////////////////////////////////////////////////////////////////////
+                              473 ;> Name: ReadDataGPFLASH
+                              474 ;
+                              475 ;  Type: Function
+                              476 ;  Description: 
+                              477 ;  Inputs: 
+                              478 ;           A   -   Device Number
+                              479 ;           B   -   Number of bytes to read
+                              480 ;           R0  -   Destination address (in X: memory)
+                              481 ;           X0  -   8/16 bit mode (0=8 bits, 1=16 bits)
+                              482 ;  Outputs: 
+                              483 ;  Notes:   C-callable: int ReadDataGPFLASH(int iDeviceNum, int iNumBytesToRead, int *pBuffer)
+                              484 ;<
+                              485 ;///////////////////////////////////////////////////////////////////////////////
+                              486 FReadDataGPFLASH
+                              487 ReadDataGPFLASH
+                              488 
+                              489 CSR0_READ_SETUP  equ  (HW_GPFLASH_CSR0_READ+HW_GPFLASH_CSR0_CLEAR_INT+HW_GPFLASH_CSR0_DATA_XFER+HW
+                                  _GPFLASH_CSR0_CEB_CTRL_RETURN_TO_HIGH+HW_GPFLASH_CLOCK_ENABLE)
+                              490 
+                              491 
+                              492 CSR1_READ_SETUP  equ  (HW_GPFLASH_USE_X_MEMORY+HW_GPFLASH_START_BYTE_LSB+HW_GPFLASH_MUX_GPFLASH_AC
+                                  CESS)
+                              493 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              494 
+                              495 
+                              496     push    b1                                      ; Save byte count
+P:009D 555F00         2  344  496     move    b1,x:(r7)+
+                              497 
+                              498 
+                              499     ;///////////  Setup CSR0    ///////////////
+P:009E 57F400 02100A  3  347  500     move    #>CSR0_READ_SETUP,b
+                              501 
+P:00A0 577000 00F0C0  3  350  502     move    b,x:HW_GPFLASH_CSR0R
+P:00A2 21E700         2  352  503     move    b,y1                                    ; Save CSR0 settings, for later
+                              504 
+                              505 
+                              506     ;///////////  Setup CSR1 ///////////////
+P:00A3 45F400 000003  3  355  507     move    #>3,x1                                   ; Mask DeviceNum, just for safety
+P:00A5 200066         2  357  508     and     x1,a
+P:00A6 0608A0         4  361  509     rep     #HW_GPFLASH_CSR1_CEB_BITPOS             ; Then shift it to the right position (CEB)
+P:00A7 200032         2  363  510         asl a
+                              511 
+P:00A8 208F00         2  365  512     move    x0,b                                    ; if (16 bit mode)
+P:00A9 20000B         2  367  513     tst     b
+P:00AA 0AF0AA rrrrrr  6  373  514     jeq     _mode_set
+P:00AC 0ACC70         4  377  515         bset    #HW_GPFLASH_CSR1_MODE16_BITPOS,a1   ;   set Mode16
+                              516 _mode_set
+                              517 
+P:00AD 45F400 020000  3  380  518     move    #>CSR1_READ_SETUP,x1                    ; Then add the rest of the CSR1 setup
+P:00AF 200062         2  382  519     or      x1,a
+                              520 
+                              521     push    a
+P:00B0 565F00         2  384  521     move    a,x:(r7)+
+P:00B1 56F000 00F0C1  3  387  522     move    x:HW_GPFLASH_CSR1R,a                    ; Read current CSR1
+P:00B3 45F400 083000  3  390  523     move    #>HW_GPFLASH_WPn_MASK,x1                ; Keep just the WPn bits
+P:00B5 200066         2  392  524     and     x1,a
+                              525     pop     x1                                      ; Combine with the new settings
+P:00B6 45FF00         4  396  525     move    x:-(r7),x1
+P:00B7 200062         2  398  526     or      x1,a                                    
+                              527 
+P:00B8 547000 00F0C1  3  401  528     move    a1,x:HW_GPFLASH_CSR1R                   ; And stuff the register
+                              529 
+                              530 
+                              531 
+                              532 
+                              533 
+                              534     ;///////////  Setup DMA     ///////////////
+P:00BA 607000 00F0C2  3  404  535     move    r0,x:HW_GPFLASH_DMA_ADDR        ; Point to Command on stack
+                              536 
+                              537 
+                              538 
+                              539 
+                              540     ;///////////  Setup XFER Size     ///////////////
+                              541     pop     b
+P:00BC 57FF00         4  408  541     move    x:-(r7),b
+P:00BD 577000 00F0C3  3  411  542     move    b,x:HW_GPFLASH_XFER_SIZER
+                              543 
+                              544 
+                              545 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              546 
+                              547 
+                              548     ;///////////  Setup Busy    ///////////////
+                              549     ; ??
+                              550     ;   NO BUSY INTERRUPTS, FOR NOW
+                              551 
+P:00BF 20001B         2  413  552     clr     b
+P:00C0 577000 00F0C6  3  416  553     move    b,x:HW_GPFLASH_TIMINGBUSYR
+                              554 
+                              555 
+                              556 
+                              557 
+                              558 
+                              559     ;///////////  Kick the operation    ///////////////
+P:00C2 20EF00         2  418  560     move    y1,b                                ; B = saved CSR0 settings
+P:00C3 0ACD60         4  422  561     bset    #HW_GPFLASH_CSR0_KICK_BITPOS,b1     ; Add "KICK" bit
+P:00C4 577000 00F0C0  3  425  562     move    b,x:HW_GPFLASH_CSR0R                ; Stuff the register
+                              563 
+                              564 
+                              565 
+                              566 
+                              567 
+                              568     ;///////////  Wait for COMPLETE    ///////////////
+                              569 _wait
+P:00C6 0BF080 rrrrrr  6  431  570     jsr     WaitForComplete
+                              571 
+                              572 
+P:00C8 200013         2  433  573     clr     a                       ; Return SUCCESS
+                              574 
+P:00C9 00000C         4  437  575     rts
+                              576 
+                              577 
+                              578 ;///////////////////////////////////////////////////////////////////////////////
+                              579 ;> Name: WaitForReadyGPFLASH
+                              580 ;
+                              581 ;  Type: Function
+                              582 ;  Description:     Spin while the READY line is LOW.
+                              583 ;  Inputs:          iDeviceNum - This is ignored in this version, but could be
+                              584 ;                                used to test for a specific NAND to be be READY.
+                              585 ;                   iTimeoutCount - if <= 0, wait forever
+                              586 ;                                   else count down until READY - fail if you reach zero
+                              587 ;  Outputs:         0 - SUCCESS.  READY asserted
+                              588 ;                   1 - FAIL.  iTimeoutCount expired
+                              589 ;  Notes:           Timeout is simple - just spin until count expires.  So it's
+                              590 ;                   counting some number of INSTRUCTION CYCLE TIMES.
+                              591 ;                   Later verison may use a real timer, allowing asynchronous use.
+                              592 ;<
+                              593 ;///////////////////////////////////////////////////////////////////////////////
+                              594 WaitForReadyGPFLASH
+                              595 FWaitForReadyGPFLASH
+                              596 
+                              597 
+                              598     ;  iDeviceNum in A is ignored, for this version
+                              599 
+P:00CA 44F400 000001  3  440  600     move    #>1,x0
+                              601 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              602 _wait_for_ready                         ; repeat {
+                              603 
+P:00CC 47F000 00F0C0  3  443  604     move    x:HW_GPFLASH_CSR0R,y1       ;   if (NAND is READY)
+P:00CE 0AC714 rrrrrr  6  449  605     jclr    #HW_GPFLASH_CSR0_EXT_BUSY_VAL_BITPOS,y1,_not_READY
+P:00D0 200013         2  451  606     clr     a                           ;       return SUCCESS
+P:00D1 00000C         4  455  607     rts
+                              608 
+                              609 
+                              610 _not_READY
+P:00D2 20000B         2  457  611     tst     b
+P:00D3 0AF0AF rrrrrr  6  463  612     jle     _wait_for_ready     ;   if (iTimeoutCount <= 0)
+                              613                                 ;       wait forever
+                              614 
+P:00D5 20004C         2  465  615     sub     x0,b                ;   iTimeoutCount--
+P:00D6 0AF0A7 rrrrrr  6  471  616     jgt     _wait_for_ready     ;   if (iTimeoutCount > 0)
+                              617                                 ;       keep waiting
+                              618                                 ;   else
+P:00D8 56F400 000001  3  474  619     move    #>1,a               ;       return FAIL
+P:00DA 00000C         4  478  620     rts
+                              621                                 ; }
+                              622 
+                              623 
+                              624 
+                              625 
+                              626 ;///////////////////////////////////////////////////////////////////////////////
+                              627 ;> Name: WaitForComplete
+                              628 ;
+                              629 ;  Type: Function
+                              630 ;  Description:      For local (internal) use, only.  Not for export.
+                              631 ;  Inputs: 
+                              632 ;  Outputs: 
+                              633 ;  Notes: 
+                              634 ;<
+                              635 ;///////////////////////////////////////////////////////////////////////////////
+                              636 WaitForComplete
+                              637 
+P:00DB 56F400 7FFFFF  3  481  638     move    #>NAND_XFER_TIMEOUT,a
+P:00DD 44F400 000001  3  484  639     move    #>1,x0
+                              640 
+                              641 _wait_for_done                              ; repeat {
+                              642 
+P:00DF 45F000 00F0C0  3  487  643     move    x:HW_GPFLASH_CSR0R,x1           ;   if (done)
+P:00E1 0AC503 rrrrrr  6  493  644     jclr    #HW_GPFLASH_CSR0_INT_STATUS_BITPOS,x1,_not_done
+                              645 
+P:00E3 200013         2  495  646     clr     a                               ;       return SUCCESS
+P:00E4 00000C         4  499  647     rts
+                              648 
+                              649 _not_done
+P:00E5 200044         2  501  650     sub     x0,a                            ;   decrement timeout count
+P:00E6 0AF0A7 rrrrrr  6  507  651     jgt     _wait_for_done                  ;   if (count <= 0)
+                              652 
+                              653 
+                              654                                             ;       TIMED OUT
+P:00E8 56F400 000001  3  510  655     move    #>1,a                           ;       return FAIL
+P:00EA 00000C         4  514  656     rts
+                              657                                             ; }
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              658 
+                              659     endsec
+                              660 
+                              661 
+                              662 ;///////////////////////////////////////////////////////////////////////////////
+                              663 ;///////////////////////////////////////////////////////////////////////////////
+                              664 ;///////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,665 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\encoder\mp3\enc_mp3_nonoverlay.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2004
+                                3 ; Filename: enc_mp3_nonoverlay.asm
+                                4 ; STMP3 Mp3 Module (CANNOT be overlayed)
+                                5 ;///////////////////////////////////////////////////////////////////////////////
+                                6     section ENCAPP_EncMp3NonOverlay
+                                9 ;///////////////////////////////////////////////////////////////////////////////
+                               10 ;   External Definitions
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               23 ;   External References
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               33     
+                               54             
+                               58     
+                               75     ; TODO - Get rid of this stuff!!!! Used only for Mp3 dev.
+                               76 ;   EXTERN   CurrEncIsrCount
+                               77     
+                               86     
+                               92     
+                               94     
+                               95     USE_JSR: EQU 0
+                               96     USE_OLD: EQU 0
+                               97     TRACE_PCM: EQU 0
+                               98     
+                               99     
+                              101 ;///////////////////////////////////////////////////////////////////////////////
+                              102 ;   Includes
+                              103 ;///////////////////////////////////////////////////////////////////////////////
+                              117     list
+                              118     page    132,60,0,0,0
+                              120 ;///////////////////////////////////////////////////////////////////////////////
+                              121 ;   Equates
+                              122 ;///////////////////////////////////////////////////////////////////////////////
+                              123 ENCODER_WRITE_BUSY_BIT      equ 0           ;0 WriteToDisk function not busy
+                              124 ENCODER_SKIP_WRITE_BIT      equ 1           ;1 Skip Decoder File Read.
+                              126 ;///////////////////////////////////////////////////////////////////////////////
+                              127 ;   X Memory
+                              128 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        129        org     x,"ENCAPP_EncMp3NonOverlay_X":
+                              131 Fg_wMp3EncoderIsrSR
+X:0000 000000                 132 Mp3EncoderIsrSR         dc      0       ; For signalling special conditions to
+                              133                                         ; the overlay section of the encoder.
+                              134                                         ; Bit flags are same as EncoderSR but
+                              135                                         ; are private to the Encoder.
+                              137 ;///////////////////////////////////////////////////////////////////////////////
+                              138 ;   Y Memory
+                              139 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        140        org     y,"ENCAPP_EncMp3NonOverlay_Y":
+Y:0000 000000                 142 Mp3EncoderIsrEntryCount    dc      0
+Y:0001 000000                 144 Mp3EncoderIsrState         dc      0
+Y:0002 000000                 146 EncoderWriteSaveR6      dc      0
+                              148         
+                              149 ;///////////////////////////////////////////////////////////////////////////////
+                              150 ;   Code
+                              151 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0000                        152        org     p,"ENCAPP_EncMp3NonOverlay_P":
+                              154 ;*******************************************************************************
+                              155 ; EncMp3ModuleTimerDisable Routine
+                              156 ;*******************************************************************************
+                              157 EncMp3ModuleTimerDisable
+                              158     ; CANNOT be overlayed, called by ISR.
+P:0000 00000C         4    4  159     rts
+                              161 ;*******************************************************************************
+                              162 ; EncoderFileWrite Routine
+                              163 ;*******************************************************************************
+                              164 EncoderFileWrite
+P:0001 00000C         4    8  165     rts
+                              167 ;*******************************************************************************
+                              168 ; EncMp3ModuleIsrInit
+                              169 ;*******************************************************************************
+                              170 EncMp3ModuleIsrInit
+P:0002 200013         2   10  171     clr     a
+P:0003 5C7000 rrrrrr  3   13  172     move    a1,y:EncoderIsrEntryCount
+P:0005 5C7000 rrrrrr  3   16  173     move    a1,y:MP3EncoderSampleCountHigh
+P:0007 5C7000 rrrrrr  3   19  174     move    a1,y:MP3EncoderSampleCountLow   
+P:0009 5C7000 rrrrrr  3   22  175     move    a1,y:MP3EncWriteFailCount
+P:000B 5C7000 rrrrrr  3   25  176     move    a1,y:MP3EncBytesWrittenHigh 
+P:000D 5C7000 rrrrrr  3   28  177     move    a1,y:MP3EncBytesWrittenLow  
+P:000F 5C7000 rrrrrr  3   31  178     move    a1,y:MP3EncIsrFlags
+P:0011 5C7000 rrrrrr  3   34  179     move    a1,y:gEncoderWriteStatus
+P:0013 5EF000 rrrrrr  3   37  181     move    y:Fg_wEncSamplingRate,A
+P:0015 60F400 rrrrrr  3   40  182     move    #MP3EncoderSourceBufDesc,r0
+P:0017 0BF080 rrrrrr  6   46  183     jsr     FComputeDCOffsetInit         ;stmp6964
+P:0019 5EF000 rrrrrr  3   49  185     move    y:Fg_wEncSamplingRate,A
+P:001B 60F400 rrrrrr  3   52  186     move    #MP3EncoderSourceBufDesc,r0
+P:001D 0BF080 rrrrrr  6   58  187     jsr     FDetectSilenceInit
+                              188  
+P:001F 0ACC60         4   62  189     bset    #ENC_ISR_STATE_STOPPED,a1
+P:0020 5C7000 rrrrrr  3   65  190     move    a1,y:Mp3EncoderIsrState
+                              191     
+                              192     ; Initialize the Enocoder Source & Sink Buffers
+P:0022 68F000 rrrrrr  3   68  193     move    y:MP3EncoderBufAddrPtr,r0
+P:0024 05F420 FFFFFF  4   72  194     movec   #-1,m0
+P:0026 4CF000 rrrrrr  3   75  195     move    y:MP3EncoderBufSizePtr,x0
+P:0028 06C400 rrrrrr  6   81  196     do      x0,_done_source
+P:002A 200013         2   83  197         clr     a
+P:002B 5E5800         2   85  198         move    a,y:(r0)+
+                         (4)  199 _done_source
+P:002C 68F000 rrrrrr  3   88  202     move    y:MP3EncoderSinkBufAddrPtr,r0
+P:002E 4CF000 rrrrrr  3   91  203     move    y:MP3EncoderSinkBufSizePtr,x0
+P:0030 06C400 rrrrrr  6   97  204     do      x0,_done_sink
+P:0032 200013         2   99  205         clr     a
+P:0033 565800         2  101  206         move    a,x:(r0)+
+                         (4)  207 _done_sink
+P:0034 00000C         4  105  211     rts
+                              212     
+                              213 ;*******************************************************************************
+                              214 ; EncMp3ModuleIsr
+                              215 ;*******************************************************************************
+                              216 EncMp3ModuleIsr
+                              218         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              219         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              220         ; will be popped back off System Stack Low (SSL).
+                              221         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              222         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:0035 00BFB8         2  107  223     andi #$BF,mr
+P:0036 4C7000 rrrrrr  3  110  225     move    x0,y:IntL1_SaveR6           ; save x0 state
+                              227     ; Check if spurious interrupt. If so exit ...
+P:0038 44F000 00F302  3  113  228     move    x:HW_ICLSTATUS0R,x0
+P:003A 0AC42D rrrrrr  6  119  229     jset    #HW_ICLSTATUS0R_SST13_BITPOS,x0,_ContinueIsr
+                              230     ; None of the above, exit interruption
+P:003C 4CF000 rrrrrr  3  122  231     move    y:IntL1_SaveR6,x0           ; restore x0 state
+P:003E 000004         4  126  232     rti
+                              234 _ContinueIsr
+P:003F 4CF000 rrrrrr  3  129  235     move    y:IntL1_SaveR6,x0           ; restore x0 state
+                              237     ; save off all registers
+P:0041 6E7000 rrrrrr  3  132  238     move    r6,y:IntL1_SaveR6            ; r6 used for return mechanism
+P:0043 66F400 rrrrrr  3  135  239     move    #_EncoderSaveRegReturn,r6    ; setup the return address
+P:0045 0AF080 rrrrrr  6  141  240     jmp     SaveRegs                     ; save the remaining registers
+                              241 _EncoderSaveRegReturn
+                              243     ; save off stack
+P:0047 66F400 rrrrrr  3  144  244     move    #_EncoderSaveStackReturn,r6  ; setup the return address
+P:0049 65F400 rrrrrr  3  147  245     move    #MP3EncIsrSp,r5                 ; pointer to the SP local save
+P:004B 0AF080 rrrrrr  6  153  246     jmp     SaveSystemStack              ; save the hardware stack
+                              247 _EncoderSaveStackReturn
+P:004D 0BF080 rrrrrr  6  159  249     jsr     SysAllLinear
+                              251     ; Check for isr overflow.  This error occurs if this routine is interrupted
+                              252     ;   by itself.  This should never happen.  The check is mainly for debug and
+                              253     ;   could be removed when dev is complete.
+P:004F 4CF000 rrrrrr  3  162  254     move    y:MP3EncIsrFlags,x0
+P:0051 0AC420 rrrrrr  6  168  255     jset    #0,x0,big_trouble
+                              257     ; Isr is active
+P:0053 0AC460         4  172  258     bset    #0,x0
+P:0054 4C7000 rrrrrr  3  175  259     move    x0,y:MP3EncIsrFlags
+                              260     
+                              261     ; keep track of entries to this isr
+P:0056 200013         2  177  262     clr     a
+P:0057 58F000 rrrrrr  3  180  263     move    y:Mp3EncoderIsrEntryCount,a0
+P:0059 000008         2  182  264     inc     a
+P:005A 587000 rrrrrr  3  185  265     move    a0,y:Mp3EncoderIsrEntryCount
+                              266     ; TODO - get rid of this!!! dev only!
+                              267 ;    move    a0,y:CurrEncIsrCount
+                              269 _EncoderStateMachine
+                              270 ;*******************************************************************************
+                              271 _IsrStateRecording        
+P:005C 0A7041 rrrrrr  6  191  272     bclr    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus        
+P:005E 44F000 rrrrrr  3  194  274     move    x:EncoderCSR,x0
+P:0060 0AC426 rrrrrr  6  200  275     jset    #Stop,x0,_StopRecording
+                              277     ; clear the flag
+P:0062 0AC44C         4  204  278     bclr    #Play,x0
+P:0063 447000 rrrrrr  3  207  279     move    x0,x:EncoderCSR
+                              281     ; flag for recording
+P:0065 44F000 rrrrrr  3  210  282     move    x:EncoderSR,x0
+P:0067 0AC446         4  214  283     bclr    #Stop,x0
+P:0068 0AC445         4  218  284     bclr    #Pause,x0
+P:0069 0AC46C         4  222  285     bset    #Play,x0
+P:006A 447000 rrrrrr  3  225  286     move    x0,x:EncoderSR
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:006C 240000         2  227  288     move    #0,x0                       ; Clear encoder private status flags
+P:006D 447000 rrrrrr  3  230  289     move    x0,x:Mp3EncoderIsrSR
+P:006F 60F400 rrrrrr  3  233  291     move    #MP3EncoderSourceBufDesc,r0
+P:0071 5EF000 rrrrrr  3  236  292     move    y:Fg_wEncNumberOfChannels,a
+P:0073 0BF080 rrrrrr  6  242  293     jsr     FComputeDCOffset                ;stmp6964 Compute DC bias in ADC and set samples to ze
+                                  ro
+                              294   
+                              295     ; An non-zero return value indicates that further audio processing is not required for the enc
+                                  oder
+                              296     ; Parameters passed : SourceBufDesc
+P:0075 60F400 rrrrrr  3  245  297     move    #MP3EncoderSourceBufDesc,r0    
+P:0077 5EF000 rrrrrr  3  248  298     move    y:Fg_wEncNumberOfChannels,a
+P:0079 0BF080 rrrrrr  6  254  299     jsr     SilenceProcess
+P:007B 200003         2  256  300     tst     A
+P:007C 0AF0A2 rrrrrr  6  262  301     jne     _ExitIsr
+                              303     ; If we have enough samples to process then do it
+P:007E 60F400 rrrrrr  3  265  304     move    #MP3EncoderSourceBufDesc,r0
+P:0080 05F420 00FFFF  4  269  305     movec   #$ffff,m0
+P:0082 0BF080 rrrrrr  6  275  306     jsr     GetFilledSpace                  ; returns filled space count in A
+P:0084 5FF000 rrrrrr  3  278  307         move    y:FSamplesPerFrame,B
+P:0086 4CF000 rrrrrr  3  281  308     move    y:Fg_wEncNumberOfChannels,x0
+P:0088 06C420         4  285  309     rep     x0
+P:0089 20003A         2  287  310     asl     B
+P:008A 20002A         2  289  311     asr     B
+P:008B 21E400         2  291  312     move    B,x0
+P:008C 200045         2  293  313     cmp     x0,A
+P:008D 0AF0A9 rrrrrr  6  299  314     jlt     _ExitIsr                        ; bail if not enough samples
+P:008F 64F400 rrrrrr  3  302  316     move    #MP3EncoderSinkBufDesc,r4
+P:0091 05F424 00FFFF  4  306  317     movec   #$ffff,m4
+P:0093 0BF080 rrrrrr  6  312  318     jsr     GetEmptySpace                    ; returns free space count in A
+P:0095 44F400 0001F4  3  315  319     move    #>500,x0                        ; Worst Case Data per Frame = 480 Words + extras for h
+                                  eader, etc.
+P:0097 200045         2  317  320     cmp     x0,A
+P:0098 0AF0A9 rrrrrr  6  323  321     jlt     _ExitIsr                        ; bail if not enough samples. This can lead to droppin
+                                  g of this frame
+P:009A 44F000 rrrrrr  3  326  323     move    x:Mp3EncoderIsrSR,x0                        ; Check for (already) Out Of Space
+P:009C 0AC421 rrrrrr  6  332  324     jset    #EncRanOutOfSpace,x0,_skip_write
+P:009E 5AF000 rrrrrr  3  335  326     move    y:Fg_wEncCurrentDeviceNum,a2                ; Check for about out of space
+P:00A0 0BF080 rrrrrr  6  341  327     jsr     DiskBytesFree
+                              328     ;           b1 = number of free clusters
+                              329     ;           b0 = number of bytes per cluster    
+P:00A2 0AF0A0 rrrrrr  6  347  330     jcc     _disk_ok
+                              331     error
+P:00A4 000200         4  351  331     debug
+                              333 _disk_ok
+P:00A5 21AE00         2  353  334     move    b1,a                                        ; Number of free clusters
+                              335     ;---
+                              336     ; Warn when free clusters reaches defined threshold.  DVRWARN
+                              337     ; Base case: bytes/cluster is 16 kiloBytes. /4000 bytes/sec Mp3 data =  4.096 sec/cluster
+                              338     ; (at 32kbps)
+                              339     ; A 3 cluster threshhold warning above the record free cluster limit 
+                              340     ; gives ~12 sec warning before recording stops. 
+                              341     ;
+                              342     ;  Note: Alternate approach checks remaining record seconds but is not worth the system perfor
+                                  mance  
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              343     ;        hit as this condition is checked in a high frequency periodic timer ISR. Just check f
+                                  ree clusters.
+                              345     ;move    #>(ENC_FREE_CLUSTERS_WARN_THRESHOLD-1),a  ; DEBUG line only. COMMENT LINE OUT. Forces
+                                   "low record memory warn" <<<<<
+P:00A6 44F400 000005  3  356  347     move    #>ENC_FREE_CLUSTERS_WARN_THRESHOLD,x0 
+P:00A8 200045         2  358  348     cmp     x0,a                                ; A is free clusters.
+P:00A9 0AF0A7 rrrrrr  6  364  349     jgt     _clr_space_warn                     ; Fall into _warn_low_space if we're below or at t
+                                  o the free clusters warning threshhold.
+                              350     ; Next clear x:Mp3EncoderIsrSR EncWarnLowSpace 
+                              352     ; x:EncoderSR EncWarningSent bit must not be cleared in the ISR 
+                              353     ; It will be cleared when reinitializing the encoder. Avoids race condition.
+                              356 _warn_low_space
+P:00AB 44F000 rrrrrr  3  367  357     move    x:Mp3EncoderIsrSR,x0                        ; warn near out of Space.  
+P:00AD 0AC467         4  371  358     bset    #EncWarnLowSpace,x0 
+P:00AE 447000 rrrrrr  3  374  359     move    x0,x:Mp3EncoderIsrSR
+                              361     ; Check for 'low enough space to stop' condition.
+P:00B0 44F400 000002  3  377  362     move    #>ENC_MIN_FREE_CLUSTER_LIM,x0       ; Stop when minimum free cluster limit hit. 
+P:00B2 200045         2  379  363     cmp     x0,a                                ; A is free clusters.
+P:00B3 0AF0A7 rrrrrr  6  385  364     jgt     _write_ok
+                              366 _out_of_space
+P:00B5 44F000 rrrrrr  3  388  367     move    x:Mp3EncoderIsrSR,x0                        ; Out of Space.  Stop recording.
+P:00B7 0AC461         4  392  368     bset    #EncRanOutOfSpace,x0
+P:00B8 447000 rrrrrr  3  395  369     move    x0,x:Mp3EncoderIsrSR                        ; Flag the overlay section to clean up.
+P:00BA 0AF080 rrrrrr  6  401  370     jmp     _skip_write
+                              372 _clr_space_warn
+                              373     ; Remove space warning (clear bit) since free clusters are known to exist above threshold
+P:00BC 44F000 rrrrrr  3  404  375     move    x:Mp3EncoderIsrSR,x0                   ; Clears Encoder ISR SR 'low space warn bit' wh
+                                  en space available.
+P:00BE 0AC447         4  408  376     bclr    #EncWarnLowSpace,x0
+P:00BF 447000 rrrrrr  3  411  377     move    x0,x:Mp3EncoderIsrSR
+                              379 _write_ok
+P:00C1 0BF080 rrrrrr  6  417  381     jsr     FEncodeAudio
+P:00C3 0A7041 rrrrrr  6  423  382     bclr    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus
+P:00C5 60F400 rrrrrr  3  426  384     move    #MP3EncoderSinkBufDesc,r0
+P:00C7 05F420 00FFFF  4  430  385     movec   #$ffff,m0
+P:00C9 0BF080 rrrrrr  6  436  386     jsr     GetFilledSpace                    ; returns free space count in A
+                              387     
+P:00CB 200003         2  438  388     tst     A      
+P:00CC 0AF0AA rrrrrr  6  444  389     jeq     _skip_write
+P:00CE 0AF080 rrrrrr  6  450  391     jmp     _ExitIsr
+                              393 _skip_write
+P:00D0 0A7061 rrrrrr  6  456  394     bset    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus
+P:00D2 0AF080 rrrrrr  6  462  395     jmp     _ExitIsr
+                              396     
+                              397 _StopRecording
+                              398     ; clear the flag
+P:00D4 0AC446         4  466  399     bclr    #Stop,x0
+P:00D5 447000 rrrrrr  3  469  400     move    x0,x:EncoderCSR
+                              401     
+P:00D7 0A7040 rrrrrr  6  475  402     bclr    #0,y:EncodingFileWriteFlag
+                              403     
+                              404     ; stop the ADC
+P:00D9 0BF080 rrrrrr  6  481  405     jsr     AdcDriverDisablePort
+                              406     
+                              407     ; flag for stopped
+P:00DB 44F000 rrrrrr  3  484  408     move    x:EncoderSR,x0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00DD 0AC466         4  488  409     bset    #Stop,x0
+P:00DE 0AC44C         4  492  410     bclr    #Play,x0
+P:00DF 447000 rrrrrr  3  495  411     move    x0,x:EncoderSR
+                              412     
+                              413     ; change isr state
+P:00E1 200013         2  497  414     clr     a
+P:00E2 0ACC60         4  501  415     bset    #ENC_ISR_STATE_STOPPED,a1
+P:00E3 5C7000 rrrrrr  3  504  416     move    a1,y:Mp3EncoderIsrState
+                              417     
+                              418     ; Turn Timer Module Off
+P:00E5 44F400 rrrrrr  3  507  419     move    #>EncoderTimerNum,x0
+P:00E7 60F400 rrrrrr  3  510  420     move    #_TimerDisabled,r0
+P:00E9 0AF080 rrrrrr  6  516  421     jmp     SysDisableTimer
+                              422 _TimerDisabled
+                              424     
+P:00EB 0AF080 rrrrrr  6  522  425     jmp     _ExitOnStop
+                              428 ;*******************************************************************************
+                              429 _StartRecording
+                              433 ;*******************************************************************************
+                              434 _ExitIsr
+                              435     ; reset the isr for next time
+P:00ED 44F400 rrrrrr  3  525  436     move    #>EncoderTimerNum,x0
+P:00EF 60F400 rrrrrr  3  528  437     move    #_TimerReset,r0
+P:00F1 0AF080 rrrrrr  6  534  438     jmp     SysClearTimerIrq
+                              439 _ExitOnStop
+                              440 _TimerReset
+                              442     ; restore stack
+P:00F3 65F400 rrrrrr  3  537  443     move    #MP3EncIsrSp,r5                 ; pointer to the SP local save
+P:00F5 66F400 rrrrrr  3  540  444     move    #_stackRestored,r6           ; setup the return address
+P:00F7 0AF080 rrrrrr  6  546  445     jmp     RestoreSystemStack           ; restore the hardware stack
+                              446 _stackRestored
+                              448     ; restore all registers
+P:00F9 66F400 rrrrrr  3  549  449     move    #EncoderRestoreRegReturn,r6  ; setup the return address
+P:00FB 0AF080 rrrrrr  6  555  450     jmp     RestoreRegs                  ; restore registers
+                              451 EncoderRestoreRegReturn
+P:00FD 6EF000 rrrrrr  3  558  452     move    y:IntL1_SaveR6,r6            ; restore minimal reg set
+                              454     
+P:00FF 0B7060 rrrrrr  6  564  455     btst    #ENCODER_WRITE_BUSY_BIT,y:gEncoderWriteStatus
+P:0101 0AF0A8 rrrrrr  6  570  456     jcs     _End
+                              457         
+P:0103 0A7041 rrrrrr  6  576  458     bclr    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus
+P:0105 0AF0A8 rrrrrr  6  582  459     jcs     _End
+                              460         
+                              461     ; tt 1/6/04 - Set busy flag.
+P:0107 0A7060 rrrrrr  6  588  462     bset    #ENCODER_WRITE_BUSY_BIT,y:gEncoderWriteStatus
+                              463     
+                              464     ; Store off the present Stack Register and PC - take a detour through
+                              465     ; WriteToDisk, then reinstate these and continue where we left off. 
+P:0109 0003F8         2  590  466     ori     #$3,mr              ; Block interrupts
+P:010A 000000         2  592  467     nop                                
+P:010B 000000         2  594  468     nop                                
+P:010C 000000         2  596  469     nop                                
+P:010D 05707D rrrrrr  4  600  470     movec   ssl,y:PCMEncSaveSR     ;Saves return address and status register
+P:010F 05707C rrrrrr  4  604  471     movec   ssh,y:PCMEncSavePC     ;Call back address to use from WriteToDisk()
+P:0111 000000         2  606  472     nop
+P:0112 05F43C rrrrrr  4  610  473     movec   #WriteToDisk,ssh   ;Forces WriteToDisk call after rti                          
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0114 0AF949         4  614  474     bclr    #9,SR               ; Re-enable interrupts
+                              476 _End   
+                              477     ; Isr is inactive
+P:0115 0A7040 rrrrrr  6  620  478     bclr    #0,y:MP3EncIsrFlags
+P:0117 000000         2  622  479     nop
+P:0118 000004         4  626  481     rti                     ;Int level is dropped to 0 (user level)
+                              482                             ;WriteToDisk() operates at user level
+                              484 big_trouble
+                              485     error
+P:0119 000200         4  630  485     debug
+                              486     
+                              487     
+                              488 ;///////////////////////////////////////////////////////////////////////////////
+                              489 ;   WriteToDisk
+                              490 ;///////////////////////////////////////////////////////////////////////////////
+                              491 WriteToDisk
+                              492         ;Here the Interruption level is dropped automatically to 0 (user level)
+                              493         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              494         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              495         ; will be popped back off System Stack Low (SSL).
+                              496         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              497         ; Next cycle after clearing it should NOT be an ALU instruction.        
+P:011A 00BFB8         2  632  498     andi #$BF,mr
+                              499     
+P:011B 000000         2  634  501     nop
+P:011C 000000         2  636  502     nop
+P:011D 000000         2  638  503     nop
+                              505     ; save off all registers
+P:011E 6E7000 rrrrrr  3  641  506     move    r6,y:EncoderWriteSaveR6         ; r6 used for return mechanism
+P:0120 66F400 rrrrrr  3  644  507     move    #_EncoderWriteSaveRegReturn,r6  ; setup the return address
+P:0122 0AF080 rrrrrr  6  650  508     jmp     SaveRegs                        ; save the remaining registers
+                              509 _EncoderWriteSaveRegReturn
+                              510         
+                              511     ; save off stack
+P:0124 66F400 rrrrrr  3  653  512     move    #_EncoderWriteSaveStackReturn,r6 ; setup the return address
+P:0126 65F400 rrrrrr  3  656  513     move    #EncoderFileWriteIsrSp,r5       ; pointer to the SP local save
+P:0128 0AF080 rrrrrr  6  662  514     jmp     SaveSystemStack                 ; save the hardware stack
+                              515 _EncoderWriteSaveStackReturn
+P:012A 4CF000 rrrrrr  3  665  517     move   y:Fg_bPartialRefreshInProgress,x0
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\encoder\mp3\enc_mp3_nonoverlay.asm: line 517 : inserted "extern Fg_bPartialRefreshInProgress"
+P:012C 0AC400 rrrrrr  6  671  518     jclr  #0,x0,_Continue_EraseOneSystemDriveBlock
+P:012E 0AF080 rrrrrr  6  677  519     jmp   _return
+                              520 _Continue_EraseOneSystemDriveBlock
+P:0130 60F400 rrrrrr  3  680  522     move    #MP3EncoderSinkBufDesc,r0
+P:0132 05F420 00FFFF  4  684  523     movec   #$ffff,m0
+P:0134 0BF080 rrrrrr  6  690  524     jsr     GetFilledSpace                    ; returns free space count in A
+                              525     
+P:0136 200003         2  692  526     tst     A      
+P:0137 0AF0AA rrrrrr  6  698  527     jeq     _return
+P:0139 0A7060 rrrrrr  6  704  529     bset    #0,y:EncodingFileWriteFlag    
+                              531     
+                              532     ; Stagger File Writes so that space is freed up, for encoder to write data.
+                              533     ; This will reduce drop outs.
+P:013B 4C8000r        2  706  534     move    y:<Const_000200,x0      ; Write at the most equivalent of 512 words
+P:013C 200045         2  708  535     cmp     x0,A
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:013D 027040         2  710  536     tgt     x0,A
+                              537     
+                              538 ;------------------------------------------------------------------------------------
+                              539 ;   swap ( B2:B1:B0 -> B0:B1:B2 ) before writting it to a file.
+P:013E 05F060 rrrrrr  4  714  540     movec   y:MP3EncoderSinkBufModPtr,m0 
+P:0140 68F000 rrrrrr  3  717  541     move    y:MP3EncoderSinkBufTailPtr,r0       
+P:0142 4C8000r        2  719  542     move    y:<Const_000080,x0               ; multiply factor needed
+                              543     push    A
+P:0143 5E5F00         2  721  543     move    A,y:(r7)+
+P:0144 06CE00 rrrrrr  6  727  544     do      A,_swap_msb_lsb
+P:0146 46E000         2  729  545         move    x:(r0),y0                    ; y0 = B2:B1:B0 (bytes from flash)
+P:0147 45F400 0000FF  3  732  546         move    #>$ff,x1                     ; byte mask
+P:0149 2000D0         2  734  547         mpy     y0,x0,a                      ; a = shifted bytes
+P:014A 200066         2  736  548         and     x1,a                         ; A1 = MSB in LSB position ($00:00:B2)
+P:014B 218700         2  738  549         move    a1,y1                        ; Y1 = $00:00:B2
+P:014C 210600         2  740  550         move    a0,y0                        ; Y0 = $B1:B0:00
+P:014D 2000D0         2  742  551         mpy     y0,x0,a                      ; A1 = $00:00:B1 A0 = $B0:00:00
+P:014E 210F00         2  744  552         move    a0,b                         ; b1 = $B0:00:00
+P:014F 20007A         2  746  553         or      y1,b                         ; b1 = $B0:00:B2
+P:0150 200066         2  748  554         and     x1,a                         ; A1 = $00:00:B1
+P:0151 218700         2  750  555         move    a1,y1                        ; Y1 = $00:00:B1
+P:0152 2000C0         2  752  556         mpy     x0,y1,a                      ; A0 = $00:B1:00
+P:0153 210700         2  754  557         move    a0,y1                        ; Y1 = $00:B1:00
+P:0154 20007A         2  756  558         or      y1,b                         ; b1 = $B0:B1:B2 :: MSB/LSB are swapped
+P:0155 21A600         2  758  559         move    b1,y0
+P:0156 465800         2  760  560         move    y0,x:(r0)+                   ; save new value
+                        (33)  561 _swap_msb_lsb
+                              562     pop     x0                               ; Get back the number of words written
+P:0157 4CFF00         4  764  562     move    y:-(r7),x0
+                              563     push    x0
+P:0158 4C5F00         2  766  563     move    x0,y:(r7)+
+P:0159 46F400 000003  3  769  564     move    #>3,y0
+P:015B 2000D0         2  771  565     mpy     x0,y0,A
+P:015C 200022         2  773  566     asr     A                                ; Convert to bytes.
+P:015D 210E00         2  775  567     move    A0,A    
+P:015E 0BF080 rrrrrr  6  781  568     jsr     SysAllLinear                ; for now we're gonna go linear
+P:0160 5AF000 rrrrrr  3  784  569     move    y:EncFileHandle,a2
+P:0162 0AC877         4  788  570     bset    #23,a0                      ; x memory
+P:0163 68F000 rrrrrr  3  791  571     move    y:MP3EncoderSinkBufTailPtr,r0
+P:0165 05F060 rrrrrr  4  795  572     movec   y:MP3EncoderSinkBufModPtr,m0
+P:0167 0BF080 rrrrrr  6  801  573     jsr     FileWrite
+                              575     pop     A
+P:0169 5EFF00         4  805  575     move    y:-(r7),A
+P:016A 0AF0A8 rrrrrr  6  811  576     jcs     _failed_the_write
+P:016C 21D800         2  813  579     move    A,n0
+P:016D 68F000 rrrrrr  3  816  580     move    y:MP3EncoderSinkBufTailPtr,r0
+P:016F 05F060 rrrrrr  4  820  581     movec   y:MP3EncoderSinkBufModPtr,m0
+P:0171 000000         2  822  582     nop
+P:0172 204800         2  824  583     move    (r0)+n0
+P:0173 687000 rrrrrr  3  827  584     move    r0,y:MP3EncoderSinkBufTailPtr
+P:0175 058060r        2  829  585     movec   y:<Const_ffffff,m0
+P:0176 21C400         2  831  588     move    A,x0
+P:0177 46F400 000003  3  834  589     move    #>3,y0
+P:0179 2000D0         2  836  590     mpy     x0,y0,A
+P:017A 200022         2  838  591     asr     A
+P:017B 210E00         2  840  592     move    A0,A    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              594     ; keep track of #bytes written
+P:017C 4DF01B rrrrrr  3  843  595     clr     b               y:MP3EncBytesWrittenHigh,x1
+P:017E 218900         2  845  596     move    a1,b0
+P:017F 4CF000 rrrrrr  3  848  597     move    y:MP3EncBytesWrittenLow,x0
+P:0181 200028         2  850  598     add     x,b
+P:0182 5D7000 rrrrrr  3  853  599     move    b1,y:MP3EncBytesWrittenHigh
+P:0184 597000 rrrrrr  3  856  600     move    b0,y:MP3EncBytesWrittenLow    
+P:0186 0A7040 rrrrrr  6  862  605     bclr    #0,y:EncodingFileWriteFlag
+                              606      
+                              607 _return  
+                              608 _RestoreSystem
+                              609     ;Raise Int level to 1 so we can update the BUSY flag without being
+                              610     ;interrupted by the Encoder Isr
+P:0188 0AF968         4  866  612     bset    #8,sr                       ; Raise interrupt level to 1
+P:0189 000000         2  868  613     nop                                 ; Those nops make sure that 
+P:018A 000000         2  870  614     nop                                 ; any interrupt pending is processed
+P:018B 000000         2  872  615     nop                                 ; DO NOT REMOVED, UNLESS YOU HAVE 
+                              616                                         ; A FREE DAY TO DEBUG CODE                                
+                                                      
+                              617                               
+P:018C 000000         2  874  620     nop
+P:018D 000000         2  876  621     nop
+P:018E 000000         2  878  622     nop
+                              623     
+                              624                                  
+                              625     ; tt 1/6/04 - Clear busy flag.
+P:018F 0A7040 rrrrrr  6  884  626     bclr    #ENCODER_WRITE_BUSY_BIT,y:gEncoderWriteStatus
+                              627         
+                              628     ; restore stack
+P:0191 65F400 rrrrrr  3  887  629     move    #EncoderFileWriteIsrSp,r5         ; pointer to the SP local save
+P:0193 66F400 rrrrrr  3  890  630     move    #_EncoderWriteStackRestored,r6   ; setup the return address
+P:0195 0AF080 rrrrrr  6  896  631     jmp     RestoreSystemStack              ; restore the hardware stack
+                              632 _EncoderWriteStackRestored
+P:0197 66F400 rrrrrr  3  899  634     move    #_EncoderWriteRestoreRegReturn,r6 ; setup the return address
+P:0199 0AF080 rrrrrr  6  905  635     jmp     RestoreRegs                     ; restore registers
+                              636 _EncoderWriteRestoreRegReturn
+P:019B 6EF000 rrrrrr  3  908  637     move    y:EncoderWriteSaveR6,r6          ; restore minimal reg set
+P:019D 05F07C rrrrrr  4  912  638     movec   y:PCMEncSavePC,ssh              ;Force return 
+P:019F 05F07D rrrrrr  4  916  639     movec   y:PCMEncSaveSR,ssl
+P:01A1 000000         2  918  640     nop
+P:01A2 000004         4  922  641     rti                            ;This needs to be a RTI to restore the SR
+                              643 _failed_the_write
+P:01A3 200013         2  924  644     clr     a
+P:01A4 58F000 rrrrrr  3  927  645     move    y:MP3EncWriteFailCount,a0    
+P:01A6 000008         2  929  646     inc     a
+P:01A7 587000 rrrrrr  3  932  647     move    a0,y:MP3EncWriteFailCount
+P:01A9 0A7040 rrrrrr  6  938  648     bclr    #0,y:EncodingFileWriteFlag
+                              649     error
+P:01AB 000200         4  942  649     debug
+P:01AC 0AF080 rrrrrr  6  948  650     jmp     _return  
+                              653 ;///////////////////////////////////////////////////////////////////////////////
+                              654 ;   Mp3EncCheckDiskSpace          
+                              655 ;       Exit
+                              656 ;           a1 = num bytes high
+                              657 ;           a0 = num bytes low
+                              658 ;           b1 = number of free clusters
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              659 ;           b0 = number of bytes per cluster
+                              660 ;           Carry clear => enough space to record
+                              661 ;           Carry set => not enough space to record
+                              662 ;///////////////////////////////////////////////////////////////////////////////
+                              663 Mp3EncCheckDiskSpace
+                              664     ; TODO - create a "current disk" variable instead of using the default disk 0
+P:01AE 5AF000 rrrrrr  3  951  665     move    y:Fg_wEncCurrentDeviceNum,a2
+P:01B0 0BF080 rrrrrr  6  957  666     jsr     DiskBytesFree               ; get # bytes available on disk
+P:01B2 0AF0A8 rrrrrr  6  963  667     jcs     _uh_oh
+                              668 ;           a1 = num bytes high
+                              669 ;           a0 = num bytes low
+                              670 ;           b1 = number of free clusters
+                              671 ;           b0 = number of bytes per cluster
+P:01B4 212600         2  965  672     move    b0,y0                       ; temp save bytes per cluster
+P:01B5 21A71B         2  967  673     clr     b           b1,y1           ; temp save free clusters
+P:01B6 57F400 000008  3  970  674     move    #>ENC_MIN_CLUSTERS,b
+P:01B8 20007D         2  972  675     cmp     y1,b
+P:01B9 20C900         2  974  676     move    y0,b0                       ; restore bytes per cluster
+P:01BA 20ED00         2  976  677     move    y1,b1                       ; restore free clusters
+P:01BB 0AF0A1 rrrrrr  6  982  678     jge     _not_enough_disk_space
+                              679     ; we have enough clusters so exit
+P:01BD 0AF940         4  986  680     bclr    #HW_SR_C_BITPOS,sr
+P:01BE 00000C         4  990  681     rts
+                              683 _not_enough_disk_space
+P:01BF 0AF960         4  994  684     bset    #HW_SR_C_BITPOS,sr
+P:01C0 00000C         4  998  685     rts
+                              687 _uh_oh
+                              688     error
+P:01C1 000200         4 1002  688     debug
+                              690 ;///////////////////////////////////////////////////////////////////////////////
+                              691 ;   Mp3EncCalcMaxRecordTime          
+                              692 ;       Entry
+                              693 ;           b1 = number of free clusters
+                              694 ;           b0 = number of bytes per cluster
+                              695 ;       Exit
+                              696 ;     y0 = hours
+                              697 ;     x1 = minutes
+                              698 ;     x0 = seconds
+                              699 ;
+                              700 ; seconds per cluster = t
+                              701 ; t = [(bytespercx/nblockalign)*wsamplesperblock]/nsamplespersec
+                              702 ; A = wsamplesperblock/nblockalign/nsamplespersec
+                              703 ; t = bytespercx * A
+                              704 ; so max seconds tm = freecx * t
+                              705 ;///////////////////////////////////////////////////////////////////////////////
+                              706 Mp3EncCalcMaxRecordTime
+P:01C2 4CF000 rrrrrr  3 1005  707     move    y:InvSampleRate,x0
+P:01C4 212500         2 1007  708     move    b0,x1                           ; get bytespercluster ready
+P:01C5 21A4A0         2 1009  709     mpy     x0,x1,a               b1,x0     ; a = (2^32)*(bytespercx * A)
+P:01C6 060580 rrrrrr  6 1015  710     do      #5,_end_scale_adjust
+P:01C8 200032         2 1017  711         asl     a
+P:01C9 200032         2 1019  712         asl     a
+                         (4)  713 _end_scale_adjust
+P:01CA 218500         2 1021  714     move    a1,x1                           ; x1 = bytespercx * A = t
+P:01CB 2000A0         2 1023  715     mpy     x0,x1,a                         ; a = (some hacked scale factor)*(freecx * t)
+P:01CC 060280 rrrrrr  6 1029  716     do      #2,_end_scale_adjust2
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01CE 200032         2 1031  717         asl     a
+P:01CF 200032         2 1033  718         asl     a
+                         (4)  719 _end_scale_adjust2
+P:01D0 00000C         4 1037  720     rts
+                              721     
+                              722 ;///////////////////////////////////////////////////////////////////////////////
+                              723 ; Mp3EncCalcHrsMinSec
+                              724 ;   Entry:
+                              725 ;     a0 = seconds
+                              726 ;   Exit
+                              727 ;     y0 = hours
+                              728 ;     x1 = minutes
+                              729 ;     x0 = seconds
+                              730 ;///////////////////////////////////////////////////////////////////////////////
+                              731 Mp3EncCalcHrsMinSec
+                              732     ; now calculate total minutes
+P:01D1 21071B         2 1039  733     clr     b               a0,y1   ; y1 = total seconds
+P:01D2 44F400 022222  3 1042  734     move    #>$022222,x0            ; 1/60 * 2^23
+P:01D4 2000C0         2 1044  735     mpy     x0,y1,a
+P:01D5 218600         2 1046  736     move    a1,y0                   ; y0 = total minutes
+                              737     ; and total hours
+P:01D6 2000D0         2 1048  738     mpy     x0,y0,a                 ; a1 = hours
+P:01D7 218500         2 1050  739     move    a1,x1                   ; x1 = hours
+P:01D8 44F400 00003C  3 1053  740     move    #>60,x0
+P:01DA 2000A8         2 1055  741     mpy     x0,x1,b
+P:01DB 20002A         2 1057  742     asr     b
+P:01DC 212413         2 1059  743     clr     a               b0,x0
+P:01DD 20CC00         2 1061  744     move    y0,a1
+P:01DE 200044         2 1063  745     sub     x0,a                    ; a1 = minutes mod hours
+                              746     push    a1                      ; save it
+P:01DF 5C5F00         2 1065  746     move    a1,y:(r7)+
+P:01E0 44F41B 00003C  3 1068  747     clr     b               #>60,x0
+P:01E2 20EFD0         2 1070  748     mpy     y0,x0,a         y1,b
+P:01E3 200022         2 1072  749     asr     a
+P:01E4 210400         2 1074  750     move    a0,x0
+P:01E5 20004C         2 1076  751     sub     x0,b                    ; b1 = seconds mod minutes
+P:01E6 21A400         2 1078  752     move    b1,x0                   ; x0 = seconds
+P:01E7 20A600         2 1080  753     move    x1,y0                   ; hours
+                              754     pop     x1                      ; minutes
+P:01E8 4DFF00         4 1084  754     move    y:-(r7),x1
+P:01E9 56F400 00003C  3 1087  755     move    #>60,a
+P:01EB 200045         2 1089  756     cmp     x0,a
+P:01EC 0AF0A2 rrrrrr  6 1095  757     jne     _no_second_wrap
+P:01EE 4C8000r        2 1097  758     move    y:<Const_000000,x0      ; wrap
+P:01EF 20001B         2 1099  759     clr     b                       ; increment by 1 minute
+P:01F0 20A900         2 1101  760     move    x1,b0
+P:01F1 000009         2 1103  761     inc     b
+P:01F2 212500         2 1105  762     move    b0,x1
+                              763 _no_second_wrap
+P:01F3 200065         2 1107  764     cmp     x1,a
+P:01F4 0AF0A2 rrrrrr  6 1113  765     jne     _no_minute_wrap
+P:01F6 4D8000r        2 1115  766     move    y:<Const_000000,x1      
+P:01F7 20001B         2 1117  767     clr     b                       ; increment by 1 hour
+P:01F8 20C900         2 1119  768     move    y0,b0
+P:01F9 000009         2 1121  769     inc     b
+P:01FA 212600         2 1123  770     move    b0,y0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              771 _no_minute_wrap
+P:01FB 00000C         4 1127  772     rts
+                              774     endsec

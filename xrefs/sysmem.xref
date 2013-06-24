@@ -1,0 +1,54 @@
+;******************************************************************************
+; Copyright(C) SigmaTel, Inc. 2000-2003
+;
+; ST System Routines
+;******************************************************************************
+
+  IF (!@DEF(SYSMEM_XREF))
+SYSMEM_XREF equ 1
+
+;Variables in X
+    EXTERN  DecoderCSR
+    EXTERN  DecoderSR
+    EXTERN  DecoderCSR2
+    EXTERN  EncoderSR
+    EXTERN  SysError
+  if (@def('TRACEBUF_EN'))
+    EXTERN  TraceBuffer        ; Disabled by default. Debug only. 
+    EXTERN  TracePointer
+  endif
+    EXTERN  UserScratchX
+
+;Variables in Y
+    EXTERN  g_VolumeBias 
+    EXTERN  CurrentRoutinePtr
+    EXTERN  EncAdpcmOvlSave_sp
+    EXTERN  EncAdpcmSave_m7   
+    EXTERN  EncAdpcmSave_r7
+    EXTERN  EncFileHandle
+    EXTERN  EncFileNameString
+    EXTERN  EncModuleState
+    EXTERN  EncoderCSR
+    EXTERN  RecStartTimeHigh 
+    EXTERN  RecStartTimeLow  
+    EXTERN  RootDirectory
+    EXTERN  SongByteTotalHigh
+    EXTERN  SongByteTotalLow 
+    EXTERN  SongByteTotalConsumedHigh
+    EXTERN  SongByteTotalConsumedLow     
+    EXTERN  SongByteLengthHigh
+    EXTERN  SongByteLengthLow
+    EXTERN  InvSampleRate
+    EXTERN  CurrentSongBad
+    EXTERN  CurrentDirDevId
+    EXTERN  SongInvBitRatePtr
+  if (!(@def('DEVICE_3400')||@def('DEVICE_3300')))
+    ; WMA xref
+    EXTERN  SongInvBitRate
+  endif  
+    EXTERN  SystemFileHandle
+    EXTERN  UserScratchXDescriptor
+    EXTERN  UserScratchY
+    EXTERN  UserScratchYDescriptor
+
+  ENDIF ;!@DEF(SYSMEM_XREF)   

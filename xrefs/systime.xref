@@ -1,0 +1,23 @@
+;******************************************************************************
+; Copyright(C) SigmaTel, Inc. 2000
+;
+; STMP System Time
+;******************************************************************************
+
+  IF (!@DEF(SYSTIME_XREF))
+SYSTIME_XREF equ 1											      
+  ;Functions
+    if (@def('USE_RTC_FOR_TIME'))
+    else
+    EXTERN  SysTime
+    endif ; if (@def('USE_RTC_FOR_TIME'))
+    EXTERN  SysTimeInit
+    EXTERN  SysGetCurrentTime
+    EXTERN  SysDelay
+    EXTERN  SysTimeIsr
+    EXTERN  SysGetElapsedTime
+    EXTERN  SysIsElapsedTime
+    EXTERN  SysTimeout
+
+  ENDIF ;(!@DEF(SYSTIME_XREF))
+  

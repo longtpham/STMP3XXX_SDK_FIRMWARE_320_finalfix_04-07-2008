@@ -1,0 +1,264 @@
+/////////////////////////////////////////////////////////////////////////////////
+// Copyright(C) SigmaTel, Inc. 2000-2001
+// Filename: regstimer.inc
+// Description: Register definitions for  Timers interface
+/////////////////////////////////////////////////////////////////////////////////
+// The following naming conventions are followed in this file.
+// All registers are named using the format...
+//     HW_<module>_<regname>
+// where <module> is the module name which can be any of the following...
+//     USB20
+// (Note that when there is more than one copy of a particular module, the
+// module name includes a number starting from 0 for the first instance of
+// that module)
+// <regname> is the specific register within that module
+// We also define the following...
+//     HW_<module>_<regname>_BITPOS
+// which defines the starting bit (i.e. LSB) of a multi bit field
+//     HW_<module>_<regname>_SETMASK
+// which does something else, and
+//     HW_<module>_<regname>_CLRMASK
+// which does something else.
+// Other rules
+//     All caps
+//     Numeric identifiers start at 0
+#if !(defined(regstimerinc))
+#define regstimerinc 1
+
+#include "types.h"
+
+//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+//   TIMER STMP Registers 
+//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#define HW_TMR_BASEADDR (0xF100)
+
+#define HW_TMR0_BASEADDR HW_TMR_BASEADDR
+#define HW_TMR1_BASEADDR HW_TMR_BASEADDR+0x40
+#define HW_TMR2_BASEADDR HW_TMR_BASEADDR+0x80
+#define HW_TMR3_BASEADDR HW_TMR_BASEADDR+0xC0
+
+#define HW_TIMER_NUMBER_0 0
+#define HW_TIMER_NUMBER_1 1
+#define HW_TIMER_NUMBER_2 2
+#define HW_TIMER_NUMBER_3 3
+
+#define HW_TMRCSR 0
+#define HW_TMRCNTR 1
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CSR (HW_TMR0CSR) Bit Definitions
+#define HW_TMR0CSR_TIMER_ENABLE_BITPOS (0)
+#define HW_TMR0CSR_TIMER_INT_EN_BITPOS (1)
+#define HW_TMR0CSR_INVERT_BITPOS (2)
+#define HW_TMR0CSR_TIMER_CONTROL_BITPOS (3)
+#define HW_TMR0CSR_TIMER_STATUS_BITPOS (7)
+#define HW_TMR0CSR_TIMER_MODE_BITPOS (8)
+#define HW_TMR0CSR_CLKGT_BITPOS (23)
+
+#define HW_TMR0CSR_TIMER_ENABLE_WIDTH (1)
+#define HW_TMR0CSR_TIMER_INT_EN_WIDTH (1)
+#define HW_TMR0CSR_INVERT_WIDTH (1)
+#define HW_TMR0CSR_TIMER_CONTROL_WIDTH (3)
+#define HW_TMR0CSR_TIMER_STATUS_WIDTH (1)
+#define HW_TMR0CSR_TIMER_MODE_WIDTH (2)
+#define HW_TMR0CSR_CLKGT_WIDTH (1)
+
+#define HW_TMR0CSR_TIMER_ENABLE_SETMASK (((1<<HW_TMR0CSR_TIMER_ENABLE_WIDTH)-1)<<HW_TMR0CSR_TIMER_ENABLE_BITPOS)
+#define HW_TMR0CSR_TIMER_INT_EN_SETMASK (((1<<HW_TMR0CSR_TIMER_INT_EN_WIDTH)-1)<<HW_TMR0CSR_TIMER_INT_EN_BITPOS)
+#define HW_TMR0CSR_INVERT_SETMASK (((1<<HW_TMR0CSR_INVERT_WIDTH)-1)<<HW_TMR0CSR_INVERT_BITPOS)
+#define HW_TMR0CSR_TIMER_CONTROL_SETMASK (((1<<HW_TMR0CSR_TIMER_CONTROL_WIDTH)-1)<<HW_TMR0CSR_TIMER_CONTROL_BITPOS)
+#define HW_TMR0CSR_TIMER_STATUS_SETMASK (((1<<HW_TMR0CSR_TIMER_STATUS_WIDTH)-1)<<HW_TMR0CSR_TIMER_STATUS_BITPOS)
+#define HW_TMR0CSR_TIMER_MODE_SETMASK (((1<<HW_TMR0CSR_TIMER_MODE_WIDTH)-1)<<HW_TMR0CSR_TIMER_MODE_BITPOS)
+#define HW_TMR0CSR_CLKGT_SETMASK (((1<<HW_TMR0CSR_CLKGT_WIDTH)-1)<<HW_TMR0CSR_CLKGT_BITPOS)
+
+#define HW_TMR0CSR_TIMER_ENABLE_CLRMASK (~(WORD)HW_TMR0CSR_TIMER_ENABLE_SETMASK)
+#define HW_TMR0CSR_TIMER_INT_EN_CLRMASK (~(WORD)HW_TMR0CSR_TIMER_INT_EN_SETMASK)
+#define HW_TMR0CSR_INVERT_CLRMASK (~(WORD)HW_TMR0CSR_INVERT_SETMASK)
+#define HW_TMR0CSR_TIMER_CONTROL_CLRMASK (~(WORD)HW_TMR0CSR_TIMER_CONTROL_SETMASK)
+#define HW_TMR0CSR_TIMER_STATUS_CLRMASK (~(WORD)HW_TMR0CSR_TIMER_STATUS_SETMASK)
+#define HW_TMR0CSR_TIMER_MODE_CLRMASK (~(WORD)HW_TMR0CSR_TIMER_MODE_SETMASK)
+#define HW_TMR0CSR_CLKGT_CLRMASK (~(WORD)HW_TMR0CSR_CLKGT_SETMASK)
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CSR (HW_TMR1CSR) Bit Definitions
+#define HW_TMR1CSR_TIMER_ENABLE_BITPOS (0)
+#define HW_TMR1CSR_TIMER_INT_EN_BITPOS (1)
+#define HW_TMR1CSR_INVERT_BITPOS (2)
+#define HW_TMR1CSR_TIMER_CONTROL_BITPOS (3)
+#define HW_TMR1CSR_TIMER_STATUS_BITPOS (7)
+#define HW_TMR1CSR_TIMER_MODE_BITPOS (8)
+#define HW_TMR1CSR_CLKGT_BITPOS (23)
+
+#define HW_TMR1CSR_TIMER_ENABLE_WIDTH (1)
+#define HW_TMR1CSR_TIMER_INT_EN_WIDTH (1)
+#define HW_TMR1CSR_INVERT_WIDTH (1)
+#define HW_TMR1CSR_TIMER_CONTROL_WIDTH (3)
+#define HW_TMR1CSR_TIMER_STATUS_WIDTH (1)
+#define HW_TMR1CSR_TIMER_MODE_WIDTH (2)
+#define HW_TMR1CSR_CLKGT_WIDTH (1)
+
+#define HW_TMR1CSR_TIMER_ENABLE_SETMASK (((1<<HW_TMR1CSR_TIMER_ENABLE_WIDTH)-1)<<HW_TMR1CSR_TIMER_ENABLE_BITPOS)
+#define HW_TMR1CSR_TIMER_INT_EN_SETMASK (((1<<HW_TMR1CSR_TIMER_INT_EN_WIDTH)-1)<<HW_TMR1CSR_TIMER_INT_EN_BITPOS)
+#define HW_TMR1CSR_INVERT_SETMASK (((1<<HW_TMR1CSR_INVERT_WIDTH)-1)<<HW_TMR1CSR_INVERT_BITPOS)
+#define HW_TMR1CSR_TIMER_CONTROL_SETMASK (((1<<HW_TMR1CSR_TIMER_CONTROL_WIDTH)-1)<<HW_TMR1CSR_TIMER_CONTROL_BITPOS)
+#define HW_TMR1CSR_TIMER_STATUS_SETMASK (((1<<HW_TMR1CSR_TIMER_STATUS_WIDTH)-1)<<HW_TMR1CSR_TIMER_STATUS_BITPOS)
+#define HW_TMR1CSR_TIMER_MODE_SETMASK (((1<<HW_TMR1CSR_TIMER_MODE_WIDTH)-1)<<HW_TMR1CSR_TIMER_MODE_BITPOS)
+#define HW_TMR1CSR_CLKGT_SETMASK (((1<<HW_TMR1CSR_CLKGT_WIDTH)-1)<<HW_TMR1CSR_CLKGT_BITPOS)
+
+#define HW_TMR1CSR_TIMER_ENABLE_CLRMASK (~(WORD)HW_TMR1CSR_TIMER_ENABLE_SETMASK)
+#define HW_TMR1CSR_TIMER_INT_EN_CLRMASK (~(WORD)HW_TMR1CSR_TIMER_INT_EN_SETMASK)
+#define HW_TMR1CSR_INVERT_CLRMASK (~(WORD)HW_TMR1CSR_INVERT_SETMASK)
+#define HW_TMR1CSR_TIMER_CONTROL_CLRMASK (~(WORD)HW_TMR1CSR_TIMER_CONTROL_SETMASK)
+#define HW_TMR1CSR_TIMER_STATUS_CLRMASK (~(WORD)HW_TMR1CSR_TIMER_STATUS_SETMASK)
+#define HW_TMR1CSR_TIMER_MODE_CLRMASK (~(WORD)HW_TMR1CSR_TIMER_MODE_SETMASK)
+#define HW_TMR1CSR_CLKGT_CLRMASK (~(WORD)HW_TMR1CSR_CLKGT_SETMASK)
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CSR (HW_TMR2CSR) Bit Definitions
+#define HW_TMR2CSR_TIMER_ENABLE_BITPOS (0)
+#define HW_TMR2CSR_TIMER_INT_EN_BITPOS (1)
+#define HW_TMR2CSR_INVERT_BITPOS (2)
+#define HW_TMR2CSR_TIMER_CONTROL_BITPOS (3)
+#define HW_TMR2CSR_TIMER_STATUS_BITPOS (7)
+#define HW_TMR2CSR_TIMER_MODE_BITPOS (8)
+#define HW_TMR2CSR_CLKGT_BITPOS (23)
+
+#define HW_TMR2CSR_TIMER_ENABLE_WIDTH (1)
+#define HW_TMR2CSR_TIMER_INT_EN_WIDTH (1)
+#define HW_TMR2CSR_INVERT_WIDTH (1)
+#define HW_TMR2CSR_TIMER_CONTROL_WIDTH (3)
+#define HW_TMR2CSR_TIMER_STATUS_WIDTH (1)
+#define HW_TMR2CSR_TIMER_MODE_WIDTH (2)
+#define HW_TMR2CSR_CLKGT_WIDTH (1)
+
+#define HW_TMR2CSR_TIMER_ENABLE_SETMASK (((1<<HW_TMR2CSR_TIMER_ENABLE_WIDTH)-1)<<HW_TMR2CSR_TIMER_ENABLE_BITPOS)
+#define HW_TMR2CSR_TIMER_INT_EN_SETMASK (((1<<HW_TMR2CSR_TIMER_INT_EN_WIDTH)-1)<<HW_TMR2CSR_TIMER_INT_EN_BITPOS)
+#define HW_TMR2CSR_INVERT_SETMASK (((1<<HW_TMR2CSR_INVERT_WIDTH)-1)<<HW_TMR2CSR_INVERT_BITPOS)
+#define HW_TMR2CSR_TIMER_CONTROL_SETMASK (((1<<HW_TMR2CSR_TIMER_CONTROL_WIDTH)-1)<<HW_TMR2CSR_TIMER_CONTROL_BITPOS)
+#define HW_TMR2CSR_TIMER_STATUS_SETMASK (((1<<HW_TMR2CSR_TIMER_STATUS_WIDTH)-1)<<HW_TMR2CSR_TIMER_STATUS_BITPOS)
+#define HW_TMR2CSR_TIMER_MODE_SETMASK (((1<<HW_TMR2CSR_TIMER_MODE_WIDTH)-1)<<HW_TMR2CSR_TIMER_MODE_BITPOS)
+#define HW_TMR2CSR_CLKGT_SETMASK (((1<<HW_TMR2CSR_CLKGT_WIDTH)-1)<<HW_TMR2CSR_CLKGT_BITPOS)
+
+#define HW_TMR2CSR_TIMER_ENABLE_CLRMASK (~(WORD)HW_TMR2CSR_TIMER_ENABLE_SETMASK)
+#define HW_TMR2CSR_TIMER_INT_EN_CLRMASK (~(WORD)HW_TMR2CSR_TIMER_INT_EN_SETMASK)
+#define HW_TMR2CSR_INVERT_CLRMASK (~(WORD)HW_TMR2CSR_INVERT_SETMASK)
+#define HW_TMR2CSR_TIMER_CONTROL_CLRMASK (~(WORD)HW_TMR2CSR_TIMER_CONTROL_SETMASK)
+#define HW_TMR2CSR_TIMER_STATUS_CLRMASK (~(WORD)HW_TMR2CSR_TIMER_STATUS_SETMASK)
+#define HW_TMR2CSR_TIMER_MODE_CLRMASK (~(WORD)HW_TMR2CSR_TIMER_MODE_SETMASK)
+#define HW_TMR2CSR_CLKGT_CLRMASK (~(WORD)HW_TMR2CSR_CLKGT_SETMASK)
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CSR (HW_TMR3CSR) Bit Definitions
+#define HW_TMR3CSR_TIMER_ENABLE_BITPOS (0)
+#define HW_TMR3CSR_TIMER_INT_EN_BITPOS (1)
+#define HW_TMR3CSR_INVERT_BITPOS (2)
+#define HW_TMR3CSR_TIMER_CONTROL_BITPOS (3)
+#define HW_TMR3CSR_TIMER_STATUS_BITPOS (7)
+#define HW_TMR3CSR_TIMER_MODE_BITPOS (8)
+#define HW_TMR3CSR_CLKGT_BITPOS (23)
+
+#define HW_TMR3CSR_TIMER_ENABLE_WIDTH (1)
+#define HW_TMR3CSR_TIMER_INT_EN_WIDTH (1)
+#define HW_TMR3CSR_INVERT_WIDTH (1)
+#define HW_TMR3CSR_TIMER_CONTROL_WIDTH (3)
+#define HW_TMR3CSR_TIMER_STATUS_WIDTH (1)
+#define HW_TMR3CSR_TIMER_MODE_WIDTH (2)
+#define HW_TMR3CSR_CLKGT_WIDTH (1)
+
+#define HW_TMR3CSR_TIMER_ENABLE_SETMASK (((1<<HW_TMR3CSR_TIMER_ENABLE_WIDTH)-1)<<HW_TMR3CSR_TIMER_ENABLE_BITPOS)
+#define HW_TMR3CSR_TIMER_INT_EN_SETMASK (((1<<HW_TMR3CSR_TIMER_INT_EN_WIDTH)-1)<<HW_TMR3CSR_TIMER_INT_EN_BITPOS)
+#define HW_TMR3CSR_INVERT_SETMASK (((1<<HW_TMR3CSR_INVERT_WIDTH)-1)<<HW_TMR3CSR_INVERT_BITPOS)
+#define HW_TMR3CSR_TIMER_CONTROL_SETMASK (((1<<HW_TMR3CSR_TIMER_CONTROL_WIDTH)-1)<<HW_TMR3CSR_TIMER_CONTROL_BITPOS)
+#define HW_TMR3CSR_TIMER_STATUS_SETMASK (((1<<HW_TMR3CSR_TIMER_STATUS_WIDTH)-1)<<HW_TMR3CSR_TIMER_STATUS_BITPOS)
+#define HW_TMR3CSR_TIMER_MODE_SETMASK (((1<<HW_TMR3CSR_TIMER_MODE_WIDTH)-1)<<HW_TMR3CSR_TIMER_MODE_BITPOS)
+#define HW_TMR3CSR_CLKGT_SETMASK (((1<<HW_TMR3CSR_CLKGT_WIDTH)-1)<<HW_TMR3CSR_CLKGT_BITPOS)
+
+#define HW_TMR3CSR_TIMER_ENABLE_CLRMASK (~(WORD)HW_TMR3CSR_TIMER_ENABLE_SETMASK)
+#define HW_TMR3CSR_TIMER_INT_EN_CLRMASK (~(WORD)HW_TMR3CSR_TIMER_INT_EN_SETMASK)
+#define HW_TMR3CSR_INVERT_CLRMASK (~(WORD)HW_TMR3CSR_INVERT_SETMASK)
+#define HW_TMR3CSR_TIMER_CONTROL_CLRMASK (~(WORD)HW_TMR3CSR_TIMER_CONTROL_SETMASK)
+#define HW_TMR3CSR_TIMER_STATUS_CLRMASK (~(WORD)HW_TMR3CSR_TIMER_STATUS_SETMASK)
+#define HW_TMR3CSR_TIMER_MODE_CLRMASK (~(WORD)HW_TMR3CSR_TIMER_MODE_SETMASK)
+#define HW_TMR3CSR_CLKGT_CLRMASK (~(WORD)HW_TMR3CSR_CLKGT_SETMASK)
+
+typedef union               
+{
+    struct {
+       int TIMER_ENABLE              :1;
+       int TIMER_INT_EN              :1;
+       int INVERT                    :1;
+       int TIMER_CONTROL             :3;
+       int RSVD0                     :1;
+       int TIMER_STATUS              :1;
+       int TIMER_MODE                :2;
+       int RSVD1                     :13;
+       int CLKGT                     :1;
+    } B;
+    int I;
+} timercsr_type;
+#define HW_TMR0CSR        (*(volatile timercsr_type _X*) (HW_TMR0_BASEADDR+HW_TMRCSR))  /* Timer0 Control Status Register */
+#define HW_TMR1CSR        (*(volatile timercsr_type _X*) (HW_TMR1_BASEADDR+HW_TMRCSR))  /* Timer1 Control Status Register */
+#define HW_TMR2CSR        (*(volatile timercsr_type _X*) (HW_TMR2_BASEADDR+HW_TMRCSR))  /* Timer2 Control Status Register */
+#define HW_TMR3CSR        (*(volatile timercsr_type _X*) (HW_TMR3_BASEADDR+HW_TMRCSR))  /* Timer3 Control Status Register */
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CNTR register (HW_TMR0CNTR) Bit Definitions
+#define HW_TMR0CNTR_COUNT_BITPOS 0
+#define HW_TMR0CNTR_COUNT_WIDTH 24
+#define HW_TMR0CNTR_COUNT_SETMASK (((1<<HW_TMR0CNTR_COUNT_WIDTH)-1)<<HW_TMR0CNTR_COUNT_BITPOS)
+#define HW_TMR0CNTR_COUNT_CLRMASK (~(WORD)HW_TMR0CNTR_COUNT_SETMASK)
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CNTR register (HW_TMR1CNTR) Bit Definitions
+#define HW_TMR1CNTR_COUNT_BITPOS 0
+#define HW_TMR1CNTR_COUNT_WIDTH 24
+#define HW_TMR1CNTR_COUNT_SETMASK (((1<<HW_TMR1CNTR_COUNT_WIDTH)-1)<<HW_TMR1CNTR_COUNT_BITPOS)
+#define HW_TMR1CNTR_COUNT_CLRMASK (~(WORD)HW_TMR1CNTR_COUNT_SETMASK)
+
+/////////////////////////////////////////////////////////////////////////////////
+//  TIMER CNTR register (HW_TMR2CNTR) Bit Definitions
+#define HW_TMR2CNTR_COUNT_BITPOS 0
+#define HW_TMR2CNTR_COUNT_WIDTH 24
+#define HW_TMR2CNTR_COUNT_SETMASK (((1<<HW_TMR2CNTR_COUNT_WIDTH)-1)<<HW_TMR2CNTR_COUNT_BITPOS)
+#define HW_TMR2CNTR_COUNT_CLRMASK (~(WORD)HW_TMR2CNTR_COUNT_SETMASK)
+
+typedef union               
+{
+    struct {
+       int COUNT                    :24;
+    } B;
+    int I;
+} tmrcntr_type;
+#define HW_TMR0CNTR        (*(volatile tmrcntr_type _X*) (HW_TMR0_BASEADDR+HW_TMRCNTR))  /* Timer0 Count Register */
+#define HW_TMR1CNTR        (*(volatile tmrcntr_type _X*) (HW_TMR1_BASEADDR+HW_TMRCNTR))  /* Timer1 Count Register */
+#define HW_TMR2CNTR        (*(volatile tmrcntr_type _X*) (HW_TMR2_BASEADDR+HW_TMRCNTR))  /* Timer2 Count Register */
+#define HW_TMR3CNTR        (*(volatile tmrcntr_type _X*) (HW_TMR3_BASEADDR+HW_TMRCNTR))  /* Timer3 Count Register */
+
+
+//*********************  REGISTER ALIAS DEFINES TO MATCH LEGACY CODE *******************************
+// The following defines were added to match regs3410.inc definition to build SDK2XXX code without needing 
+// to update the actual files. Only the defines needed to build SDK2.400 were added.   
+#define HW_TIMER_BASEADDR 0xF100
+
+#define HW_TIMER0_BASEADDR HW_TIMER_BASEADDR
+#define HW_TIMER1_BASEADDR HW_TIMER0_BASEADDR+0x40
+#define HW_TIMER2_BASEADDR HW_TIMER1_BASEADDR+0x40
+#define HW_TIMER3_BASEADDR HW_TIMER2_BASEADDR+0x40
+
+#define HW_TMR0CR HW_TMR0_BASEADDR
+#define HW_TMR1CR HW_TMR1_BASEADDR
+#define HW_TMR2CR HW_TMR2_BASEADDR
+#define HW_TMR3CR HW_TIMER3_BASEADDR
+
+// Timer enable
+#define HW_TMRCR_TE_BITPOS 0   
+// Timer clock gating control
+#define HW_TMR3CR_CG_BITPOS 23  
+#define HW_TMR3CR_CG_SETMASK 1<<HW_TMR3CR_CG_BITPOS
+#define HW_TMR3CR_CG_CLRMASK ~(WORD)HW_TMR3CR_CG_SETMASK
+#endif
+
+
+
+

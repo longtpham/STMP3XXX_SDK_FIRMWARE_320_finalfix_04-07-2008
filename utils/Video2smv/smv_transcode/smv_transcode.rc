@@ -1,0 +1,348 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\smv_transcode.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\smv_transcode.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Add",                        ID_FILE_ADD
+        MENUITEM SEPARATOR
+        MENUITEM "&Convert",                    ID_FILE_CONVERT
+        MENUITEM "&Stop",                       ID_FILE_STOP, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Save &Directory...",          ID_FILE_SAVEDIRECTORY
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Check all",                  ID_EDIT_SELECTALL
+        MENUITEM "&Uncheck all",                ID_EDIT_DESELECTALL
+        MENUITEM SEPARATOR
+        MENUITEM "&Delete all",                 ID_EDIT_DELETEALL
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "Save &Directory...",          ID_FILE_SAVEDIRECTORY
+        POPUP "&Skin"
+        BEGIN
+            MENUITEM "Skin1",                       ID_SKIN_SKIN1, CHECKED
+            MENUITEM "Skin2",                       ID_SKIN_SKIN2
+            MENUITEM "Skin3",                       ID_SKIN_SKIN3
+        END
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About smv_transcode...",     ID_HELP_ABOUT
+    END
+END
+
+IDR_LISTMENU MENU 
+BEGIN
+    POPUP "&ListMenu"
+    BEGIN
+        MENUITEM "&Add",                        ID_LISTMENU_INSERT
+        MENUITEM SEPARATOR
+        MENUITEM "&Delete",                     ID_LISTMENU_DELETE
+        MENUITEM "De&lete All",                 ID_LISTMENU_DELETEALL
+        MENUITEM SEPARATOR
+        MENUITEM "&Select",                     ID_LISTMENU_SELECT
+        MENUITEM "S&elete all",                 ID_LISTMENU_SELECTALL
+        MENUITEM SEPARATOR
+        MENUITEM "Desele&ct",                   ID_LISTMENU_DESELECT
+        MENUITEM "Deselec&t all",               ID_LISTMENU_DESELECTALL
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "About smv_transcode"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "smv_transcode Version 4.0",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2006 SigmaTel Inc.",IDC_STATIC,40,25,119,
+                    8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+END
+
+IDD_SMV_TRANSCODE_DIALOG DIALOGEX 0, 0, 391, 330
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "SMV Transcoder"
+MENU IDR_MAINFRAME
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CONTROL         "Add",IDC_ADD_ITEM,"Button",BS_OWNERDRAW | BS_NOTIFY | 
+                    WS_TABSTOP,5,18,29,14
+    CONTROL         "Delete",IDC_DELETE_ITEM,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,40,18,34,14
+    CONTROL         "Transform",IDC_TRANS_ITEM,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,77,18,30,14
+    CONTROL         "Setting",IDC_SETTING,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    117,18,35,14
+    CONTROL         "About",IDC_BTN_ABOUT,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    168,18,26,14
+    CONTROL         "",IDC_LIST_ITEM,"SysListView32",LVS_REPORT | 
+                    LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | 
+                    WS_TABSTOP,5,36,221,121
+    CONTROL         "Full Image",IDC_FULL_IMAGE,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,313,167,22,14
+    CONTROL         "Full Screen",IDC_FULL_SCREEN,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,340,167,22,14
+    COMBOBOX        IDC_SCREEN_SIZE,295,183,74,121,CBS_DROPDOWNLIST | 
+                    CBS_OWNERDRAWFIXED | CBS_SORT | CBS_HASSTRINGS | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_QUALITY,295,199,74,57,CBS_DROPDOWNLIST | 
+                    CBS_OWNERDRAWFIXED | CBS_SORT | CBS_HASSTRINGS | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Mono",IDC_AUDIO_MONO,"Button",BS_OWNERDRAW | 
+                    WS_DISABLED | WS_TABSTOP,300,220,30,14
+    CONTROL         "Stereo",IDC_AUDIO_STEREO,"Button",BS_OWNERDRAW | 
+                    WS_DISABLED | WS_TABSTOP,336,220,28,14
+    COMBOBOX        IDC_SAMPLE_RATE,295,237,74,268,CBS_DROPDOWNLIST | 
+                    CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_DISABLED | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_GRAPHIC_RATE,295,252,74,183,CBS_DROPDOWNLIST | 
+                    CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_DISABLED | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_FRAME_RATE,295,268,74,62,CBS_DROPDOWNLIST | 
+                    CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_DISABLED | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_ROTATE,295,284,74,73,CBS_DROPDOWNLIST | 
+                    CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_DISABLED | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Start",IDC_AS_START,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    21,294,13,14
+    CONTROL         "",IDC_RANGE_SLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | TBS_ENABLESELRANGE | WS_TABSTOP,30,294,157,
+                    15
+    LTEXT           "Group",IDC_STATIC_GROUP,247,159,20,8
+    CONTROL         "Previous",IDC_PLAY_PREVIOUS,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,208,248,39,14
+    CONTROL         "Next",IDC_PLAY_NEXT,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    208,270,39,14
+    CONTROL         "Play",IDC_PLAY_PLAY,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    208,182,39,14
+    CONTROL         "Pause",IDC_PLAY_PAUSE,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,208,204,39,14
+    CONTROL         "Stop",IDC_PLAY_STOP,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    208,226,39,14
+    CONTROL         "End",IDC_AS_END,"Button",BS_OWNERDRAW | WS_TABSTOP,178,
+                    294,16,14
+    CONTROL         "Menu",IDC_HIDE_MENU,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    332,2,20,14
+    CONTROL         "Min",IDC_MENU_MIN,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    350,2,9,14
+    CONTROL         "Max",IDC_MENU_MAX,"Button",BS_OWNERDRAW | WS_TABSTOP,
+                    362,2,10,14
+    CONTROL         "Close",IDC_MENU_CLOSE,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,375,2,9,14
+    LTEXT           "Size:",IDC_STATIC_SIZE,276,185,16,8
+    LTEXT           "Quality:",IDC_STATIC_QUALITY,267,201,26,8
+    LTEXT           "Sample Rate:",IDC_STATIC_SAMPLE_RATE,266,240,44,8
+    LTEXT           "Audio:",IDC_STATIC_AUDIO_CHANNEL,253,228,22,8,NOT 
+                    WS_VISIBLE
+    LTEXT           "Graphic Rate:",IDC_STATIC_GRAPHIC_RATE,274,256,45,8
+    LTEXT           "Frame Rate:",IDC_STATIC_FRAME_RATE,269,272,41,8
+    LTEXT           "Rotate:",IDC_STATIC_ROTATE,268,287,26,8
+    LTEXT           "Progress Bar",IDC_STATIC_PROGRESS,6,314,42,8
+    LTEXT           "Play background",IDC_STATIC_PLAYBACK,8,160,54,8
+    PUSHBUTTON      "",IDC_IDLE_FOCUS,220,4,6,6,NOT WS_VISIBLE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 4,1,0,0
+ PRODUCTVERSION 4,1,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "SigmaTel, Inc."
+            VALUE "FileDescription", "Motion video convertor "
+            VALUE "FileVersion", "4.1.0.0"
+            VALUE "InternalName", "smv_transcode.exe"
+            VALUE "LegalCopyright", "SigmaTel, Inc.  All rights reserved."
+            VALUE "OriginalFilename", "smv_transcode.exe"
+            VALUE "ProductName", "Motion video convertor"
+            VALUE "ProductVersion", "4.1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About smv_transcode..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\smv_transcode.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

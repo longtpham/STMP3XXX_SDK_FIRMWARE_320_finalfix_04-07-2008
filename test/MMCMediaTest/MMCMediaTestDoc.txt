@@ -1,0 +1,26 @@
+MMC Media test Documentation
+---------------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the MMC Card API and physical hardware. This is done by using all the APIs provided by the MMC module. 
+The MMC module supports both MMC and SD cards.
+
+Build Options
+-------------
+Usage : MMCMediaTest [ALL] DEVICE
+     	ALL    = rebuilds all files
+	DEVICE = D3410 (required parameter)
+	
+Test Execution
+--------------
+The test first runs and tests all the APIs provided by the MMC module.  This includes initializing the MMC card and performing Allocation, etc.
+This Single Sector Write test requires less than 1 minute to run.
+The complete test requires approximately 7 minutes with a 64MB MMC card, but will vary depending upon media size and latencies.
+This test executes within the debugger.  Hitting a breakpoint other than the one labeled SUCCESS at the end, indicates a failure.
+
+Test Architecture
+-----------------
+The test uses the following library.  Changes to the physical pins required for driving the MMC card can be made in ddiproject.c.
+dd_mmc_data_drive.a library
+dd_mmc_media.a library

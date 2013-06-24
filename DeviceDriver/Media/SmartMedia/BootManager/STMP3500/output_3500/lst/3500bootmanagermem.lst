@@ -1,0 +1,471 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\stmp3500\3500bootmanagermem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2002-2003
+                                3 ;
+                                4 ;  File        : 3500bootmanager.asm
+                                5 ;  Description : 
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7 
+                                9 
+                               10 ;*******************************************************************************
+                               11 ;  Include files
+                               12 ;*******************************************************************************
+                               13         
+                               14 ;*******************************************************************************
+                               15 ;  Extern definitions
+                               16 ;*******************************************************************************
+                               17 
+                               18     global  InitRoutine,ReceiveRoutine,ExitRoutine,InitCount,InitPtr,StoreCSR        
+                               19     global  ErrorRoutine
+                               20     global  CheckSum   
+                               21     global  CheckSumTarget
+                               22     global  CipherKey
+                               23     
+                               24     global  BootyVersion  
+                               25     global  WordCount
+                               26 
+                               27     global  FlashSinkHeadPtr,FlashSinkTailPtr,FlashLagniappe,FlashPageState         
+                               28     global  FlashSaveY1,FlashPageAddressLow,FlashPageAddressHigh,FlashPageBuf,FFlashPageBuf       
+                                      
+                               29     global  FlashSinkBuf,FlashProgress            
+                               30 
+                               31     global  SmLookForBlock        
+                               32     global  SmPageSize            
+                               33     global  SmFullPageSize
+                               34     global  NandBlockNum
+                               35         global  FNandBlockNum
+                               36     global  NandSectorNum    
+                               37     global  FNandSectorNum    
+                               38     global  NandCurDevNum    
+                               39     global  FNandCurDevNum    
+                               40     global  pCurrentNANDDescriptor
+                               41     global  FpCurrentNANDDescriptor
+                               42         global  FCurrentNANDBusWidth
+                               43         global  CurrentNANDBusWidth
+                               44 
+                               45     global  SmBlockSize
+                               46     global  SmBlockMax           
+                               47     global  SmDataStatusOffset    
+                               48     global  SmDataStatusMask      
+                               49     global  SmDataStatusShift     
+                               50     global  SmBlockStatusOffset   
+                               51     global  SmBlockStatusMask     
+                               52     global  SmBlockStatusShift    
+                               53     global  SmTag0Offset          
+                               54     global  SmTag0Mask            
+                               55     global  SmTag0Shift           
+                               56     global  SmTag1Offset          
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               57     global  SmTag1Mask            
+                               58     global  SmTag1Shift           
+                               59     global  SmCr                  
+                               60     global  FlashInitSaveY1
+                               61         global  SmBlockTag
+                               62     global  FSmBlockTag
+                               63 
+                               64     global  NandPortInit
+                               65     global  NandWritePortCmd
+                               66     global  NandWritePortAddr
+                               67     global  NandReadPortData
+                               68 
+                               69     global  TimeOutInitHigh
+                               70     global  TimeOutInitLow
+                               71     global  TimeOutHigh      
+                               72     global  TimeOutLow       
+                               73 
+                               74     global  BootInfo
+                               75     global  SmCard0Info 
+                               76     global  SmCard1Info 
+                               77     global  SmCard2Info 
+                               78     global  SmCard3Info 
+                               79     global  SmCardInfo
+                               80     global  UsbInfo    
+                               81     
+                               82     global  LmemSaveHigh
+                               83 
+                               84     global  BOOT_RSRV_SIZE
+                               85     global  BOOT_RSRV_START
+                               86         global  BOOT_RSRV_END
+                               87     
+                               88     global  BOOT_FLASH_BUF_SIZE
+                               89     global  BOOT_FLASH_BUF_START
+                               90         global  BOOT_FLASH_BUF_END
+                               91     
+                               92     global  BOOT_TEMP_RSRV_SIZE
+                               93 
+                               94     global  SM_NUM_PARAMS
+                               95 
+                               96     global  BOOT_ATTEMPT               
+                               97     global  BOOT_SUCCESS               
+                               98     global  INVALID_COMMAND            
+                               99     global  SM_END_OF_CARDS
+                              100 
+                              101     global  BOOT_INFO_TYPE            
+                              102     global  BOOT_INFO_ATTEMPT         
+                              103     global  BOOT_INFO_SUCCESS         
+                              104     global  BOOT_INFO_INVALID_COMMAND 
+                              105     global  BOOT_INFO_VERSION         
+                              106     global  BOOT_INFO_TIMEOUT
+                              107     global  BOOT_INFO_CHECKSUM
+                              108 
+                              109     global  SM_INFO_END_OF_CARDS      
+                              110     global  SM_INFO_LARGE_MEDIA_FLAG       
+                              111     global  SM_INFO_16BIT_BUS_FLAG         
+                              112     global  SM_INFO_LARGE_ADD_FLAG         
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              113     global  SM_INFO_SSFDC_CMD_FLAG     
+                              114 
+                              115     global  USB_INFO_USB_DETECTED    
+                              116     global  USB_INFO_USB_DISCONNECTED
+                              117     global  USB_INFO_PLL_TIMEOUT      
+                              118     global  USB_INFO_BOOT_TIMEOUT
+                              119 
+                              120         global  TIMEOUT_SLOW_HIGH 
+                              121     global  TIMEOUT_SLOW_LOW  
+                              122     global  TIMEOUT_USB_HIGH  
+                              123     global  TIMEOUT_USB_LOW
+                              124     
+                              128     
+                              129     global  USB_SINKBUFPTR,USB_SINKHEADPTR,USB_SINKTAILPTR
+                              130     global  UsbPageState,UsbLagniappe,UsbEp1IrqPending,UsbProgress
+                              131     global  UsbSaveY1,UsbTimeOutCount
+                              132     
+                              137     
+                              138     
+                              139 ;*******************************************************************************
+                              140 ;  Extern references
+                              141 ;*******************************************************************************
+                              142 
+                              143 
+                              144 BOOT_ATTEMPT                        equ     0
+                              145 BOOT_SUCCESS                        equ     1
+                              146 INVALID_COMMAND                     equ     2
+                              147 SM_END_OF_CARDS                     equ     3
+                              148 
+                              149 BOOT_INFO_TYPE                      equ     23
+                              150 BOOT_INFO_ATTEMPT                   equ     22
+                              151 BOOT_INFO_SUCCESS                   equ     21
+                              152 BOOT_INFO_INVALID_COMMAND           equ     20
+                              153 BOOT_INFO_VERSION                   equ     19
+                              154 BOOT_INFO_TIMEOUT                   equ     18
+                              155 BOOT_INFO_CHECKSUM                  equ     17
+                              156 
+                              157 SM_INFO_END_OF_CARDS                equ     0
+                              158 SM_INFO_LARGE_MEDIA_FLAG            equ     1
+                              159 SM_INFO_16BIT_BUS_FLAG              equ     2
+                              160 SM_INFO_LARGE_ADD_FLAG              equ     3
+                              161 SM_INFO_SSFDC_CMD_FLAG              equ     4
+                              162 
+                              163 USB_INFO_USB_DETECTED               equ     0
+                              164 USB_INFO_USB_DISCONNECTED           equ     1
+                              165 USB_INFO_PLL_TIMEOUT                equ     2
+                              166 USB_INFO_BOOT_TIMEOUT               equ     3
+                              167 
+                              168 TIMEOUT_SLOW_HIGH                   equ     0   ; 1 turns out to be around 20s
+                              169 TIMEOUT_SLOW_LOW                    equ     $200000
+                              170 TIMEOUT_USB_HIGH                    equ     (4*3)+1 ; tweaked to 5 minutes
+                              171 TIMEOUT_USB_LOW                     equ     0
+                              172 
+                              173 USB_SINKBUFSIZE                     equ     ($0040)
+                              174 USB_SINKMODULO                      equ     (USB_SINKBUFSIZE-1)
+                              175 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              176 FLASH_PAGE_BUF_SIZE             equ     (450)  ; the next 100 words are overlaid with the usb mem 
+                                  that directly follows this section.  TOVERIFY review this
+                              177 
+X:0000                        178     org     x,"Flash__X",OVERLAY,SCRATCH:
+                              179 
+                              180 BOOT_RSRV_START                 equ     *
+                              181 
+                              182 Boot_Reserve_Start
+                              183 
+                              184 FNandBlockNum
+X:0000 RESERVED               185 NandBlockNum        ds  1
+X:0000
+                              186 
+                              187 FNandSectorNum
+X:0001 RESERVED               188 NandSectorNum           ds  1
+X:0001
+                              189 
+                              190 FNandCurDevNum
+X:0002 RESERVED               191 NandCurDevNum           ds  1
+X:0002
+                              192 
+                              193 FpCurrentNANDDescriptor
+X:0003 RESERVED               194 pCurrentNANDDescriptor  ds  1
+X:0003
+                              195 
+                              196 ; Bus Width for some NANDs can not be determined because
+                              197 ; their ID/MFR codes are not unique (same for 8/16 bit versions)
+                              198 ; For such a NAND the determination is done thru the READ ID2
+                              199 ; command or the extended ID. The DataBusWidth entry in NAND descriptor
+                              200 ; must be re-initialized during the process of determining current NAND.
+                              201 ; The problem here is that NAND descriptor is in P memory and for ROM 
+                              202 ; code we cannot re-init this entry. The solution was to created this 
+                              203 ; globabl variable and use it in code in place of the struct DataBusWidth
+                              204 ; entry.
+                              205 FCurrentNANDBusWidth
+                              206 ;CurrentNANDBusWidth            dc      8
+X:0004 RESERVED               207 CurrentNANDBusWidth             ds      1
+X:0004
+                              208 
+                              209 FBootInfo
+X:0005 RESERVED               210 BootInfo                ds  1
+X:0005
+                              211 
+X:0006 RESERVED               212 SaveCommand             ds  1
+X:0006
+                              213 
+                              214 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+X:0007 RESERVED               215 ExitRoutine         ds  1
+X:0007
+X:0008 RESERVED               216 ReceiveRoutine      ds  1 
+X:0008
+X:0009 RESERVED               217 InitRoutine         ds  1
+X:0009
+X:000A RESERVED               218 ErrorRoutine        ds  1
+X:000A
+                              219 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:000B RESERVED               220 InitCount           ds  1
+X:000B
+X:000C RESERVED               221 InitPtr             ds  1
+X:000C
+X:000D RESERVED               222 StoreCSR            ds  1
+X:000D
+                              223 
+X:000E RESERVED               224 CheckSum            ds  1
+X:000E
+X:000F RESERVED               225 CheckSumTarget      ds  1
+X:000F
+X:0010 RESERVED               226 CipherKey           ds  1
+X:0010
+                              227 
+X:0011 RESERVED               228 BootyVersion        ds  1
+X:0011
+X:0012 RESERVED               229 WordCount           ds  1
+X:0012
+                              230 
+X:0013 RESERVED               231 TimeOutInitHigh     ds  1
+X:0013
+X:0014 RESERVED               232 TimeOutInitLow      ds  1
+X:0014
+X:0015 RESERVED               233 TimeOutHigh         ds  1
+X:0015
+X:0016 RESERVED               234 TimeOutLow          ds  1
+X:0016
+                              235 
+X:0017 RESERVED               236 SmCard3Info         ds  1
+X:0017
+X:0018 RESERVED               237 SmCard2Info         ds  1
+X:0018
+X:0019 RESERVED               238 SmCard1Info         ds  1
+X:0019
+X:001A RESERVED               239 SmCard0Info         ds  1
+X:001A
+                              240 
+                              241 ; Sm Flags
+                              242 ; 0     - EndOfCards
+                              243 ;           0   False
+                              244 ;           1   True
+                              245 ; 1-16  - Reserved
+                              246 ; 17-22 - See BootInfo def
+                              247 ; 23    - Reserved
+X:001B RESERVED               248 SmCardInfo          ds  1
+X:001B
+                              249 
+                              250 ; USB flags
+                              251 ; 0     - USB Detected
+                              252 ;           0   False
+                              253 ;           1   True
+                              254 ; 1     - USB Disconnected during operation
+                              255 ;           0   False
+                              256 ;           1   True
+                              257 ; 2     - PLL Timeout
+                              258 ;           0   False
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              259 ;           1   True
+                              260 ; 3     - PLL Timeout
+                              261 ;           0   False
+                              262 ;           1   True
+                              263 ; 4-16  - Reserved
+                              264 ; 17-22 - See BootInfo def
+                              265 ; 23    - Reserved
+X:001C RESERVED               266 UsbInfo             ds  1
+X:001C
+                              267 
+X:001D RESERVED               268 LmemSaveHigh        ds  1
+X:001D
+                              269 
+                              270 ;*******************************************************************************
+                              271 ; Flash defs and USB defs (overlay)
+                              272 ;*******************************************************************************
+                              273 USB_SINKHEADPTR
+X:001E RESERVED               274 FlashSinkHeadPtr        ds  1     
+X:001E
+                              275 
+                              276 USB_SINKTAILPTR
+X:001F RESERVED               277 FlashSinkTailPtr        ds  1
+X:001F
+                              278 
+                              279 UsbLagniappe
+X:0020 RESERVED               280 FlashLagniappe          ds  1
+X:0020
+                              281 
+                              282 UsbPageState
+X:0021 RESERVED               283 FlashPageState          ds  1
+X:0021
+                              284 
+                              285 UsbEp1IrqPending
+X:0022 RESERVED               286 FlashSaveY1             ds  1
+X:0022
+                              287 
+                              288 UsbProgress
+X:0023 RESERVED               289 FlashPageAddressLow     ds  1
+X:0023
+                              290 
+                              291 UsbTimeOutCount
+X:0024 RESERVED               292 FlashPageAddressHigh    ds  1
+X:0024
+                              293 
+X:0025 RESERVED               294 FlashProgress           ds  1
+X:0025
+                              295 
+X:0026 RESERVED               296 SmLookForBlock          ds  1   ; If clear, the current page number is not        
+X:0026
+                              297                                 ; at block boundary                                          
+                              298 
+X:0027 RESERVED               299 SmPageSize              ds  1             
+X:0027
+X:0028 RESERVED               300 SmFullPageSize          ds  1
+X:0028
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:0029 RESERVED               301 SmBlockSize             ds  1   
+X:0029
+X:002A RESERVED               302 SmDataStatusOffset      ds  1
+X:002A
+X:002B RESERVED               303 SmDataStatusMask        ds  1
+X:002B
+X:002C RESERVED               304 SmDataStatusShift       ds  1
+X:002C
+X:002D RESERVED               305 SmBlockStatusOffset     ds  1
+X:002D
+X:002E RESERVED               306 SmBlockStatusMask       ds  1
+X:002E
+X:002F RESERVED               307 SmBlockStatusShift      ds  1
+X:002F
+X:0030 RESERVED               308 SmBlockMax              ds  1
+X:0030
+X:0031 RESERVED               309 SmTag0Offset            ds  1
+X:0031
+X:0032 RESERVED               310 SmTag0Mask              ds  1
+X:0032
+X:0033 RESERVED               311 SmTag0Shift             ds  1
+X:0033
+X:0034 RESERVED               312 SmTag1Offset            ds  1
+X:0034
+X:0035 RESERVED               313 SmTag1Mask              ds  1
+X:0035
+X:0036 RESERVED               314 SmTag1Shift             ds  1
+X:0036
+                              315 
+                              316 SM_NUM_PARAMS           equ     SmTag1Shift-SmPageSize+1           
+                              317 
+X:0037 RESERVED               318 SmCr                    ds  1
+X:0037
+X:0038 RESERVED               319 FlashInitSaveY1         ds  1
+X:0038
+                              320 FSmBlockTag
+X:0039 RESERVED               321 SmBlockTag              ds  1
+X:0039
+                              322 
+                              323     ; Those are the HAL functions for the NAND ports
+X:003A RESERVED               324 NandPortInit            ds  1     
+X:003A
+X:003B RESERVED               325 NandWritePortCmd        ds  1
+X:003B
+X:003C RESERVED               326 NandWritePortAddr       ds  1
+X:003C
+X:003D RESERVED               327 NandReadPortData        ds  1
+X:003D
+                              328 
+X:003E RESERVED               329 UsbSaveY1               ds  1
+X:003E
+                              330 
+                              331 FFlashSinkBuf
+X:003F RESERVED               332 FlashSinkBuf            ds 1
+X:003F
+                              333 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              334 ; Flash buffer is split into 2 pieces.  The USB Sink buffer uses modulo
+                              335 ; arithmetic so it needs to be on a 0x40 boundary.  The first portion of
+                              336 ; flash memory is overlaid with the Usb Sink Buffer.  The second portion
+                              337 ; is sized for the remainder (FlashPageBuf2 below).
+                              338 
+                              339 ; Flash buffer should actually be much larger (705 words = 2112 bytes) but
+                              340 ; we're locating this before the USB buffers so the data will continue into
+                              341 ; the USB buffer which is 268 bytes.  268 + 450 = 718 words.
+                              342 ;USB_SINKBUFPTR
+                              343 FFlashPageBuf
+X:0040                        344 FlashPageBuf            dsm  (USB_SINKBUFSIZE)
+   |   RESERVED                   
+X:007F
+                              345 
+                              346 ; Force USB Sink Buffer to point to appropriate location in middle of 
+                              347 ; FlashPageBuf. Only 16 words are required but the modulo operation 
+                              348 ; requires alignment on 16 word boundary. 
+                              349 USB_SINKBUFPTR          equ FlashPageBuf
+                              350 
+                              351 Boot_Reserve_End
+                              352 
+                              353 BOOT_RSRV_END       equ     *
+                              354 ;BOOT_RSRV_SIZE      equ     (Boot_Reserve_End-Boot_Reserve_Start)
+                              355 BOOT_TEMP_RSRV_SIZE      equ     (Boot_Reserve_End-Boot_Reserve_Start)
+                              356 
+                              357 
+                              358 ; We'll assume the previous section and this section are contiguous.
+X:0000                        359     org     x,"Flash_Buf_X",OVERLAY,SCRATCH:
+                              360     
+                              361 BOOT_FLASH_BUF_START    equ     *    
+                              362 Boot_FlashBuf_Start   
+                              363 
+                              364 ; Flash buffer should actually be much larger (705 words = 2112 bytes) but
+                              365 ; we're locating this before the USB buffers so the data will continue into
+                              366 ; the USB buffer which is 268 bytes.  268 + 450 = 718 words.
+                              367 FFlashPageBuf2
+X:0000                        368 FlashPageBuf2         ds  (FLASH_PAGE_BUF_SIZE-USB_SINKBUFSIZE)
+   |   RESERVED                   
+X:0181
+                              369 
+                              370 Boot_FlashBuf_End
+                              371 
+                              372 BOOT_FLASH_BUF_END       equ     *
+                              373 BOOT_FLASH_BUF_SIZE      equ     (Boot_FlashBuf_End-Boot_FlashBuf_Start)
+                              374 
+                              375 ; Update the Boot Reserve size so that both Flash__X and Flash_Buf_X are cleared.
+                              376 BOOT_RSRV_SIZE      equ     (BOOT_TEMP_RSRV_SIZE+BOOT_FLASH_BUF_SIZE)
+                              377 

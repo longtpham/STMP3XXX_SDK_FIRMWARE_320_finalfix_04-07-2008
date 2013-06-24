@@ -1,0 +1,1045 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\kernel\kernel_syswaitonsignal.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                2     include 'kernel.inc'
+                                4 EVENT_TIMEOUT   equ 0
+                                5 EVENT_MESSAGE   equ 1
+                                6 EVENT_OBJECT    equ 2
+                                7 EVENT_QUEUE     equ 4
+                                8 EVENT_SIGNAL    equ 5
+                               10 EVENT_MESSAGE_BITPOS    equ 0
+                               11 EVENT_OBJECT_BITPOS     equ 1
+                               12 EVENT_QUEUE_BITPOS      equ 2
+                               14 TASK_STATE_OFFSET equ 3
+                               15 ;Region must be right after the resource (some code in SysCallFunction depends on this)
+                               16 TASK_REGION_LIST_OFFSET equ 8
+                                3     include "sysmacro.asm"
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : sysmacro.asm
+                                5 ;  Description : Misc System Macros
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     define   SysMacro_asm    '1'
+                               10     page    255,255,0
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Macros
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   Includes
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               21 ;   External Definitions
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               25 ;   External References
+                               26 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;///////////////////////////////////////////////////////////////////////////////
+                               29 ;   Equates
+                               30 ;///////////////////////////////////////////////////////////////////////////////
+                               31         
+                               32 ;///////////////////////////////////////////////////////////////////////////////
+                               33 ;   X Memory
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35         
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37 ;   Y Memory
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               39         
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               41 ;   P Memory
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               45 ;
+                               46 ;>  Name:           push
+                               47 ;
+                               48 ;   Type:           Macro
+                               49 ;
+                               50 ;   Description:    Push a 24-bit value onto the data stack
+                               51 ;
+                               52 ;   Inputs:         Usage : push reg
+                               53 ;                   reg = any core register that is 24-bits or less
+                               54 ;
+                               55 ;   Outputs:        none
+                               56 ;                   
+                               57 ;   Notes:          For every push, there must be a corresponding pop to keep
+                               58 ;                   data stack balanced.
+                               59 ;
+                               60 ;   SeeAlso:        pop
+                               61 ;<
+                               62 ;///////////////////////////////////////////////////////////////////////////////
+                               63 push    macro   reg
+                               64     move    reg,y:(r7)+
+                               65     endm
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               68 ;
+                               69 ;>  Name:           pop
+                               70 ;
+                               71 ;   Type:           Macro
+                               72 ;
+                               73 ;   Description:    Pop a 24-bit value from the data stack
+                               74 ;
+                               75 ;   Inputs:         Usage : pop reg
+                               76 ;                   reg = any core register that is 24-bits or less
+                               77 ;
+                               78 ;   Outputs:        none
+                               79 ;                   
+                               80 ;   Notes:          For every pop, there must be a corresponding push to keep
+                               81 ;                   data stack balanced.
+                               82 ;
+                               83 ;   SeeAlso:        push
+                               84 ;<
+                               85 ;///////////////////////////////////////////////////////////////////////////////
+                               86 pop     macro   reg
+                               87     move    y:-(r7),reg
+                               88     endm
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+                               91 ;
+                               92 ;>  Name:           CallFunclet
+                               93 ;
+                               94 ;   Type:           Macro
+                               95 ;
+                               96 ;   Description:    Loads and Executes the funclet defined by the Resource argument
+                               97 ;
+                               98 ;   Inputs:         Resource = Resource number for the specific funclet.
+                               99 ;
+                              100 ;   Outputs:        none
+                              101 ;                   
+                              102 ;   Notes:          Jumps to SysCallFunclet.   TODO: change to a label instead of hard addresses like $80
+                              103 ;<
+                              104 ;///////////////////////////////////////////////////////////////////////////////
+                              105 ; if ((@DEF('STMP_BUILD_PLAYER'))||(@DEF('PLAYER'))) ; sdk3.110 and before did this. 3.120 add short jump for mtp.
+                              107 CallFunclet   macro Resource
+                              108     jsr       $80
+                              109     DC       Resource  ; 1 word
+                              110  endm    
+                              111 CallFunclet2   macro Resource
+                              112  if ((@DEF('STMP_BUILD_PLAYER'))||(@DEF('PLAYER')))
+                              113     jsr       $82
+                              114     DC       Resource  ; 1 word
+                              115  else ;;; MTP
+                              116     jsr       $80
+                              117     DC       Resource  ; 1 word
+                              118  endif
+                              119     endm    
+                              130 ;///////////////////////////////////////////////////////////////////////////////
+                              131 ;
+                              132 ;>  Name:           error
+                              133 ;
+                              134 ;   Type:           Macro
+                              135 ;
+                              136 ;   Description:    Fatal system error macro.  This macro works in conjunction
+                              137 ;                   with contents of syserror.asm.  Depending upon the build
+                              138 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              139 ;                   a "debug" statement or a JMP to an error handling reset routine.
+                              140 ;
+                              141 ;   Inputs:         none 
+                              142 ;   Outputs:        none                   
+                              143 ;   Notes:          Can use debugOrContinue or ccerror for conditional halts. 
+                              144 ;                   SystemHalt() C macro uses this asm macro.
+                              145 ;<
+                              146 ;///////////////////////////////////////////////////////////////////////////////
+                              147 error   macro
+                              148   if (@DEF('BETA')||@DEF('RETAIL')||@DEF('TRACEBUFFER'))
+                              149     jmp $000C ;Use vector at P:000C to shutdown & restart the STMP device. 
+                              150               ; Jmp to addr in low 12 bits is 1 word smaller than jsr. (changed apr 6 '05)
+                              151   else
+                              152     debug
+                              153   endif ; if ( @DEF('BETA')||@DEF('RETAIL') 
+                              154     endm
+                              156 ;///////////////////////////////////////////////////////////////////////////////
+                              157 ;
+                              158 ;   Name:           debugOrContinue
+                              159 ;   Type:           Macro
+                              160 ;   Description:    System error macro. Depending upon the build
+                              161 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              162 ;                   a "debug" statement or nothing to allow continued execution.
+                              163 ;   Inputs:         none 
+                              164 ;   Outputs:        none
+                              165 ;   Notes:          none
+                              166 ;
+                              167 ;///////////////////////////////////////////////////////////////////////////////
+                              168 debugOrContinue   macro
+                              169   if (@DEF('DEBUG'))
+                              170     debug
+                              171     nop
+                              172   endif 
+                              173     endm
+                              175 ;///////////////////////////////////////////////////////////////////////////////
+                              176 ;
+                              177 ;   Name:           debugOrShutdown
+                              178 ;   Type:           Macro
+                              179 ;   Description:    System error macro. Depending upon the build
+                              180 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              181 ;                   a "debug" statement or Prevent RETAIL build from hanging on 
+                              182 ;                   debug line by attempting graceful shutdown.
+                              183 ;   Inputs:         none 
+                              184 ;   Outputs:        none
+                              185 ;   Notes:          See SystemShutdownFinal in SystemAPI.asm
+                              186 ;
+                              187 ;///////////////////////////////////////////////////////////////////////////////
+                              188 ;debugOrShutdown   macro
+                              189 ;  if (@DEF('DEBUG'))
+                              190 ;    debug
+                              191 ;    nop
+                              192 ;  else  ; ( @DEF('BETA')||@DEF('RETAIL')
+                              193 ;    jmp SystemShutdownFinal                ; reference not resolved
+                              194 ;  endif 
+                              195 ;    endm
+                              198 ;///////////////////////////////////////////////////////////////////////////////
+                              199 ;> Name:            ccerror
+                              200 ;
+                              201 ;  Type:            Macro
+                              202 ;  Description:     Conditional fatal system error macro.  If the indicated
+                              203 ;                   condition code ("CC") is met, signal the error.  (See "error",
+                              204 ;                   above for more info on error hanlding.)
+                              205 ;                   The allowed condition condition codes are
+                              206 ;
+                              207 ;                       cc, cs, ec, eq, es, ge, gt, lc, le, ls, lt, 
+                              208 ;                       mi, ne, nr, pl, nn 
+                              209 ;
+                              210 ;  Inputs:          condition
+                              211 ;
+                              212 ;  Outputs:         none
+                              213 ;
+                              214 ;  Notes:           The normal way of using these macros is shown below:
+                              215 ;
+                              216 ;                       <some operation which sets/clears a condition code>
+                              217 ;                       ccerror cs             ; Error if carry is set
+                              218 ;                       <normal continuation>
+                              219 ;
+                              220 ;                   This can replace old code of the form:
+                              221 ;
+                              222 ;                       <some operation which sets/clears a condition code>
+                              223 ;                       jcc     _OK
+                              224 ;                       error
+                              225 ;                   _OK
+                              226 ;                       <normal continuation>
+                              227 ;
+                              228 ;                   Depending on the BETA/RETAIL flags, the first operation can
+                              229 ;                   save one or two words of program memory over the second method.
+                              230 ;<
+                              231 ;///////////////////////////////////////////////////////////////////////////////
+                              232 ccerror macro   condition
+                              233   if (@DEF('BETA')||@DEF('RETAIL'))
+                              234     js\condition $000C
+                              235   else
+                              236     debug\condition
+                              237   endif ; if ( @DEF('BETA')||@DEF('RETAIL') 
+                              238     endm
+                              240 ;///////////////////////////////////////////////////////////////////////////////
+                              241 ;> Name: GetLogicalDriveNumForResourceBin
+                              242 ;
+                              243 ; Description: Used for our RestoreDriveFromBackup routine.
+                              244 ; INPUT: 1 for primary resource.bin
+                              245 ;        2 for secondary resource.bin
+                              246 ;        3 for master redundant resource.bin that is used to restore 1 and 2 at power up if needed.
+                              247 ;
+                              248 ; NOTE: If the drive arrays is modified in ddiproject.c then the values below will
+                              249 ;       have to change. Inspect that file to verify these values are correct.
+                              250 ;
+                              251 ;<
+                              252 ;///////////////////////////////////////////////////////////////////////////////
+                              253 GetLogicalDriveNumForResourceBin macro drive
+                              254     if (drive==0)
+                              255     fail    "drive=0 invalid value used in GetLogicalDriveNumForresourceBin macro"
+                              256     endif
+                              258     if (drive>3)
+                              259     fail    "drive>3 invalid value used in GetLogicalDriveNumForresourceBin macro"
+                              260     endif
+                              262     if (@DEF('MMC'))
+                              264         if drive==1
+                              265              move   #>6,a
+                              266         endif
+                              267     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              268         if drive==2
+                              269              move   #>7,a
+                              270         endif
+                              272         if drive==3
+                              273              move   #>8,a
+                              274         endif
+                              275     else
+                              277         if drive==1
+                              278              move   #>5,a
+                              279         endif
+                              280     
+                              281         if drive==2
+                              282              move   #>6,a
+                              283         endif
+                              285         if drive==3
+                              286              move   #>7,a
+                              287         endif
+                              288     endif
+                              289  endm
+                              291 ;///////////////////////////////////////////////////////////////////////////////
+                              292 ;
+                              293 ;>  Name:           SaveRange
+                              294 ;
+                              295 ;   Type:           Macro
+                              296 ;
+                              297 ;   Description:    This is a supporting macro for saving memory locations to
+                              298 ;                   the settings.dat file at shutdown, for later restoration
+                              299 ;                   at system startup.
+                              300 ;
+                              301 ;   Inputs:         Usage : SaveRange Label,Length
+                              302 ;                        
+                              303 ;   Outputs:        
+                              304 ;                   
+                              305 ;   Notes:          This macro automatically determines the memory space of the
+                              306 ;                   label specified.  It then constructs a command that is 
+                              307 ;                   written to settings.dat by SysSaveSettings, and is
+                              308 ;                   understood by the SysLoadSettings function to restore the
+                              309 ;                   memory locations.  For the SaveRange macro to be recognized 
+                              310 ;                   by the SysSaveSettings function.  The section name where the
+                              311 ;                   SaveRange command is used, must be included in the 
+                              312 ;                   Settings_Y cluster in the stmp3400.dsc file.  The makefile
+                              313 ;                   will then extract these commands as a resource to be used
+                              314 ;                   by SysSaveSettings and SysLoadSettings.
+                              315 ;
+                              316 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRangeX, 
+                              317 ;                   SaveRangeY, SaveRangeP, SaveRangeL
+                              318 ;
+                              319 ;<
+                              320 ;///////////////////////////////////////////////////////////////////////////////
+                              321 SaveRange macro Label,Length
+                              322     if @MSP(Label)==0  ;None
+                              323     fail    "Invalid label used in SaveRange macro"
+                              324     dc      Label
+                              325     endif ; if @MSP(Label)==0
+                              327     if @MSP(Label)==1  ;X
+                              328     dc      $800000|Label
+                              329     endif ; if @MSP(Label)==1
+                              331     if @MSP(Label)==2  ;Y
+                              332     dc      $400000|Label
+                              333     endif ; if @MSP(Label)==2
+                              335     if @MSP(Label)==3  ;L
+                              336     dc      $200000|Label
+                              337     endif ; if @MSP(Label)==3
+                              339     if @MSP(Label)==4  ;P
+                              340     dc      $100000|Label
+                              341     endif ; if @MSP(Label)==4
+                              343     if @MSP(Label)==5  ;E
+                              344     fail    "Invalid label used in SaveRange macro"
+                              345     dc      Label
+                              346     endif ; if @MSP(Label)==5
+                              348     dc      Length*3
+                              349     endm
+                              351 ;///////////////////////////////////////////////////////////////////////////////
+                              352 ;
+                              353 ;>  Name:           SaveRangeY
+                              354 ;
+                              355 ;   Type:           Macro
+                              356 ;
+                              357 ;   Description:    This is a supporting macro for saving memory locations to
+                              358 ;                   the settings.dat file at shutdown, for later restoration
+                              359 ;                   at system startup.
+                              360 ;
+                              361 ;   Inputs:         Usage : SaveRangeY Label,Length
+                              362 ;                        
+                              363 ;   Outputs:        
+                              364 ;                   
+                              365 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              366 ;                   can take a numeric address, or a label, but will only
+                              367 ;                   create a save memory command that indicates Y memory
+                              368 ;                   to be saved.
+                              369 ;
+                              370 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              371 ;                   SaveRangeX, SaveRangeP, SaveRangeL
+                              372 ;
+                              373 ;<
+                              374 ;///////////////////////////////////////////////////////////////////////////////
+                              375 SaveRangeY macro Address,Length
+                              376     dc      $400000|Address
+                              377     dc      Length*3
+                              378     endm
+                              380 ;///////////////////////////////////////////////////////////////////////////////
+                              381 ;
+                              382 ;>  Name:           SaveRangeX
+                              383 ;
+                              384 ;   Type:           Macro
+                              385 ;
+                              386 ;   Description:    This is a supporting macro for saving memory locations to
+                              387 ;                   the settings.dat file at shutdown, for later restoration
+                              388 ;                   at system startup.
+                              389 ;
+                              390 ;   Inputs:         Usage : SaveRangeX Label,Length
+                              391 ;                        
+                              392 ;   Outputs:        
+                              393 ;                   
+                              394 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              395 ;                   can take a numeric address, or a label, but will only
+                              396 ;                   create a save memory command that indicates X memory
+                              397 ;                   to be saved.
+                              398 ;
+                              399 ;   See Also:       SysLoadSettings, SysSaveSettings, SaveRange, 
+                              400 ;                   SaveRangeY, SaveRangeP, SaveRangeL
+                              401 ;
+                              402 ;<
+                              403 ;///////////////////////////////////////////////////////////////////////////////
+                              404 SaveRangeX macro Address,Length
+                              405     dc      $800000|Address
+                              406     dc      Length*3
+                              407     endm
+                              409 ;///////////////////////////////////////////////////////////////////////////////
+                              410 ;
+                              411 ;>  Name:           SaveRangeL
+                              412 ;
+                              413 ;   Type:           Macro
+                              414 ;
+                              415 ;   Description:    This is a supporting macro for saving memory locations to
+                              416 ;                   the settings.dat file at shutdown, for later restoration
+                              417 ;                   at system startup.
+                              418 ;
+                              419 ;   Inputs:         Usage : SaveRangeL Label,Length
+                              420 ;                        
+                              421 ;   Outputs:        
+                              422 ;                   
+                              423 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              424 ;                   can take a numeric address, or a label, but will only
+                              425 ;                   create a save memory command that indicates L memory
+                              426 ;                   to be saved.
+                              427 ;
+                              428 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              429 ;                   SaveRangeX, SaveRangeY, SaveRangeP
+                              430 ;
+                              431 ;<
+                              432 ;///////////////////////////////////////////////////////////////////////////////
+                              433 SaveRangeL macro Address,Length
+                              434     dc      $200000|Address
+                              435     dc      Length*3
+                              436     endm
+                              438 ;///////////////////////////////////////////////////////////////////////////////
+                              439 ;
+                              440 ;>  Name:           SaveRangeP
+                              441 ;
+                              442 ;   Type:           Macro
+                              443 ;
+                              444 ;   Description:    This is a supporting macro for saving memory locations to
+                              445 ;                   the settings.dat file at shutdown, for later restoration
+                              446 ;                   at system startup.
+                              447 ;
+                              448 ;   Inputs:         Usage : SaveRangeP Label,Length
+                              449 ;                        
+                              450 ;   Outputs:        
+                              451 ;                   
+                              452 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              453 ;                   can take a numeric address, or a label, but will only
+                              454 ;                   create a save memory command that indicates P memory
+                              455 ;                   to be saved.
+                              456 ;
+                              457 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              458 ;                   SaveRangeX, SaveRangeY, SaveRangeL
+                              459 ;
+                              460 ;<
+                              461 ;///////////////////////////////////////////////////////////////////////////////
+                              462 SaveRangeP macro Address,Length
+                              463     dc      $100000|Address
+                              464     dc      Length*3
+                              465     endm
+                              468 ;///////////////////////////////////////////////////////////////////////////////
+                              469 ;       BUTTON MACROS
+                              470 ;///////////////////////////////////////////////////////////////////////////////
+                              472 ;///////////////////////////////////////////////////////////////////////////////
+                              473 ;
+                              474 ;>  Name:           DEFINE_ROW
+                              475 ;
+                              476 ;   Type:           Macro
+                              477 ;
+                              478 ;   Description:    This is a supporting macro for defining the GPIO setup for 
+                              479 ;                   the scan matrix.
+                              480 ;
+                              481 ;   Inputs:         Usage : DEFINE_ROW RowNumber,WhichGPIORegister,WhichBit
+                              482 ;                        
+                              483 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              484 ;                   
+                              485 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              486 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              487 ;                   completely define the players button scan matrix, non scan buttons, and
+                              488 ;                   how these buttons map to events as recieved by the menus.  There must be one of these
+                              489 ;                   macro definitions for each row in the scan matrix.
+                              490 ;
+                              491 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              492 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              493 ;
+                              494 ;<
+                              495 ;///////////////////////////////////////////////////////////////////////////////
+                              497 DEFINE_ROW macro RowNumber,WhichGPIO,WhichBit
+                              498     BUTTON_GPIO_ENABLE_ROW_\RowNumber:  equ HW_\WhichGPIO\ENR
+                              499     BUTTON_GPIO_SENSE_ROW_\RowNumber:   equ HW_\WhichGPIO\DIR
+                              500     BUTTON_BITPOS_ROW_\RowNumber:       equ 1<<\WhichBit
+                              501     endm
+                              503 ;///////////////////////////////////////////////////////////////////////////////
+                              504 ;
+                              505 ;>  Name:           DEFINE_COLUMN
+                              506 ;
+                              507 ;   Type:           Macro
+                              508 ;
+                              509 ;   Description:    This is a supporting macro for defining the GPIO setup for 
+                              510 ;                   the scan matrix.
+                              511 ;
+                              512 ;   Inputs:         Usage : DEFINE_COLUMN ColumnNumber,WhichGPIORegister,WhichBit
+                              513 ;                        
+                              514 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              515 ;                   
+                              516 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              517 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              518 ;                   completely define the players button scan matrix, non scan buttons, and
+                              519 ;                   how these buttons map to events as recieved by the menus.  There must be one
+                              520 ;                   of these macro definitions for each column in the scan matrix.
+                              521 ;
+                              522 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              523 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              524 ;
+                              525 ;<
+                              526 ;///////////////////////////////////////////////////////////////////////////////
+                              527 DEFINE_COLUMN macro ColumnNumber,WhichGPIO,WhichBit
+                              528     BUTTON_GPIO_ENABLE_COLUMN_\ColumnNumber:        equ HW_\WhichGPIO\ENR
+                              529     BUTTON_GPIO_DATA_OUT_COLUMN_\ColumnNumber:      equ HW_\WhichGPIO\DOR
+                              530     BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_\ColumnNumber: equ HW_\WhichGPIO\DOER
+                              531     BUTTON_BITPOS_COLUMN_\ColumnNumber:             equ 1<<\WhichBit
+                              532     endm
+                              534 ;///////////////////////////////////////////////////////////////////////////////
+                              535 ;
+                              536 ;>  Name:           DEFINE_SCAN_BUTTON_EVENT
+                              537 ;
+                              538 ;   Type:           Macro
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              539 ;
+                              540 ;   Description:    This is a supporting macro for defining the mapping between a scan
+                              541 ;                   matrix location and a button event.
+                              542 ;
+                              543 ;   Inputs:         Usage : DEFINE_SCAN_BUTTON_EVENT Column,Row,EventNumber,ButtonName.  
+                              544 ;                       Column is in the format COL0,COL1,COL2, etc.  
+                              545 ;                       Row is in the format ROW0,ROW1,etc. 
+                              546 ;                       The EventNumber is an integer with a single bit set that is unique to all button events
+                              547 ;                       ButtonName is a label by which this button event can be referenced in the event mapping.
+                              548 ;                        
+                              549 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              550 ;                   
+                              551 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              552 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              553 ;                   completely define the players button scan matrix, non scan buttons, and
+                              554 ;                   how these buttons map to events as recieved by the menus. This macro sets up buttons for each
+                              555 ;                   spot in the button scan matrix.  Each place in the matrix must be defined, even if no
+                              556 ;                   physical button exists in it.  Use $000000 for placeholders.
+                              557 ;
+                              558 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              559 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              560 ;
+                              561 ;<
+                              562 ;///////////////////////////////////////////////////////////////////////////////
+                              563 DEFINE_SCAN_BUTTON_EVENT macro Column,Row,EventNumber,ButtonName
+                              564     BUTTON_EVENT_\Column\Row:  equ \EventNumber
+                              565     ButtonName: equ \EventNumber
+                              566     endm 
+                              568 ;///////////////////////////////////////////////////////////////////////////////
+                              569 ;
+                              570 ;>  Name:           DEFINE_NON_SCAN_BUTTON
+                              571 ;
+                              572 ;   Type:           Macro
+                              573 ;
+                              574 ;   Description:    This is a supporting macro for defining a non scan button.
+                              575 ;
+                              576 ;   Inputs:         Usage : DEFINE_NON_SCAN_BUTTON NSNumber,WhichGPIO,WhichBit.  
+                              577 ;                       NSNumber is a unique number (starting at 0) and counting up to BUTTON_NON_SCAN_BUTTONS-1
+                              578 ;                       WhichGPIO is the GPIO register used
+                              579 ;                       WhichBit is the bit in this register.
+                              580 ;                        
+                              581 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              582 ;                   
+                              583 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              584 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              585 ;                   completely define the players button scan matrix, non scan buttons, and
+                              586 ;                   how these buttons map to events as recieved by the menus. This macro sets up non scan
+                              587 ;                   buttons.  Use DEFINE_NON_SCAN_BUTTON_EVENT to define the event generated by this non scan
+                              588 ;                   button.
+                              589 ;
+                              590 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              591 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              592 ;
+                              593 ;<
+                              594 ;///////////////////////////////////////////////////////////////////////////////
+                              595 DEFINE_NON_SCAN_BUTTON macro NSNumber,WhichGPIO,WhichBit
+                              596     BUTTON_GPIO_ENABLE_NON_SCAN_\NSNumber:  equ HW_\WhichGPIO\ENR
+                              597     BUTTON_GPIO_SENSE_NON_SCAN_\NSNumber:   equ HW_\WhichGPIO\DIR
+                              598     BUTTON_BITPOS_NON_SCAN_\NSNumber:       equ 1<<\WhichBit
+                              599     BUTTON_REAL_BITPOS_NON_SCAN_\NSNumber:  equ \WhichBit
+                              600     endm
+                              602 ;///////////////////////////////////////////////////////////////////////////////
+                              603 ;
+                              604 ;>  Name:           DEFINE_NON_SCAN_BUTTON_EVENT
+                              605 ;
+                              606 ;   Type:           Macro
+                              607 ;
+                              608 ;   Description:    This is a supporting macro for defining a non scan button.
+                              609 ;
+                              610 ;   Inputs:         Usage : DEFINE_NON_SCAN_BUTTON_EVENT Number,EventNumber,ButtonName  
+                              611 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_NON_SCAN_BUTTONS-1
+                              612 ;                       EventNumber is an integer with 1 bit set that is unique to all other buttons
+                              613 ;                       ButtonName is a label later referenced in the event mapping
+                              614 ;                        
+                              615 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              616 ;                   
+                              617 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              618 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              619 ;                   completely define the players button scan matrix, non scan buttons, and
+                              620 ;                   how these buttons map to events as recieved by the menus. This macro sets up non scan
+                              621 ;                   buttons.  
+                              622 ;
+                              623 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              624 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              625 ;
+                              626 ;<
+                              627 ;///////////////////////////////////////////////////////////////////////////////
+                              628 DEFINE_NON_SCAN_BUTTON_EVENT macro Number,EventNumber,ButtonName
+                              629     BUTTON_EVENT_NONSCAN\Number:  equ \EventNumber
+                              630     ButtonName: equ \EventNumber
+                              631     endm 
+                              635 ;///////////////////////////////////////////////////////////////////////////////
+                              636 ;> Name: DEFINE_LRADC_BUTTON
+                              637 ;
+                              638 ;  Type: Macro
+                              639 ;
+                              640 ;  Description: This is a supporting macro for defining an Low Resolution ADC (LRADC)-based button
+                              641 ;
+                              642 ;  Inputs:      Usage : DEFINE_LRADC_BUTTON LBNumber,UpperLimitVoltage
+                              643 ;
+                              644 ;  Outputs:     Sets up equates required for data structures in button.asm
+                              645 ;
+                              646 ;  Notes:       Must be used in conjuction with DEFINE_LRADC_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              647 ;                   completely define the player's LRADC buttons and how these buttons map to 
+                              648 ;                   events as recieved by the menus. This macro sets up LRADC buttons.  Use 
+                              649 ;                   DEFINE_LRADC_BUTTON_EVENT to define the event generated by this LRADC button.
+                              650 ;
+                              651 ;   SeeAlso:        DEFINE_LRADC_BUTTON_EVENT, DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              652 ;                   DEFINE_NON_SCAN_BUTTON, DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              653 ;<
+                              654 ;///////////////////////////////////////////////////////////////////////////////
+                              655 DEFINE_LRADC_BUTTON     macro   num,level
+                              656     BUTTON_LRADC_LEVEL_\num:    equ level
+                              657     endm
+                              661 ;///////////////////////////////////////////////////////////////////////////////
+                              662 ;> Name: DEFINE_LRADC_BUTTON_EVENT
+                              663 ;
+                              664 ;  Type: Macro
+                              665 ;
+                              666 ;  Description:     This is a supporting macro for defining a Low Resolution ADC (LRADC)-based button.
+                              667 ;
+                              668 ;  Inputs:          Usage : DEFINE_LRADC_BUTTON_EVENT Number,EventNumber,ButtonName  
+                              669 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_LRADC_BUTTONS-1
+                              670 ;                       EventNumber is an integer with 1 bit set that is unique to all other buttons
+                              671 ;                       ButtonName is a label later referenced in the event mapping
+                              672  
+                              673 ;
+                              674 ;  Outputs:         Sets up equates required for data structures in button.asm
+                              675 ;
+                              676 ;  Notes:           Must be used in conjuction with DEFINE_LRADC_BUTTON, and DEFINE_MAPPED_EVENT to
+                              677 ;                   completely define the player's LRADC buttons and how these buttons map to events 
+                              678 ;                   as recieved by the menus. This macro sets up LRADC buttons.
+                              679 ;
+                              680 ;
+                              681 ;   SeeAlso:        DEFINE_LRADC_BUTTON, DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              682 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              683 ;<
+                              684 ;///////////////////////////////////////////////////////////////////////////////
+                              685 DEFINE_LRADC_BUTTON_EVENT      macro   num,EventNumber,ButtonName
+                              686     BUTTON_EVENT_LRADC_BUTTON\num: equ \EventNumber
+                              687     ButtonName:     equ     \EventNumber   
+                              688     endm
+                              689   
+                              692 ;///////////////////////////////////////////////////////////////////////////////
+                              693 ;
+                              694 ;>  Name:           DEFINE_MAPPED_EVENT
+                              695 ;
+                              696 ;   Type:           Macro
+                              697 ;
+                              698 ;   Description:    This is a supporting macro for defining button events.
+                              699 ;
+                              700 ;   Inputs:         Usage : DEFINE_MAPPED_EVENT Number,Action,ButtonNames 
+                              701 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_MAPPED_EVENTS-1
+                              702 ;                       Action is either PRESS_RELEASE or PRESS_HOLD
+                              703 ;                       ButtonNames is a collection of labels defined for scan or non scan buttons that relate
+                              704 ;                           to this button event.
+                              705 ;                        
+                              706 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              707 ;                   
+                              708 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              709 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              710 ;                   completely define the players button scan matrix, non scan buttons, and
+                              711 ;                   how these buttons map to events as recieved by the menus. This macro sets up the mapping
+                              712 ;                   between scan and non scan buttons, and the eventual event number that is sent to the menus.
+                              713 ;
+                              714 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              715 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              716 ;
+                              717 ;<
+                              718 ;///////////////////////////////////////////////////////////////////////////////
+                              719 DEFINE_MAPPED_EVENT macro Number,Action,ButtonNames
+                              720     
+                              721   IF (@SCP("Action","PRESS_RELEASE"))
+                              722     BUTTON_EVENT_\Number:  equ ButtonNames
+                              723   else 
+                              724     if (@SCP("Action","PRESS_HOLD"))
+                              725         BUTTON_EVENT_\Number:  equ $800000|ButtonNames
+                              726     else
+                              727         ERROR "Unknown Action for DEFINE_MAPPED_EVENT" 
+                              728     endif
+                              729   endif 
+                              730     endm
+                              733 ;///////////////////////////////////////////////////////////////////////////////
+                              734 ;
+                              735 ;>  Name:           DEFINE_2BUTTON_MAPPED_EVENT
+                              736 ;
+                              737 ;   Type:           Macro
+                              738 ;
+                              739 ;   Description:    This is a supporting macro for defining button events.
+                              740 ;
+                              741 ;   Inputs:         Usage : DEFINE_2BUTTON_MAPPED_EVENT Number,Action,Event1,Event2 
+                              742 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_MAPPED_EVENTS-1
+                              743 ;                       Action is either PRESS_RELEASE or PRESS_HOLD
+                              744 ;                       Event1 is 1 of 2 previously defined button events
+                              745 ;                       Event2 is 2 of 2 previously defined button events
+                              746 ;                        
+                              747 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              748 ;                   
+                              749 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              750 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              751 ;                   completely define the players button scan matrix, non scan buttons, and
+                              752 ;                   how these buttons map to events as recieved by the menus. This macro sets up the mapping
+                              753 ;                   between scan and non scan buttons, and the eventual event number that is sent to the menus.
+                              754 ;
+                              755 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              756 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              757 ;
+                              758 ;<
+                              759 ;///////////////////////////////////////////////////////////////////////////////
+                              760 DEFINE_2BUTTON_MAPPED_EVENT macro Number,Action,Event1,Event2
+                              761     
+                              762   IF (@SCP("Action","PRESS_RELEASE"))
+                              763     BUTTON_EVENT_\Number:  equ BUTTON_EVENT_\Event1|BUTTON_EVENT_\Event2
+                              764   else 
+                              765     if (@SCP("Action","PRESS_HOLD"))
+                              766         BUTTON_EVENT_\Number:  equ BUTTON_EVENT_\Event1|BUTTON_EVENT_\Event2|$800000
+                              767     else
+                              768         ERROR "Unknown Action for DEFINE_MAPPED_EVENT" 
+                              769     endif
+                              770   endif 
+                              771   endm
+                              773 ;///////////////////////////////////////////////////////////////////////////////
+                              774 ;
+                              775 ;>  Name:           StackCheckIn
+                              776 ;
+                              777 ;   Type:           Macro
+                              778 ;
+                              779 ;   Description:    Records the current stack pointer on the stack
+                              780 ;
+                              781 ;   Inputs:         none
+                              782 ;                        
+                              783 ;   Outputs:        places the current PC and the current software stack pointer on the stack
+                              784 ;   
+                              785 ;   Notes:          This does not modify any registers (except r7)                
+                              786 ;
+                              787 ;   SeeAlso:        FStackCheckIn
+                              788 ;
+                              789 ;<
+                              790 ;///////////////////////////////////////////////////////////////////////////////
+                              791 StackCheckIn macro
+                              792   if (@DEF('DEBUG'))
+                              793     extern FStackCheckIn
+                              794     jsr FStackCheckIn
+                              795   endif
+                              796   endm
+                              798 ;///////////////////////////////////////////////////////////////////////////////
+                              799 ;
+                              800 ;>  Name:           StackCheckOut
+                              801 ;
+                              802 ;   Type:           Macro
+                              803 ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              804 ;   Description:    Verifies that the stack is still balanced
+                              805 ;
+                              806 ;   Inputs:         none
+                              807 ;                        
+                              808 ;   Outputs:        none (though hits a debug if the stack is unbalanced)
+                              809 ;   
+                              810 ;   Notes:          This does not modify any registers (except r7) 
+                              811 ;
+                              812 ;   SeeAlso:        FStackCheckOut
+                              813 ;
+                              814 ;<
+                              815 ;///////////////////////////////////////////////////////////////////////////////
+                              816 StackCheckOut macro
+                              817   if (@DEF('DEBUG'))
+                              818     extern FStackCheckOut
+                              819     jsr FStackCheckOut
+                              820   endif 
+                              821   endm
+                              824 ;///////////////////////////////////////////////////////////////////////////////
+                              825 ;
+                              826 ;>  Name:           InstrumentPushContext 
+                              827 ;
+                              828 ;   Type:           Macro
+                              829 ;
+                              830 ;   Description:    calls the instrument functions specified.
+                              831 ;
+                              832 ;   Inputs:         new context
+                              833 ;                   new value
+                              834 ;                        
+                              835 ;   Outputs:        
+                              836 ;   
+                              837 ;   Notes:          This does not modify any registers  
+                              838 ;
+                              839 ;   SeeAlso:        
+                              840 ;
+                              841 ;<
+                              842 ;///////////////////////////////////////////////////////////////////////////////
+                              843 InstrumentPushContext macro context,value
+                              844   if (@DEF('USE_INSTRUMENTATION'))
+                              845     extern FInstrumentPushContext
+                              846     extern PushAandB
+                              847     extern PopAandB
+                              848     jsr PushAandB
+                              849     move    #>context,a
+                              850     move    #>value,b
+                              851     jsr FInstrumentPushContext
+                              852     jsr PopAandB
+                              853   endif 
+                              854   endm
+                              856 ;///////////////////////////////////////////////////////////////////////////////
+                              857 ;
+                              858 ;>  Name:           InstrumentPopContext 
+                              859 ;
+                              860 ;   Type:           Macro
+                              861 ;
+                              862 ;   Description:    calls the instrument functions specified.
+                              863 ;
+                              864 ;   Inputs:         none
+                              865 ;                        
+                              866 ;   Outputs:        none
+                              867 ;   
+                              868 ;   Notes:          This does not modify any registers  
+                              869 ;
+                              870 ;   SeeAlso:        
+                              871 ;
+                              872 ;<
+                              873 ;///////////////////////////////////////////////////////////////////////////////
+                              874 InstrumentPopContext macro 
+                              875   if (@DEF('USE_INSTRUMENTATION'))
+                              876     extern FInstrumentPopContext
+                              877     jsr FInstrumentPopContext
+                              878   endif 
+                              879   endm
+                              881 ;///////////////////////////////////////////////////////////////////////////////
+                              882 ;
+                              883 ;>  Name:           InstrumentSetValue 
+                              884 ;
+                              885 ;   Type:           Macro
+                              886 ;
+                              887 ;   Description:    calls the instrument functions specified.
+                              888 ;
+                              889 ;   Inputs:         Value
+                              890 ;                        
+                              891 ;   Outputs:        none
+                              892 ;   
+                              893 ;   Notes:          This does not modify any registers  
+                              894 ;
+                              895 ;   SeeAlso:        
+                              896 ;
+                              897 ;<
+                              898 ;///////////////////////////////////////////////////////////////////////////////
+                              899 InstrumentSetValue macro value
+                              900   if (@DEF('USE_INSTRUMENTATION'))
+                              901     extern FInstrumentSetValue
+                              902     jsr PushA
+                              903     move #>value,a
+                              904     jsr FInstrumentSetValue
+                              905     jsr PopA
+                              906   endif 
+                              907   endm
+                              910 ;///////////////////////////////////////////////////////////////////////////////
+                              911 ;
+                              912 ;>  Name:           InstrumentSetEvent 
+                              913 ;
+                              914 ;   Type:           Macro
+                              915 ;
+                              916 ;   Description:    calls the instrument functions specified.
+                              917 ;
+                              918 ;   Inputs:         Value
+                              919 ;                        
+                              920 ;   Outputs:        none
+                              921 ;   
+                              922 ;   Notes:          This does not modify any registers  
+                              923 ;
+                              924 ;   SeeAlso:        
+                              925 ;
+                              926 ;<
+                              927 ;///////////////////////////////////////////////////////////////////////////////
+                              928 InstrumentSetEvent macro event
+                              929   if (@DEF('USE_INSTRUMENTATION'))
+                              930     extern FInstrumentSetEvent
+                              931     jsr PushA
+                              932     move #>event,a
+                              933     jsr FInstrumentSetEvent
+                              934     jsr PopA
+                              935   endif 
+                              936   endm
+                              938 ;///////////////////////////////////////////////////////////////////////////////
+                              939 ;
+                              940 ;>  Name:           InstrumentClearEvent 
+                              941 ;
+                              942 ;   Type:           Macro
+                              943 ;
+                              944 ;   Description:    calls the instrument functions specified.
+                              945 ;
+                              946 ;   Inputs:         event
+                              947 ;                        
+                              948 ;   Outputs:        none
+                              949 ;   
+                              950 ;   Notes:          This does not modify any registers  
+                              951 ;
+                              952 ;   SeeAlso:        
+                              953 ;
+                              954 ;<
+                              955 ;///////////////////////////////////////////////////////////////////////////////
+                              956 InstrumentClearEvent macro event
+                              957   if (@DEF('USE_INSTRUMENTATION'))
+                              958     extern FInstrumentClearEvent
+                              959     jsr PushA
+                              960     move #>event,a
+                              961     jsr FInstrumentClearEvent
+                              962     jsr PopA
+                              963   endif 
+                              964   endm
+                              966 ;///////////////////////////////////////////////////////////////////////////////
+                              967 ;
+                              968 ;>  Name:           InstrumentToggleEvent 
+                              969 ;
+                              970 ;   Type:           Macro
+                              971 ;
+                              972 ;   Description:    calls the instrument functions specified.
+                              973 ;
+                              974 ;   Inputs:         event
+                              975 ;                        
+                              976 ;   Outputs:        none
+                              977 ;   
+                              978 ;   Notes:          This does not modify any registers  
+                              979 ;
+                              980 ;   SeeAlso:        
+                              981 ;
+                              982 ;<
+                              983 ;///////////////////////////////////////////////////////////////////////////////
+                              984 InstrumentToggleEvent macro event
+                              985   if (@DEF('USE_INSTRUMENTATION'))
+                              986     extern FInstrumentToggleEvent
+                              987     jsr PushA
+                              988     move #>event,a
+                              989     jsr FInstrumentToggleEvent
+                              990     jsr PopA
+                              991   endif 
+                              992   endm
+                                4     include "const.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 const.EXTERN 
+                                5 ;******************************************************************************
+                                7    DEFINE   const_xref  '1'
+                               42     ; Parthus compatability
+P:0000                         12     org p,".ptextkernel_syswaitonsignal":
+                               14 SysWaitOnSignal
+                               15     ;R0:  the SignalGroup pointer
+                               16     ;A1:  the timeout, in milliseconds to wait
+                               17     ;B1:  The signal in the group to wait on.
+                               18     push    ssh
+P:0000 055F7C         2    2   18     movec   ssh,y:(r7)+
+                               19     push    b1
+P:0001 5D5F00         2    4   19     move    b1,y:(r7)+
+                               20     push    r0                                  ;save off the address of the SignalGroup
+P:0002 685F00         2    6   20     move    r0,y:(r7)+
+P:0003 0BF080 rrrrrr  6   12   21     jsr     FKernel_SetTimeout                  ;set the timeout length
+                               22     pop     r0                                  ;pop off the SignalGroup
+P:0005 68FF00         4   16   22     move    y:-(r7),r0
+                               23     pop     a                                   ;pop off the signal number
+P:0006 5EFF00         4   20   23     move    y:-(r7),a
+                               24     push    a1                                  ;save off the signal number
+P:0007 5C5F00         2   22   24     move    a1,y:(r7)+
+                               25     push    r0                                  ;save off the signalgroup again
+P:0008 685F00         2   24   25     move    r0,y:(r7)+
+P:0009 0BF080 rrrrrr  6   30   26     jsr     kernel_IsSignalSet                  ;see if its signaled    
+P:000B 200003         2   32   27     tst     a                                   ;A is non-zero is its set
+P:000C 56F400 000005  3   35   28     move    #>EVENT_SIGNAL,a                    ;assume it is signaled
+                               29     pop     r0                                  ;load up the signal group
+P:000E 68FF00         4   39   29     move    y:-(r7),r0
+                               30     pop     b1                                  ;and the signal
+P:000F 5DFF00         4   43   30     move    y:-(r7),b1
+P:0010 69F000 rrrrrr  3   46   31     move    y:Fg_pCurrentTask,r1                ;put a pointer to the current TaskEntry into r1
+P:0012 0AF0A2 rrrrrr  6   52   32     jne     _exitclearingsignal                 ;
+                               33 _notSet
+P:0014 205900         2   54   34     move    y:(r1)+                             ;increment past the message queue
+P:0015 685900         2   56   35     move    r0,y:(r1)+                          ;store the address of the signal group (m_pWaitingOnPtr) into the structure
+P:0016 5D5900         2   58   36     move    b1,y:(r1)+                          ;store the signal number (m_wWaitingOnWord) into the structure
+P:0017 5C5900         2   60   37     move    a1,y:(r1)+                          ;store the m_wState (EVENT_SIGNAL) into the structure
+                               38     push    b1
+P:0018 5D5F00         2   62   38     move    b1,y:(r7)+
+                               39     push    r0
+P:0019 685F00         2   64   39     move    r0,y:(r7)+
+P:001A 0BF080 rrrrrr  6   70   40     jsr     Kernel_ContextSwitch                ;we'll wait until the signal is set, or until timed out.
+                               41     pop     r0
+P:001C 68FF00         4   74   41     move    y:-(r7),r0
+                               42     pop     a1
+P:001D 5CFF00         4   78   42     move    y:-(r7),a1
+                               43     push    a1                                  ;save off the Signal number
+P:001E 5C5F00         2   80   43     move    a1,y:(r7)+
+                               44     push    r0                                  ;save off the SignalGroup address
+P:001F 685F00         2   82   44     move    r0,y:(r7)+
+P:0020 0BF080 rrrrrr  6   88   45     jsr     kernel_IsSignalSet                  ;see if the signal is set
+                               46     pop     r0                                  ;pop out the signal group
+P:0022 68FF00         4   92   46     move    y:-(r7),r0
+                               47     pop     b                                   ;pop out the signal number
+P:0023 5FFF00         4   96   47     move    y:-(r7),b
+P:0024 200003         2   98   48     tst     a                                   
+P:0025 200013         2  100   49     clr     a                                   ;set the signal to EVENT_TIMEOUT
+P:0026 0AF0A2 rrrrrr  6  106   50     jne     _exit                               ;if the signal is not set, exit with EVENT_TIMEOUT
+                               51 _exitclearingsignal    
+P:0028 21A400         2  108   52     move    b1,x0
+P:0029 4E8000r        2  110   53     move    y:<Const_000001,y0
+P:002A 5FE0D0         2  112   54     mpy     y0,x0,a y:(r0),b
+P:002B 210E00         2  114   55     move    a0,a
+P:002C 200017         2  116   56     not     a
+P:002D 218400         2  118   57     move    a1,x0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:002E 20004E         2  120   58     and     x0,b
+P:002F 5D6000         2  122   59     move    b1,y:(r0)
+P:0030 56F400 000005  3  125   60     move    #>EVENT_SIGNAL,a
+                               61 _exit
+                               62     pop ssh
+P:0032 05FF7C         4  129   62     movec   y:-(r7),ssh
+P:0033 000000         2  131   63     nop
+P:0034 00000C         4  135   64     rts
+                               65     
+                               66 kernel_IsSignalSet
+                               67     ;r0 is the pointer to the signal group
+                               68     ;a1 has the signal number to look at
+P:0035 218600         2  137   69     move    a1,y0
+P:0036 4C8000r        2  139   70     move    y:<Const_000001,x0
+P:0037 2000D0         2  141   71     mpy     x0,y0,a
+P:0038 4CE000         2  143   72     move    y:(r0),x0
+P:0039 210E00         2  145   73     move    a0,a
+P:003A 200046         2  147   74     and     x0,a
+P:003B 00000C         4  151   75     rts
+                               76     
+                               77     

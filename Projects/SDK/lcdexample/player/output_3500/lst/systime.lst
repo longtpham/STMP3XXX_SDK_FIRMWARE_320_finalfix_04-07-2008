@@ -1,0 +1,340 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\systime.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : systime.asm
+                                5 ;  Description : STMP System Time
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     page    132,60,0,0,0
+                                9     opt     mex
+                               11     section SYSFUN_SysTime
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               14 ;   Macros
+                               15 ;///////////////////////////////////////////////////////////////////////////////
+                               19     list
+                               21 ;///////////////////////////////////////////////////////////////////////////////
+                               22 ;   Includes
+                               23 ;///////////////////////////////////////////////////////////////////////////////
+                               46     list
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   External Definitions
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               52     ;Functions  
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               66 ;   External References
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               75     list
+                               76     
+                               81 ;///////////////////////////////////////////////////////////////////////////////
+                               82 ;   Equates
+                               83 ;///////////////////////////////////////////////////////////////////////////////
+                               84         
+                               85 ;///////////////////////////////////////////////////////////////////////////////
+                               86 ;   X Memory
+                               87 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         89     org     x,"SYSFUN_SysTime_X":
+                               91 ;///////////////////////////////////////////////////////////////////////////////
+                               92 ;   Y Memory
+                               93 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         95     org     y,"SYSFUN_SysTime_Y":
+                               96 FSysTime
+Y:0000 000000                 100 SysTime              dc      0
+Y:0001 000000                 101                      dc      0
+                              103 ; data for SysTimeIsr
+Y:0002 000000                 104 Sti_RegSave_A2       dc      0
+Y:0003 000000                 105 Sti_RegSave_A1       dc      0
+Y:0004 000000                 106 Sti_RegSave_A0       dc      0
+Y:0005 000000                 107 Sti_RegSave_R0       dc      0
+Y:0006 000000                 108 Sti_RegSave_X0       dc      0
+                              111 ;///////////////////////////////////////////////////////////////////////////////
+                              112 ;   P Memory
+                              113 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        115     org     p,"SYSFUN_SysTime_P":
+                              117 ;///////////////////////////////////////////////////////////////////////////////
+                              118 ;
+                              119 ;>  Name:           SysCheckTime
+                              120 ;
+                              121 ;   Type:           Function
+                              122 ;
+                              123 ;   Description:    Checks if specified time has passed.
+                              124 ;
+                              125 ;   Inputs:         
+                              126 ;                   x = Target time (ms)
+                              127 ;
+                              128 ;   Outputs:        
+                              129 ;                   x = Target time (ms)
+                              130 ;                   carry set = time has passed
+                              131 ;                   carry clear = time has not passed
+                              132 ;                   
+                              133 ;   Notes:          none
+                              134 ;<
+                              135 ;///////////////////////////////////////////////////////////////////////////////
+                              136 SysCheckTime
+                              137     push    x1
+P:0000 4D5F00         2    2  137     move    x1,y:(r7)+
+                              138     push    x0
+P:0001 4C5F00         2    4  138     move    x0,y:(r7)+
+P:0002 0BF080 rrrrrr  6   10  139     jsr     SysGetCurrentTime
+                              140     pop     x0
+P:0004 4CFF00         4   14  140     move    y:-(r7),x0
+                              141     pop     x1
+P:0005 4DFF00         4   18  141     move    y:-(r7),x1
+P:0006 200024         2   20  142     sub     x,a
+P:0007 0AF0A1 rrrrrr  6   26  143     jge     _time_has_passed
+P:0009 0AF940         4   30  144     bclr    #HW_SR_C_BITPOS,sr
+P:000A 00000C         4   34  145     rts
+                              146 _time_has_passed
+P:000B 0AF960         4   38  147     bset    #HW_SR_C_BITPOS,sr
+P:000C 00000C         4   42  148     rts
+                              150 ;///////////////////////////////////////////////////////////////////////////////
+                              151 ;
+                              152 ;>  Name:           SysTimeInit
+                              153 ;
+                              154 ;   Type:           Function
+                              155 ;
+                              156 ;   Description:    Sets system time to zero & starts the timer
+                              157 ;
+                              158 ;   Inputs:         none
+                              159 ;
+                              160 ;   Outputs:        none
+                              161 ;                   
+                              162 ;   Notes:          
+                              163 ;<
+                              164 ;///////////////////////////////////////////////////////////////////////////////
+                              165 SysTimeInit
+                              169     ;If using funclet, function will be executed via funclet kernel
+                              170     CallFunclet RSRC_FUNCLET_SYSTIMEINIT
+P:000D 0D0080         4   46  170     jsr       $80
+P:000E 00015E                 170     DC       RSRC_FUNCLET_SYSTIMEINIT  ; 1 word
+P:0000                        172     org p,"SYSFUNCLET_SysTimeInit_P":
+                              173     
+P:0000 00015E                 174     dc      RSRC_FUNCLET_SYSTIMEINIT           ; Funclet Resource number
+P:0001 058060r        2    2  189     movec   y:<Const_ffffff,m0
+P:0002 0461A0         2    4  190     movec   m0,m1
+                              192     ; Genesis, baby
+P:0003 200013         2    6  193     clr     a
+P:0004 5C7000 rrrrrr  3    9  194     move    a1,y:SysTime
+P:0006 587000 rrrrrr  3   12  195     move    a0,y:SysTime+1
+                              197     ; Start the timer
+P:0008 44F400 000002  3   15  198     move    #>SYS_TIMER_NUM,x0
+P:000A 60F400 rrrrrr  3   18  199     move    #_TimerEnabled,r0
+P:000C 0AF080 rrrrrr  6   24  200     jmp     SysEnableTimer
+                              201 _TimerEnabled
+P:000E 00000C         4   28  204     rts
+                              208     ;If using funclet, switch counter back to original here
+P:000F                        209     org    p,"SYSFUN_SysTime_P":
+                              210     
+                              213 ;///////////////////////////////////////////////////////////////////////////////
+                              214 ;
+                              215 ;>  Name:           SysGetCurrentTime
+                              216 ;
+                              217 ;   Type:           Function
+                              218 ;
+                              219 ;   Description:    Get the current system time
+                              220 ;
+                              221 ;   Inputs:         none
+                              222 ;
+                              223 ;   Outputs:        a = current system time
+                              224 ;                   
+                              225 ;   Notes:          The system time returned is a count of milliseconds since
+                              226 ;                   the SysTimeInit function was called (which resets the time
+                              227 ;                   count).  SysTimeInit is typically called only at system
+                              228 ;                   startup.
+                              229 ;<
+                              230 ;///////////////////////////////////////////////////////////////////////////////
+                              231 FSysGetCurrentTime
+                              232 SysGetCurrentTime
+                              240     push     x0                         ; need to preserve x0
+P:000F 4C5F00         2   48  240     move    x0,y:(r7)+
+                              242     ; Hardware Workaround -- Disable IVL at HW_IPR
+P:0010 200013         2   50  243     clr     a
+P:0011 54F400 FCFFFF  3   53  244     move    #>SYS_TIME_IVL_MASK,a1
+                              245     
+P:0013 44F000 00FFFF  3   56  246     move    x:HW_IPR,x0
+                              247     push    x0
+P:0015 4C5F00         2   58  247     move    x0,y:(r7)+
+P:0016 200046         2   60  248     and     x0,a
+P:0017 547000 00FFFF  3   63  249     move    a1,x:HW_IPR                    ; disables decoder timer IVL
+                              251     ; Get the time
+P:0019 200013         2   65  252     clr     a
+P:001A 5CF000 rrrrrr  3   68  253     move    y:SysTime,a1
+P:001C 58F000 rrrrrr  3   71  254     move    y:SysTime+1,a0
+                              256     ; Hardware Workaround -- Restore IVL at HW_IPR
+                              257     pop     x0
+P:001E 4CFF00         4   75  257     move    y:-(r7),x0
+P:001F 447000 00FFFF  3   78  258     move    x0,x:HW_IPR                    ; re-enables the IVL line of decoder
+                              260     pop     x0                          ; restores x0
+P:0021 4CFF00         4   82  260     move    y:-(r7),x0
+P:0022 00000C         4   86  261     rts
+                              264 ;///////////////////////////////////////////////////////////////////////////////
+                              265 ;
+                              266 ;>  Name:           SysGetElapsedTime
+                              267 ;
+                              268 ;   Type:           Function
+                              269 ;
+                              270 ;   Description:    Returns time elapsed
+                              271 ;
+                              272 ;   Inputs:         b = previous time for asm caller. Tasking C compiler puts DWORD in b1:b0 also.
+                              273 ;
+                              274 ;   Outputs:        a = current time - previous time
+                              275 ;                   
+                              276 ;   Notes:          
+                              277 ;<
+                              278 ;///////////////////////////////////////////////////////////////////////////////
+                              279 FSysGetElapsedTime
+                              280 SysGetElapsedTime
+P:0023 0BF080 rrrrrr  6   92  281     jsr     SysGetCurrentTime           ; function returns time in ms in a
+P:0025 200014         2   94  282     sub     b,a                         ; a=CurrentTime-PreviousTime in msec
+P:0026 00000C         4   98  283     rts
+                              285 ;///////////////////////////////////////////////////////////////////////////////
+                              286 ;
+                              287 ;>  Name:           SysIsElapsedTime
+                              288 ;
+                              289 ;   Type:           Function
+                              290 ;
+                              291 ;   Description:    Check if ellapsed time from a specific time is greater 
+                              292 ;                   than a specific reference
+                              293 ;
+                              294 ;   Inputs:         b1:b0 is time origin in mSecs
+                              295 ;                   x1 is reference time in mSecs
+                              296 ;
+                              297 ;   Outputs:        sr.N = 0 if time elapsed
+                              298 ;                        = 1 if time not elapsed 
+                              299 ;                   
+                              300 ;   Notes:          
+                              301 ;<
+                              302 ;///////////////////////////////////////////////////////////////////////////////
+                              303 SysIsElapsedTime
+P:0027 0BF080 rrrrrr  6  104  304     jsr     SysGetElapsedTime
+P:0029 210E00         2  106  305     move    a0,a
+P:002A 200065         2  108  306     cmp     x1,a
+P:002B 00000C         4  112  307     rts
+                              308     
+                              309 ;///////////////////////////////////////////////////////////////////////////////
+                              310 ;
+                              311 ;>  Name:           SysDelay
+                              312 ;
+                              313 ;   Type:           Function
+                              314 ;
+                              315 ;   Description:    Delay a specified number of miliseconds
+                              316 ;
+                              317 ;   Inputs:         For asm callers: x0 : Number of milliseconds to delay
+                              318 ;                   For C   callers: a1 : Number of milliseconds to delay
+                              319 ;
+                              320 ;   Outputs:        none
+                              321 ;                   
+                              322 ;   Notes:          This function completes synchronously.  Therefore, the
+                              323 ;                   thread that calls this function is delayed for the duration
+                              324 ;                   of the call. Requesting 1ms may return in much less than 1ms. 
+                              325 ;<
+                              326 ;///////////////////////////////////////////////////////////////////////////////
+                              327 FSysDelay
+P:002C 21C400         2  114  328     move    a,x0
+                              329 SysDelay
+                              330     ; Add the milliseconds to the current time to get the timeout value
+P:002D 0BF080 rrrrrr  6  120  331     jsr     SysGetCurrentTime
+P:002F 4D8000r        2  122  332     move    y:<Const_000000,x1
+P:0030 200020         2  124  333     add     x,a
+P:0031 210900         2  126  334     move    a0,b0
+P:0032 218D00         2  128  335     move    a1,b1
+P:0033 214B00         2  130  336     move    a2,b2
+                              338 _Wait
+                              339     ; Wait until the current time is greater than or equal to the timeout
+P:0034 0BF080 rrrrrr  6  136  340     jsr     SysGetCurrentTime
+P:0036 20000D         2  138  341     cmp     a,b
+P:0037 0AF0A7 rrrrrr  6  144  342     jgt     _Wait
+P:0039 00000C         4  148  344     rts
+                              347 ;///////////////////////////////////////////////////////////////////////////////
+                              348 ;>  Name:   SysTimeout
+                              349 ;
+                              350 ;   Type:           Function
+                              351 ;
+                              352 ;   Description:    Check if timeout has occurred and if need to calculate
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              353 ;                   next timeout
+                              354 ;
+                              355 ;  Inputs:
+                              356 ;   R0 = Address of timeout variable (two words in y memory)
+                              357 ;   X0 = Duration in milliseconds (for calculating next timeout)
+                              358 ;
+                              359 ;  Outputs:
+                              360 ;    If timed out:     carry set   (and timeout variable updated)   
+                              361 ;    If not timed out: carry clear
+                              362 ;<
+                              363 ;///////////////////////////////////////////////////////////////////////////////
+                              365 SysTimeout
+                              366     ; Check if the timeout has occurred
+P:003A 20001B         2  150  367     clr     b
+P:003B 5DD800         2  152  368     move    y:(r0)+,b1
+P:003C 59D000         2  154  369     move    y:(r0)-,b0
+P:003D 0BF080 rrrrrr  6  160  370     jsr     SysGetCurrentTime
+P:003F 20000D         2  162  371     cmp     a,b
+P:0040 0AF0AF rrrrrr  6  168  372     jle     _Timeout
+                              374     ; Clear the carry and exit
+P:0042 0AF940         4  172  375     bclr   #HW_SR_C_BITPOS,sr
+P:0043 0AF080 rrrrrr  6  178  376     jmp    _Exit
+                              378 _Timeout
+                              379     ; Calculate the next timeout value
+P:0045 20001B         2  180  380     clr     b
+P:0046 208900         2  182  381     move    x0,b0
+P:0047 200018         2  184  382     add     a,b
+P:0048 5D5800         2  186  383     move    b1,y:(r0)+
+P:0049 595000         2  188  384     move    b0,y:(r0)-
+                              386     ; Set the carry
+P:004A 0AF960         4  192  387     bset   #HW_SR_C_BITPOS,sr
+                              389 _Exit
+P:004B 00000C         4  196  390     rts
+                              393 ;///////////////////////////////////////////////////////////////////////////////
+                              394 ;
+                              395 ;>  Name:           SysTimeIsr
+                              396 ;
+                              397 ;   Type:           Interrupt Service Routine
+                              398 ;
+                              399 ;   Description:    Increments system time
+                              400 ;
+                              401 ;   Inputs:         none
+                              402 ;
+                              403 ;   Outputs:        !!!!!!!!!!! If this is modified & ends up using the hw stack then you must
+                              404 ;                   !!!!!!!!!!! save it first because this can interrupt the decoder and there's
+                              405 ;                   !!!!!!!!!!! no room left.  This isr must sit at the highest level so no other
+                              406 ;                   !!!!!!!!!!! interrupts can occur while it's running.
+                              407 ;                   
+                              408 ;   Notes:          ???
+                              409 ;<
+                              410 ;///////////////////////////////////////////////////////////////////////////////
+                              411 SysTimeIsr
+                              416     ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              417     ; This will be returned to its previous state when the RTI occurs (since the SR
+                              418     ; will be popped back off System Stack Low (SSL).
+                              419     ; Accumulator behavior is unpredictable when the DM bit is set.
+                              420     ; Next cycle after clearing it should NOT be an ALU instruction.
+P:004C 00BFB8         2  198  421     andi #$BF,mr
+P:004D 5A7000 rrrrrr  3  201  423     move    a2,y:Sti_RegSave_A2
+P:004F 5C7000 rrrrrr  3  204  424     move    a1,y:Sti_RegSave_A1
+P:0051 587000 rrrrrr  3  207  425     move    a0,y:Sti_RegSave_A0
+P:0053 687000 rrrrrr  3  210  426     move    r0,y:Sti_RegSave_R0
+P:0055 4C7000 rrrrrr  3  213  427     move    x0,y:Sti_RegSave_X0
+P:0057 200013         2  215  428     clr     a
+P:0058 5CF000 rrrrrr  3  218  429     move    y:SysTime,a1
+P:005A 58F000 rrrrrr  3  221  430     move    y:SysTime+1,a0
+P:005C 000008         2  223  431     inc     a
+P:005D 5C7000 rrrrrr  3  226  432     move    a1,y:SysTime
+P:005F 587000 rrrrrr  3  229  433     move    a0,y:SysTime+1
+                              435     ; Reset the timer
+P:0061 44F400 000002  3  232  436     move    #>SYS_TIMER_NUM,x0
+P:0063 60F400 rrrrrr  3  235  437     move    #_TimerReset,r0
+P:0065 0AF080 rrrrrr  6  241  438     jmp     SysClearTimerIrq
+                              439 _TimerReset
+P:0067 5AF000 rrrrrr  3  244  441     move    y:Sti_RegSave_A2,a2
+P:0069 5CF000 rrrrrr  3  247  442     move    y:Sti_RegSave_A1,a1
+P:006B 58F000 rrrrrr  3  250  443     move    y:Sti_RegSave_A0,a0
+P:006D 68F000 rrrrrr  3  253  444     move    y:Sti_RegSave_R0,r0
+P:006F 4CF000 rrrrrr  3  256  445     move    y:Sti_RegSave_X0,x0
+P:0071 000004         4  260  446     rti
+                              448     endsec

@@ -1,0 +1,236 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\data_management\const.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ; Filename:         const.asm
+                                5 ; Description:      Short Memory Constants
+                                6 ;                   This file contains allocation of commonly used constants.  They are placed
+                                7 ;                   at y:$0 by an absolute origin statement.  This ensures they are lolcated in
+                                8 ;                   short dsp memory.  Any portion of code using the constants listed in this
+                                9 ;                   file should use the following method:
+                               10 ;
+                               11 ;                   move y:<Const_00ffff,m0  ; uses one dsp program word
+                               12 ;
+                               13 ;                   instead of
+                               14 ;
+                               15 ;                   move #$ffffff,m0        ; uses two dsp program words
+                               16 ;
+                               17 ; 
+                               18 ;                   It is a requirement that the "<" short operator be used to force short
+                               19 ;                   addressing.  The org statement should not use a memory counter, but should
+                               20 ;                   be absolutely set to 0.  This will put one more trigger in place to ensure
+                               21 ;                   the constants stay in short memory.
+                               22 ;
+                               23 ;                   The section should not exceed 32 words in size.
+                               24 ;
+                               25 ;                   The full list of constants defined in short memory are:
+                               26 ;
+                               27 ;                   Const_000000
+                               28 ;                   Const_000001
+                               29 ;                   Const_000002
+                               30 ;                   Const_000004
+                               31 ;                   Const_000008
+                               32 ;                   Const_000010
+                               33 ;                   Const_000020
+                               34 ;                   Const_000040
+                               35 ;                   Const_000080
+                               36 ;                   Const_000100
+                               37 ;                   Const_000200
+                               38 ;                   Const_000400
+                               39 ;                   Const_000800
+                               40 ;                   Const_001000
+                               41 ;                   Const_002000
+                               42 ;                   Const_004000
+                               43 ;                   Const_008000
+                               44 ;                   Const_010000
+                               45 ;                   Const_020000
+                               46 ;                   Const_040000
+                               47 ;                   Const_080000
+                               48 ;                   Const_100000
+                               49 ;                   Const_200000
+                               50 ;                   Const_400000
+                               51 ;                   Const_800000
+                               52 ;                   Const_000003 
+                               53 ;                   Const_000005 
+                               54 ;                   Const_00000c 
+                               55 ;                   Const_000018 
+                               56 ;                   Const_000fff
+                               57 ;                   Const_7fffff 
+                               58 ;                   Const_ffffff 
+                               59 ;                   Fconst_zero   
+                               60 ;                   const_zero    
+                               61 ;                   Fconst_one    
+                               62 ;                   const_one     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;                   Fconst_two    
+                               64 ;                   const_two     
+                               65 ;                   Fconst_three  
+                               66 ;                   const_three   
+                               67 ;                   Fconst_four   
+                               68 ;                   const_four    
+                               69 ;                   Fconst_eight  
+                               70 ;                   const_eight   
+                               71 ;                   Fconst_12
+                               72 ;                   const_12      
+                               73 ;                   Fconst_24
+                               74 ;                   const_24      
+                               75 ;                   Fconst_32     
+                               76 ;                   const_32      
+                               77 ;                   Fconst_minus_1
+                               78 ;                   const_minus_1 
+                               79 ;                   Ffract_one    
+                               80 ;                   fract_one     
+                               81 ;
+                               82 ;///////////////////////////////////////////////////////////////////////////////
+                               84     section     GLOBAL_CONSTANTS
+                               86 ;///////////////////////////////////////////////////////////////////////////////
+                               87 ;   External Definitions
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+                              125     ; Parthus compatability
+                              149     
+                              150 ;///////////////////////////////////////////////////////////////////////////////
+                              151 ;   X Memory
+                              152 ;///////////////////////////////////////////////////////////////////////////////
+                              154 ; Parthus compatability
+                              155 ;    GLOBAL F__x_size
+                              156 ;F__x_size      dc         XSIZE
+                              158 ;///////////////////////////////////////////////////////////////////////////////
+                              159 ;   Y Memory
+                              160 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        162     org y,"GLOBAL_CONSTANTS_Y":
+                              164 BitShiftTableStart
+                              165                                         ; Const put to satisfy some table req.
+                              166 Const_000000
+                              167 Fconst_zero
+Y:0000 000000                 168 const_zero      dc  0
+                              170 Const_000001
+                              171 Fconst_one
+Y:0001 000001                 172 const_one       dc  1
+                              174 Const_000002
+                              175 Fconst_two
+Y:0002 000002                 176 const_two       dc  2
+                              178 Const_000004
+                              179 Fconst_four
+Y:0003 000004                 180 const_four      dc  4
+                              182 Const_000008
+                              183 Fconst_eight
+Y:0004 000008                 184 const_eight     dc  8
+                              186 Fconst_16       
+Y:0005 000010                 187 Const_000010    dc  $000010
+                              189 Const_000020
+                              190 Fconst_32   
+Y:0006 000020                 191 const_32        dc  32
+Y:0007 000040                 193 Const_000040    dc  $000040
+Y:0008 000080                 195 Const_000080    dc  $000080
+Y:0009 000100                 197 Const_000100    dc  $000100
+Y:000A 000200                 199 Const_000200    dc  $000200
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:000B 000400                 201 Const_000400    dc  $000400
+Y:000C 000800                 203 Const_000800    dc  $000800
+Y:000D 001000                 205 Const_001000    dc  $001000
+Y:000E 002000                 207 Const_002000    dc  $002000
+Y:000F 004000                 208 Const_004000    dc  $004000
+Y:0010 008000                 209 Const_008000    dc  $008000
+Y:0011 010000                 210 Const_010000    dc  $010000
+Y:0012 020000                 212 Const_020000    dc  $020000
+Y:0013 040000                 214 Const_040000    dc  $040000
+Y:0014 080000                 216 Const_080000    dc  $080000
+Y:0015 100000                 218 Const_100000    dc  $100000
+Y:0016 200000                 220 Const_200000    dc  $200000
+Y:0017 400000                 222 Const_400000    dc  $400000
+                              224 ; The following label for indexing in reverse.
+                              225 BitShiftTableEnd
+Y:0018 800000                 226 Const_800000    dc  $800000
+                              227 ; End of bitShift table
+                              229 Const_000003
+                              230 Fconst_three
+Y:0019 000003                 231 const_three     dc  3
+Y:001A 000005                 233 Const_000005    dc  $000005
+                              235 Const_00000c
+                              236 Fconst_12
+Y:001B 00000C                 237 const_12        dc  12
+                              239 Const_000018
+                              240 Fconst_24
+Y:001C 000018                 241 const_24        dc  24
+Y:001D 000FFF                 243 Const_000fff    dc  $000fff
+                              245 Const_ffffff
+                              246 Fconst_minus_1
+Y:001E FFFFFF                 247 const_minus_1   dc  -1
+                              249 Const_7fffff
+                              250 Ffract_one
+Y:001F 7FFFFF                 251 fract_one       dc  $7FFFFF
+                              253     comment ~
+                              254 BitShiftTableStart
+                              255 Const_000000    dc  $000000         ; Const put to satisfy some table req.
+                              256 Const_000001    dc  $000001
+                              257 Const_000002    dc  $000002
+                              258 Const_000004    dc  $000004
+                              259 Const_000008    dc  $000008
+                              260 Const_000010    dc  $000010
+                              261 Const_000020    dc  $000020
+                              262 Const_000040    dc  $000040
+                              263 Const_000080    dc  $000080
+                              264 Const_000100    dc  $000100
+                              265 Const_000200    dc  $000200
+                              266 Const_000400    dc  $000400
+                              267 Const_000800    dc  $000800
+                              268 Const_001000    dc  $001000
+                              269 Const_002000    dc  $002000
+                              270 Const_004000    dc  $004000
+                              271 Const_008000    dc  $008000
+                              272 Const_010000    dc  $010000
+                              273 Const_020000    dc  $020000
+                              274 Const_040000    dc  $040000
+                              275 Const_080000    dc  $080000
+                              276 Const_100000    dc  $100000
+                              277 Const_200000    dc  $200000
+                              278 Const_400000    dc  $400000
+                              279 ; The following label for indexing in reverse.
+                              280 BitShiftTableEnd
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              281 Const_800000    dc  $800000
+                              282 ; End of bitShift table
+                              284 Const_000003    dc  $000003
+                              285 Const_000005    dc  $000005
+                              286 Const_00000c    dc  $00000C
+                              287 Const_000018    dc  $000018
+                              288 Const_000fff    dc  $000fff
+                              289 Const_7fffff    dc  $7fffff
+                              290 Const_ffffff    dc  $ffffff
+                              292 ; Parthus compatability
+                              293 const_zero      equ Const_000000
+                              294 Fconst_zero     equ Const_000000
+                              295 Fconst_one      equ Const_000001
+                              296 const_one       equ Const_000001
+                              297 Fconst_two      equ Const_000002
+                              298 const_two       equ Const_000002
+                              299 Fconst_three    equ Const_000003
+                              300 const_three     equ Const_000003
+                              301 Fconst_four     equ Const_000003
+                              302 const_four      equ Const_000003
+                              303 Fconst_eight    equ Const_000008
+                              304 const_eight     equ Const_000008
+                              305 Fconst_minus_1  equ Const_ffffff
+                              306 const_minus_1   equ Const_ffffff
+                              307 Ffract_one      equ Const_7fffff
+                              308 fract_one       equ Const_7fffff
+                              309 Fconst_12       equ Const_00000c
+                              310 const_12        equ Const_00000c
+                              311 Fconst_24       equ Const_000018
+                              312 const_24        equ Const_000018
+                              313 Fconst_32       equ Const_000020
+                              314 const_32        equ Const_000020
+                              316     ~
+                              317     endsec

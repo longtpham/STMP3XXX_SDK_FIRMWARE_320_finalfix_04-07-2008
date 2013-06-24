@@ -1,0 +1,1991 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\make\cc4f31db.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DD3500 -DINCLUDE_TYPE2_NAND -DINCLUDE_MLC_DESCRIPTORS
+                                3 ;          -DINCLUDE_RENESAS_DESCRIPTORS -DFAT16 -DDEBUG -DDEVICE_3500 -DENGR_BD
+                                4 ;          -DWMAAPI_NO_DRM -w68 -w66
+                                5 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\DeviceDriv
+                                  er
+                                6 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\API
+                                7 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\CH9
+                                8 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500\USB20\Include
+                                9 ;          -I..\..\..\..\..\..\inc
+                               10 ;          -I..\..\..\..\..\..\DeviceDriver\Media\SmartMedia\BootManager\STMP3500
+                               11 ;          -I -I..\output_3500\include -rr6 -rn6 -rm6 -g -O2 -R -Cs -MmxL
+                               12 
+                               19 
+                               20 ;nandhalcorrecte:
+                               21 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                               22 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                               23 ; 3    |//
+                               24 ; 4    |// Filename:    NANDHalCorrectECC.c
+                               25 ; 5    |// Description: Compute the ECC for the specified Sector's data and verify the ECC
+                               26 ; 6    |//                with the fields in the Redundant Area. If the check fails, attempt
+                               27 ; 7    |//                to correct the data.
+                               28 ; 8    |//
+                               29 ; 9    |//              NOTE: The "1bit" version is used for Type1 and Type2 NANDs.
+                               30 ; 10   |//
+                               31 ; 11   |///////////////////////////////////////////////////////////////////////////////
+                               32 ; 12   |#include "types.h"
+                               33 
+                               35 
+                               36 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               37 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                               38 ; 3    |//
+                               39 ; 4    |// Filename: types.h
+                               40 ; 5    |// Description: Standard data types
+                               41 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                               42 ; 7    |
+                               43 ; 8    |#ifndef _TYPES_H
+                               44 ; 9    |#define _TYPES_H
+                               45 ; 10   |
+                               46 ; 11   |// TODO:  move this outta here!
+                               47 ; 12   |#if !defined(NOERROR)
+                               48 ; 13   |#define NOERROR 0
+                               49 ; 14   |#define SUCCESS 0
+                               50 ; 15   |#endif 
+                               51 ; 16   |#if !defined(SUCCESS)
+                               52 ; 17   |#define SUCCESS  0
+                               53 ; 18   |#endif
+                               54 ; 19   |#if !defined(ERROR)
+                               55 ; 20   |#define ERROR   -1
+                               56 ; 21   |#endif
+                               57 ; 22   |#if !defined(FALSE)
+                               58 ; 23   |#define FALSE 0
+                               59 ; 24   |#endif
+                               60 ; 25   |#if !defined(TRUE)
+                               61 ; 26   |#define TRUE  1
+                               62 ; 27   |#endif
+                               63 ; 28   |
+                               64 ; 29   |#if !defined(NULL)
+                               65 ; 30   |#define NULL 0
+                               66 ; 31   |#endif
+                               67 ; 32   |
+                               68 ; 33   |#define MAX_INT     0x7FFFFF
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               69 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                               70 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                               71 ; 36   |#define MAX_ULONG   (-1) 
+                               72 ; 37   |
+                               73 ; 38   |#define WORD_SIZE   24              // word size in bits
+                               74 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                               75 ; 40   |
+                               76 ; 41   |
+                               77 ; 42   |#define BYTE    unsigned char       // btVarName
+                               78 ; 43   |#define CHAR    signed char         // cVarName
+                               79 ; 44   |#define USHORT  unsigned short      // usVarName
+                               80 ; 45   |#define SHORT   unsigned short      // sVarName
+                               81 ; 46   |#define WORD    unsigned int        // wVarName
+                               82 ; 47   |#define INT     signed int          // iVarName
+                               83 ; 48   |#define DWORD   unsigned long       // dwVarName
+                               84 ; 49   |#define LONG    signed long         // lVarName
+                               85 ; 50   |#define BOOL    unsigned int        // bVarName
+                               86 ; 51   |#define FRACT   _fract              // frVarName
+                               87 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                               88 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                               89 ; 54   |#define FLOAT   float               // fVarName
+                               90 ; 55   |#define DBL     double              // dVarName
+                               91 ; 56   |#define ENUM    enum                // eVarName
+                               92 ; 57   |#define CMX     _complex            // cmxVarName
+                               93 ; 58   |typedef WORD UCS3;                   // 
+                               94 ; 59   |
+                               95 ; 60   |#define UINT16  unsigned short
+                               96 ; 61   |#define UINT8   unsigned char   
+                               97 ; 62   |#define UINT32  unsigned long
+                               98 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                               99 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              100 ; 65   |#define WCHAR   UINT16
+                              101 ; 66   |
+                              102 ; 67   |//UINT128 is 16 bytes or 6 words
+                              103 ; 68   |typedef struct UINT128_3500 {   
+                              104 ; 69   |    int val[6];     
+                              105 ; 70   |} UINT128_3500;
+                              106 ; 71   |
+                              107 ; 72   |#define UINT128   UINT128_3500
+                              108 ; 73   |
+                              109 ; 74   |// Little endian word packed byte strings:   
+                              110 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              111 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              112 ; 77   |// Little endian word packed byte strings:   
+                              113 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              114 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              115 ; 80   |
+                              116 ; 81   |// Declare Memory Spaces To Use When Coding
+                              117 ; 82   |// A. Sector Buffers
+                              118 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              119 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              120 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              121 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              122 
+                              124 
+                              125 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              126 ; 88   |// B. Media DDI Memory
+                              127 ; 89   |#define MEDIA_DDI_MEM _Y
+                              128 ; 90   |
+                              129 ; 91   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              130 ; 92   |
+                              131 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              132 ; 94   |// Examples of circular pointers:
+                              133 ; 95   |//    INT CIRC cpiVarName
+                              134 ; 96   |//    DWORD CIRC cpdwVarName
+                              135 ; 97   |
+                              136 ; 98   |#define RETCODE INT                 // rcVarName
+                              137 ; 99   |
+                              138 ; 100  |// generic bitfield structure
+                              139 ; 101  |struct Bitfield {
+                              140 ; 102  |    unsigned int B0  :1;
+                              141 ; 103  |    unsigned int B1  :1;
+                              142 ; 104  |    unsigned int B2  :1;
+                              143 ; 105  |    unsigned int B3  :1;
+                              144 ; 106  |    unsigned int B4  :1;
+                              145 ; 107  |    unsigned int B5  :1;
+                              146 ; 108  |    unsigned int B6  :1;
+                              147 ; 109  |    unsigned int B7  :1;
+                              148 ; 110  |    unsigned int B8  :1;
+                              149 ; 111  |    unsigned int B9  :1;
+                              150 ; 112  |    unsigned int B10 :1;
+                              151 ; 113  |    unsigned int B11 :1;
+                              152 ; 114  |    unsigned int B12 :1;
+                              153 ; 115  |    unsigned int B13 :1;
+                              154 ; 116  |    unsigned int B14 :1;
+                              155 ; 117  |    unsigned int B15 :1;
+                              156 ; 118  |    unsigned int B16 :1;
+                              157 ; 119  |    unsigned int B17 :1;
+                              158 ; 120  |    unsigned int B18 :1;
+                              159 ; 121  |    unsigned int B19 :1;
+                              160 ; 122  |    unsigned int B20 :1;
+                              161 ; 123  |    unsigned int B21 :1;
+                              162 ; 124  |    unsigned int B22 :1;
+                              163 ; 125  |    unsigned int B23 :1;
+                              164 ; 126  |};
+                              165 ; 127  |
+                              166 ; 128  |union BitInt {
+                              167 ; 129  |        struct Bitfield B;
+                              168 ; 130  |        int        I;
+                              169 ; 131  |};
+                              170 ; 132  |
+                              171 ; 133  |#define MAX_MSG_LENGTH 10
+                              172 ; 134  |struct CMessage
+                              173 ; 135  |{
+                              174 ; 136  |        unsigned int m_uLength;
+                              175 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              176 ; 138  |};
+                              177 ; 139  |
+                              178 ; 140  |typedef struct {
+                              179 ; 141  |    WORD m_wLength;
+                              180 ; 142  |    WORD m_wMessage;
+                              181 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              182 ; 144  |} Message;
+                              183 ; 145  |
+                              184 ; 146  |struct MessageQueueDescriptor
+                              185 ; 147  |{
+                              186 ; 148  |        int *m_pBase;
+                              187 ; 149  |        int m_iModulo;
+                              188 ; 150  |        int m_iSize;
+                              189 ; 151  |        int *m_pHead;
+                              190 ; 152  |        int *m_pTail;
+                              191 ; 153  |};
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              192 ; 154  |
+                              193 ; 155  |struct ModuleEntry
+                              194 ; 156  |{
+                              195 ; 157  |    int m_iSignaledEventMask;
+                              196 ; 158  |    int m_iWaitEventMask;
+                              197 ; 159  |    int m_iResourceOfCode;
+                              198 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              199 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              200 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              201 ; 163  |    int m_uTimeOutHigh;
+                              202 ; 164  |    int m_uTimeOutLow;
+                              203 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              204 ; 166  |};
+                              205 ; 167  |
+                              206 ; 168  |union WaitMask{
+                              207 ; 169  |    struct B{
+                              208 ; 170  |        unsigned int m_bNone     :1;
+                              209 ; 171  |        unsigned int m_bMessage  :1;
+                              210 ; 172  |        unsigned int m_bTimer    :1;
+                              211 ; 173  |        unsigned int m_bButton   :1;
+                              212 ; 174  |    } B;
+                              213 ; 175  |    int I;
+                              214 ; 176  |} ;
+                              215 ; 177  |
+                              216 ; 178  |
+                              217 ; 179  |struct Button {
+                              218 ; 180  |        WORD wButtonEvent;
+                              219 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              220 ; 182  |};
+                              221 ; 183  |
+                              222 ; 184  |struct Message {
+                              223 ; 185  |        WORD wMsgLength;
+                              224 ; 186  |        WORD wMsgCommand;
+                              225 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              226 ; 188  |};
+                              227 ; 189  |
+                              228 ; 190  |union EventTypes {
+                              229 ; 191  |        struct CMessage msg;
+                              230 ; 192  |        struct Button Button ;
+                              231 ; 193  |        struct Message Message;
+                              232 ; 194  |};
+                              233 ; 195  |
+                              234 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              235 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              236 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              237 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              238 ; 200  |
+                              239 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              240 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              241 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              242 ; 204  |
+                              243 ; 205  |#if DEBUG
+                              244 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              245 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              246 ; 208  |#else 
+                              247 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              248 ; 210  |#define DebugBuildAssert(x)    
+                              249 ; 211  |#endif
+                              250 ; 212  |
+                              251 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              252 ; 214  |//  #pragma asm
+                              253 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              254 ; 216  |//  #pragma endasm
+                              255 ; 217  |
+                              256 ; 218  |
+                              257 ; 219  |#ifdef COLOR_262K
+                              258 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              259 ; 221  |#elif defined(COLOR_65K)
+                              260 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              261 ; 223  |#else
+                              262 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              263 ; 225  |#endif
+                              264 ; 226  |    
+                              265 ; 227  |#endif // #ifndef _TYPES_H
+                              266 
+                              268 
+                              269 ; 13   |#include "regsecc.h"
+                              270 
+                              272 
+                              273 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              274 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                              275 ; 3    |// Filename: regsecc.inc
+                              276 ; 4    |// Description: Register definitions for ECC interface
+                              277 ; 5    |/////////////////////////////////////////////////////////////////////////////////
+                              278 ; 6    |// The following naming conventions are followed in this file.
+                              279 ; 7    |// All registers are named using the format...
+                              280 ; 8    |//     HW_<module>_<regname>
+                              281 ; 9    |// where <module> is the module name which can be any of the following...
+                              282 ; 10   |//     USB20
+                              283 ; 11   |// (Note that when there is more than one copy of a particular module, the
+                              284 ; 12   |// module name includes a number starting from 0 for the first instance of
+                              285 ; 13   |// that module)
+                              286 ; 14   |// <regname> is the specific register within that module
+                              287 ; 15   |// We also define the following...
+                              288 ; 16   |//     HW_<module>_<regname>_BITPOS
+                              289 ; 17   |// which defines the starting bit (i.e. LSB) of a multi bit field
+                              290 ; 18   |//     HW_<module>_<regname>_SETMASK
+                              291 ; 19   |// which does something else, and
+                              292 ; 20   |//     HW_<module>_<regname>_CLRMASK
+                              293 ; 21   |// which does something else.
+                              294 ; 22   |// Other rules
+                              295 ; 23   |//     All caps
+                              296 ; 24   |//     Numeric identifiers start at 0
+                              297 ; 25   |#if !(defined(regseccinc))
+                              298 ; 26   |#define regseccinc 1
+                              299 ; 27   |
+                              300 ; 28   |#include "types.h"
+                              301 
+                              303 
+                              304 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              305 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              306 ; 3    |//
+                              307 ; 4    |// Filename: types.h
+                              308 ; 5    |// Description: Standard data types
+                              309 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              310 ; 7    |
+                              311 ; 8    |#ifndef _TYPES_H
+                              312 ; 9    |#define _TYPES_H
+                              313 ; 10   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              314 ; 11   |// TODO:  move this outta here!
+                              315 ; 12   |#if !defined(NOERROR)
+                              316 ; 13   |#define NOERROR 0
+                              317 ; 14   |#define SUCCESS 0
+                              318 ; 15   |#endif 
+                              319 ; 16   |#if !defined(SUCCESS)
+                              320 ; 17   |#define SUCCESS  0
+                              321 ; 18   |#endif
+                              322 ; 19   |#if !defined(ERROR)
+                              323 ; 20   |#define ERROR   -1
+                              324 ; 21   |#endif
+                              325 ; 22   |#if !defined(FALSE)
+                              326 ; 23   |#define FALSE 0
+                              327 ; 24   |#endif
+                              328 ; 25   |#if !defined(TRUE)
+                              329 ; 26   |#define TRUE  1
+                              330 ; 27   |#endif
+                              331 ; 28   |
+                              332 ; 29   |#if !defined(NULL)
+                              333 ; 30   |#define NULL 0
+                              334 ; 31   |#endif
+                              335 ; 32   |
+                              336 ; 33   |#define MAX_INT     0x7FFFFF
+                              337 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              338 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              339 ; 36   |#define MAX_ULONG   (-1) 
+                              340 ; 37   |
+                              341 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              342 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              343 ; 40   |
+                              344 ; 41   |
+                              345 ; 42   |#define BYTE    unsigned char       // btVarName
+                              346 ; 43   |#define CHAR    signed char         // cVarName
+                              347 ; 44   |#define USHORT  unsigned short      // usVarName
+                              348 ; 45   |#define SHORT   unsigned short      // sVarName
+                              349 ; 46   |#define WORD    unsigned int        // wVarName
+                              350 ; 47   |#define INT     signed int          // iVarName
+                              351 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              352 ; 49   |#define LONG    signed long         // lVarName
+                              353 ; 50   |#define BOOL    unsigned int        // bVarName
+                              354 ; 51   |#define FRACT   _fract              // frVarName
+                              355 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              356 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              357 ; 54   |#define FLOAT   float               // fVarName
+                              358 ; 55   |#define DBL     double              // dVarName
+                              359 ; 56   |#define ENUM    enum                // eVarName
+                              360 ; 57   |#define CMX     _complex            // cmxVarName
+                              361 ; 58   |typedef WORD UCS3;                   // 
+                              362 ; 59   |
+                              363 ; 60   |#define UINT16  unsigned short
+                              364 ; 61   |#define UINT8   unsigned char   
+                              365 ; 62   |#define UINT32  unsigned long
+                              366 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              367 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              368 ; 65   |#define WCHAR   UINT16
+                              369 ; 66   |
+                              370 ; 67   |//UINT128 is 16 bytes or 6 words
+                              371 ; 68   |typedef struct UINT128_3500 {   
+                              372 ; 69   |    int val[6];     
+                              373 ; 70   |} UINT128_3500;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              374 ; 71   |
+                              375 ; 72   |#define UINT128   UINT128_3500
+                              376 ; 73   |
+                              377 ; 74   |// Little endian word packed byte strings:   
+                              378 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              379 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              380 ; 77   |// Little endian word packed byte strings:   
+                              381 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              382 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              383 ; 80   |
+                              384 ; 81   |// Declare Memory Spaces To Use When Coding
+                              385 ; 82   |// A. Sector Buffers
+                              386 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              387 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              388 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              389 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              390 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              391 ; 88   |// B. Media DDI Memory
+                              392 ; 89   |#define MEDIA_DDI_MEM _Y
+                              393 ; 90   |
+                              394 ; 91   |
+                              395 ; 92   |
+                              396 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              397 ; 94   |// Examples of circular pointers:
+                              398 ; 95   |//    INT CIRC cpiVarName
+                              399 ; 96   |//    DWORD CIRC cpdwVarName
+                              400 ; 97   |
+                              401 ; 98   |#define RETCODE INT                 // rcVarName
+                              402 ; 99   |
+                              403 ; 100  |// generic bitfield structure
+                              404 ; 101  |struct Bitfield {
+                              405 ; 102  |    unsigned int B0  :1;
+                              406 ; 103  |    unsigned int B1  :1;
+                              407 ; 104  |    unsigned int B2  :1;
+                              408 ; 105  |    unsigned int B3  :1;
+                              409 ; 106  |    unsigned int B4  :1;
+                              410 ; 107  |    unsigned int B5  :1;
+                              411 ; 108  |    unsigned int B6  :1;
+                              412 ; 109  |    unsigned int B7  :1;
+                              413 ; 110  |    unsigned int B8  :1;
+                              414 ; 111  |    unsigned int B9  :1;
+                              415 ; 112  |    unsigned int B10 :1;
+                              416 ; 113  |    unsigned int B11 :1;
+                              417 ; 114  |    unsigned int B12 :1;
+                              418 ; 115  |    unsigned int B13 :1;
+                              419 ; 116  |    unsigned int B14 :1;
+                              420 ; 117  |    unsigned int B15 :1;
+                              421 ; 118  |    unsigned int B16 :1;
+                              422 ; 119  |    unsigned int B17 :1;
+                              423 ; 120  |    unsigned int B18 :1;
+                              424 ; 121  |    unsigned int B19 :1;
+                              425 ; 122  |    unsigned int B20 :1;
+                              426 ; 123  |    unsigned int B21 :1;
+                              427 ; 124  |    unsigned int B22 :1;
+                              428 ; 125  |    unsigned int B23 :1;
+                              429 ; 126  |};
+                              430 ; 127  |
+                              431 ; 128  |union BitInt {
+                              432 ; 129  |        struct Bitfield B;
+                              433 ; 130  |        int        I;
+                              434 ; 131  |};
+                              435 ; 132  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              436 ; 133  |#define MAX_MSG_LENGTH 10
+                              437 ; 134  |struct CMessage
+                              438 ; 135  |{
+                              439 ; 136  |        unsigned int m_uLength;
+                              440 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              441 ; 138  |};
+                              442 ; 139  |
+                              443 ; 140  |typedef struct {
+                              444 ; 141  |    WORD m_wLength;
+                              445 ; 142  |    WORD m_wMessage;
+                              446 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              447 ; 144  |} Message;
+                              448 ; 145  |
+                              449 ; 146  |struct MessageQueueDescriptor
+                              450 ; 147  |{
+                              451 ; 148  |        int *m_pBase;
+                              452 ; 149  |        int m_iModulo;
+                              453 ; 150  |        int m_iSize;
+                              454 ; 151  |        int *m_pHead;
+                              455 ; 152  |        int *m_pTail;
+                              456 ; 153  |};
+                              457 ; 154  |
+                              458 ; 155  |struct ModuleEntry
+                              459 ; 156  |{
+                              460 ; 157  |    int m_iSignaledEventMask;
+                              461 ; 158  |    int m_iWaitEventMask;
+                              462 ; 159  |    int m_iResourceOfCode;
+                              463 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              464 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              465 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              466 ; 163  |    int m_uTimeOutHigh;
+                              467 ; 164  |    int m_uTimeOutLow;
+                              468 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              469 ; 166  |};
+                              470 ; 167  |
+                              471 ; 168  |union WaitMask{
+                              472 ; 169  |    struct B{
+                              473 ; 170  |        unsigned int m_bNone     :1;
+                              474 ; 171  |        unsigned int m_bMessage  :1;
+                              475 ; 172  |        unsigned int m_bTimer    :1;
+                              476 ; 173  |        unsigned int m_bButton   :1;
+                              477 ; 174  |    } B;
+                              478 ; 175  |    int I;
+                              479 ; 176  |} ;
+                              480 ; 177  |
+                              481 ; 178  |
+                              482 ; 179  |struct Button {
+                              483 ; 180  |        WORD wButtonEvent;
+                              484 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              485 ; 182  |};
+                              486 ; 183  |
+                              487 ; 184  |struct Message {
+                              488 ; 185  |        WORD wMsgLength;
+                              489 ; 186  |        WORD wMsgCommand;
+                              490 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              491 ; 188  |};
+                              492 ; 189  |
+                              493 ; 190  |union EventTypes {
+                              494 ; 191  |        struct CMessage msg;
+                              495 ; 192  |        struct Button Button ;
+                              496 ; 193  |        struct Message Message;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              497 ; 194  |};
+                              498 ; 195  |
+                              499 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              500 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              501 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              502 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              503 ; 200  |
+                              504 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              505 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              506 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              507 ; 204  |
+                              508 ; 205  |#if DEBUG
+                              509 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              510 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              511 ; 208  |#else 
+                              512 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              513 ; 210  |#define DebugBuildAssert(x)    
+                              514 ; 211  |#endif
+                              515 ; 212  |
+                              516 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              517 ; 214  |//  #pragma asm
+                              518 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              519 ; 216  |//  #pragma endasm
+                              520 ; 217  |
+                              521 ; 218  |
+                              522 ; 219  |#ifdef COLOR_262K
+                              523 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              524 ; 221  |#elif defined(COLOR_65K)
+                              525 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              526 ; 223  |#else
+                              527 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              528 ; 225  |#endif
+                              529 ; 226  |    
+                              530 ; 227  |#endif // #ifndef _TYPES_H
+                              531 
+                              533 
+                              534 ; 29   |
+                              535 ; 30   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              536 ; 31   |
+                              537 ; 32   |//   ECC STMP Registers 
+                              538 ; 33   |//   Last Updated 2.26.2003 J. Ferrara
+                              539 ; 34   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              540 ; 35   |
+                              541 ; 36   |#define HW_ECC_BASEADDR (0xF780)
+                              542 ; 37   |
+                              543 ; 38   |
+                              544 ; 39   |
+                              545 ; 40   |
+                              546 ; 41   |/////////////////////////////////////////////////////////////////////////////////
+                              547 ; 42   |
+                              548 ; 43   |//  ECC Control Status Register0 (HW_ECC_CSR0) Bit Definitions
+                              549 ; 44   |
+                              550 ; 45   |#define HW_ECC_CSR0_ECCKICK_BITPOS (0)
+                              551 ; 46   |#define HW_ECC_CSR0_AUTOCORR_BITPOS (1)
+                              552 ; 47   |#define HW_ECC_CSR0_RSVD0_BITPOS (2)
+                              553 ; 48   |#define HW_ECC_CSR0_DONEINTEN_BITPOS (3)
+                              554 ; 49   |#define HW_ECC_CSR0_KESINTEN_BITPOS (5)
+                              555 ; 50   |#define HW_ECC_CSR0_CORRINTEN_BITPOS (6)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              556 ; 51   |#define HW_ECC_CSR0_UNCORRINTEN_BITPOS (7)
+                              557 ; 52   |#define HW_ECC_CSR0_ERRINTEN_BITPOS (8)
+                              558 ; 53   |#define HW_ECC_CSR0_RSVD1_BITPOS (9)
+                              559 ; 54   |#define HW_ECC_CSR0_DMAWAIT_BITPOS (12)
+                              560 ; 55   |#define HW_ECC_CSR0_ECCSEL_BITPOS (16)
+                              561 ; 56   |#define HW_ECC_CSR0_RSVD2_BITPOS (19)
+                              562 ; 57   |#define HW_ECC_CSR0_SFTRST_BITPOS (23)
+                              563 ; 58   |
+                              564 ; 59   |#define HW_ECC_CSR0_ECCKICK_WIDTH (1)        
+                              565 ; 60   |#define HW_ECC_CSR0_AUTOCORR_WIDTH (1)
+                              566 ; 61   |#define HW_ECC_CSR0_RSVD0_WIDTH (2)
+                              567 ; 62   |#define HW_ECC_CSR0_DONEINTEN_WIDTH (1)
+                              568 ; 63   |#define HW_ECC_CSR0_KESINTEN_WIDTH (1)
+                              569 ; 64   |#define HW_ECC_CSR0_CORRINTEN_WIDTH (1)
+                              570 ; 65   |#define HW_ECC_CSR0_UNCORRINTEN_WIDTH (1)
+                              571 ; 66   |#define HW_ECC_CSR0_ERRINTEN_WIDTH (1)
+                              572 ; 67   |#define HW_ECC_CSR0_RSVD1_WIDTH (3)
+                              573 ; 68   |#define HW_ECC_CSR0_DMAWAIT_WIDTH (4)
+                              574 ; 69   |#define HW_ECC_CSR0_ECCSEL_WIDTH (3)
+                              575 ; 70   |#define HW_ECC_CSR0_RSVD2_WIDTH (4)
+                              576 ; 71   |#define HW_ECC_CSR0_SFTRST_WIDTH (1)
+                              577 ; 72   |
+                              578 ; 73   |#define HW_ECC_CSR0_ECCKICK_SETMASK (((1<<HW_ECC_CSR0_ECCKICK_WIDTH)-1)<<HW_ECC_CSR0_ECCKI
+                                  CK_BITPOS) 
+                              579 ; 74   |#define HW_ECC_CSR0_AUTOCORR_SETMASK (((1<<HW_ECC_CSR0_AUTOCORR_WIDTH)-1)<<HW_ECC_CSR0_AUT
+                                  OCORR_BITPOS)
+                              580 ; 75   |#define HW_ECC_CSR0_RSVD0_SETMASK (((1<<HW_ECC_CSR0_RSVD0_WIDTH)-1)<<HW_ECC_CSR0_RSVD0_BIT
+                                  POS) 
+                              581 ; 76   |#define HW_ECC_CSR0_DONEINTEN_SETMASK (((1<<HW_ECC_CSR0_DONEINTEN_WIDTH)-1)<<HW_ECC_CSR0_D
+                                  ONEINTEN_BITPOS) 
+                              582 ; 77   |#define HW_ECC_CSR0_KESINTEN_SETMASK (((1<<HW_ECC_CSR0_KESINTEN_WIDTH)-1)<<HW_ECC_CSR0_KES
+                                  INTEN_BITPOS) 
+                              583 ; 78   |#define HW_ECC_CSR0_CORRINTEN_SETMASK (((1<<HW_ECC_CSR0_CORRINTEN_WIDTH)-1)<<HW_ECC_CSR0_C
+                                  ORRINTEN_BITPOS) 
+                              584 ; 79   |#define HW_ECC_CSR0_UNCORRINTEN_SETMASK (((1<<HW_ECC_CSR0_UNCORRINTEN_WIDTH)-1)<<HW_ECC_CS
+                                  R0_UNCORRINTEN_BITPOS) 
+                              585 ; 80   |#define HW_ECC_CSR0_ERRINTEN_SETMASK (((1<<HW_ECC_CSR0_ERRINTEN_WIDTH)-1)<<HW_ECC_CSR0_ERR
+                                  INTEN_BITPOS) 
+                              586 ; 81   |#define HW_ECC_CSR0_RSVD1_SETMASK (((1<<HW_ECC_CSR0_RSVD1_WIDTH)-1)<<HW_ECC_CSR0_RSVD1_BIT
+                                  POS) 
+                              587 ; 82   |#define HW_ECC_CSR0_DMAWAIT_SETMASK (((1<<HW_ECC_CSR0_DMAWAIT_WIDTH)-1)<<HW_ECC_CSR0_DMAWA
+                                  IT_BITPOS) 
+                              588 ; 83   |#define HW_ECC_CSR0_ECCSEL_SETMASK (((1<<HW_ECC_CSR0_ECCSEL_WIDTH)-1)<<HW_ECC_CSR0_ECCSEL_
+                                  BITPOS) 
+                              589 ; 84   |#define HW_ECC_CSR0_RSVD2_SETMASK (((1<<HW_ECC_CSR0_RSVD2_WIDTH)-1)<<HW_ECC_CSR0_RSVD2_BIT
+                                  POS) 
+                              590 ; 85   |#define HW_ECC_CSR0_SFTRST_SETMASK (((1<<HW_ECC_CSR0_SFTRST_WIDTH)-1)<<HW_ECC_CSR0_SFTRST_
+                                  BITPOS) 
+                              591 ; 86   |
+                              592 ; 87   |#define HW_ECC_CSR0_ECCKICK_CLRMASK (~(WORD)HW_ECC_CSR0_ECCKICK_SETMASK)
+                              593 ; 88   |#define HW_ECC_CSR0_AUTOCORR_CLRMASK (~(WORD)HW_ECC_CSR0_AUTOCORR_SETMASK)
+                              594 ; 89   |#define HW_ECC_CSR0_RSVD0_CLRMASK (~(WORD)HW_ECC_CSR0_RSVD0_SETMASK)
+                              595 ; 90   |#define HW_ECC_CSR0_DONEINTEN_CLRMASK (~(WORD)HW_ECC_CSR0_DONEINTEN_SETMASK)
+                              596 ; 91   |#define HW_ECC_CSR0_KESINTEN_CLRMASK (~(WORD)HW_ECC_CSR0_KESINTEN_SETMASK)
+                              597 ; 92   |#define HW_ECC_CSR0_CORRINTEN_CLRMASK (~(WORD)HW_ECC_CSR0_CORRINTEN_SETMASK)
+                              598 ; 93   |#define HW_ECC_CSR0_UNCORRINTEN_CLRMASK (~(WORD)HW_ECC_CSR0_UNCORRINTEN_SETMASK)
+                              599 ; 94   |#define HW_ECC_CSR0_ERRINTEN_CLRMASK (~(WORD)HW_ECC_CSR0_ERRINTEN_SETMASK)
+                              600 ; 95   |#define HW_ECC_CSR0_RSVD1_CLRMASK (~(WORD)HW_ECC_CSR0_RSVD1_SETMASK)
+                              601 ; 96   |#define HW_ECC_CSR0_DMAWAIT_CLRMASK (~(WORD)HW_ECC_CSR0_DMAWAIT_SETMASK)
+                              602 ; 97   |#define HW_ECC_CSR0_ECCSEL_CLRMASK (~(WORD)HW_ECC_CSR0_ECCSEL_SETMASK)
+                              603 ; 98   |#define HW_ECC_CSR0_RSVD2_CLRMASK (~(WORD)HW_ECC_CSR0_RSVD2_SETMASK)
+                              604 ; 99   |#define HW_ECC_CSR0_SFTRST_CLRMASK (~(WORD)HW_ECC_CSR0_SFTRST_SETMASK)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              605 ; 100  |
+                              606 ; 101  |typedef union               
+                              607 ; 102  |{
+                              608 ; 103  |    struct {
+                              609 ; 104  |         int ECCKICK         : HW_ECC_CSR0_ECCKICK_WIDTH;
+                              610 ; 105  |         int AUTOCORR        : HW_ECC_CSR0_AUTOCORR_WIDTH;
+                              611 ; 106  |         int RSVD0           : HW_ECC_CSR0_RSVD0_WIDTH;
+                              612 ; 107  |         int DONEINTEN       : HW_ECC_CSR0_DONEINTEN_WIDTH;
+                              613 ; 108  |         int KESINTEN        : HW_ECC_CSR0_KESINTEN_WIDTH;
+                              614 ; 109  |         int CORRINTEN       : HW_ECC_CSR0_CORRINTEN_WIDTH;
+                              615 ; 110  |         int UNCORRINTEN     : HW_ECC_CSR0_UNCORRINTEN_WIDTH;
+                              616 ; 111  |         int ERRINTEN        : HW_ECC_CSR0_ERRINTEN_WIDTH;
+                              617 ; 112  |         int RSVD1           : HW_ECC_CSR0_RSVD1_WIDTH;
+                              618 ; 113  |         int DMAWAIT         : HW_ECC_CSR0_DMAWAIT_WIDTH;
+                              619 ; 114  |         int ECCSEL          : HW_ECC_CSR0_ECCSEL_WIDTH;
+                              620 ; 115  |         int RSVD2           : HW_ECC_CSR0_RSVD2_WIDTH;
+                              621 ; 116  |        int SFTRST          : HW_ECC_CSR0_SFTRST_WIDTH;
+                              622 ; 117  |    } B;
+                              623 ; 118  |    int I;
+                              624 ; 119  |    unsigned int U;
+                              625 ; 120  |} ecc_csr0_type;
+                              626 ; 121  |#define HW_ECC_CSR0      (*(volatile ecc_csr0_type _X*) (HW_ECC_BASEADDR+0))    /* ECC Con
+                                  trol / Status Register0 */
+                              627 ; 122  |
+                              628 ; 123  |////////////////////////////////////////////////////////////////////////////
+                              629 ; 124  |//  ECC Control Status Register1 (HW_ECC_CSR1) Bit Definitions
+                              630 ; 125  |
+                              631 ; 126  |#define HW_ECC_CSR1_RSVD0_BITPOS (0)
+                              632 ; 127  |#define HW_ECC_CSR1_DONEINT_BITPOS (4)
+                              633 ; 128  |#define HW_ECC_CSR1_KESINT_BITPOS (5)
+                              634 ; 129  |#define HW_ECC_CSR1_CORRINT_BITPOS (6)
+                              635 ; 130  |#define HW_ECC_CSR1_UNCORRINT_BITPOS (7)
+                              636 ; 131  |#define HW_ECC_CSR1_ERRINT_BITPOS (8)
+                              637 ; 132  |#define HW_ECC_CSR1_RSVD1_BITPOS (9)
+                              638 ; 133  |#define HW_ECC_CSR1_ECCEXCEPTION_BITPOS (12)
+                              639 ; 134  |#define HW_ECC_CSR1_ECCERRORS_BITPOS (16)
+                              640 ; 135  |#define HW_ECC_CSR1_RSVD2_BITPOS (19)
+                              641 ; 136  |
+                              642 ; 137  |#define HW_ECC_CSR1_RSVD0_WIDTH (4)
+                              643 ; 138  |#define HW_ECC_CSR1_DONEINT_WIDTH (1)
+                              644 ; 139  |#define HW_ECC_CSR1_KESINT_WIDTH (1)
+                              645 ; 140  |#define HW_ECC_CSR1_CORRINT_WIDTH (1)
+                              646 ; 141  |#define HW_ECC_CSR1_UNCORRINT_WIDTH (1)
+                              647 ; 142  |#define HW_ECC_CSR1_ERRINT_WIDTH (1)
+                              648 ; 143  |#define HW_ECC_CSR1_RSVD1_WIDTH (3)
+                              649 ; 144  |#define HW_ECC_CSR1_ECCEXCEPTION_WIDTH (4)
+                              650 ; 145  |#define HW_ECC_CSR1_ECCERRORS_WIDTH (3)
+                              651 ; 146  |#define HW_ECC_CSR1_RSVD2_WIDTH (5)
+                              652 ; 147  |
+                              653 ; 148  |#define HW_ECC_CSR1_RSVD0_SETMASK (((1<<HW_ECC_CSR1_RSVD0_WIDTH)-1)<<HW_ECC_CSR1_RSVD0_BIT
+                                  POS) 
+                              654 ; 149  |#define HW_ECC_CSR1_DONEINT_SETMASK (((1<<HW_ECC_CSR1_DONEINT_WIDTH)-1)<<HW_ECC_CSR1_DONEI
+                                  NT_BITPOS) 
+                              655 ; 150  |#define HW_ECC_CSR1_KESINT_SETMASK (((1<<HW_ECC_CSR1_KESINT_WIDTH)-1)<<HW_ECC_CSR1_KESINT_
+                                  BITPOS) 
+                              656 ; 151  |#define HW_ECC_CSR1_CORRINT_SETMASK (((1<<HW_ECC_CSR1_CORRINT_WIDTH)-1)<<HW_ECC_CSR1_CORRI
+                                  NT_BITPOS) 
+                              657 ; 152  |#define HW_ECC_CSR1_UNCORRINT_SETMASK (((1<<HW_ECC_CSR1_UNCORRINT_WIDTH)-1)<<HW_ECC_CSR1_U
+                                  NCORRINT_BITPOS) 
+                              658 ; 153  |#define HW_ECC_CSR1_ERRINT_SETMASK (((1<<HW_ECC_CSR1_ERRINT_WIDTH)-1)<<HW_ECC_CSR1_ERRINT_
+                                  BITPOS) 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              659 ; 154  |#define HW_ECC_CSR1_RSVD1_SETMASK (((1<<HW_ECC_CSR1_RSVD1_WIDTH)-1)<<HW_ECC_CSR1_RSVD1_BIT
+                                  POS) 
+                              660 ; 155  |#define HW_ECC_CSR1_ECCEXCEPTION_SETMASK (((1<<HW_ECC_CSR1_ECCEXCEPTION_WIDTH)-1)<<HW_ECC_
+                                  CSR1_ECCEXCEPTION_BITPOS) 
+                              661 ; 156  |#define HW_ECC_CSR1_ECCERRORS_SETMASK (((1<<HW_ECC_CSR1_ECCERRORS_WIDTH)-1)<<HW_ECC_CSR1_E
+                                  CCERRORS_BITPOS) 
+                              662 ; 157  |#define HW_ECC_CSR1_RSVD2_SETMASK (((1<<HW_ECC_CSR1_RSVD2_WIDTH)-1)<<HW_ECC_CSR1_RSVD2_BIT
+                                  POS) 
+                              663 ; 158  |
+                              664 ; 159  |#define HW_ECC_CSR1_RSVD0_CLRMASK (~(WORD)HW_ECC_CSR1_RSVD0_SETMASK)
+                              665 ; 160  |#define HW_ECC_CSR1_DONEINT_CLRMASK (~(WORD)HW_ECC_CSR1_DONEINT_SETMASK)
+                              666 ; 161  |#define HW_ECC_CSR1_KESINT_CLRMASK (~(WORD)HW_ECC_CSR1_KESINT_SETMASK)
+                              667 ; 162  |#define HW_ECC_CSR1_CORRINT_CLRMASK (~(WORD)HW_ECC_CSR1_CORRINT_SETMASK)
+                              668 ; 163  |#define HW_ECC_CSR1_UNCORRINT_CLRMASK (~(WORD)HW_ECC_CSR1_UNCORRINT_SETMASK)
+                              669 ; 164  |#define HW_ECC_CSR1_ERRINT_CLRMASK (~(WORD)HW_ECC_CSR1_ERRINT_SETMASK)
+                              670 ; 165  |#define HW_ECC_CSR1_RSVD1_CLRMASK (~(WORD)HW_ECC_CSR1_RSVD1_SETMASK)
+                              671 ; 166  |#define HW_ECC_CSR1_ECCEXCEPTION_CLRMASK (~(WORD)HW_ECC_CSR1_ECCEXCEPTION_SETMASK)
+                              672 ; 167  |#define HW_ECC_CSR1_ECCERRORS_CLRMASK (~(WORD)HW_ECC_CSR1_ECCERRORS_SETMASK)
+                              673 ; 168  |#define HW_ECC_CSR1_RSVD2_CLRMASK (~(WORD)HW_ECC_CSR1_RSVD2_SETMASK)
+                              674 ; 169  |
+                              675 ; 170  |typedef union               
+                              676 ; 171  |{
+                              677 ; 172  |    struct {
+                              678 ; 173  |         int RSVD0           : HW_ECC_CSR1_RSVD0_WIDTH;
+                              679 ; 174  |         int DONEINT         : HW_ECC_CSR1_DONEINT_WIDTH;
+                              680 ; 175  |         int KESINT          : HW_ECC_CSR1_KESINT_WIDTH;
+                              681 ; 176  |         int CORRINT         : HW_ECC_CSR1_CORRINT_WIDTH;
+                              682 ; 177  |         int UNCORRIN        : HW_ECC_CSR1_UNCORRINT_WIDTH;
+                              683 ; 178  |         int ERRINT          : HW_ECC_CSR1_ERRINT_WIDTH;
+                              684 ; 179  |         int RSVD1           : HW_ECC_CSR1_RSVD1_WIDTH;
+                              685 ; 180  |         int ECCEXCEPTION    : HW_ECC_CSR1_ECCEXCEPTION_WIDTH;
+                              686 ; 181  |         int ECCERRORS       : HW_ECC_CSR1_ECCERRORS_WIDTH;
+                              687 ; 182  |         int RSVD2           : HW_ECC_CSR1_RSVD2_WIDTH;
+                              688 ; 183  |    } B;
+                              689 ; 184  |    int I;
+                              690 ; 185  |    unsigned int U;
+                              691 ; 186  |} ecc_csr1_type;
+                              692 ; 187  |#define HW_ECC_CSR1      (*(volatile ecc_csr1_type _X*) (HW_ECC_BASEADDR+1))    /* ECC Con
+                                  trol / Status Register1 */
+                              693 ; 188  |
+                              694 ; 189  |////////////////////////////////////////////////////////////////////////////
+                              695 ; 190  |//  ECC Reed_solomon Control Status Register (HW_ECC_RSCFG) Bit Definitions
+                              696 ; 191  |
+                              697 ; 192  |#define HW_ECC_RSCFG_SYMBOLSIZE_BITPOS (0)
+                              698 ; 193  |#define HW_ECC_RSCFG_BLOCKSIZE_BITPOS (4)
+                              699 ; 194  |#define HW_ECC_RSCFG_RSVD0_BITPOS (13)
+                              700 ; 195  |#define HW_ECC_RSCFG_BYTEEN_BITPOS (20)
+                              701 ; 196  |#define HW_ECC_RSCFG_RSCFGERR_BITPOS (21)
+                              702 ; 197  |#define HW_ECC_RSCFG_DECSFTRST_BITPOS (22)
+                              703 ; 198  |#define HW_ECC_RSCFG_ENCSFTRST_BITPOS (23)
+                              704 ; 199  |
+                              705 ; 200  |#define HW_ECC_RSCFG_SYMBOLSIZE_WIDTH (4)
+                              706 ; 201  |#define HW_ECC_RSCFG_BLOCKSIZE_WIDTH (9)
+                              707 ; 202  |#define HW_ECC_RSCFG_RSVD0_WIDTH (7)
+                              708 ; 203  |#define HW_ECC_RSCFG_BYTEEN_WIDTH (1)
+                              709 ; 204  |#define HW_ECC_RSCFG_RSCFGERR_WIDTH (1)
+                              710 ; 205  |#define HW_ECC_RSCFG_DECSFTRST_WIDTH (1)
+                              711 ; 206  |#define HW_ECC_RSCFG_ENCSFTRST_WIDTH (1)
+                              712 ; 207  |
+                              713 ; 208  |#define HW_ECC_RSCFG_SYMBOLSIZE_SETMASK (((1<<HW_ECC_RSCFG_SYMBOLSIZE_WIDTH)-1)<<HW_ECC_RS
+                                  CFG_SYMBOLSIZE_BITPOS) 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              714 ; 209  |#define HW_ECC_RSCFG_BLOCKSIZE_SETMASK (((1<<HW_ECC_RSCFG_BLOCKSIZE_WIDTH)-1)<<HW_ECC_RSCF
+                                  G_BLOCKSIZE_BITPOS) 
+                              715 ; 210  |#define HW_ECC_RSCFG_RSVD0_SETMASK (((1<<HW_ECC_RSCFG_RSVD0_WIDTH)-1)<<HW_ECC_RSCFG_RSVD0_
+                                  BITPOS) 
+                              716 ; 211  |#define HW_ECC_RSCFG_BYTEEN_SETMASK (((1<<HW_ECC_RSCFG_BYTEEN_WIDTH)-1)<<HW_ECC_RSCFG_BYTE
+                                  EN_BITPOS) 
+                              717 ; 212  |#define HW_ECC_RSCFG_RSCFGERR_SETMASK (((1<<HW_ECC_RSCFG_RSCFGERR_WIDTH)-1)<<HW_ECC_RSCFG_
+                                  RSCFGERR_BITPOS) 
+                              718 ; 213  |#define HW_ECC_RSCFG_DECSFTRST_SETMASK (((1<<HW_ECC_RSCFG_DECSFTRST_WIDTH)-1)<<HW_ECC_RSCF
+                                  G_DECSFTRST_BITPOS) 
+                              719 ; 214  |#define HW_ECC_RSCFG_ENCSFTRST_SETMASK (((1<<HW_ECC_RSCFG_ENCSFTRST_WIDTH)-1)<<HW_ECC_RSCF
+                                  G_ENCSFTRST_BITPOS) 
+                              720 ; 215  |
+                              721 ; 216  |#define HW_ECC_RSCFG_SYMBOLSIZE_CLRMASK (~(WORD)HW_ECC_RSCFG_SYMBOLSIZE_SETMASK)
+                              722 ; 217  |#define HW_ECC_RSCFG_BLOCKSIZE_CLRMASK (~(WORD)HW_ECC_RSCFG_BLOCKSIZE_SETMASK)
+                              723 ; 218  |#define HW_ECC_RSCFG_RSVD0_CLRMASK (~(WORD)HW_ECC_RSCFG_RSVD0_SETMASK)
+                              724 ; 219  |#define HW_ECC_RSCFG_BYTEEN_CLRMASK (~(WORD)HW_ECC_RSCFG_BYTEEN_SETMASK)
+                              725 ; 220  |#define HW_ECC_RSCFG_RSCFGERR_CLRMASK (~(WORD)HW_ECC_RSCFG_RSCFGERR_SETMASK)
+                              726 ; 221  |#define HW_ECC_RSCFG_DECSFTRST_CLRMASK (~(WORD)HW_ECC_RSCFG_DECSFTRST_SETMASK)
+                              727 ; 222  |#define HW_ECC_RSCFG_ENCSFTRST_CLRMASK (~(WORD)HW_ECC_RSCFG_ENCSFTRST_SETMASK)
+                              728 ; 223  |
+                              729 ; 224  |typedef union               
+                              730 ; 225  |{
+                              731 ; 226  |    struct {
+                              732 ; 227  |         int SYMBOLSIZE      : HW_ECC_RSCFG_SYMBOLSIZE_WIDTH;
+                              733 ; 228  |         int BLOCKSIZE       : HW_ECC_RSCFG_BLOCKSIZE_WIDTH;
+                              734 ; 229  |         int RSVD0           : HW_ECC_RSCFG_RSVD0_WIDTH;
+                              735 ; 230  |         int BYTEEN          : HW_ECC_RSCFG_BYTEEN_WIDTH;
+                              736 ; 231  |         int RSCFGERR        : HW_ECC_RSCFG_RSCFGERR_WIDTH;
+                              737 ; 232  |         int DECSFTRST       : HW_ECC_RSCFG_DECSFTRST_WIDTH;
+                              738 ; 233  |         int ENCSFTRST       : HW_ECC_RSCFG_ENCSFTRST_WIDTH;
+                              739 ; 234  |    } B;
+                              740 ; 235  |    int I;
+                              741 ; 236  |    unsigned int U;
+                              742 ; 237  |} ecc_rscfg_type;
+                              743 ; 238  |#define HW_ECC_RSCFG      (*(volatile ecc_rscfg_type _X*) (HW_ECC_BASEADDR+2))    /* ECC R
+                                  eed-Solomon Control Register */
+                              744 ; 239  |
+                              745 ; 240  |////////////////////////////////////////////////////////////////////////////
+                              746 ; 241  |//  ECC SSFDC Control Status Register (HW_ECC_SSFDCCFG) Bit Definitions
+                              747 ; 242  |
+                              748 ; 243  |#define HW_ECC_SSFDCCFG_SYMBOLSIZE_BITPOS (0)
+                              749 ; 244  |#define HW_ECC_SSFDCCFG_BLOCKSIZE_BITPOS (4)
+                              750 ; 245  |#define HW_ECC_SSFDCCFG_RSVD0_BITPOS (13)
+                              751 ; 246  |#define HW_ECC_SSFDCCFG_SFTRST_BITPOS (23)
+                              752 ; 247  |
+                              753 ; 248  |#define HW_ECC_SSFDCCFG_SYMBOLSIZE_WIDTH (4)
+                              754 ; 249  |#define HW_ECC_SSFDCCFG_BLOCKSIZE_WIDTH (9)
+                              755 ; 250  |#define HW_ECC_SSFDCCFG_RSVD0_WIDTH (7)
+                              756 ; 251  |#define HW_ECC_SSFDCCFG_SFTRST_WIDTH (1)
+                              757 ; 252  |
+                              758 ; 253  |#define HW_ECC_SSFDCCFG_SYMBOLSIZE_SETMASK (((1<<HW_ECC_SSFDCCFG_SYMBOLSIZE_WIDTH)-1)<<HW_
+                                  ECC_SSFDCCFG_SYMBOLSIZE_BITPOS) 
+                              759 ; 254  |#define HW_ECC_SSFDCCFG_BLOCKSIZE_SETMASK (((1<<HW_ECC_SSFDCCFG_BLOCKSIZE_WIDTH)-1)<<HW_EC
+                                  C_SSFDCCFG_BLOCKSIZE_BITPOS) 
+                              760 ; 255  |#define HW_ECC_SSFDCCFG_RSVD0_SETMASK (((1<<HW_ECC_SSFDCCFG_RSVD0_WIDTH)-1)<<HW_ECC_SSFDCC
+                                  FG_RSVD0_BITPOS) 
+                              761 ; 256  |#define HW_ECC_SSFDCCFG_SFTRST_SETMASK (((1<<HW_ECC_SSFDCCFG_SFTRST_WIDTH)-1)<<HW_ECC_SSFD
+                                  CCFG_SFTRST_BITPOS) 
+                              762 ; 257  |
+                              763 ; 258  |#define HW_ECC_SSFDCCFG_SYMBOLSIZE_CLRMASK (~(WORD)HW_ECC_SSFDCCFG_SYMBOLSIZE_SETMASK)
+                              764 ; 259  |#define HW_ECC_SSFDCCFG_BLOCKSIZE_CLRMASK (~(WORD)HW_ECC_SSFDCCFG_BLOCKSIZE_SETMASK)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              765 ; 260  |#define HW_ECC_SSFDCCFG_RSVD0_CLRMASK (~(WORD)HW_ECC_SSFDCCFG_RSVD0_SETMASK)
+                              766 ; 261  |#define HW_ECC_SSFDCCFG_ESFTRST_CLRMASK (~(WORD)HW_ECC_SSFDCCFG_SFTRST_SETMASK)
+                              767 ; 262  |
+                              768 ; 263  |typedef union               
+                              769 ; 264  |{
+                              770 ; 265  |    struct {
+                              771 ; 266  |         int SYMBOLSIZE      : HW_ECC_SSFDCCFG_SYMBOLSIZE_WIDTH;
+                              772 ; 267  |         int BLOCKSIZE       : HW_ECC_SSFDCCFG_BLOCKSIZE_WIDTH;
+                              773 ; 268  |         int RSVD0           : HW_ECC_SSFDCCFG_RSVD0_WIDTH;
+                              774 ; 269  |         int ESFTRST         : HW_ECC_SSFDCCFG_SFTRST_WIDTH;
+                              775 ; 270  |    } B;
+                              776 ; 271  |    int I;
+                              777 ; 272  |    unsigned int U;
+                              778 ; 273  |} ecc_ssfdccfg_type;
+                              779 ; 274  |#define HW_ECC_SSFDCCFG      (*(volatile ecc_ssfdccfg_type _X*) (HW_ECC_BASEADDR+3))    /*
+                                   ECC SSFDC Control Register */
+                              780 ; 275  |
+                              781 ; 276  |////////////////////////////////////////////////////////////////////////////
+                              782 ; 277  |//  ECC Data Block Start Address Register (HW_ECC_BLKSTRTADDR) Bit Definitions
+                              783 ; 278  |
+                              784 ; 279  |#define HW_ECC_BLKSTRTADDR_ADDR_BITPOS (0)
+                              785 ; 280  |#define HW_ECC_BLKSTRTADDR_RSVD0_BITPOS (16)
+                              786 ; 281  |
+                              787 ; 282  |#define HW_ECC_BLKSTRTADDR_ADDR_WIDTH (16)
+                              788 ; 283  |#define HW_ECC_BLKSTRTADDR_RSVD0_WIDTH (8)
+                              789 ; 284  |
+                              790 ; 285  |#define HW_ECC_BLKSTRTADDR_ADDR_SETMASK (((1<<HW_ECC_BLKSTRTADDR_ADDR_WIDTH)-1)<<HW_ECC_BL
+                                  KSTRTADDR_ADDR_BITPOS)
+                              791 ; 286  |#define HW_ECC_BLKSTRTADDR_RSVD0_SETMASK (((1<<HW_ECC_BLKSTRTADDR_RSVD0_WIDTH)-1)<<HW_ECC_
+                                  BLKSTRTADDR_RSVD0_BITPOS) 
+                              792 ; 287  |
+                              793 ; 288  |#define HW_ECC_BLKSTRTADDR_ADDR_CLRMASK (~(WORD)HW_ECC_BLKSTRTADDR_ADDR_SETMASK)
+                              794 ; 289  |#define HW_ECC_BLKSTRTADDR_RSVD0_CLRMASK (~(WORD)HW_ECC_BLKSTRTADDR_RSVD0_SETMASK)
+                              795 ; 290  |
+                              796 ; 291  |typedef union               
+                              797 ; 292  |{
+                              798 ; 293  |    struct {
+                              799 ; 294  |         int ADDR            : HW_ECC_BLKSTRTADDR_ADDR_WIDTH;
+                              800 ; 295  |         int RSVD0           : HW_ECC_BLKSTRTADDR_RSVD0_WIDTH;
+                              801 ; 296  |    } B;
+                              802 ; 297  |    int I;
+                              803 ; 298  |    unsigned int U;
+                              804 ; 299  |} ecc_blkstrtaddr_type;
+                              805 ; 300  |#define HW_ECC_BLKSTRTADDR      (*(volatile ecc_blkstrtaddr_type _X*) (HW_ECC_BASEADDR+4))
+                                      /* ECC Block-Start Address */
+                              806 ; 301  |
+                              807 ; 302  |////////////////////////////////////////////////////////////////////////////
+                              808 ; 303  |//  ECC Block Start Index Register (HW_ECC_BLKSTRTINDEX) Bit Definitions
+                              809 ; 304  |
+                              810 ; 305  |#define HW_ECC_BLKSTRTINDEX_INDEX_BITPOS (0)
+                              811 ; 306  |#define HW_ECC_BLKSTRTINDEX_RSVD0_BITPOS (5)
+                              812 ; 307  |#define HW_ECC_BLKSTRTINDEX_MEMSPACE_BITPOS (8)
+                              813 ; 308  |#define HW_ECC_BLKSTRTINDEX_RSVD1_BITPOS (10)
+                              814 ; 309  |
+                              815 ; 310  |#define HW_ECC_BLKSTRTINDEX_INDEX_WIDTH (5)
+                              816 ; 311  |#define HW_ECC_BLKSTRTINDEX_RSVD0_WIDTH (3)             
+                              817 ; 312  |#define HW_ECC_BLKSTRTINDEX_MEMSPACE_WIDTH (2)
+                              818 ; 313  |#define HW_ECC_BLKSTRTINDEX_RSVD1_WIDTH (14)
+                              819 ; 314  |
+                              820 ; 315  |#define HW_ECC_BLKSTRTINDEX_INDEX_SETMASK (((1<<HW_ECC_BLKSTRTINDEX_INDEX_WIDTH)-1)<<HW_EC
+                                  C_BLKSTRTINDEX_INDEX_BITPOS)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              821 ; 316  |#define HW_ECC_BLKSTRTINDEX_RSVD0_SETMASK (((1<<HW_ECC_BLKSTRTINDEX_RSVD0_WIDTH)-1)<<HW_EC
+                                  C_BLKSTRTINDEX_RSVD0_BITPOS)            
+                              822 ; 317  |#define HW_ECC_BLKSTRTINDEX_MEMSPACE_SETMASK (((1<<HW_ECC_BLKSTRTINDEX_MEMSPACE_WIDTH)-1)<
+                                  <HW_ECC_BLKSTRTINDEX_MEMSPACE_BITPOS) 
+                              823 ; 318  |#define HW_ECC_BLKSTRTINDEX_RSVD1_SETMASK (((1<<HW_ECC_BLKSTRTINDEX_RSVD1_WIDTH)-1)<<HW_EC
+                                  C_BLKSTRTINDEX_RSVD1_BITPOS) 
+                              824 ; 319  |
+                              825 ; 320  |#define HW_ECC_BLKSTRTINDEX_INDEX_CLRMASK (~(WORD)HW_ECC_BLKSTRTINDEX_INDEX_SETMASK)
+                              826 ; 321  |#define HW_ECC_BLKSTRTINDEX_RSVD0_CLRMASK (~(WORD)HW_ECC_BLKSTRTINDEX_RSVD0_SETMASK)
+                              827 ; 322  |#define HW_ECC_BLKSTRTINDEX_MEMSPACE_CLRMASK (~(WORD)HW_ECC_BLKSTRTINDEX_MEMSPACE_SETMASK)
+                                  
+                              828 ; 323  |#define HW_ECC_BLKSTRTINDEX_RSVD1_CLRMASK (~(WORD)HW_ECC_BLKSTRTINDEX_RSVD1_SETMASK)
+                              829 ; 324  |
+                              830 ; 325  |typedef union               
+                              831 ; 326  |{
+                              832 ; 327  |    struct {
+                              833 ; 328  |         int INDEX           : HW_ECC_BLKSTRTINDEX_INDEX_WIDTH;
+                              834 ; 329  |         int RSVD1           : HW_ECC_BLKSTRTINDEX_RSVD1_WIDTH;
+                              835 ; 330  |         int MEMSPACE        : HW_ECC_BLKSTRTINDEX_MEMSPACE_WIDTH;
+                              836 ; 331  |         int RSVD0           : HW_ECC_BLKSTRTINDEX_RSVD0_WIDTH;
+                              837 ; 332  |    } B;
+                              838 ; 333  |    int I;
+                              839 ; 334  |    unsigned int U;
+                              840 ; 335  |} ecc_blkstrtindex_type;
+                              841 ; 336  |#define HW_ECC_BLKSTRTINDEX      (*(volatile ecc_blkstrtindex_type _X*) (HW_ECC_BASEADDR+5
+                                  ))    /* ECC Block-Start Bit-Index */
+                              842 ; 337  |
+                              843 ; 338  |////////////////////////////////////////////////////////////////////////////
+                              844 ; 339  |//  ECC Parity Start Address Register (HW_ECC_PARSTRTADDR) Bit Definitions
+                              845 ; 340  |
+                              846 ; 341  |#define HW_ECC_PARSTRTADDR_ADDR_BITPOS (0)
+                              847 ; 342  |#define HW_ECC_PARSTRTADDR_RSVD0_BITPOS (16)
+                              848 ; 343  |
+                              849 ; 344  |#define HW_ECC_PARSTRTADDR_ADDR_WIDTH (16)
+                              850 ; 345  |#define HW_ECC_PARSTRTADDR_RSVD0_WIDTH (8)
+                              851 ; 346  |
+                              852 ; 347  |#define HW_ECC_PARSTRTADDR_ADDR_SETMASK (((1<<HW_ECC_PARSTRTADDR_ADDR_WIDTH)-1)<<HW_ECC_PA
+                                  RSTRTADDR_ADDR_BITPOS)  
+                              853 ; 348  |#define HW_ECC_PARSTRTADDR_RSVD0_SETMASK (((1<<HW_ECC_PARSTRTADDR_RSVD0_WIDTH)-1)<<HW_ECC_
+                                  PARSTRTADDR_RSVD0_BITPOS) 
+                              854 ; 349  |
+                              855 ; 350  |#define HW_ECC_PARSTRTADDR_ADDR_CLRMASK (~(WORD)HW_ECC_PARSTRTADDR_ADDR_SETMASK)
+                              856 ; 351  |#define HW_ECC_PARSTRTADDR_RSVD0_CLRMASK (~(WORD)HW_ECC_PARSTRTADDR_RSVD0_SETMASK)
+                              857 ; 352  |
+                              858 ; 353  |typedef union               
+                              859 ; 354  |{
+                              860 ; 355  |    struct {
+                              861 ; 356  |         int ADDR            : HW_ECC_PARSTRTADDR_ADDR_WIDTH;
+                              862 ; 357  |         int RSVD0           : HW_ECC_PARSTRTADDR_RSVD0_WIDTH;
+                              863 ; 358  |    } B;
+                              864 ; 359  |    int I;
+                              865 ; 360  |    unsigned int U;
+                              866 ; 361  |} ecc_parstrtaddr_type;
+                              867 ; 362  |#define HW_ECC_PARSTRTADDR      (*(volatile ecc_parstrtaddr_type _X*) (HW_ECC_BASEADDR+6))
+                                      /* ECC Parity-Start Address */
+                              868 ; 363  |
+                              869 ; 364  |////////////////////////////////////////////////////////////////////////////
+                              870 ; 365  |//  ECC Parity Start Index Register (HW_ECC_PARSTRTINDEX) Bit Definitions
+                              871 ; 366  |
+                              872 ; 367  |#define HW_ECC_PARSTRTINDEX_INDEX_BITPOS (0)
+                              873 ; 368  |#define HW_ECC_PARSTRTINDEX_RSVD0_BITPOS (5)
+                              874 ; 369  |#define HW_ECC_PARSTRTINDEX_MEMSPACE_BITPOS (8)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              875 ; 370  |#define HW_ECC_PARSTRTINDEX_RSVD1_BITPOS (10)
+                              876 ; 371  |
+                              877 ; 372  |#define HW_ECC_PARSTRTINDEX_INDEX_WIDTH (5)
+                              878 ; 373  |#define HW_ECC_PARSTRTINDEX_RSVD0_WIDTH (3)             
+                              879 ; 374  |#define HW_ECC_PARSTRTINDEX_MEMSPACE_WIDTH (2)
+                              880 ; 375  |#define HW_ECC_PARSTRTINDEX_RSVD1_WIDTH (14)
+                              881 ; 376  |
+                              882 ; 377  |#define HW_ECC_PARSTRTINDEX_INDEX_SETMASK (((1<<HW_ECC_PARSTRTINDEX_INDEX_WIDTH)-1)<<HW_EC
+                                  C_PARSTRTINDEX_INDEX_BITPOS)
+                              883 ; 378  |#define HW_ECC_PARSTRTINDEX_RSVD0_SETMASK (((1<<HW_ECC_PARSTRTINDEX_RSVD0_WIDTH)-1)<<HW_EC
+                                  C_PARSTRTINDEX_RSVD0_BITPOS)
+                              884 ; 379  |#define HW_ECC_PARSTRTINDEX_MEMSPACE_SETMASK (((1<<HW_ECC_PARSTRTINDEX_MEMSPACE_WIDTH)-1)<
+                                  <HW_ECC_PARSTRTINDEX_MEMSPACE_BITPOS) 
+                              885 ; 380  |#define HW_ECC_PARSTRTINDEX_RSVD1_SETMASK (((1<<HW_ECC_PARSTRTINDEX_RSVD1_WIDTH)-1)<<HW_EC
+                                  C_PARSTRTINDEX_RSVD1_BITPOS) 
+                              886 ; 381  |
+                              887 ; 382  |#define HW_ECC_PARSTRTINDEX_INDEX_CLRMASK (~(WORD)HW_ECC_PARSTRTINDEX_INDEX_SETMASK)
+                              888 ; 383  |#define HW_ECC_PARSTRTINDEX_RSVD0_CLRMASK (~(WORD)HW_ECC_PARSTRTINDEX_RSVD0_SETMASK)
+                              889 ; 384  |#define HW_ECC_PARSTRTINDEX_MEMSPACE_CLRMASK (~(WORD)HW_ECC_PARSTRTINDEX_MEMSPACE_SETMASK)
+                                  
+                              890 ; 385  |#define HW_ECC_PARSTRTINDEX_RSVD1_CLRMASK (~(WORD)HW_ECC_PARSTRTINDEX_RSVD1_SETMASK)
+                              891 ; 386  |
+                              892 ; 387  |typedef union               
+                              893 ; 388  |{
+                              894 ; 389  |    struct {
+                              895 ; 390  |         int INDEX           : HW_ECC_PARSTRTINDEX_INDEX_WIDTH;
+                              896 ; 391  |         int RSVD0           : HW_ECC_PARSTRTINDEX_RSVD0_WIDTH;
+                              897 ; 392  |         int MEMSPACE        : HW_ECC_PARSTRTINDEX_MEMSPACE_WIDTH;
+                              898 ; 393  |         int RSVD1           : HW_ECC_PARSTRTINDEX_RSVD1_WIDTH;
+                              899 ; 394  |    } B;
+                              900 ; 395  |    int I;
+                              901 ; 396  |    unsigned int U;
+                              902 ; 397  |} ecc_parstrtindex_type;
+                              903 ; 398  |#define HW_ECC_PARSTRTINDEX      (*(volatile ecc_parstrtindex_type _X*) (HW_ECC_BASEADDR+7
+                                  ))    /* ECC Block-Start Bit-Index */
+                              904 ; 399  |
+                              905 ; 400  |////////////////////////////////////////////////////////////////////////////
+                              906 ; 401  |//  ECC Error-Location Address Register (HW_ECC_LOCADDR) Bit Definitions
+                              907 ; 402  |
+                              908 ; 403  |#define HW_ECC_LOCADDR_ADDR_BITPOS (0)
+                              909 ; 404  |#define HW_ECC_LOCADDR_RSVD0_BITPOS (16)
+                              910 ; 405  |
+                              911 ; 406  |#define HW_ECC_LOCADDR_ADDR_WIDTH (16)
+                              912 ; 407  |#define HW_ECC_LOCADDR_RSVD0_WIDTH (8)
+                              913 ; 408  |
+                              914 ; 409  |#define HW_ECC_LOCADDR_ADDR_SETMASK (((1<<HW_ECC_LOCADDR_ADDR_WIDTH)-1)<<HW_ECC_LOCADDR_AD
+                                  DR_BITPOS)               
+                              915 ; 410  |#define HW_ECC_LOCADDR_RSVD0_SETMASK (((1<<HW_ECC_LOCADDR_RSVD0_WIDTH)-1)<<HW_ECC_LOCADDR_
+                                  RSVD0_BITPOS) 
+                              916 ; 411  |
+                              917 ; 412  |#define HW_ECC_LOCADDR_ADDR_CLRMASK (~(WORD)HW_ECC_LOCADDR_ADDR_SETMASK)
+                              918 ; 413  |#define HW_ECC_LOCADDR_RSVD0_CLRMASK (~(WORD)HW_ECC_LOCADDR_RSVD0_SETMASK)
+                              919 ; 414  |
+                              920 ; 415  |typedef union               
+                              921 ; 416  |{
+                              922 ; 417  |    struct {
+                              923 ; 418  |         int ADDR            : HW_ECC_LOCADDR_ADDR_WIDTH;
+                              924 ; 419  |         int RSVD0           : HW_ECC_LOCADDR_RSVD0_WIDTH;
+                              925 ; 420  |    } B;
+                              926 ; 421  |    int I;
+                              927 ; 422  |    unsigned int U;
+                              928 ; 423  |} ecc_locaddr_type;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              929 ; 424  |#define HW_ECC_LOCADDR      (*(volatile ecc_locaddr_type _X*) (HW_ECC_BASEADDR+8))    /* E
+                                  CC Parity-Start Address */
+                              930 ; 425  |
+                              931 ; 426  |////////////////////////////////////////////////////////////////////////////
+                              932 ; 427  |//  ECC Error-Location Index Register (HW_ECC_LOCINDEX) Bit Definitions
+                              933 ; 428  |
+                              934 ; 429  |#define HW_ECC_LOCINDEX_INDEX_BITPOS (0)
+                              935 ; 430  |#define HW_ECC_LOCINDEX_RSVD0_BITPOS (5)
+                              936 ; 431  |#define HW_ECC_LOCINDEX_MEMSPACE_BITPOS (8)
+                              937 ; 432  |#define HW_ECC_LOCINDEX_RSVD1_BITPOS (10)
+                              938 ; 433  |
+                              939 ; 434  |#define HW_ECC_LOCINDEX_INDEX_WIDTH (5)
+                              940 ; 435  |#define HW_ECC_LOCINDEX_RSVD0_WIDTH (3)             
+                              941 ; 436  |#define HW_ECC_LOCINDEX_MEMSPACE_WIDTH (2)
+                              942 ; 437  |#define HW_ECC_LOCINDEX_RSVD1_WIDTH (14)
+                              943 ; 438  |
+                              944 ; 439  |#define HW_ECC_LOCINDEX_INDEX_SETMASK (((1<<HW_ECC_LOCINDEX_INDEX_WIDTH)-1)<<HW_ECC_LOCIND
+                                  EX_INDEX_BITPOS)
+                              945 ; 440  |#define HW_ECC_LOCINDEX_RSVD0_SETMASK (((1<<HW_ECC_LOCINDEX_RSVD0_WIDTH)-1)<<HW_ECC_LOCIND
+                                  EX_RSVD0_BITPOS)            
+                              946 ; 441  |#define HW_ECC_LOCINDEX_MEMSPACE_SETMASK (((1<<HW_ECC_LOCINDEX_MEMSPACE_WIDTH)-1)<<HW_ECC_
+                                  LOCINDEX_MEMSPACE_BITPOS) 
+                              947 ; 442  |#define HW_ECC_LOCINDEX_RSVD1_SETMASK (((1<<HW_ECC_LOCINDEX_RSVD1_WIDTH)-1)<<HW_ECC_LOCIND
+                                  EX_RSVD1_BITPOS) 
+                              948 ; 443  |
+                              949 ; 444  |#define HW_ECC_LOCINDEX_INDEX_CLRMASK (~(WORD)HW_ECC_LOCINDEX_INDEX_SETMASK)
+                              950 ; 445  |#define HW_ECC_LOCINDEX_RSVD0_CLRMASK (~(WORD)HW_ECC_LOCINDEX_RSVD0_SETMASK)
+                              951 ; 446  |#define HW_ECC_LOCINDEX_MEMSPACE_CLRMASK (~(WORD)HW_ECC_LOCINDEX_MEMSPACE_SETMASK)
+                              952 ; 447  |#define HW_ECC_LOCINDEX_RSVD1_CLRMASK (~(WORD)HW_ECC_LOCINDEX_RSVD1_SETMASK)
+                              953 ; 448  |
+                              954 ; 449  |typedef union               
+                              955 ; 450  |{
+                              956 ; 451  |    struct {
+                              957 ; 452  |         int INDEX           : HW_ECC_LOCINDEX_INDEX_WIDTH;
+                              958 ; 453  |         int RSVD0           : HW_ECC_LOCINDEX_RSVD0_WIDTH;
+                              959 ; 454  |         int MEMSPACE        : HW_ECC_LOCINDEX_MEMSPACE_WIDTH;
+                              960 ; 455  |         int RSVD1           : HW_ECC_LOCINDEX_RSVD1_WIDTH;
+                              961 ; 456  |    } B;
+                              962 ; 457  |    int I;
+                              963 ; 458  |    unsigned int U;
+                              964 ; 459  |} ecc_locindex_type;
+                              965 ; 460  |#define HW_ECC_LOCINDEX      (*(volatile ecc_locindex_type _X*) (HW_ECC_BASEADDR+9))    /*
+                                   ECC Block-Start Bit-Index */
+                              966 ; 461  |
+                              967 ; 462  |////////////////////////////////////////////////////////////////////////////
+                              968 ; 463  |//  ECC Error-Location Index Register (HW_ECC_ERRVAL) Bit Definitions
+                              969 ; 464  |
+                              970 ; 465  |#define HW_ECC_ERRVAL_ERRORVALUE_BITPOS (0)
+                              971 ; 466  |#define HW_ECC_ERRVAL_RSVD0_BITPOS (9)
+                              972 ; 467  |#define HW_ECC_ERRVAL_BLOCKLOC_BITPOS (12)
+                              973 ; 468  |#define HW_ECC_ERRVAL_RSVD1_BITPOS (21)
+                              974 ; 469  |
+                              975 ; 470  |#define HW_ECC_ERRVAL_ERRORVALUE_WIDTH (9)
+                              976 ; 471  |#define HW_ECC_ERRVAL_RSVD0_WIDTH (3)             
+                              977 ; 472  |#define HW_ECC_ERRVAL_BLOCKLOC_WIDTH (9)
+                              978 ; 473  |#define HW_ECC_ERRVAL_RSVD1_WIDTH (3)
+                              979 ; 474  |
+                              980 ; 475  |#define HW_ECC_ERRVAL_ERRORVALUE_SETMASK (((1<<HW_ECC_ERRVAL_ERRORVALUE_WIDTH)-1)<<HW_ECC_
+                                  ERRVAL_ERRORVALUE_BITPOS)
+                              981 ; 476  |#define HW_ECC_ERRVAL_RSVD0_SETMASK (((1<<HW_ECC_ERRVAL_RSVD0_WIDTH)-1)<<HW_ECC_ERRVAL_RSV
+                                  D0_BITPOS)            
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              982 ; 477  |#define HW_ECC_ERRVAL_BLOCKLOC_SETMASK (((1<<HW_ECC_ERRVAL_BLOCKLOC_WIDTH)-1)<<HW_ECC_ERRV
+                                  AL_BLOCKLOC_BITPOS) 
+                              983 ; 478  |#define HW_ECC_ERRVAL_RSVD1_SETMASK (((1<<HW_ECC_ERRVAL_RSVD1_WIDTH)-1)<<HW_ECC_ERRVAL_RSV
+                                  D1_BITPOS) 
+                              984 ; 479  |
+                              985 ; 480  |#define HW_ECC_ERRVAL_ERRORVALUE_CLRMASK (~(WORD)HW_ECC_ERRVAL_ERRORVALUE_SETMASK)
+                              986 ; 481  |#define HW_ECC_ERRVAL_RSVD0_CLRMASK (~(WORD)HW_ECC_ERRVAL_RSVD0_SETMASK)
+                              987 ; 482  |#define HW_ECC_ERRVAL_BLOCKLOC_CLRMASK (~(WORD)HW_ECC_ERRVAL_BLOCKLOC_SETMASK)
+                              988 ; 483  |#define HW_ECC_ERRVAL_RSVD1_CLRMASK (~(WORD)HW_ECC_ERRVAL_RSVD1_SETMASK)
+                              989 ; 484  |
+                              990 ; 485  |typedef union               
+                              991 ; 486  |{
+                              992 ; 487  |    struct {
+                              993 ; 488  |         int INDEX           : HW_ECC_ERRVAL_ERRORVALUE_WIDTH;
+                              994 ; 489  |         int RSVD0           : HW_ECC_ERRVAL_RSVD0_WIDTH;
+                              995 ; 490  |         int MEMSPACE        : HW_ECC_ERRVAL_BLOCKLOC_WIDTH;
+                              996 ; 491  |         int RSVD1           : HW_ECC_ERRVAL_RSVD1_WIDTH;
+                              997 ; 492  |    } B;
+                              998 ; 493  |    int I;
+                              999 ; 494  |    unsigned int U;
+                             1000 ; 495  |} ecc_errval_type;
+                             1001 ; 496  |#define HW_ECC_ERRVAL      (*(volatile ecc_errval_type _X*) (HW_ECC_BASEADDR+10))    /* EC
+                                  C Block-Start Bit-Index */
+                             1002 ; 497  |
+                             1003 ; 498  |#endif
+                             1004 ; 499  |
+                             1005 ; 500  |
+                             1006 ; 501  |
+                             1007 ; 502  |
+                             1008 ; 503  |
+                             1009 ; 504  |
+                             1010 ; 505  |
+                             1011 ; 506  |
+                             1012 ; 507  |
+                             1013 ; 508  |
+                             1014 ; 509  |
+                             1015 ; 510  |
+                             1016 ; 511  |
+                             1017 ; 512  |
+                             1018 ; 513  |
+                             1019 ; 514  |
+                             1020 ; 515  |
+                             1021 
+                             1023 
+                             1024 ; 14   |#include "NANDRA_utils.h"
+                             1025 
+                             1027 
+                             1028 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                             1029 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                             1030 ; 3    |//
+                             1031 ; 4    |// Filename: NANDRAUtils.h
+                             1032 ; 5    |// Description: Defs and function prototypes for Redundant Area Access Functions
+                             1033 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                             1034 ; 7    |
+                             1035 ; 8    |
+                             1036 ; 9    |#ifndef NANDRA_UTILS_H
+                             1037 ; 10   |#define NANDRA_UTILS_H 1
+                             1038 ; 11   |
+                             1039 ; 12   |
+                             1040 ; 13   |/////////////////////////////////////////////////////////////////////////////////
+                             1041 ; 14   |//  Includes
+                             1042 ; 15   |/////////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1043 ; 16   |//#include "../COMMON/nandstructs.h"
+                             1044 ; 17   |#include "types.h"
+                             1045 
+                             1047 
+                             1048 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                             1049 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                             1050 ; 3    |//
+                             1051 ; 4    |// Filename: types.h
+                             1052 ; 5    |// Description: Standard data types
+                             1053 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                             1054 ; 7    |
+                             1055 ; 8    |#ifndef _TYPES_H
+                             1056 ; 9    |#define _TYPES_H
+                             1057 ; 10   |
+                             1058 ; 11   |// TODO:  move this outta here!
+                             1059 ; 12   |#if !defined(NOERROR)
+                             1060 ; 13   |#define NOERROR 0
+                             1061 ; 14   |#define SUCCESS 0
+                             1062 ; 15   |#endif 
+                             1063 ; 16   |#if !defined(SUCCESS)
+                             1064 ; 17   |#define SUCCESS  0
+                             1065 ; 18   |#endif
+                             1066 ; 19   |#if !defined(ERROR)
+                             1067 ; 20   |#define ERROR   -1
+                             1068 ; 21   |#endif
+                             1069 ; 22   |#if !defined(FALSE)
+                             1070 ; 23   |#define FALSE 0
+                             1071 ; 24   |#endif
+                             1072 ; 25   |#if !defined(TRUE)
+                             1073 ; 26   |#define TRUE  1
+                             1074 ; 27   |#endif
+                             1075 ; 28   |
+                             1076 ; 29   |#if !defined(NULL)
+                             1077 ; 30   |#define NULL 0
+                             1078 ; 31   |#endif
+                             1079 ; 32   |
+                             1080 ; 33   |#define MAX_INT     0x7FFFFF
+                             1081 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                             1082 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                             1083 ; 36   |#define MAX_ULONG   (-1) 
+                             1084 ; 37   |
+                             1085 ; 38   |#define WORD_SIZE   24              // word size in bits
+                             1086 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                             1087 ; 40   |
+                             1088 ; 41   |
+                             1089 ; 42   |#define BYTE    unsigned char       // btVarName
+                             1090 ; 43   |#define CHAR    signed char         // cVarName
+                             1091 ; 44   |#define USHORT  unsigned short      // usVarName
+                             1092 ; 45   |#define SHORT   unsigned short      // sVarName
+                             1093 ; 46   |#define WORD    unsigned int        // wVarName
+                             1094 ; 47   |#define INT     signed int          // iVarName
+                             1095 ; 48   |#define DWORD   unsigned long       // dwVarName
+                             1096 ; 49   |#define LONG    signed long         // lVarName
+                             1097 ; 50   |#define BOOL    unsigned int        // bVarName
+                             1098 ; 51   |#define FRACT   _fract              // frVarName
+                             1099 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                             1100 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                             1101 ; 54   |#define FLOAT   float               // fVarName
+                             1102 ; 55   |#define DBL     double              // dVarName
+                             1103 ; 56   |#define ENUM    enum                // eVarName
+                             1104 ; 57   |#define CMX     _complex            // cmxVarName
+                             1105 ; 58   |typedef WORD UCS3;                   // 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1106 ; 59   |
+                             1107 ; 60   |#define UINT16  unsigned short
+                             1108 ; 61   |#define UINT8   unsigned char   
+                             1109 ; 62   |#define UINT32  unsigned long
+                             1110 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                             1111 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                             1112 ; 65   |#define WCHAR   UINT16
+                             1113 ; 66   |
+                             1114 ; 67   |//UINT128 is 16 bytes or 6 words
+                             1115 ; 68   |typedef struct UINT128_3500 {   
+                             1116 ; 69   |    int val[6];     
+                             1117 ; 70   |} UINT128_3500;
+                             1118 ; 71   |
+                             1119 ; 72   |#define UINT128   UINT128_3500
+                             1120 ; 73   |
+                             1121 ; 74   |// Little endian word packed byte strings:   
+                             1122 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                             1123 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                             1124 ; 77   |// Little endian word packed byte strings:   
+                             1125 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                             1126 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                             1127 ; 80   |
+                             1128 ; 81   |// Declare Memory Spaces To Use When Coding
+                             1129 ; 82   |// A. Sector Buffers
+                             1130 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                             1131 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                             1132 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                             1133 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                             1134 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                             1135 ; 88   |// B. Media DDI Memory
+                             1136 ; 89   |#define MEDIA_DDI_MEM _Y
+                             1137 ; 90   |
+                             1138 ; 91   |
+                             1139 ; 92   |
+                             1140 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                             1141 ; 94   |// Examples of circular pointers:
+                             1142 ; 95   |//    INT CIRC cpiVarName
+                             1143 ; 96   |//    DWORD CIRC cpdwVarName
+                             1144 ; 97   |
+                             1145 ; 98   |#define RETCODE INT                 // rcVarName
+                             1146 ; 99   |
+                             1147 ; 100  |// generic bitfield structure
+                             1148 ; 101  |struct Bitfield {
+                             1149 ; 102  |    unsigned int B0  :1;
+                             1150 ; 103  |    unsigned int B1  :1;
+                             1151 ; 104  |    unsigned int B2  :1;
+                             1152 ; 105  |    unsigned int B3  :1;
+                             1153 ; 106  |    unsigned int B4  :1;
+                             1154 ; 107  |    unsigned int B5  :1;
+                             1155 ; 108  |    unsigned int B6  :1;
+                             1156 ; 109  |    unsigned int B7  :1;
+                             1157 ; 110  |    unsigned int B8  :1;
+                             1158 ; 111  |    unsigned int B9  :1;
+                             1159 ; 112  |    unsigned int B10 :1;
+                             1160 ; 113  |    unsigned int B11 :1;
+                             1161 ; 114  |    unsigned int B12 :1;
+                             1162 ; 115  |    unsigned int B13 :1;
+                             1163 ; 116  |    unsigned int B14 :1;
+                             1164 ; 117  |    unsigned int B15 :1;
+                             1165 ; 118  |    unsigned int B16 :1;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1166 ; 119  |    unsigned int B17 :1;
+                             1167 ; 120  |    unsigned int B18 :1;
+                             1168 ; 121  |    unsigned int B19 :1;
+                             1169 ; 122  |    unsigned int B20 :1;
+                             1170 ; 123  |    unsigned int B21 :1;
+                             1171 ; 124  |    unsigned int B22 :1;
+                             1172 ; 125  |    unsigned int B23 :1;
+                             1173 ; 126  |};
+                             1174 ; 127  |
+                             1175 ; 128  |union BitInt {
+                             1176 ; 129  |        struct Bitfield B;
+                             1177 ; 130  |        int        I;
+                             1178 ; 131  |};
+                             1179 ; 132  |
+                             1180 ; 133  |#define MAX_MSG_LENGTH 10
+                             1181 ; 134  |struct CMessage
+                             1182 ; 135  |{
+                             1183 ; 136  |        unsigned int m_uLength;
+                             1184 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                             1185 ; 138  |};
+                             1186 ; 139  |
+                             1187 ; 140  |typedef struct {
+                             1188 ; 141  |    WORD m_wLength;
+                             1189 ; 142  |    WORD m_wMessage;
+                             1190 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                             1191 ; 144  |} Message;
+                             1192 ; 145  |
+                             1193 ; 146  |struct MessageQueueDescriptor
+                             1194 ; 147  |{
+                             1195 ; 148  |        int *m_pBase;
+                             1196 ; 149  |        int m_iModulo;
+                             1197 ; 150  |        int m_iSize;
+                             1198 ; 151  |        int *m_pHead;
+                             1199 ; 152  |        int *m_pTail;
+                             1200 ; 153  |};
+                             1201 ; 154  |
+                             1202 ; 155  |struct ModuleEntry
+                             1203 ; 156  |{
+                             1204 ; 157  |    int m_iSignaledEventMask;
+                             1205 ; 158  |    int m_iWaitEventMask;
+                             1206 ; 159  |    int m_iResourceOfCode;
+                             1207 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                             1208 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                             1209 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                             1210 ; 163  |    int m_uTimeOutHigh;
+                             1211 ; 164  |    int m_uTimeOutLow;
+                             1212 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                             1213 ; 166  |};
+                             1214 ; 167  |
+                             1215 ; 168  |union WaitMask{
+                             1216 ; 169  |    struct B{
+                             1217 ; 170  |        unsigned int m_bNone     :1;
+                             1218 ; 171  |        unsigned int m_bMessage  :1;
+                             1219 ; 172  |        unsigned int m_bTimer    :1;
+                             1220 ; 173  |        unsigned int m_bButton   :1;
+                             1221 ; 174  |    } B;
+                             1222 ; 175  |    int I;
+                             1223 ; 176  |} ;
+                             1224 ; 177  |
+                             1225 ; 178  |
+                             1226 ; 179  |struct Button {
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1227 ; 180  |        WORD wButtonEvent;
+                             1228 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                             1229 ; 182  |};
+                             1230 ; 183  |
+                             1231 ; 184  |struct Message {
+                             1232 ; 185  |        WORD wMsgLength;
+                             1233 ; 186  |        WORD wMsgCommand;
+                             1234 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                             1235 ; 188  |};
+                             1236 ; 189  |
+                             1237 ; 190  |union EventTypes {
+                             1238 ; 191  |        struct CMessage msg;
+                             1239 ; 192  |        struct Button Button ;
+                             1240 ; 193  |        struct Message Message;
+                             1241 ; 194  |};
+                             1242 ; 195  |
+                             1243 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                             1244 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                             1245 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                             1246 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                             1247 ; 200  |
+                             1248 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                             1249 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                             1250 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                             1251 ; 204  |
+                             1252 ; 205  |#if DEBUG
+                             1253 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                             1254 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                             1255 ; 208  |#else 
+                             1256 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                             1257 ; 210  |#define DebugBuildAssert(x)    
+                             1258 ; 211  |#endif
+                             1259 ; 212  |
+                             1260 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                             1261 ; 214  |//  #pragma asm
+                             1262 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                             1263 ; 216  |//  #pragma endasm
+                             1264 ; 217  |
+                             1265 ; 218  |
+                             1266 ; 219  |#ifdef COLOR_262K
+                             1267 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                             1268 ; 221  |#elif defined(COLOR_65K)
+                             1269 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                             1270 ; 223  |#else
+                             1271 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                             1272 ; 225  |#endif
+                             1273 ; 226  |    
+                             1274 ; 227  |#endif // #ifndef _TYPES_H
+                             1275 
+                             1277 
+                             1278 ; 18   |//#include "nandddi.h"
+                             1279 ; 19   |
+                             1280 ; 20   |
+                             1281 ; 21   |// Declare Memory Spaces To Use When Coding
+                             1282 ; 22   |// A. Sector Buffers
+                             1283 ; 23   |#define SECTOR_BUFFER_MEM_X _X
+                             1284 ; 24   |#define SECTOR_BUFFER_MEM_Y _Y
+                             1285 ; 25   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1286 ; 26   |//typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                             1287 ; 27   |//typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                             1288 ; 28   |#define SECTOR_BUFFER   (WORD SECTOR_BUFFER_MEM)
+                             1289 ; 29   |// B. Media DDI Memory
+                             1290 ; 30   |#define MEDIA_DDI_MEM _Y
+                             1291 ; 31   |
+                             1292 ; 32   |
+                             1293 ; 33   |
+                             1294 ; 34   |/////////////////////////////////////////////////////////////////////////////////
+                             1295 ; 35   |//  Definitions
+                             1296 ; 36   |/////////////////////////////////////////////////////////////////////////////////
+                             1297 ; 37   |
+                             1298 ; 38   |#define RA_ECC_POS                  (SectorSizeInWordsPlusOne + 2)
+                             1299 ; 39   |#define WHOLE_SECTOR TRUE
+                             1300 ; 40   |#define RA_ONLY FALSE
+                             1301 ; 41   |
+                             1302 ; 42   |#define RA_CRC_OFFSET                   0
+                             1303 ; 43   |#define RA_LBA_1_OFFSET                 1
+                             1304 ; 44   |#define RA_STMP_TAG_1_OFFSET            1
+                             1305 ; 45   |#define RA_RSI_0_OFFSET                 2
+                             1306 ; 46   |#define RA_RSI_1_OFFSET                 3
+                             1307 ; 47   |#define RA_CUSTOMER_BYTE_OFFSET         4
+                             1308 ; 48   |#define RA_BLOCK_STATUS_OFFSET          5
+                             1309 ; 49   |#define RA_LBA_0_OFFSET                 6
+                             1310 ; 50   |#define RA_STMP_TAG_0_OFFSET            6
+                             1311 ; 51   |#define RA_RS_ECC_OFFSET                7
+                             1312 ; 52   |
+                             1313 ; 53   |
+                             1314 ; 54   |////////////////////ECC Error Defines///////////////////////////////////////////
+                             1315 ; 55   |#define   COMPUTE_ECC_SUCCESS               0
+                             1316 ; 56   |#define   COMPUTE_ECC_NOT_DONE              0x516
+                             1317 ; 57   |
+                             1318 ; 58   |#define   NANDHAL_ECC_NOERROR               0
+                             1319 ; 59   |#define   NANDHAL_ECC_ERROR_FIXED           0x519
+                             1320 ; 60   |#define   NANDHAL_ECC_FIX_FAILED            0x51A
+                             1321 ; 61   |
+                             1322 ; 62   |
+                             1323 ; 63   |
+                             1324 ; 64   |
+                             1325 ; 65   |/////////////////////////////////////////////////////////////////////////////////
+                             1326 ; 66   |//  Function Prototypes
+                             1327 ; 67   |/////////////////////////////////////////////////////////////////////////////////
+                             1328 ; 68   |WORD _reentrant NANDRA_ToStandardForm(WORD _X * pRA, BOOL bWholeSector);
+                             1329 ; 69   |WORD _reentrant NANDRA_ToNANDForm(WORD _X * pRA, BOOL bWholeSector);
+                             1330 ; 70   |WORD _reentrant NANDRAGetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                             1331 ; 71   |                         WORD *pwValue);
+                             1332 ; 72   |WORD _reentrant NANDRASetByte(WORD _X * pRA, BOOL bWholeSector, WORD wByteOffsetInRA,
+                             1333 ; 73   |                         WORD wValue);
+                             1334 ; 74   |WORD _reentrant NANDRAGetCRC(WORD _X * pRA, BOOL bWholeSector,
+                             1335 ; 75   |                         WORD *pwCRC);
+                             1336 ; 76   |WORD _reentrant NANDRA_CRCCorrect(struct NANDDescriptorStruct _P *pNANDDesc, WORD _X * pRA
+                                  ,
+                             1337 ; 77   |                          WORD iDeviceNum, WORD iSectorNum);
+                             1338 ; 78   |
+                             1339 ; 79   |WORD _reentrant NANDRAGetLBA(WORD _X * pRA, BOOL bWholeSector,
+                             1340 ; 80   |                 WORD *pwLBA, WORD *pwLSA);
+                             1341 ; 81   |
+                             1342 ; 82   |WORD _reentrant NANDRAGetBlockStatus(WORD _X * pRA, BOOL bWholeSector,
+                             1343 ; 83   |                         WORD *pwBlockStatus);
+                             1344 ; 84   |
+                             1345 ; 85   |WORD _reentrant NANDRAGetStmpCode(WORD _X * pRA, BOOL bWholeSector,
+                             1346 ; 86   |                          WORD *pwStmpCode);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1347 ; 87   |
+                             1348 ; 88   |#endif
+                             1349 ; 89   |
+                             1350 ; 90   |
+                             1351 ; 91   |/////////////////////////////////////////////////////////////////////////////////
+                             1352 ; 92   |////////////////////////////////  EOF  //////////////////////////////////////////
+                             1353 ; 93   |/////////////////////////////////////////////////////////////////////////////////
+                             1354 
+                             1356 
+                             1357 ; 15   |
+                             1358 ; 16   |///////////////////////////////////////////////////////////////////////////////
+                             1359 ; 17   |// Constants
+                             1360 ; 18   |///////////////////////////////////////////////////////////////////////////////
+                             1361 ; 19   |
+                             1362 ; 20   |#define HW_ECC_CSR0_ECCSEL_SSFDC_DECODE                     (0x010000)
+                             1363 ; 21   |#define HW_ECC_CSR1_ECCEXCEPTION_SSFDC_MORE_1_ERR_SETMASK   (0x008000)
+                             1364 ; 22   |
+                             1365 ; 23   |// At 6 cycles per loop & all possible digital clk freq, this value needs to give >50 micr
+                                  osec delay.
+                             1366 ; 24   |// At 24MHz, 1000 6 cycle loops gives 250 microsec delay.  At 75MHz, 1000 6 cycle loops is
+                                   80 usec.
+                             1367 ; 25   |#define RSECC_DELAY_COUNTER_VALUE 1000
+                             1368 ; 26   |
+                             1369 ; 27   |
+                             1370 ; 28   |///////////////////////////////////////////////////////////////////////////////
+                             1371 ; 29   |// Variables
+                             1372 ; 30   |///////////////////////////////////////////////////////////////////////////////
+                             1373 ; 31   |
+                             1374 ; 32   |
+                             1375 ; 33   |///////////////////////////////////////////////////////////////////////////////
+                             1376 ; 34   |// Function Prototypes
+                             1377 ; 35   |///////////////////////////////////////////////////////////////////////////////
+                             1378 ; 36   |
+                             1379 ; 37   |///////////////////////////////////////////////////////////////////////////////
+                             1380 ; 38   |// Externs
+                             1381 ; 39   |///////////////////////////////////////////////////////////////////////////////
+                             1382 ; 40   |extern WORD _X SectorSize;
+                             1383 ; 41   |extern WORD _X SectorSizeInWordsPlusOne;
+                             1384 
+                             1388 
+                             1389 ; 42   |
+                             1390 ; 43   |///////////////////////////////////////////////////////////////////////////////
+                             1391 ; 44   |// Functions
+                             1392 ; 45   |///////////////////////////////////////////////////////////////////////////////
+                             1393 ; 46   |
+                             1394 ; 47   |
+                             1395 ; 48   |///////////////////////////////////////////////////////////////////////////////
+                             1396 ; 49   |//> Name:        NANDHalCorrectPartial
+                             1397 ; 50   |//
+                             1398 ; 51   |//  Type:        Function
+                             1399 ; 52   |//  Description: Do the actual work of correcting a block of data
+                             1400 ; 53   |//  Inputs:
+                             1401 ; 54   |//  Outputs:
+                             1402 ; 55   |//  Notes:
+                             1403 ; 56   |//<
+                             1404 ; 57   |/////////////////////////////////////////////////////////////////////////////////
+                             1405 ; 58   |RETCODE _reentrant NANDHalCorrectPartial( P_SECTOR_BUFFER pCompleteSectorBuf, P_SECTOR_BUF
+                                  FER pECCBuf, WORD blockStartIndex )
+                             1406 ; 59   |{
+                             1407 
+P:0000                       1408         org     p,".ptextnandhalcorrectecc":
+                             1539 FNANDHalCorrectPartial:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1546 
+                             1547 ; 60   |    HW_ECC_CSR0.U = 0x800000;   // soft reset
+                             1548 
+P:0000 278000         2    2 1550         move    #<$80,y1
+P:0001 477000 00F780  3    5 1551         move    y1,x:$F780
+                             1552 
+                             1553 ; 61   |    HW_ECC_CSR0.U = 0x030002;   // RS Decode, autocorrect
+                             1554 
+P:0003 51F400 030002  3    8 1556         move    #196610,b0
+P:0005 517000 00F780  3   11 1557         move    b0,x:$F780
+                             1558 
+                             1559 ; 62   |
+                             1560 ; 63   |    HW_ECC_CSR1.U = 0x0001f0;   // clear any residual crud
+                             1561 
+P:0007 46F400 0001F0  3   14 1563         move    #$1F0,y0
+P:0009 467000 00F781  3   17 1564         move    y0,x:$F781
+                             1565 
+                             1566 ; 64   |
+                             1567 ; 65   |    HW_ECC_RSCFG.U = 0x101ce9;  // BYTEEN = 1, 519 bytes, 9 bit symbols
+                             1568 
+P:000B 44F400 101CE9  3   20 1570         move    #1055977,x0
+P:000D 447000 00F782  3   23 1571         move    x0,x:$F782
+                             1572 
+                             1573 ; 66   |    HW_ECC_BLKSTRTADDR.U = (WORD)pCompleteSectorBuf;
+                             1574 
+P:000F 220500         2   25 1576         move    r0,x1
+P:0010 457000 00F784  3   28 1577         move    x1,x:$F784
+                             1578 
+                             1579 ; 67   |    HW_ECC_BLKSTRTINDEX.U = blockStartIndex;
+                             1580 
+P:0012 547000 00F785  3   31 1582         move    a1,x:$F785
+                             1583 
+                             1584 ; 68   |
+                             1585 ; 69   |    HW_ECC_PARSTRTADDR.U = (WORD)pECCBuf;
+                             1586 
+P:0014 228C00         2   33 1588         move    r4,a1
+P:0015 547000 00F786  3   36 1590         move    a1,x:$F786
+                             1591 
+                             1592 ; 70   |    HW_ECC_PARSTRTINDEX.U = 0;
+                             1593 
+P:0017 200013         2   38 1595         clr     a   
+P:0018 547000 00F787  3   41 1596         move    a1,x:$F787
+                             1597 
+                             1598 ; 71   |
+                             1599 ; 72   |    // Start the ecc decode.
+                             1600 ; 73   |    HW_ECC_CSR0.B.ECCKICK = 1;
+                             1601 
+P:001A 0A7020 00F780  6   47 1603         bset    #0,x:$F780
+                             1605 
+                             1606 ; 74   |
+                             1607 ; 75   |    // Wait till finished. Sigh.
+                             1608 ; 76   |    // we need about 50 microseconds of pause to determine that the engine isn't coming ba
+                                  ck, so, we use counter
+                             1609 ; 77   |    {
+                             1610 ; 78   |        WORD counter = RSECC_DELAY_COUNTER_VALUE;
+                             1611 
+P:001C 57F400 0003E8  3   50 1615         move    #1000,b
+                             1617 
+                             1618 ; 79   |        while (HW_ECC_CSR0.B.ECCKICK && counter) 
+                             1619 
+P:001E 45F400 000001  3   53 1621         move    #>1,x1
+P:0020 06E883 rrrrrr  6   59 1622         do      #1000,L16
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0022 46F000 00F780  3   62 1624         move    x:$F780,y0
+P:0024 0AC620 rrrrrr  6   68 1625         jset    #0,y0,L18
+P:0026 00008C         2   70 1626         enddo
+P:0027 0AF080 rrrrrr  6   76 1628         jmp     L12
+                             1629 
+                             1630 ; 80   |        {
+                             1631 ; 81   |            counter--;
+                             1632 
+P:0029 20006C         2   78 1634 L18:    sub     x1,b
+P:002A 000000         2   80 1636         nop
+                        (21) 1637 L16:
+                             1639 
+                             1640 ; 82   |        }
+                             1641 ; 83   |        if (!counter)
+                             1642 
+P:002B 2B0000         2   82 1644 L12:    move    #0,b2
+P:002C 20000B         2   84 1645         tst     b
+P:002D 0AF0AA rrrrrr  6   90 1646         jeq     L13
+                             1649 
+                             1650 ; 84   |        {
+                             1651 ; 85   |            return NANDHAL_ECC_FIX_FAILED;
+                             1652 ; 86   |        }
+                             1653 ; 87   |    }
+                             1654 ; 88   |
+                             1655 ; 89   |    // check for errors
+                             1656 ; 90   |    if (HW_ECC_CSR1.B.UNCORRIN)
+                             1657 
+P:002F 46F000 00F781  3   93 1659         move    x:$F781,y0
+P:0031 0AC607 rrrrrr  6   99 1660         jclr    #7,y0,L14
+                             1661 
+                             1662 ; 91   |    {
+                             1663 ; 92   |      // ECC exception. More than 4 errors.
+                             1664 ; 93   |      // error.
+                             1665 ; 94   |      return NANDHAL_ECC_FIX_FAILED;
+                             1666 
+P:0033 56F400 00051A  3  102 1668 L13:    move    #1306,a
+P:0035 00000C         4  106 1669         rts
+                             1670 
+                             1671 ; 95   |    }
+                             1672 ; 96   |    return SUCCESS;
+                             1673 
+P:0036 218E00         2  108 1675 L14:    move    a1,a
+                             1676 
+                             1677 ; 97   |}
+                             1678 
+P:0037 00000C         4  112 1680         rts
+                             1684 
+                             1685 ; 98   |
+                             1686 ; 99   |
+                             1687 ; 100  |///////////////////////////////////////////////////////////////////////////////
+                             1688 ; 101  |//> Name:        NANDHalCorrectECC_4Bit
+                             1689 ; 102  |//
+                             1690 ; 103  |//  Type:        Function
+                             1691 ; 104  |//  Description: Compute the ECC for the specified sector's data and verify
+                             1692 ; 105  |//                 the ECC fields in its redundant area. If the check fails,
+                             1693 ; 106  |//                 try to correct the data.
+                             1694 ; 107  |//
+                             1695 ; 108  |//  Inputs:      P_SECTOR_BUFFER pCompleteSectorBuf
+                             1696 ; 109  |//  Outputs:     Returns FAIL if data correction fails, else Returns SUCCESS.
+                             1697 ; 110  |//  Notes:
+                             1698 ; 111  |//<
+                             1699 ; 112  |/////////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1700 ; 113  |RETCODE _reentrant NANDHalCorrectECC_4Bit(WORD _X * pCompleteSectorBuf)
+                             1701 ; 114  |{
+                             1702 
+                             1709 FNANDHalCorrectECC_4Bit:
+P:0038 055F3C         2  114 1710         movec   ssh,x:(r7)+
+P:0039 3F0800         2  116 1713         move    #8,n7
+P:003A 000000         2  118 1714         nop
+P:003B 204F00         2  120 1715         move    (r7)+n7
+                             1721 
+                             1722 ; 115  |    short i = (SectorSize>>9);
+                             1723 
+P:003C 57F000 rrrrrr  3  123 1725         move    x:FSectorSize,b
+P:003E 060980 rrrrrr  6  129 1726         do      #9,L42
+P:0040 20002B         2  131 1728         lsr     b
+P:0041 000000         2  133 1729         nop
+                         (4) 1730 L42:
+P:0042 21A400         2  135 1732         move    b1,x0
+                             1736 
+                             1737 ; 116  |    RETCODE status = NANDHAL_ECC_NOERROR;
+                             1738 
+P:0043 20001B         2  137 1740         clr     b   
+P:0044 77F400 FFFFFC  3  140 1742         move    #-4,n7
+P:0046 000000         2  142 1743         nop
+P:0047 576F00         4  146 1744         move    b,x:(r7+n7)
+                             1753 
+                             1754 ; 117  |
+                             1755 ; 118  |    WORD wLBA, wRSI, blockStartIndex;
+                             1756 ; 119  |    P_SECTOR_BUFFER pECCBuf = &pCompleteSectorBuf[RA_ECC_POS+(3*(i-1))];
+                             1757 
+P:0048 56F000 rrrrrr  3  149 1759         move    x:FSectorSizeInWordsPlusOne,a
+P:004A 77F400 FFFFFB  3  152 1760         move    #-5,n7
+P:004C 000000         2  154 1761         nop
+P:004D 446F00         4  158 1762         move    x0,x:(r7+n7)
+P:004E 46F400 000003  3  161 1763         move    #>3,y0
+P:0050 2000D8         2  163 1764         mpy     x0,y0,b
+P:0051 20002A         2  165 1765         asr     b
+P:0052 212F00         2  167 1768         move    b0,b
+P:0053 20005C         2  169 1769         sub     y0,b
+P:0054 200018         2  171 1770         add     a,b
+P:0055 21B900         2  173 1771         move    b1,n1
+P:0056 380200         2  175 1772         move    #2,n0
+P:0057 000000         2  177 1773         nop
+P:0058 044811         4  181 1774         lua     (r0)+n0,r1
+P:0059 000000         2  183 1775         nop
+P:005A 204900         2  185 1776         move    (r1)+n1
+P:005B 77F400 FFFFFD  3  188 1777         move    #-3,n7
+P:005D 000000         2  190 1778         nop
+P:005E 616F00         4  194 1779         move    r1,x:(r7+n7)
+                             1781 
+                             1782 ; 120  |
+                             1783 ; 121  |    // check for an erased block. Do this by checking the sector # field.
+                             1784 ; 122  |    // If it's all 1's then the block is erased, so just return success
+                             1785 ; 123  |    // (there's never a sector # > 0xFFFE)
+                             1786 ; 124  |    NANDRAGetLBA(pCompleteSectorBuf, WHOLE_SECTOR, &wLBA, &wRSI);
+                             1787 
+P:005F 77F400 FFFFF9  3  197 1789         move    #-7,n7
+P:0061 000000         2  199 1790         nop
+P:0062 044F14         4  203 1791         lua     (r7)+n7,r4
+P:0063 77F400 FFFFF8  3  206 1792         move    #-8,n7
+P:0065 000000         2  208 1793         nop
+P:0066 044F11         4  212 1794         lua     (r7)+n7,r1
+P:0067 77F400 FFFFFA  3  215 1795         move    #-6,n7
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0069 000000         2  217 1796         nop
+P:006A 606F00         4  221 1797         move    r0,x:(r7+n7)
+P:006B 56F400 000001  3  224 1802         move    #>1,a
+P:006D 0BF080 rrrrrr  6  230 1803         jsr     FNANDRAGetLBA
+                             1806 
+                             1807 ; 125  |    pCompleteSectorBuf = &pCompleteSectorBuf[171*(i-1)];
+                             1808 
+P:006F 3DAB00         2  232 1810         move    #171,n5
+P:0070 77F400 FFFFFA  3  235 1811         move    #-6,n7
+P:0072 000000         2  237 1812         nop
+P:0073 65EF00         4  241 1813         move    x:(r7+n7),r5
+P:0074 000000         2  243 1814         nop
+P:0075 044510         4  247 1815         lua     (r5)-n5,r0
+P:0076 77F400 FFFFFB  3  250 1818         move    #-5,n7
+P:0078 000000         2  252 1819         nop
+P:0079 47EF00         4  256 1820         move    x:(r7+n7),y1
+P:007A 44F400 0000AB  3  259 1821         move    #>171,x0
+P:007C 2000C0         2  261 1822         mpy     y1,x0,a
+P:007D 200022         2  263 1823         asr     a
+P:007E 211800         2  265 1826         move    a0,n0
+P:007F 000000         2  267 1827         nop
+P:0080 204800         2  269 1828         move    (r0)+n0
+                             1831 
+                             1832 ; 126  |    if (wRSI != 0xffff)
+                             1833 
+P:0081 77F400 FFFFF8  3  272 1835         move    #-8,n7
+P:0083 000000         2  274 1836         nop
+P:0084 56EF00         4  278 1837         move    x:(r7+n7),a
+P:0085 57F400 00FFFF  3  281 1838         move    #$FFFF,b
+P:0087 2A0000         2  283 1839         move    #0,a2
+P:0088 200005         2  285 1840         cmp     b,a
+P:0089 0AF0AA rrrrrr  6  291 1841         jeq     L41
+                             1842 
+                             1843 ; 127  |    {
+                             1844 ; 128  |        for ( /* i already initialized*/; (SUCCESS == status) && i; --i )
+                             1845 
+P:008B 0AF080 rrrrrr  6  297 1847         jmp     L39
+                             1848 
+                             1849 ; 129  |        {
+                             1850 ; 130  |            switch( i )
+                             1851 
+P:008D 200071         2  299 1853 L31:    tfr     y1,a
+P:008E 46F400 000003  3  302 1854         move    #>3,y0
+P:0090 46F455 000002  3  305 1855         cmp     y0,a    #>2,y0
+P:0092 0AF0AA rrrrrr  6  311 1856         jeq     L33
+P:0094 46F455 000004  3  314 1857         cmp     y0,a    #>4,y0
+P:0096 0AF0AA rrrrrr  6  320 1858         jeq     L34
+P:0098 200055         2  322 1859         cmp     y0,a
+P:0099 0AF0A2 rrrrrr  6  328 1860         jne     L35
+                             1861 
+                             1862 ; 131  |            {
+                             1863 ; 132  |            case 4:
+                             1864 ; 133  |                --pCompleteSectorBuf;
+                             1865 
+P:009B 205000         2  330 1867         move    (r0)-
+                             1868 
+                             1869 ; 134  |                blockStartIndex = 0;
+                             1870 
+P:009C 0AF080 rrrrrr  6  336 1872         jmp     L36
+                             1873 
+                             1874 ; 135  |                break;
+                             1875 ; 136  |            case 3:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1876 ; 137  |                blockStartIndex = 8;
+                             1877 
+P:009E 56F400 000008  3  339 1879 L33:    move    #>8,a
+                             1881 
+                             1882 ; 138  |                break;
+                             1883 
+P:00A0 0AF080 rrrrrr  6  345 1885         jmp     L38
+                             1886 
+                             1887 ; 139  |            case 2:
+                             1888 ; 140  |                blockStartIndex = 16;
+                             1889 
+P:00A2 56F400 000010  3  348 1891 L34:    move    #>16,a
+                             1892 
+                             1893 ; 141  |                break;
+                             1894 
+P:00A4 0AF080 rrrrrr  6  354 1896         jmp     L38
+                             1897 
+                             1898 ; 142  |            default:
+                             1899 ; 143  |            case 1:
+                             1900 ; 144  |                pCompleteSectorBuf += (SectorSize>512);  // increment by one if large sect
+                                  or
+                             1901 
+P:00A6 56F000 rrrrrr  3  357 1903 L35:    move    x:FSectorSize,a
+P:00A8 46F400 000200  3  360 1905         move    #$200,y0
+P:00AA 2A0000         2  362 1906         move    #0,a2
+P:00AB 200055         2  364 1907         cmp     y0,a
+P:00AC 350000         2  366 1908         move    #0,r5
+P:00AD 0AF0AF rrrrrr  6  372 1909         jle     L43
+P:00AF 350100         2  374 1910         move    #1,r5
+P:00B0 22B800         2  376 1911 L43:    move    r5,n0
+P:00B1 000000         2  378 1912         nop
+P:00B2 204800         2  380 1913         move    (r0)+n0
+                             1914 
+                             1915 ; 145  |                blockStartIndex = 0;
+                             1916 
+P:00B3 200013         2  382 1918 L36:    clr     a   
+                             1920 
+                             1921 ; 146  |                break;
+                             1922 ; 147  |            };
+                             1923 
+P:00B4 77F400 FFFFFE  3  385 1925 L38:    move    #-2,n7
+P:00B6 000000         2  387 1926         nop
+P:00B7 756F00         4  391 1927         move    n5,x:(r7+n7)
+P:00B8 77F400 FFFFFB  3  394 1928         move    #-5,n7
+P:00BA 000000         2  396 1929         nop
+P:00BB 476F00         4  400 1930         move    y1,x:(r7+n7)
+                             1933 
+                             1934 ; 148  |            status |= NANDHalCorrectPartial(pCompleteSectorBuf, pECCBuf, blockStartIndex )
+                                  ;
+                             1935 
+P:00BC 045FA0         2  402 1937         movec   m0,n7
+P:00BD 000000         2  404 1938         nop
+P:00BE 606F00         4  408 1939         move    r0,x:(r7+n7)
+P:00BF 77F400 FFFFFD  3  411 1944         move    #-3,n7
+P:00C1 000000         2  413 1945         nop
+P:00C2 64EF00         4  417 1946         move    x:(r7+n7),r4
+P:00C3 0BF080 rrrrrr  6  423 1949         jsr     FNANDHalCorrectPartial
+P:00C5 21C400         2  425 1955         move    a,x0
+P:00C6 77F400 FFFFFC  3  428 1956         move    #-4,n7
+P:00C8 000000         2  430 1957         nop
+P:00C9 55EF00         4  434 1958         move    x:(r7+n7),b1
+P:00CA 20004A         2  436 1959         or      x0,b
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00CB 556F00         4  440 1962         move    b1,x:(r7+n7)
+                             1965 
+                             1966 ; 149  |
+                             1967 ; 150  |            pCompleteSectorBuf = pCompleteSectorBuf-171;        // Really 171 here... incr
+                                  ementing by small sectors
+                             1968 
+P:00CC 045FA0         2  442 1970         movec   m0,n7
+P:00CD 000000         2  444 1971         nop
+P:00CE 65EF00         4  448 1972         move    x:(r7+n7),r5
+P:00CF 77F400 FFFFFE  3  451 1973         move    #-2,n7
+P:00D1 000000         2  453 1974         nop
+P:00D2 75EF00         4  457 1975         move    x:(r7+n7),n5
+P:00D3 000000         2  459 1976         nop
+P:00D4 044510         4  463 1977         lua     (r5)-n5,r0
+                             1982 
+                             1983 ; 151  |            pECCBuf = pECCBuf-3;
+                             1984 
+P:00D5 3B0300         2  465 1986         move    #3,n3
+P:00D6 77F400 FFFFFD  3  468 1987         move    #-3,n7
+P:00D8 000000         2  470 1988         nop
+P:00D9 63EF00         4  474 1989         move    x:(r7+n7),r3
+P:00DA 000000         2  476 1990         nop
+P:00DB 204300         2  478 1991         move    (r3)-n3
+P:00DC 636F00         4  482 1995         move    r3,x:(r7+n7)
+P:00DD 77F400 FFFFFB  3  485 1998         move    #-5,n7
+P:00DF 000000         2  487 1999         nop
+P:00E0 57EF00         4  491 2000         move    x:(r7+n7),b
+P:00E1 44F400 000001  3  494 2001         move    #>1,x0
+P:00E3 20004C         2  496 2002         sub     x0,b
+P:00E4 21A700         2  498 2006         move    b1,y1
+P:00E5 77F400 FFFFFC  3  501 2008 L39:    move    #-4,n7
+P:00E7 000000         2  503 2009         nop
+P:00E8 56EF00         4  507 2010         move    x:(r7+n7),a
+P:00E9 200003         2  509 2011         tst     a
+P:00EA 0AF0A2 rrrrrr  6  515 2012         jne     L41
+P:00EC 200079         2  517 2013         tfr     y1,b
+P:00ED 20000B         2  519 2014         tst     b
+P:00EE 0AF0A2 rrrrrr  6  525 2015         jne     L31
+                             2016 
+                             2017 ; 152  |        }
+                             2018 ; 153  |    }
+                             2019 ; 154  |
+                             2020 ; 155  |    return (status);
+                             2021 
+P:00F0 77F400 FFFFFC  3  528 2023 L41:    move    #-4,n7
+P:00F2 000000         2  530 2024         nop
+P:00F3 56EF00         4  534 2025         move    x:(r7+n7),a
+                             2028 
+                             2029 ; 156  |}
+                             2030 
+P:00F4 77F400 FFFFF7  3  537 2032         move    #-9,n7
+P:00F6 000000         2  539 2033         nop
+P:00F7 05EF3C         4  543 2034         movec   x:(r7+n7),ssh
+P:00F8 204F00         2  545 2036         move    (r7)+n7
+P:00F9 00000C         4  549 2038         rts
+                             2044 
+                             2045 ; 157  |
+                             2046 ; 158  |
+                             2047 ; 159  |/////////////////////////////////////////////////////////////////////////////////
+                             2048 ; 160  |////////////////////////////////  EOF  //////////////////////////////////////////
+                             2049 ; 161  |/////////////////////////////////////////////////////////////////////////////////
+                             2050 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  31
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2056 
+                             2057         extern  FNANDRAGetLBA, x:FSectorSize, x:FSectorSizeInWordsPlusOne
+                             2058 
+                             2059         global  FNANDHalCorrectECC_4Bit, FNANDHalCorrectPartial
+                             2060 
+                             2061         local   L12, L13, L14, L16, L18, L31, L33, L34, L35, L36, L38, L39
+                             2062         local   L41, L42, L43
+                             2063 
+                             2064         calls   "NANDHalCorrectECC_4Bit", "NANDHalCorrectPartial"
+                             2065         calls   "NANDHalCorrectECC_4Bit", "NANDRAGetLBA"
+                             2066 

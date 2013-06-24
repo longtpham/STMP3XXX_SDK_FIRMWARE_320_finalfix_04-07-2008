@@ -1,0 +1,42 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\data_management\queues.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                2     include "const.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 const.EXTERN 
+                                5 ;******************************************************************************
+                                7    DEFINE   const_xref  '1'
+                               42     ; Parthus compatability
+P:0000                          7     org p,".ptextqueues":
+                                9 QueueGetFilledSpace
+                               10 ;       Takes the CircularBufferDescriptor in R0
+                               11 ;       returns with filled length in A
+                               12 ;                CircularBufferDescriptor in R0
+P:0000 4F8000r        2    2   13     move    y:<Const_000001,y1  
+P:0001 5ED800         2    4   14     move    y:(r0)+,a
+P:0002 4DD800         2    6   15     move    y:(r0)+,x1
+P:0003 5FD000         2    8   16     move    y:(r0)-,b
+P:0004 205014         2   10   17     sub     b,a y:(r0)-
+P:0005 0AF0A1 rrrrrr  6   16   18     jge     _exit
+P:0007 200060         2   18   19     add     x1,a                ;add on the modulo plus 1 (the size of the buffer)
+P:0008 200070         2   20   20     add     y1,a
+                               21 _exit
+P:0009 00000C         4   24   22     rts
+                               25 QueueGetEmptySpace
+                               26 ;       Takes the CircularBufferDescriptor in R0
+                               27 ;       returns with empty space in A
+                               28 ;                CircularBufferDescriptor in R0
+P:000A 4F8000r        2   26   29     move    y:<Const_000001,y1  
+P:000B 5FD800         2   28   30     move    y:(r0)+,b
+P:000C 4DD800         2   30   31     move    y:(r0)+,x1
+P:000D 5ED000         2   32   32     move    y:(r0)-,a
+P:000E 205014         2   34   33     sub     b,a y:(r0)-  
+P:000F 0AF0A7 rrrrrr  6   40   34     jgt     _exit
+P:0011 200060         2   42   35     add     x1,a                ;add on the modulo plus 1 (the size of the buffer)
+P:0012 200070         2   44   36     add     y1,a
+                               37 _exit
+P:0013 200074         2   46   38     sub     y1,a 
+P:0014 00000C         4   50   39     rts

@@ -1,0 +1,130 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\kernel\kernel_postmessage.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ;  File        : syspostmsg.asm
+                                5 ;  Description : Message posting routines
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_SysPostMsg
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Macros
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               16     list
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19 ;   Includes
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               23     list
+                               24     
+                               25 ;///////////////////////////////////////////////////////////////////////////////
+                               26 ;   External Definitions
+                               27 ;///////////////////////////////////////////////////////////////////////////////
+                               29     ;Functions
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ;   External References
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               40     list
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               45 ;   Equates
+                               46 ;///////////////////////////////////////////////////////////////////////////////
+                               47     SysPostMessage: equ FKernel_SysPostMessage
+                               49 ;///////////////////////////////////////////////////////////////////////////////
+                               50 ;   P Memory
+                               51 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         53     org     p,".ptextkernel_syspostmessage":
+                               57 ;///////////////////////////////////////////////////////////////////////////////
+                               58 ;
+                               59 ;>  Name:           FSysPostMessage
+                               60 ;
+                               61 ;   Type:           Function
+                               62 ;
+                               63 ;   Description:    Post a message to module queue
+                               64 ;
+                               65 ;   Inputs:         R7 points to the end of the message
+                               66 ;
+                               67 ;   Outputs:        none
+                               68 ;                   
+                               69 ;   Notes:          C wrapper for SysPostMessage -- message passed on stack
+                               70 ;
+                               71 ;//egad...I hate to do it this way, but its the easiest way I can think of right now
+                               72 ;//Tasking pushes the parameters on the stack backwards, so we can't just offset the stack
+                               73 ;//by Length backwards and put this pointer in R0 to pass to SysPostMessage (note:  this C function 
+                               74 ;//is FSysPostMessage).  What ends up happening is we step backwards from the stack pointer, and push
+                               75 ;//these values onto the stack (making a message on the stack that is properly organized).  After calling
+                               76 ;//SysPostMessage, we fixup the stack properly to remove all the items we stuffed onto it.
+                               77 ;
+                               78 ;<
+                               79 ;///////////////////////////////////////////////////////////////////////////////
+                               80 FSysPostMessage
+P:0000 7FF013 rrrrrr  3    3   81     clr a   y:Const_ffffff,n7
+P:0002 000000         2    5   82     nop
+P:0003 79EF00         4    9   83     move y:(r7+n7),n1              ;get the length
+P:0004 22F100         2   11   84     move r7,r1                ;set the pointer of r1 to the end.
+P:0005 232800         2   13   85     move    n1,a0
+P:0006 044112         4   17   86     lua (r1)-n1,r2               ;have r2 point to the beginning.
+P:0007 225022         2   19   87     asr a   r2,r0                ;we need to run trhough the loop for half of the length (or we'll double swap)
+P:0008 0AF0AA rrrrrr  6   25   88     jeq _enddo
+P:000A 06C800 rrrrrr  6   31   89     do a0,_enddo                ;take the message and flip it end to end.
+P:000C 4CE200         2   33   90         move y:(r2),x0
+P:000D 4DF900         4   37   91         move y:-(r1),x1
+P:000E 4D5A00         2   39   92         move x1,y:(r2)+
+P:000F 4C6100         2   41   93         move x0,y:(r1)
+                        (10)   94 _enddo
+                               95     push SSH                    
+P:0010 055F7C         2   43   95     movec   SSH,y:(r7)+
+P:0011 0BF080 rrrrrr  6   49   96     jsr FKernel_SysPostMessage  ; now call the function to actually post the message
+                               97     pop SSH 
+P:0013 05FF7C         4   53   97     movec   y:-(r7),SSH
+P:0014 000000         2   55   98     nop
+P:0015 00000C         4   59   99     rts
+                              102 ;///////////////////////////////////////////////////////////////////////////////
+                              103 ;
+                              104 ;>  Name:           Kernel_AddMessageToQueue
+                              105 ;
+                              106 ;   Type:           Function
+                              107 ;
+                              108 ;   Description:    Post a message to module queue
+                              109 ;
+                              110 ;   Inputs:         
+                              111 ;                   r0 : points to queue to put it in
+                              112 ;                   r4 : points to a message to be posted (in y memory)
+                              113 ;   Outputs:        none
+                              114 ;                   
+                              115 ;   Notes:          
+                              116 ;<
+                              117 ;///////////////////////////////////////////////////////////////////////////////
+                              118 Kernel_AddMessageToQueue
+                              119     push    r0                      ;save off the queue pointer
+P:0016 685F00         2   61  119     move    r0,y:(r7)+
+                              120     push    r4                      ;save off the message pointer
+P:0017 6C5F00         2   63  120     move    r4,y:(r7)+
+P:0018 0BF080 rrrrrr  6   69  121     jsr     QueueGetEmptySpace      ;get the empty space
+P:001A 200009         2   71  122     tfr     a,b                     ;move the empty space into b
+                              123     pop     r4                      
+P:001B 6CFF00         4   75  123     move    y:-(r7),r4
+                              124     pop     r0
+P:001C 68FF00         4   79  124     move    y:-(r7),r0
+P:001D 5EE400         2   81  125     move    y:(r4),a                ; get the size of the message
+P:001E 20000D         2   83  126     cmp     a,b                     ; compare size of message to post with space available in dest queue
+P:001F 0AF0A9 rrrrrr  6   89  127     jlt     _exit
+P:0021 200003         2   91  128     tst     a                       ;make sure the length is at least 1
+                              129     ccerror eq                      ;if we're stopped here, then the message had a zero length!
+P:0022 00030A         4   95  129     debugeq
+                              131 _enough_space
+                              132     ; else continue processing posting message
+P:0023 69D800         2   97  133     move    y:(r0)+,r1              ;get the head pointer
+P:0024 05D061         2   99  134     movec   y:(r0)-,m1              ;get the modulo value
+P:0025 06CC00 rrrrrr  6  105  135     do      a1,_copy_loop
+P:0027 5CDC00         2  107  136         move    y:(r4)+,a1
+P:0028 5C5900         2  109  137         move    a1,y:(r1)+
+                         (4)  138 _copy_loop
+P:0029 058061r        2  111  139     movec   y:<Const_ffffff,m1
+P:002A 696013         2  113  140     clr     a    r1,y:(r0)                   ;set the return value to 'success' and update the head pointer
+                              141 _rts
+P:002B 00000C         4  117  142     rts
+                              143 _exit
+P:002C 0AF080 rrrrrr  6  123  144     jmp _rts
+                              145     endsec
+                              148     

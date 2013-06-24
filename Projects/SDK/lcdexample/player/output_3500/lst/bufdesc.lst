@@ -1,0 +1,373 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\bufdesc.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ;  File        : budesc.asm
+                                5 ;  Description : STMP3 Buffer Routines (System Routines) 
+                                6 ;                See buffer descriptor data structure.
+                                7 ;///////////////////////////////////////////////////////////////////////////////
+                                9     section SYSFUN_BufDesc
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;   Macros
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               17     list
+                               19 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;   Includes
+                               21 ;///////////////////////////////////////////////////////////////////////////////
+                               27     list       
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               30 ;   External Definitions
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               33     ;Functions
+                               41         
+                               43     ; WMA specific code
+                               47 ;///////////////////////////////////////////////////////////////////////////////
+                               48 ;   External References
+                               49 ;///////////////////////////////////////////////////////////////////////////////
+                               53     list       
+                               54     
+                               55 ;///////////////////////////////////////////////////////////////////////////////
+                               56 ;   Equates
+                               57 ;///////////////////////////////////////////////////////////////////////////////
+                               58         
+                               59 ;///////////////////////////////////////////////////////////////////////////////
+                               60 ;   X Memory
+                               61 ;///////////////////////////////////////////////////////////////////////////////
+                               62         
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+                               64 ;   Y Memory
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               66         
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               68 ;   P Memory
+                               69 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         71     org p,"SYSFUN_BufDesc_P":
+                               73 ;///////////////////////////////////////////////////////////////////////////////
+                               74 ;
+                               75 ;>  Name:           InitBufferEmpty
+                               76 ;
+                               77 ;   Type:           Function
+                               78 ;
+                               79 ;   Description:    Sets the buffer head = tail = beginning of buffer
+                               80 ;                   
+                               81 ;   Inputs:         r0 = pointer to the buffer descriptor
+                               82 ;                   m0 = linear addressing
+                               83 ;
+                               84 ;   Outputs:        r0 = pointer to the buffer descriptor
+                               85 ;                   
+                               86 ;   Notes:          
+                               87 ;<
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+                               89 InitBufferEmpty
+P:0000 70F400 000000  3    3   91     move    #>BD_BufferBaseAddress,n0
+P:0002 000000         2    5   92     nop
+P:0003 6AE800         4    9   93     move    y:(r0+n0),r2                ; get the buffer BASE ADDRESS
+P:0004 70F400 000003  3   12   94     move    #>BD_HdPtr,n0
+P:0006 000000         2   14   95     nop
+P:0007 6A6800         4   18   96     move    r2,y:(r0+n0)                ; reset the head pointer back to the base address
+P:0008 70F400 000004  3   21   97     move    #>BD_TailPtr,n0
+P:000A 000000         2   23   98     nop
+P:000B 6A6800         4   27   99     move    r2,y:(r0+n0)                ; reset the tail pointer back to the base address
+P:000C 00000C         4   31  100     rts
+                              101                                     
+                              102 ;///////////////////////////////////////////////////////////////////////////////
+                              103 ;
+                              104 ;>  Name:           InitBufferFull
+                              105 ;
+                              106 ;   Type:           Function
+                              107 ;
+                              108 ;   Description:    Sets the buffer head = end of buffer, tail = beginning of buffer
+                              109 ;
+                              110 ;   Inputs:         r0 = pointer to the buffer descriptor
+                              111 ;                   m0 = linear addressing
+                              112 ;
+                              113 ;   Outputs:        r0 = pointer to the buffer descriptor
+                              114 ;                   
+                              115 ;   Notes:          
+                              116 ;<
+                              117 ;///////////////////////////////////////////////////////////////////////////////
+                              118 InitBufferFull
+P:000D 70F400 000000  3   34  120     move    #>BD_BufferBaseAddress,n0
+P:000F 000000         2   36  121     nop
+P:0010 4CE800         4   40  122     move    y:(r0+n0),x0                ; get the buffer BASE ADDRESS
+P:0011 70F400 000001  3   43  123     move    #>BD_BufferModulo,n0
+P:0013 000000         2   45  124     nop
+P:0014 4DE800         4   49  125     move    y:(r0+n0),x1                ; get the buffer MODULO
+P:0015 70F400 000003  3   52  126     move    #>BD_HdPtr,n0
+P:0017 200013         2   54  127     clr     a
+P:0018 208C00         2   56  128     move    x0,a1
+P:0019 200060         2   58  129     add     x1,a                        ; a has base + modulo = last location in buffer
+P:001A 5C6800         4   62  130     move    a1,y:(r0+n0)                ; set the head pointer to the last location
+P:001B 70F400 000004  3   65  131     move    #>BD_TailPtr,n0
+P:001D 000000         2   67  132     nop
+P:001E 4C6800         4   71  133     move    x0,y:(r0+n0)                ; set the tail pointer to the base address
+P:001F 00000C         4   75  134     rts
+                              136 ;///////////////////////////////////////////////////////////////////////////////
+                              137 ;
+                              138 ;>  Name:           InitBufferSize
+                              139 ;
+                              140 ;   Type:           Function
+                              141 ;
+                              142 ;   Description:    Moves head "n0" buffer locations away from tail
+                              143 ;
+                              144 ;   Inputs:         r0 = pointer to the buffer descriptor
+                              145 ;                   m0 = linear addressing
+                              146 ;                   n0 = size to initialize buffer to
+                              147 ;
+                              148 ;   Outputs:        r0 = pointer to the buffer descriptor
+                              149 ;                   
+                              150 ;   Notes:         
+                              151 ;<
+                              152 ;///////////////////////////////////////////////////////////////////////////////
+                              153 InitBufferSize
+P:0020 230400         2   77  155     move    n0,x0
+P:0021 70F400 000002  3   80  156     move    #>BD_BufferSize,n0
+P:0023 000000         2   82  157     nop
+P:0024 4DE800         4   86  158     move    y:(r0+n0),x1                ; get the buffer SIZE
+P:0025 70F400 000004  3   89  161     move    #>BD_TailPtr,n0
+P:0027 200013         2   91  162     clr     a
+P:0028 5CE800         4   95  163     move    y:(r0+n0),a1                ; get the TAIL PTR
+P:0029 380040         2   97  164     add     x0,a    #BD_BufferBaseAddress,n0 ; a = "SIZE"+TAILptr
+P:002A 20001B         2   99  166     clr     b
+P:002B 5DE800         4  103  167     move    y:(r0+n0),b1
+P:002C 21A700         2  105  168     move    b1,y1                       ; save copy
+P:002D 200068         2  107  169     add     x1,b                        ; b = bufSIZE+BASE
+P:002E 20000D         2  109  171     cmp     a,b
+P:002F 0AF0A7 rrrrrr  6  115  172     jgt     _NoModuloCorrect
+P:0031 200014         2  117  173     sub     b,a
+P:0032 200070         2  119  174     add     y1,a
+                              175 _NoModuloCorrect
+P:0033 70F400 000003  3  122  176     move    #>BD_HdPtr,n0
+P:0035 000000         2  124  177     nop
+P:0036 5C6800         4  128  178     move    a1,y:(r0+n0)                ; HEAD PTR is "size" away from TAIL PTR
+P:0037 00000C         4  132  179     rts
+                              181 ;///////////////////////////////////////////////////////////////////////////////
+                              182 ;
+                              183 ;>  Name:           FillBufferY
+                              184 ;
+                              185 ;   Type:           Function
+                              186 ;
+                              187 ;   Description:    Move head "n0" buffer locations away from tail, then fills 
+                              188 ;                   with "y1" value into Y memory from tail to head
+                              189 ;
+                              190 ;   Inputs:         r0 = pointer to the buffer descriptor
+                              191 ;                   m0 = linear addressing
+                              192 ;                   n0 = size to initialize buffer to
+                              193 ;                   y1 = value to initialize buffer to
+                              194 ;
+                              195 ;   Outputs:        r0 = pointer to the buffer descriptor
+                              196 ;                   
+                              197 ;   Notes:          
+                              198 ;<
+                              199 ;///////////////////////////////////////////////////////////////////////////////
+                              200 FillBufferY
+P:0038 230400         2  134  201     move    n0,x0                       ; store "size" to init
+P:0039 70F400 000002  3  137  202     move    #>BD_BufferSize,n0
+P:003B 000000         2  139  203     nop
+P:003C 4DE800         4  143  204     move    y:(r0+n0),x1                ; get the buffer SIZE
+P:003D 70F400 000004  3  146  206     move    #>BD_TailPtr,n0
+P:003F 200013         2  148  207     clr     a
+P:0040 5CE800         4  152  208     move    y:(r0+n0),a1                ; get the TailPtr
+P:0041 219200         2  154  209     move    a1,r2                       ; store for FILL part (r2=TailPtr)
+P:0042 380040         2  156  210     add     x0,a    #BD_BufferBaseAddress,n0 ; a = "size"+TailPtr
+P:0043 20001B         2  158  212     clr     b
+P:0044 5DE800         4  162  213     move    y:(r0+n0),b1
+P:0045 21BA00         2  164  214     move    b1,n2                       ; store buffer base address (n2=BaseAddr)
+P:0046 200068         2  166  215     add     x1,b                        ; b = bufSIZE+BASE
+P:0047 20000D         2  168  216     cmp     a,b
+P:0048 0AF0A7 rrrrrr  6  174  217     jgt     _NoModuloCorrect
+                              218 _ModuloCorrection
+P:004A 200014         2  176  219     sub     b,a
+P:004B 218600         2  178  220     move    a1,y0                       ; store distance past "end" of buffer
+P:004C 234500         2  180  221     move    n2,x1                       ; BASE addr
+P:004D 70F460 000003  3  183  222     add     x1,a    #>BD_HdPtr,n0       ; BASE + overlap
+P:004F 000000         2  185  223     nop
+P:0050 5C6800         4  189  224     move    a1,y:(r0+n0)                ; HEAD PTR is "size" away from TAIL PTR
+P:0051 208F00         2  191  226     move    x0,b                        ; "size" to init
+P:0052 20005C         2  193  227     sub     y0,b                        ; b = distance to the "end"
+P:0053 21E500         2  195  228     move    b,x1                        ; x1 = distance TO end of buffer
+P:0054 06C500 rrrrrr  6  201  230     do      x1,_fill_to_end
+P:0056 4F5A00         2  203  231       move    y1,y:(r2)+
+P:0057 000000         2  205  232       nop
+                         (4)  233 _fill_to_end
+P:0058 235200         2  207  235     move    n2,r2                       ; point to BASE address
+P:0059 20CF00         2  209  236     move    y0,b 
+P:005A 20000B         2  211  237     tst     b
+P:005B 0AF0AA rrrrrr  6  217  238     jeq     _exit_fillY                 ; avoid do #0
+P:005D 06C600 rrrrrr  6  223  239     do      y0,_fill_from_beginning
+P:005F 4F5A00         2  225  240       move    y1,y:(r2)+
+P:0060 000000         2  227  241       nop
+                         (4)  242 _fill_from_beginning
+P:0061 000000         2  229  243     nop
+P:0062 00000C         4  233  244     rts
+                              245 _NoModuloCorrect
+P:0063 70F400 000003  3  236  246     move    #>BD_HdPtr,n0
+P:0065 000000         2  238  247     nop
+P:0066 5C6800         4  242  248     move    a1,y:(r0+n0)                ; HEAD PTR is "size" away from TAIL PTR
+P:0067 000000         2  244  249     nop
+P:0068 06C400 rrrrrr  6  250  250     do      x0,_end_fill_loop
+P:006A 4F5A00         2  252  251       move    y1,y:(r2)+
+P:006B 000000         2  254  252       nop
+                         (4)  253 _end_fill_loop
+P:006C 000000         2  256  254     nop
+                              255 _exit_fillY
+P:006D 00000C         4  260  256     rts
+                              258 ;///////////////////////////////////////////////////////////////////////////////
+                              259 ;
+                              260 ;>  Name:           FillBufferX
+                              261 ;
+                              262 ;   Type:           Function
+                              263 ;
+                              264 ;   Description:    Move head "n0" buffer locations away from tail, then fills 
+                              265 ;                   with "y1" value into X memory from tail to head
+                              266 ;
+                              267 ;   Inputs:         r0 = pointer to the buffer descriptor
+                              268 ;                   m0 = linear addressing
+                              269 ;                   n0 = size to initialize buffer to
+                              270 ;                   y1 = value to initialize buffer to
+                              271 ;
+                              272 ;   Outputs:        r0 = pointer to the buffer descriptor
+                              273 ;                   
+                              274 ;   Notes:          Never used
+                              275 ;<
+                              276 ;///////////////////////////////////////////////////////////////////////////////
+                              279     ; WMA specific code
+                              280 FillBufferX
+P:006E 230400         2  262  281     move    n0,x0                       ; store "size" to init
+P:006F 000000         2  264  282     nop
+P:0070 70F400 000002  3  267  283     move    #>BD_BufferSize,n0
+P:0072 000000         2  269  284     nop
+P:0073 4DE800         4  273  285     move    y:(r0+n0),x1                ; get the buffer SIZE
+P:0074 70F400 000004  3  276  287     move    #>BD_TailPtr,n0
+P:0076 200013         2  278  288     clr     a
+P:0077 5CE800         4  282  289     move    y:(r0+n0),a1                ; get the TailPtr
+P:0078 219200         2  284  290     move    a1,r2                       ; store for FILL part (r2=TailPtr)
+P:0079 200040         2  286  291     add     x0,a                        ; a = "size"+TailPtr
+P:007A 380000         2  288  293     move    #BD_BufferBaseAddress,n0
+P:007B 20001B         2  290  294     clr     b
+P:007C 5DE800         4  294  295     move    y:(r0+n0),b1
+P:007D 21BA00         2  296  296     move    b1,n2                       ; store buffer base address (n2=BaseAddr)
+P:007E 200068         2  298  297     add     x1,b                        ; b = bufSIZE+BASE
+P:007F 20000D         2  300  298     cmp     a,b
+P:0080 0AF0A7 rrrrrr  6  306  299     jgt     _NoModuloCorrect
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              300 _ModuloCorrection
+P:0082 200014         2  308  301     sub     b,a
+P:0083 218600         2  310  302     move    a1,y0                       ; store distance past "end" of buffer
+P:0084 234500         2  312  303     move    n2,x1                       ; BASE addr
+P:0085 200060         2  314  304     add     x1,a                        ; BASE + overlap
+P:0086 70F400 000003  3  317  305     move    #>BD_HdPtr,n0
+P:0088 000000         2  319  306     nop
+P:0089 5C6800         4  323  307     move    a1,y:(r0+n0)                ; HEAD PTR is "size" away from TAIL PTR
+P:008A 208F00         2  325  309     move    x0,b                        ; "size" to init
+P:008B 20005C         2  327  310     sub     y0,b                        ; b = distance to the "end"
+P:008C 21E500         2  329  311     move    b,x1                        ; x1 = distance TO end of buffer
+P:008D 06C500 rrrrrr  6  335  313     do      x1,_fill_to_end
+P:008F 475A00         2  337  314       move    y1,x:(r2)+
+P:0090 000000         2  339  315       nop
+                         (4)  316 _fill_to_end
+P:0091 235200         2  341  318     move    n2,r2                       ; point to BASE address
+P:0092 06C600 rrrrrr  6  347  319     do      y0,_fill_from_beginning
+P:0094 475A00         2  349  320       move    y1,x:(r2)+
+P:0095 000000         2  351  321       nop
+                         (4)  322 _fill_from_beginning
+P:0096 000000         2  353  323     nop
+P:0097 00000C         4  357  324     rts
+                              325 _NoModuloCorrect
+P:0098 70F400 000003  3  360  326     move    #>BD_HdPtr,n0
+P:009A 000000         2  362  327     nop
+P:009B 5C6800         4  366  328     move    a1,y:(r0+n0)                ; HEAD PTR is "size" away from TAIL PTR
+P:009C 000000         2  368  329     nop
+P:009D 06C400 rrrrrr  6  374  330     do      x0,_end_fill_loop
+P:009F 475A00         2  376  331       move    y1,x:(r2)+
+P:00A0 000000         2  378  332       nop
+                         (4)  333 _end_fill_loop
+P:00A1 000000         2  380  334     nop
+P:00A2 000000         2  382  335     nop
+P:00A3 00000C         4  386  336     rts
+                              339 ;///////////////////////////////////////////////////////////////////////////////
+                              340 ;
+                              341 ;>  Name:           GetFilledSpace
+                              342 ;
+                              343 ;   Type:           Function
+                              344 ;
+                              345 ;   Description:    Returns in accumulator a the filled space (head-tail) fixed 
+                              346 ;                   for proper modulus of buffer
+                              347 ;
+                              348 ;   Inputs:         r0 = pointer to the buffer descriptor
+                              349 ;                   m0 = linear addressing
+                              350 ;
+                              351 ;   Outputs:        count in a
+                              352 ;                   r0 = pointer to the buffer descriptor
+                              353 ;
+                              354 ;   Notes:          
+                              355 ;<
+                              356 ;///////////////////////////////////////////////////////////////////////////////
+                              357 GetFilledSpace
+P:00A4 70F400 000002  3  389  358     move    #>BD_BufferSize,n0
+P:00A6 000000         2  391  359     nop
+P:00A7 4EE800         4  395  360     move    y:(r0+n0),y0                ; get the buffer SIZE
+P:00A8 70F400 000003  3  398  361     move    #>BD_HdPtr,n0
+P:00AA 000000         2  400  362     nop
+P:00AB 5EE800         4  404  363     move    y:(r0+n0),a                 ; a=head pointer
+P:00AC 70F400 000004  3  407  364     move    #>BD_TailPtr,n0
+P:00AE 000000         2  409  365     nop
+P:00AF 4CE800         4  413  366     move    y:(r0+n0),x0                ; x0=tail pointer
+P:00B0 200044         2  415  367     sub     x0,a                        ; a=head-tail
+                              368     ; using jge here means that head=tail is an empty buffer
+P:00B1 0AF0A1 rrrrrr  6  421  369     jge     _NoModuloCorrect
+P:00B3 200050         2  423  370     add     y0,a                        ; perform modulo correction
+                              371 _NoModuloCorrect
+P:00B4 000000         2  425  372     nop
+P:00B5 00000C         4  429  374     rts
+                              376 ;///////////////////////////////////////////////////////////////////////////////
+                              377 ;
+                              378 ;>  Name:           GetEmptySpace (or FGetEmptySpace(void*ptr))
+                              379 ;
+                              380 ;   Type:           Function
+                              381 ;
+                              382 ;   Description:    Returns in accumulator a the empty space (tail-head) fixed 
+                              383 ;                   for proper modulus of buffer (and decremented by one)
+                              384 ;
+                              385 ;   Inputs:         r4 = pointer to the buffer descriptor 
+                              386 ;                   m4 = linear addressing
+                              387 ;                   (r0 for FGetEmptySpace)
+                              388 ;
+                              389 ;
+                              390 ;   Outputs:        count in a
+                              391 ;                   r0 = pointer to the buffer descriptor
+                              392 ;                   y0 = total buffer size
+                              393 ;                   
+                              394 ;   Notes:          
+                              395 ;<
+                              396 ;///////////////////////////////////////////////////////////////////////////////
+                              397 FGetEmptySpace
+P:00B6 221400         2  431  398     move    r0,r4
+                              399 GetEmptySpace
+P:00B7 74F400 000002  3  434  400     move    #>BD_BufferSize,n4
+P:00B9 000000         2  436  401     nop
+P:00BA 4EEC00         4  440  402     move    y:(r4+n4),y0                ; y0= buffer descriptor's SIZE value
+P:00BB 74F400 000003  3  443  403     move    #>BD_HdPtr,n4
+P:00BD 000000         2  445  404     nop
+P:00BE 4CEC00         4  449  405     move    y:(r4+n4),x0                ; x0=head pointer
+P:00BF 74F400 000004  3  452  406     move    #>BD_TailPtr,n4
+P:00C1 000000         2  454  407     nop
+P:00C2 5EEC00         4  458  408     move    y:(r4+n4),a                 ; a=tail pointer
+P:00C3 200044         2  460  409     sub     x0,a                        ; a=tail-head
+                              410     ; using jgt here is consistent with GetFilled space, head==tail is empty, not full
+P:00C4 0AF0A7 rrrrrr  6  466  411     jgt     _NoModuloCorrect
+P:00C6 200050         2  468  412     add     y0,a                        ; perform modulo correction using buffer size
+                              413 _NoModuloCorrect                
+                              414     ; we never want to return a count that would allow the 
+                              415     ; processing routine to fill the buffer to head=tail
+                              416     ; so always decrement the result by 1
+P:00C7 4C8000r        2  470  417     move    y:<Const_ffffff,x0
+P:00C8 200040         2  472  418     add     x0,a
+P:00C9 00000C         4  476  419     rts
+                              421     endsec

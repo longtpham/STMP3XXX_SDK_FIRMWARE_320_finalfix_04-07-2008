@@ -1,0 +1,52 @@
+/**************************************************************************
+**
+**	FILE        :  STMP3410.mem	(Derived from STMP3400.mem)
+**
+**	VERSION     :  00/12/20         (Base version. Not incremented)
+**
+**	DESCRIPTION :  Locator memory description for Sigmatel STMP3410.
+**
+**	NOTE        :  We have 0 external RAM in our chip's typical 
+**                     configuration.
+**
+**************************************************************************/
+
+//This file describes the "external space".  Since this version of tasking needs
+//a copy of the overlay sections that we can extract from the .abs file, we're stuffing them 
+//in memory we don't physically have.
+
+//The start address of this external space is the amount of internal space we have
+
+memory {
+
+////////////////////////////////////////////////////////////////
+//
+//	B U S
+//
+//
+	bus PAB {
+		mau 24;
+        mem addr=0 chips=P_iram;
+	}
+
+
+	bus XAB {
+		mau 24;
+		mem addr=0 chips=X_iram;
+ 	}
+
+    bus YAB {	//	external Y memory
+		mau 24;
+		mem addr=0 chips=Y_iram;
+	}
+
+
+////////////////////////////////////////////////////////////////
+//
+//	Memory
+//
+//
+	chips   P_iram  attr=w mau=24 size=TOTAL_ADDR_SPACE;	// total allowable addressable program ram
+    chips	X_iram  attr=w mau=24 size=TOTAL_ADDR_SPACE;    // total allowable addressable x ram
+    chips	Y_iram  attr=w mau=24 size=TOTAL_ADDR_SPACE;    // total allowable addressable y ram
+}

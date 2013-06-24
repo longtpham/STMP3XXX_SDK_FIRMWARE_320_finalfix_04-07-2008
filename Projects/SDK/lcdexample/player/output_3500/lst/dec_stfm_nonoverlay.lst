@@ -1,0 +1,228 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\stfm\dec_stfm_nonoverlay.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000/2001
+                                3 ;
+                                4 ; STMP3400 ISR-level Decoder Module (CANNOT be overlayed)
+                                5 ;///////////////////////////////////////////////////////////////////////////////
+                                6         section DECAPP_DecStfmNonOverlay
+                                9 ;///////////////////////////////////////////////////////////////////////////////
+                               10 ;   External Definitions
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12        ; For i2s_dma_receive.c
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   External References
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19         ; System Functions
+                               26         ; Decoder Module
+                               38         ; Parser Module
+                               41         ; File System
+                               47         ; STFM variables
+                               68                 
+                               69 ;///////////////////////////////////////////////////////////////////////////////
+                               70 ;   Includes
+                               71 ;///////////////////////////////////////////////////////////////////////////////
+                               85         list
+                               86         page    132,60,0,0,0
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+                               89 ;  Macros
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+                               95     list
+                               98 ;///////////////////////////////////////////////////////////////////////////////
+                               99 ;   Code
+                              100 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        101         org     p,"DECAPP_DecStfmNonOverlay_P":
+                              103 ;--------------------------------------------------
+                              105 ; I2S DMA completion ISR
+                              106 g_I2SDMAReceiveIsr
+                              108         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              109         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              110         ; will be popped back off System Stack Low (SSL).
+                              111         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              112         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:0000 00BFB8         2    2  113         andi #$BF,mr
+P:0001 4C7000 rrrrrr  3    5  115     move    x0,y:IntL1_SaveR6           ; save x0 state
+                              117 _CheckSpurious
+                              118     ; Check if spirous interrupt. If so exit ...
+P:0003 44F000 00F303  3    8  119     move    x:HW_ICLSTATUS1R,x0
+P:0005 0AC427 rrrrrr  6   14  120     jset    #HW_ICLSTATUS1R_SST31_BITPOS,x0,_ContinueIsr
+                              122     ; None of the above, exit interruption
+P:0007 4CF000 rrrrrr  3   17  123     move    y:IntL1_SaveR6,x0           ; restore x0 state
+P:0009 000004         4   21  124     rti
+                              126 _ContinueIsr
+                              127 ;    bset    #HW_GP_B15_BITPOS,x:HW_GP1DOR
+P:000A 4CF000 rrrrrr  3   24  128     move    y:IntL1_SaveR6,x0           ; restore x0 state
+                              129     
+                              130     ; save off all registers
+P:000C 6E7000 rrrrrr  3   27  131     move    r6,y:IntL1_SaveR6            ; r6 used for return mechanism
+P:000E 66F400 rrrrrr  3   30  132     move    #_StfmDecSaveRegReturn,r6    ; setup the return address
+P:0010 0AF080 rrrrrr  6   36  133     jmp     SaveRegs                     ; save the remaining registers
+                              134 _StfmDecSaveRegReturn
+                              136     ; save off stack
+P:0012 66F400 rrrrrr  3   39  137     move    #_StfmDecSaveStackReturn,r6  ; setup the return address
+P:0014 65F400 rrrrrr  3   42  138     move    #StfmRxIsrSp,r5                 ; pointer to the SP local save
+P:0016 0AF080 rrrrrr  6   48  139     jmp     SaveSystemStack              ; save the hardware stack
+                              140 _StfmDecSaveStackReturn
+P:0018 0BF080 rrrrrr  6   54  143         jsr     SysAllLinear
+                              145         ; FIXME!!! This should be handled here in assembly to assure that we
+                              146         ; have a new I2S buffer and not an I2S overflow condition
+P:001A 0BF080 rrrrrr  6   60  147         jsr     Fg_I2SDMAReceiveClearInt 
+                              149     
+                              150 ;----------------------- EXIT
+                              151 _ExitIsr
+                              152     ; restore stack
+P:001C 65F400 rrrrrr  3   63  153     move    #StfmRxIsrSp,r5                 ; pointer to the SP local save
+P:001E 66F400 rrrrrr  3   66  154     move    #_stackRestored,r6           ; setup the return address
+P:0020 0AF080 rrrrrr  6   72  155     jmp     RestoreSystemStack           ; restore the hardware stack
+                              156 _stackRestored
+                              158     ; restore all registers
+P:0022 66F400 rrrrrr  3   75  159     move    #_StfmDecRestoreRegReturn,r6  ; setup the return address
+P:0024 0AF080 rrrrrr  6   81  160     jmp     RestoreRegs                  ; restore registers
+                              161 _StfmDecRestoreRegReturn
+P:0026 6EF000 rrrrrr  3   84  162     move    y:IntL1_SaveR6,r6            ; restore minimal reg set
+                              164 ;    debug
+P:0028 000000         2   86  165     nop
+                              166     
+P:0029 000004         4   90  167     rti                     ;Int level is dropped to 0 (user level)
+                              169 ;--------------------- Post ISR processing (aka "bottom half")
+                              170 StfmDecoderRun
+                              171         ;Here the Interruption level is dropped automatically to 0 (user level)
+                              172         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              173         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              174         ; will be popped back off System Stack Low (SSL).
+                              175         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              176         ; Next cycle after clearing it should NOT be an ALU instruction.        
+P:002A 00BFB8         2   92  177     andi #$BF,mr
+                              178     
+                              179 ;    debug
+P:002B 000000         2   94  180     nop
+P:002C 000000         2   96  181     nop
+P:002D 000000         2   98  182     nop
+                              184 ;        debug
+                              185     ; save off all registers
+P:002E 6E7000 rrrrrr  3  101  186     move    r6,y:StfmDecSaveR6         ; r6 used for return mechanism
+P:0030 66F400 rrrrrr  3  104  187     move    #_StfmSaveRegReturn,r6  ; setup the return address
+P:0032 0AF080 rrrrrr  6  110  188     jmp     SaveRegs                        ; save the remaining registers
+                              189 _StfmSaveRegReturn
+                              191     ; save off stack
+P:0034 66F400 rrrrrr  3  113  192     move    #_StfmSaveStackReturn,r6 ; setup the return address
+P:0036 65F400 rrrrrr  3  116  193     move    #StfmDecoderRunIsrSp,r5       ; pointer to the SP local save
+P:0038 0AF080 rrrrrr  6  122  194     jmp     SaveSystemStack                 ; save the hardware stack
+                              195 _StfmSaveStackReturn
+                              197         ;bset    #HW_GP_B16_BITPOS,x:HW_GP0DOR
+                              198         ; Look at the I2S current position register to find the new
+                              199         ; source buffer head
+P:003A 5DF000 rrrrrr  3  125  200         move    y:g_StfmDataSrcBufDescriptor,b1
+P:003C 44F000 00F603  3  128  201         move    x:HW_CDSYNCCPR,x0
+P:003E 200048         2  130  202         add     x0,b
+P:003F 5D7000 rrrrrr  3  133  203         move    b1,y:g_pStfmDataSrcBufHead
+P:0041 60F400 rrrrrr  3  136  205         move    #g_StfmDataSrcBufDescriptor,r0
+P:0043 058060r        2  138  206         movec   y:<Const_ffffff,m0
+P:0044 200013         2  140  207         clr     a
+P:0045 0BF080 rrrrrr  6  146  208         jsr     GetFilledSpace          ; returns: a==number of words in buffer
+P:0047 200022         2  148  209         asr     a       ; Number of stereo samples 
+                              211         ; Save the number of words to give to the filter in B
+P:0048 21CF00         2  150  212         move    a,b
+                              214         ; Get empty space from sink buffer
+P:0049 0BF080 rrrrrr  6  156  215                 jsr             SysAllLinear
+P:004B 64F400 rrrrrr  3  159  216         move    #g_StfmDecSinkBufDescriptor,r4
+P:004D 0BF080 rrrrrr  6  165  217         jsr     GetEmptySpace
+P:004F 5E7000 rrrrrr  3  168  219         move    a,y:StfmDecSinkEmptySpace
+P:0051 200022         2  170  220         asr     a   ; Number of stereo samples
+                              222         ; Check if we're overrunning the sink buffer
+P:0052 21C400         2  172  223         move    a,x0
+P:0053 20004D         2  174  224         cmp     x0,b ; GetEmptySpace return space available in A
+P:0054 0AF0A9 rrrrrr  6  180  225         jlt     _EnoughOutputSpace
+                              226         
+                              227         ; Record the buffer overrun
+P:0056 5EF000 rrrrrr  3  183  228         move    y:StfmDecSinkOverrunCount,a
+P:0058 4C8000r        2  185  229         move    y:<Const_000001,x0
+P:0059 200040         2  187  230         add     x0,a
+P:005A 5C7000 rrrrrr  3  190  231         move    a1,y:StfmDecSinkOverrunCount
+                              233 _EnoughOutputSpace
+                              234 ; !!!!!!!!!!!!!! STFM FILTER FUNCTION CALL - SEE TASKING DOCS FOR CALLING CONVENTIONS
+                              235         push    b
+P:005C 5F5F00         2  192  235     move    b,y:(r7)+
+P:005D 21EE00         2  194  236         move    b,a     ; Setup size of buffer to process
+P:005E 05F060 rrrrrr  4  198  237         movec   y:g_pStfmDataSrcBufMod,m0   ; Setup modulo
+P:0060 68F000 rrrrrr  3  201  238         move    y:g_pStfmDataSrcBufTail,r0  ; Setup source buffer pointer
+P:0062 05F064 rrrrrr  4  205  239         movec   y:g_pStfmDecSinkBufMod,m4  ; Setup current output pointer within modulo buffer
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\stfm\dec_stfm_nonoverlay.asm: line 239 : inserted "extern g_pStfmDecSinkBufMod"
+P:0064 6CF000 rrrrrr  3  208  240         move    y:g_pStfmDecSinkBufHead,r4  ; Setup current output pointer within modulo buffer
+P:0066 588000r        2  210  242         move    y:<Const_000000,a0
+P:0067 200003         2  212  243         tst     a
+P:0068 0AF0AA rrrrrr  6  218  244         jeq     _SkipFilterCall
+                              245         ; Call the filter function to process the input buffer
+                              249         ;jsr     FUpdate_IIRFiltCoeff ; this version in sw_stereocontrol.c will clobber reg A.  
+P:006A 0BF080 rrrrrr  6  224  250         jsr     UpdateIIRFiltCoeffs ; using the asm version will leave A, m0, r0, and r4 as is.  
+P:006C 0BF080 rrrrrr  6  230  251         jsr     StfmLowPassFilter ; This function does not save registers because it overwrites I2S input buffers
+                              253 _SkipFilterCall
+                              254 ; !!!!!!!!!!!!!! END OF FILTER FUNCTION CALL
+                              256 ;        bclr    #HW_GP_B17_BITPOS,x:HW_GP0DOR    ; make it low 
+                              258         pop     b   ; Pop back out the # samples filtered
+P:006E 5FFF00         4  234  258     move    y:-(r7),b
+                              260         ; Update the source buffer tail
+P:006F 687000 rrrrrr  3  237  261         move    r0,y:g_pStfmDataSrcBufTail
+                              263         ; Update the sink buffer head
+P:0071 6C7000 rrrrrr  3  240  264         move    r4,y:g_pStfmDecSinkBufHead
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\stfm\dec_stfm_nonoverlay.asm: line 264 : inserted "extern g_pStfmDecSinkBufHead"
+P:0073 60F400 rrrrrr  3  243  266         move    #g_StfmDecSinkBufDescriptor,r0
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\stfm\dec_stfm_nonoverlay.asm: line 266 : inserted "extern g_StfmDecSinkBufDescriptor"
+P:0075 058060r        2  245  267         movec   y:<Const_ffffff,m0
+P:0076 0BF080 rrrrrr  6  251  268         jsr     GetFilledSpace          ; returns: a==number of words in buffer
+P:0078 21C700         2  253  269         move    a,y1
+P:0079 5E7000 rrrrrr  3  256  270         move    a,y:StfmDecSinkFilledSpace
+                              272 _ContinueStuff
+                              273     ;bclr #HW_GP_B16_BITPOS,x:HW_GP0DOR    ; make it low 
+                              275 ;-------------------- EXIT
+                              276 _ExitIsr
+                              277     ;Raise Int level to 1 so we can update the BUSY flag without being
+                              278     ;interrupted by the Decoder Isr
+P:007B 0AF968         4  260  280     bset    #8,sr                       ; Raise interrupt level to 1
+P:007C 000000         2  262  281     nop                                 ; Those nops make sure that 
+P:007D 000000         2  264  282     nop                                 ; any interrupt pending is processed
+P:007E 000000         2  266  283     nop                                 ; DO NOT REMOVE, UNLESS YOU HAVE 
+                              284                                         ; A FREE DAY TO DEBUG CODE                                                    
+                              285                               
+                              286 ;    bclr    #HW_GP_B15_BITPOS,x:HW_GP1DOR    ; make it low 
+                              288     ; restore stack
+P:007F 65F400 rrrrrr  3  269  289     move    #StfmDecoderRunIsrSp,r5         ; pointer to the SP local save
+P:0081 66F400 rrrrrr  3  272  290     move    #_StfmStackRestored,r6   ; setup the return address
+P:0083 0AF080 rrrrrr  6  278  291     jmp     RestoreSystemStack              ; restore the hardware stack
+                              292 _StfmStackRestored
+P:0085 66F400 rrrrrr  3  281  294     move    #_StfmRestoreRegReturn,r6 ; setup the return address
+P:0087 0AF080 rrrrrr  6  287  295     jmp     RestoreRegs                     ; restore registers
+                              296 _StfmRestoreRegReturn
+P:0089 6EF000 rrrrrr  3  290  297     move    y:StfmDecSaveR6,r6          ; restore minimal reg set
+P:008B 05F07C rrrrrr  4  294  298     movec   y:StfmDecSavePC,ssh              ;Force return 
+P:008D 05F07D rrrrrr  4  298  299     movec   y:StfmDecSaveSR,ssl
+                              300 ;    debug
+P:008F 000000         2  300  301     nop
+P:0090 000004         4  304  302     rti                            ;This needs to be a RTI to restore the SR
+                              305 ; Function will update the IIR coefficients if IIRFiltCoeffSemaphore is set.
+                              306 ; Asm version was written so register A would be saved.  
+                              307 UpdateIIRFiltCoeffs
+P:0091 5FF000 rrrrrr  3  307  308     move    y:FIIRFiltCoeffSemaphore,b
+P:0093 20000B         2  309  309     tst     b
+P:0094 0AF0AA rrrrrr  6  315  310     jeq     _FiltSemaphoreCleared
+P:0096 4EF000 rrrrrr  3  318  312     move    y:Fg_sd_audio_LprB0_i16,y0
+P:0098 467000 rrrrrr  3  321  313     move    y0,x:FIIRFiltCoeff
+P:009A 4FF000 rrrrrr  3  324  314     move    y:Fg_sd_audio_LprB1_i16,y1
+P:009C 477000 rrrrrr  3  327  315     move    y1,x:FIIRFiltCoeff+1
+P:009E 467000 rrrrrr  3  330  316     move    y0,x:FIIRFiltCoeff+2
+P:00A0 5FF000 rrrrrr  3  333  317     move    y:Fg_sd_audio_LprA1_i16,b
+P:00A2 577000 rrrrrr  3  336  318     move    b,x:FIIRFiltCoeff+3
+P:00A4 4DF000 rrrrrr  3  339  319     move    y:Fg_sd_audio_LprA2_i16,x1
+P:00A6 457000 rrrrrr  3  342  320     move    x1,x:FIIRFiltCoeff+4
+P:00A8 467000 rrrrrr  3  345  321     move    y0,x:FIIRFiltCoeff+5
+P:00AA 477000 rrrrrr  3  348  322     move    y1,x:FIIRFiltCoeff+6
+P:00AC 467000 rrrrrr  3  351  323     move    y0,x:FIIRFiltCoeff+7
+P:00AE 577000 rrrrrr  3  354  324     move    b,x:FIIRFiltCoeff+8
+P:00B0 457000 rrrrrr  3  357  325     move    x1,x:FIIRFiltCoeff+9
+P:00B2 270000         2  359  327     move    #0,y1
+P:00B3 4F7000 rrrrrr  3  362  328     move    y1,y:FIIRFiltCoeffSemaphore
+                              330 _FiltSemaphoreCleared
+P:00B5 00000C         4  366  331     rts
+                              333     endsec

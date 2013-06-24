@@ -1,0 +1,8 @@
+#ifndef _DISPLAY_MODULE_H
+#define _DISPLAY_MODULE_H
+
+
+#define SIMPLE_RESOURCE 0
+#define NESTED_RESOURCE 1
+
+#endif

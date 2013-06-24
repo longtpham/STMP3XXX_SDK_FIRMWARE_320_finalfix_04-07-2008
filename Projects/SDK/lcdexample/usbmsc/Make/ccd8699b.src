@@ -1,0 +1,3556 @@
+; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00098960
+; options: -OG -si -w68 -w66 -I..\output_3500\include
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\usbmsc -I -I..\..
+;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+;          -I..\..\..\..\..\System\Common\symbols -I
+;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+;          -I..\..\..\..\..\devicedriver\media\ddildl
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include -I
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+;          -I..\..\..\..\..\devicedriver\media\include
+;          -I..\..\..\..\..\devicedriver\media\ddildl
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\DeviceDriver\Media\include
+;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+;          -I..\..\..\..\..\DeviceDriver\Media\usb\Ch9
+;          -I..\..\..\..\..\DeviceDriver\Media\scsi
+;          -I..\..\..\..\..\DeviceDriver\Media\usbmsc
+;          -I..\..\..\..\..\DeviceDriver\Media\mtp
+;          -I..\..\..\..\..\System\Common\updater
+;          -I..\..\..\..\..\libsource\sysserialnumber -DALL -DRETAIL -DNAND4
+;          -DLIBS -DNO_SYMBOLS -DUPDATER -DTUNER_STFM1000 -DSTFM1000_LCD=TRUE
+;          -DDCDC_POWER_TRANSFER -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD
+;          -DFAT16 -DDEVICE_3500 -DENGR_BD -DUSBMSC_BUILD
+;          -DBATTERY_TYPE_ALKALINE -DUSE_PLAYLIST3_HOST -DASCII_ONLY -DUPDATER
+;          -DRETAIL -DDEVICE_3500 -Dk_opt_performance_enhancement
+;          -I..\..\..\..\..\devicedriver\display
+;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -g -O2 -R -Cs
+;          -MmyL
+
+	page	132
+	opt	nops,now109,noop,opjmp,norp,w139,noopspeed,oprep
+	SYMB	MODP, 52, 31, 387
+	SYMB	NAME, "packdesc"
+	SYMB	TOOL, "TASKING DSP2410 C compiler v1.5", 1
+	SYMB	TYPE, 256, "bit", 'g', 0, 1
+	SYMB	FILE, "..\\..\\..\\..\\..\\devicedriver\\media\\usb\\usb20\\ch9\\packdesc.c"
+
+;     packdesc.c:
+; 1    |////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2003
+; 3    |//
+; 4    |// File : PackDesc.c
+; 5    |// Description : 
+; 6    |////////////////////////////////////////////////////////////////////////////////
+; 7    |#include "types.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\inc\\types.h"
+
+; 1    |////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+; 3    |//
+; 4    |// Filename: types.h
+; 5    |// Description: Standard data types
+; 6    |////////////////////////////////////////////////////////////////////////////////
+; 7    |
+; 8    |#ifndef _TYPES_H
+; 9    |#define _TYPES_H
+; 10   |
+; 11   |// TODO:  move this outta here!
+; 12   |#if !defined(NOERROR)
+; 13   |#define NOERROR 0
+; 14   |#define SUCCESS 0
+; 15   |#endif 
+; 16   |#if !defined(SUCCESS)
+; 17   |#define SUCCESS  0
+; 18   |#endif
+; 19   |#if !defined(ERROR)
+; 20   |#define ERROR   -1
+; 21   |#endif
+; 22   |#if !defined(FALSE)
+; 23   |#define FALSE 0
+; 24   |#endif
+; 25   |#if !defined(TRUE)
+; 26   |#define TRUE  1
+; 27   |#endif
+; 28   |
+; 29   |#if !defined(NULL)
+; 30   |#define NULL 0
+; 31   |#endif
+; 32   |
+; 33   |#define MAX_INT     0x7FFFFF
+; 34   |#define MAX_LONG    0x7FFFFFffffff
+; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+; 36   |#define MAX_ULONG   (-1) 
+; 37   |
+; 38   |#define WORD_SIZE   24              // word size in bits
+; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+; 40   |
+; 41   |
+; 42   |#define BYTE    unsigned char       // btVarName
+; 43   |#define CHAR    signed char         // cVarName
+; 44   |#define USHORT  unsigned short      // usVarName
+; 45   |#define SHORT   unsigned short      // sVarName
+; 46   |#define WORD    unsigned int        // wVarName
+; 47   |#define INT     signed int          // iVarName
+; 48   |#define DWORD   unsigned long       // dwVarName
+; 49   |#define LONG    signed long         // lVarName
+; 50   |#define BOOL    unsigned int        // bVarName
+; 51   |#define FRACT   _fract              // frVarName
+; 52   |#define LFRACT  long _fract         // lfrVarName
+; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+; 54   |#define FLOAT   float               // fVarName
+; 55   |#define DBL     double              // dVarName
+; 56   |#define ENUM    enum                // eVarName
+; 57   |#define CMX     _complex            // cmxVarName
+; 58   |typedef WORD UCS3;                   // 
+; 59   |
+; 60   |#define UINT16  unsigned short
+; 61   |#define UINT8   unsigned char	
+; 62   |#define UINT32  unsigned long
+; 63   |#define UINT64  unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 64   |#define INT64   unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 65   |#define WCHAR   UINT16
+; 66   |
+; 67   |//UINT128 is 16 bytes or 6 words
+; 68   |typedef struct UINT128_3500 {   
+; 69   |    int val[6];     
+; 70   |} UINT128_3500;
+; 71   |
+; 72   |#define UINT128   UINT128_3500
+; 73   |
+; 74   |// Little endian word packed byte strings:   
+; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 77   |// Little endian word packed byte strings:   
+; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 80   |
+; 81   |// Declare Memory Spaces To Use When Coding
+; 82   |// A. Sector Buffers
+; 83   |#define SECTOR_BUFFER_MEM_X _X
+; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+
+	SYMB	TYPE, 257, "SECTOR_BUFFER", 'T', #18
+
+; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+; 88   |// B. Media DDI Memory
+; 89   |#define MEDIA_DDI_MEM _Y
+; 90   |
+; 91   |
+; 92   |
+; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+; 94   |// Examples of circular pointers:
+; 95   |//    INT CIRC cpiVarName
+; 96   |//    DWORD CIRC cpdwVarName
+; 97   |
+; 98   |#define RETCODE INT                 // rcVarName
+; 99   |
+; 100  |// generic bitfield structure
+; 101  |struct Bitfield {
+; 102  |    unsigned int B0  :1;
+; 103  |    unsigned int B1  :1;
+; 104  |    unsigned int B2  :1;
+; 105  |    unsigned int B3  :1;
+; 106  |    unsigned int B4  :1;
+; 107  |    unsigned int B5  :1;
+; 108  |    unsigned int B6  :1;
+; 109  |    unsigned int B7  :1;
+; 110  |    unsigned int B8  :1;
+; 111  |    unsigned int B9  :1;
+; 112  |    unsigned int B10 :1;
+; 113  |    unsigned int B11 :1;
+; 114  |    unsigned int B12 :1;
+; 115  |    unsigned int B13 :1;
+; 116  |    unsigned int B14 :1;
+; 117  |    unsigned int B15 :1;
+; 118  |    unsigned int B16 :1;
+; 119  |    unsigned int B17 :1;
+; 120  |    unsigned int B18 :1;
+; 121  |    unsigned int B19 :1;
+; 122  |    unsigned int B20 :1;
+; 123  |    unsigned int B21 :1;
+; 124  |    unsigned int B22 :1;
+; 125  |    unsigned int B23 :1;
+; 126  |};
+; 127  |
+; 128  |union BitInt {
+; 129  |	struct Bitfield B;
+; 130  |	int	   I;
+; 131  |};
+; 132  |
+; 133  |#define MAX_MSG_LENGTH 10
+; 134  |struct CMessage
+; 135  |{
+; 136  |	unsigned int m_uLength;
+; 137  |	unsigned int m_uMsg[MAX_MSG_LENGTH];
+; 138  |};
+; 139  |
+; 140  |typedef struct {
+; 141  |    WORD m_wLength;
+; 142  |    WORD m_wMessage;
+; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+; 144  |} Message;
+; 145  |
+; 146  |struct MessageQueueDescriptor
+; 147  |{
+; 148  |	int *m_pBase;
+; 149  |	int m_iModulo;
+; 150  |	int m_iSize;
+; 151  |	int *m_pHead;
+; 152  |	int *m_pTail;
+; 153  |};
+; 154  |
+; 155  |struct ModuleEntry
+; 156  |{
+; 157  |    int m_iSignaledEventMask;
+; 158  |    int m_iWaitEventMask;
+; 159  |    int m_iResourceOfCode;
+; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+; 163  |    int m_uTimeOutHigh;
+; 164  |    int m_uTimeOutLow;
+; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+; 166  |};
+; 167  |
+; 168  |union WaitMask{
+; 169  |    struct B{
+; 170  |        unsigned int m_bNone     :1;
+; 171  |        unsigned int m_bMessage  :1;
+; 172  |        unsigned int m_bTimer    :1;
+; 173  |        unsigned int m_bButton   :1;
+; 174  |    } B;
+; 175  |    int I;
+; 176  |} ;
+; 177  |
+; 178  |
+; 179  |struct Button {
+; 180  |	WORD wButtonEvent;
+; 181  |	WORD wUnused[MAX_MSG_LENGTH];	
+; 182  |};
+; 183  |
+; 184  |struct Message {
+; 185  |	WORD wMsgLength;
+; 186  |	WORD wMsgCommand;
+; 187  |	WORD wMsgParms[MAX_MSG_LENGTH-1];
+; 188  |};
+; 189  |
+; 190  |union EventTypes {
+; 191  |	struct CMessage msg;
+; 192  |	struct Button Button ;
+; 193  |	struct Message Message;
+; 194  |};
+; 195  |
+; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+; 197  |#define BUILD_TYPE_UPDATER  0x100
+; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+; 199  |#define BUILD_TYPE_PLAYER   0x102
+; 200  |
+; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+; 204  |
+; 205  |#if DEBUG
+; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+; 208  |#else 
+; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+; 210  |#define DebugBuildAssert(x)    
+; 211  |#endif
+; 212  |
+; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+; 214  |//  #pragma asm
+; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+; 216  |//  #pragma endasm
+; 217  |
+; 218  |
+; 219  |#ifdef COLOR_262K
+; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+; 221  |#elif defined(COLOR_65K)
+; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+; 223  |#else
+; 224  |#define RGB(r,g,b) 	 ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+; 225  |#endif
+; 226  |    
+; 227  |#endif // #ifndef _TYPES_H
+
+	SYMB	ENDF
+
+; 8    |#include "usb_api.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\inc\\usb_api.h"
+
+; 1    |////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2002 - 2003
+; 3    |//
+; 4    |// File : USB_API.H
+; 5    |// Description : USB_API.H defines and structures definition for USB device
+; 6    |//               driver API.
+; 7    |//               This 
+; 8    |////////////////////////////////////////////////////////////////////////////////
+; 9    |
+; 10   |#ifndef __usb_api_h__
+; 11   |#define __usb_api_h__ 1
+; 12   |
+; 13   |#include "types.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\inc\\types.h"
+
+; 1    |////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+; 3    |//
+; 4    |// Filename: types.h
+; 5    |// Description: Standard data types
+; 6    |////////////////////////////////////////////////////////////////////////////////
+; 7    |
+; 8    |#ifndef _TYPES_H
+; 9    |#define _TYPES_H
+; 10   |
+; 11   |// TODO:  move this outta here!
+; 12   |#if !defined(NOERROR)
+; 13   |#define NOERROR 0
+; 14   |#define SUCCESS 0
+; 15   |#endif 
+; 16   |#if !defined(SUCCESS)
+; 17   |#define SUCCESS  0
+; 18   |#endif
+; 19   |#if !defined(ERROR)
+; 20   |#define ERROR   -1
+; 21   |#endif
+; 22   |#if !defined(FALSE)
+; 23   |#define FALSE 0
+; 24   |#endif
+; 25   |#if !defined(TRUE)
+; 26   |#define TRUE  1
+; 27   |#endif
+; 28   |
+; 29   |#if !defined(NULL)
+; 30   |#define NULL 0
+; 31   |#endif
+; 32   |
+; 33   |#define MAX_INT     0x7FFFFF
+; 34   |#define MAX_LONG    0x7FFFFFffffff
+; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+; 36   |#define MAX_ULONG   (-1) 
+; 37   |
+; 38   |#define WORD_SIZE   24              // word size in bits
+; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+; 40   |
+; 41   |
+; 42   |#define BYTE    unsigned char       // btVarName
+; 43   |#define CHAR    signed char         // cVarName
+; 44   |#define USHORT  unsigned short      // usVarName
+; 45   |#define SHORT   unsigned short      // sVarName
+; 46   |#define WORD    unsigned int        // wVarName
+; 47   |#define INT     signed int          // iVarName
+; 48   |#define DWORD   unsigned long       // dwVarName
+; 49   |#define LONG    signed long         // lVarName
+; 50   |#define BOOL    unsigned int        // bVarName
+; 51   |#define FRACT   _fract              // frVarName
+; 52   |#define LFRACT  long _fract         // lfrVarName
+; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+; 54   |#define FLOAT   float               // fVarName
+; 55   |#define DBL     double              // dVarName
+; 56   |#define ENUM    enum                // eVarName
+; 57   |#define CMX     _complex            // cmxVarName
+; 58   |typedef WORD UCS3;                   // 
+; 59   |
+; 60   |#define UINT16  unsigned short
+; 61   |#define UINT8   unsigned char	
+; 62   |#define UINT32  unsigned long
+; 63   |#define UINT64  unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 64   |#define INT64   unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 65   |#define WCHAR   UINT16
+; 66   |
+; 67   |//UINT128 is 16 bytes or 6 words
+; 68   |typedef struct UINT128_3500 {   
+; 69   |    int val[6];     
+; 70   |} UINT128_3500;
+; 71   |
+; 72   |#define UINT128   UINT128_3500
+; 73   |
+; 74   |// Little endian word packed byte strings:   
+; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 77   |// Little endian word packed byte strings:   
+; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 80   |
+; 81   |// Declare Memory Spaces To Use When Coding
+; 82   |// A. Sector Buffers
+; 83   |#define SECTOR_BUFFER_MEM_X _X
+; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+; 88   |// B. Media DDI Memory
+; 89   |#define MEDIA_DDI_MEM _Y
+; 90   |
+; 91   |
+; 92   |
+; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+; 94   |// Examples of circular pointers:
+; 95   |//    INT CIRC cpiVarName
+; 96   |//    DWORD CIRC cpdwVarName
+; 97   |
+; 98   |#define RETCODE INT                 // rcVarName
+; 99   |
+; 100  |// generic bitfield structure
+; 101  |struct Bitfield {
+; 102  |    unsigned int B0  :1;
+; 103  |    unsigned int B1  :1;
+; 104  |    unsigned int B2  :1;
+; 105  |    unsigned int B3  :1;
+; 106  |    unsigned int B4  :1;
+; 107  |    unsigned int B5  :1;
+; 108  |    unsigned int B6  :1;
+; 109  |    unsigned int B7  :1;
+; 110  |    unsigned int B8  :1;
+; 111  |    unsigned int B9  :1;
+; 112  |    unsigned int B10 :1;
+; 113  |    unsigned int B11 :1;
+; 114  |    unsigned int B12 :1;
+; 115  |    unsigned int B13 :1;
+; 116  |    unsigned int B14 :1;
+; 117  |    unsigned int B15 :1;
+; 118  |    unsigned int B16 :1;
+; 119  |    unsigned int B17 :1;
+; 120  |    unsigned int B18 :1;
+; 121  |    unsigned int B19 :1;
+; 122  |    unsigned int B20 :1;
+; 123  |    unsigned int B21 :1;
+; 124  |    unsigned int B22 :1;
+; 125  |    unsigned int B23 :1;
+; 126  |};
+; 127  |
+; 128  |union BitInt {
+; 129  |	struct Bitfield B;
+; 130  |	int	   I;
+; 131  |};
+; 132  |
+; 133  |#define MAX_MSG_LENGTH 10
+; 134  |struct CMessage
+; 135  |{
+; 136  |	unsigned int m_uLength;
+; 137  |	unsigned int m_uMsg[MAX_MSG_LENGTH];
+; 138  |};
+; 139  |
+; 140  |typedef struct {
+; 141  |    WORD m_wLength;
+; 142  |    WORD m_wMessage;
+; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+; 144  |} Message;
+; 145  |
+; 146  |struct MessageQueueDescriptor
+; 147  |{
+; 148  |	int *m_pBase;
+; 149  |	int m_iModulo;
+; 150  |	int m_iSize;
+; 151  |	int *m_pHead;
+; 152  |	int *m_pTail;
+; 153  |};
+; 154  |
+; 155  |struct ModuleEntry
+; 156  |{
+; 157  |    int m_iSignaledEventMask;
+; 158  |    int m_iWaitEventMask;
+; 159  |    int m_iResourceOfCode;
+; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+; 163  |    int m_uTimeOutHigh;
+; 164  |    int m_uTimeOutLow;
+; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+; 166  |};
+; 167  |
+; 168  |union WaitMask{
+; 169  |    struct B{
+; 170  |        unsigned int m_bNone     :1;
+; 171  |        unsigned int m_bMessage  :1;
+; 172  |        unsigned int m_bTimer    :1;
+; 173  |        unsigned int m_bButton   :1;
+; 174  |    } B;
+; 175  |    int I;
+; 176  |} ;
+; 177  |
+; 178  |
+; 179  |struct Button {
+; 180  |	WORD wButtonEvent;
+; 181  |	WORD wUnused[MAX_MSG_LENGTH];	
+; 182  |};
+; 183  |
+; 184  |struct Message {
+; 185  |	WORD wMsgLength;
+; 186  |	WORD wMsgCommand;
+; 187  |	WORD wMsgParms[MAX_MSG_LENGTH-1];
+; 188  |};
+; 189  |
+; 190  |union EventTypes {
+; 191  |	struct CMessage msg;
+; 192  |	struct Button Button ;
+; 193  |	struct Message Message;
+; 194  |};
+; 195  |
+; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+; 197  |#define BUILD_TYPE_UPDATER  0x100
+; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+; 199  |#define BUILD_TYPE_PLAYER   0x102
+; 200  |
+; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+; 204  |
+; 205  |#if DEBUG
+; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+; 208  |#else 
+; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+; 210  |#define DebugBuildAssert(x)    
+; 211  |#endif
+; 212  |
+; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+; 214  |//  #pragma asm
+; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+; 216  |//  #pragma endasm
+; 217  |
+; 218  |
+; 219  |#ifdef COLOR_262K
+; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+; 221  |#elif defined(COLOR_65K)
+; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+; 223  |#else
+; 224  |#define RGB(r,g,b) 	 ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+; 225  |#endif
+; 226  |    
+; 227  |#endif // #ifndef _TYPES_H
+
+	SYMB	ENDF
+
+; 14   |#include "project.h"
+
+	SYMB	FILE, "..\\output_3500\\include\\project.h"
+
+; 1    |/////////////////////////////////////////////////////////////////////////////////
+; 2    |//  Copyright(C) SigmaTel, Inc. 2000-2004
+; 3    |//  Filename: project.inc
+; 4    |//  Description: 
+; 5    |/////////////////////////////////////////////////////////////////////////////////
+; 6    |
+; 7    |#if (!defined(_PROJECT_INC))
+; 8    |#define _PROJECT_INC 1
+; 9    |
+; 10   |#if defined(STMP_BUILD_PLAYER)
+; 11   |#include "hwequ.h"
+; 12   |#else 
+; 13   |//include "regscodec.inc"
+; 14   |#endif
+; 15   |
+; 16   |//////////////////////////////////////////////////////////////////////////////////
+; 17   |// Uncomment next define to allow player boot if you have stfm1000 macro enabled (defaults ON) & 
+; 18   |// your board crystal is not able to output nominal voltage range. Used in player main.asm. STMP00012148
+; 19   |// Defining this will result in lower battery life (price of using a lower quality crystal). 
+; 20   |// Those that want to save battery life and have good crystals that meet our HW team's specs can 
+; 21   |// comment out this line to reduce crystal bias current and so battery current in player mode.  
+; 22   |#define SUPPORT_MARGINAL_XTALS 1
+; 23   |
+; 24   |/////////////////////////////////////////////////////////////////////////////////
+; 25   |// BOOT SPEED CONFIG & ASSOCIATED BATTERY VOLTAGE CHECK ENABLE
+; 26   |/////////////////////////////////////////////////////////////////////////////////
+; 27   |// Users can enable one of ATTEMPT_FAST_BOOT or FASTEST boot or neither project define below by defining
+; 28   |// values as 0 or 1, else it defaults to the boot speed used in previous SDKs.
+; 29   |#define ATTEMPT_FAST_BOOT 1
+; 30   |#define ATTEMPT_FASTEST_BOOT 0   
+; 31   |// Changing this define to 0 removes Vbat threshholding & unconditionally gives fast boot config above- 
+; 32   |// disabling this check is suggested for profiling if you want to try to tweak down threshholds by maybe 50mV.
+; 33   |// Also the tests should clear the fast boot config defines to link & boot at normal speed.
+; 34   |#define SPEED_BOOT_BATTERY_CHECK 1
+; 35   |
+; 36   |/////////////////////////////////////////////////////////////////////////////////
+; 37   |// MEDIA DEFINITIONS
+; 38   |/////////////////////////////////////////////////////////////////////////////////
+; 39   |
+; 40   |/////////////////////////////////////////////////////////////////////////////////
+; 41   |// MNAND - Number of chips forming the internal physical device (i.e. # of NANDs)
+; 42   |#if defined(NAND1)
+; 43   |#define SM_INTERNAL_CHIPS 1
+; 44   |#else 
+; 45   |#if defined(NAND2)
+; 46   |#define SM_INTERNAL_CHIPS 2
+; 47   |#else 
+; 48   |#if defined(NAND3)
+; 49   |#define SM_INTERNAL_CHIPS 3
+; 50   |#else 
+; 51   |#if defined(NAND4)
+; 52   |#define SM_INTERNAL_CHIPS 4
+; 53   |#else 
+; 54   |#define SM_INTERNAL_CHIPS 1
+; 55   |#endif
+; 56   |#endif
+; 57   |#endif
+; 58   |#endif
+; 59   |
+; 60   |/////////////////////////////////////////////////////////////////////////////////
+; 61   |// If SMARTMEDIA_DETECT_ACTIVE_HIGH is defined:
+; 62   |//   SmartMedia will be detected as inserted if the GPIO pin reads 1 and removed if it reads 0.  
+; 63   |// If SMARTMEDIA_DETECT_ACTIVE_HIGH is not defined ** comment out next line **
+; 64   |//   SmartMedia will be detected as inserted if the GPIO pin reads 0 and removed if it reads 1.
+; 65   |//*** comment out if active high ****
+; 66   |//SMARTMEDIA_DETECT_ACTIVE_HIGH  equ     1
+; 67   |
+; 68   |#if defined(SMEDIA)
+; 69   |#define NUM_REMOVABLE_MEDIA 1
+; 70   |#define NUM_SM_EXTERNAL 1
+; 71   |#define MMC_MAX_PHYSICAL_DEVICES 0
+; 72   |#define SM_MAX_LOGICAL_DEVICES 2
+; 73   |#else 
+; 74   |#if defined(MMC)
+; 75   |#define NUM_REMOVABLE_MEDIA 1
+; 76   |#define NUM_SM_EXTERNAL 0
+; 77   |#define MMC_MAX_PHYSICAL_DEVICES 1
+; 78   |#define SM_MAX_LOGICAL_DEVICES 1
+; 79   |#else 
+; 80   |#define NUM_REMOVABLE_MEDIA 0
+; 81   |#define NUM_SM_EXTERNAL 0
+; 82   |#define MMC_MAX_PHYSICAL_DEVICES 0
+; 83   |#define SM_MAX_LOGICAL_DEVICES 1
+; 84   |#endif
+; 85   |#endif
+; 86   |
+; 87   |/////////////////////////////////////////////////////////////////////////////////
+; 88   |// Mass Storage Class definitions
+; 89   |/////////////////////////////////////////////////////////////////////////////////
+; 90   |// Set to 0 if Composite Device build is desired.    
+; 91   |#define MULTI_LUN_BUILD 1   
+; 92   |
+; 93   |////////////////////////////////////////////////////////////////////////////////
+; 94   |//  SCSI
+; 95   |#if (MULTI_LUN_BUILD==0)
+; 96   |  #if (NUM_REMOVABLE_MEDIA == 1)
+; 97   |    #define SCSI_NUM_TARGETS                        2
+; 98   |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1
+; 99   |    #define SCSI_DEVICE_NUM_LUNS_DEV_1              1
+; 100  |  #else
+; 101  |    #define SCSI_NUM_TARGETS                        1
+; 102  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1
+; 103  |  #endif
+; 104  |#else
+; 105  |    #define SCSI_NUM_TARGETS                        1
+; 106  |  #if (NUM_REMOVABLE_MEDIA == 1)
+; 107  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              2
+; 108  |  #else
+; 109  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1  
+; 110  |  #endif
+; 111  |#endif
+; 112  |
+; 113  |
+; 114  |#define USBMSC_NUM_DEVICES                      SCSI_NUM_TARGETS
+; 115  |
+; 116  |
+; 117  |////////////////////////////////////////////////////////////////////////////////
+; 118  |// Define number of logical medias and drives for three builds (MTP, USBMSC, and Player)
+; 119  |////////////////////////////////////////////////////////////////////////////////
+; 120  |#ifdef MMC
+; 121  |#ifdef MTP_BUILD
+; 122  |// --------------------
+; 123  |// MTP and MMC
+; 124  |// --------------------
+; 125  |#define NUM_LOGICAL_MEDIA       2
+; 126  |#define NUM_LOGICAL_DRIVES      8
+; 127  |#else  // ifndef MTP_BUILD
+; 128  |#ifdef STMP_BUILD_PLAYER
+; 129  |// --------------------
+; 130  |// Player and MMC
+; 131  |// --------------------
+; 132  |#else
+; 133  |// --------------------
+; 134  |// USBMSC and MMC
+; 135  |// --------------------
+; 136  |#define NUM_LOGICAL_MEDIA       3
+; 137  |#define NUM_LOGICAL_DRIVES      8
+; 138  |#endif // ifdef STMP_BUILD_PLAYER
+; 139  |#endif // ifdef MTP_BUILD
+; 140  |#else  // ifndef MMC
+; 141  |#ifdef MTP_BUILD
+; 142  |// --------------------
+; 143  |// MTP and NAND only
+; 144  |// --------------------
+; 145  |#define NUM_LOGICAL_MEDIA       1
+; 146  |#define NUM_LOGICAL_DRIVES      7
+; 147  |#else  // ifndef MTP_BUILD
+; 148  |#ifdef STMP_BUILD_PLAYER
+; 149  |// --------------------
+; 150  |// Player and NAND only
+; 151  |// --------------------
+; 152  |#else
+; 153  |// --------------------
+; 154  |// USBMSC and NAND only
+; 155  |// --------------------
+; 156  |#define NUM_LOGICAL_MEDIA       2
+; 157  |#define NUM_LOGICAL_DRIVES      7
+; 158  |#endif // ifdef STMP_BUILD_PLAYER
+; 159  |#endif // ifdef MTP_BUILD
+; 160  |#endif // ifdef MMC 
+; 161  |
+; 162  |// If we are in an MTP build then we don't use as many transfers buffers.
+; 163  |#if (defined(MTP_BUILD))
+; 164  |#define MAX_USB_TRANSFERS_QUEUED 16
+; 165  |
+; 166  |////!
+; 167  |////! This varible holds the watchdog count for the store flush.
+; 168  |////!
+; 169  |///
+; 170  |#include <types.h>
+; 171  |extern volatile INT g_StoreWatchDogCount;
+; 172  |extern const INT g_StoreWatchDogTimeout;
+; 173  |#endif
+; 174  |
+; 175  |////////////////////////////////////////////////////////////////////////////////
+; 176  |// These are needed here for Mass Storage Class
+; 177  |// Needs to be cleaned up
+; 178  |////////////////////////////////////////////////////////////////////////////////
+; 179  |#if (!defined(STMP_BUILD_PLAYER))
+; 180  |#define SCRATCH_USER_Y_SIZE 512
+; 181  |#define SCRATCH_USER_X_SIZE 512
+; 182  |
+; 183  |#define BROWNOUT_LEVEL1_DETECTED                0x000001
+; 184  |
+; 185  |#endif
+; 186  |
+; 187  |
+; 188  |/////////////////////////////////////////////////////////////////////////////////
+; 189  |// SmartMedia/NAND defs
+; 190  |#define SM_MAX_PHYSICAL_DEVICES SM_INTERNAL_CHIPS+NUM_SM_EXTERNAL
+; 191  |#define SM_REMOVABLE_DEVICE_NUM SM_INTERNAL_CHIPS
+; 192  |
+; 193  |/////////////////////////////////////////////////////////////////////////////////
+; 194  |// Sysloadresources defs
+; 195  |#define SM_MAX_RESOURCE_DEVICES SM_INTERNAL_CHIPS+NUM_SM_EXTERNAL
+; 196  |
+; 197  |/////////////////////////////////////////////////////////////////////////////////
+; 198  |// MMC defs
+; 199  |#define MMC_MAX_PARTITIONS 1
+; 200  |#define MMC_MAX_LOGICAL_DEVICES MMC_MAX_PHYSICAL_DEVICES*MMC_MAX_PARTITIONS
+; 201  |
+; 202  |/////////////////////////////////////////////////////////////////////////////////
+; 203  |// SPI defs
+; 204  |#define SPI_MAX_DEVICES MMC_MAX_PHYSICAL_DEVICES
+; 205  |
+; 206  |/////////////////////////////////////////////////////////////////////////////////
+; 207  |// Global media defs
+; 208  |#define MAX_PHYSICAL_DEVICES SM_MAX_PHYSICAL_DEVICES+MMC_MAX_PHYSICAL_DEVICES
+; 209  |#define MAX_LOGICAL_DEVICES SM_MAX_LOGICAL_DEVICES+MMC_MAX_LOGICAL_DEVICES
+; 210  |
+; 211  |/////////////////////////////////////////////////////////////////////////////////
+; 212  |// DO NOT CHANGE THESE!!!
+; 213  |#define SM_MAX_PARTITIONS 4
+; 214  |#define MAX_HANDLES 2
+; 215  |/////////////////////////////////////////////////////////////////////////////////
+; 216  |
+; 217  |
+; 218  |/////////////////////////////////////////////////////////////////////////////////
+; 219  |// Battery LRADC Values 
+; 220  |/////////////////////////////////////////////////////////////////////////////////
+; 221  |// brownout trip point in mV (moved by RS)
+; 222  |// BATT_SAFETY_MARGIN:  percentage value used by:
+; 223  |//   * SysSaveSettings to determine if enough power is left to attempt a settings save. 
+; 224  |//   * Recorder to conditionally prevent the start or continuation of 
+; 225  |//     audio recording to media.
+; 226  |#define BATT_SAFETY_MARGIN 10
+; 227  |
+; 228  |//; player resource drive refresh allowed only when battery usable % is above this value. 
+; 229  |//; 50% of usable range [0.9V to 1.5V] is around 1.2V This is the safe target alkaline voltage to do a refresh.
+; 230  |//; LIION will also require 50% which will work but that could be changed in the future. 
+; 231  |//RESOURCE_REFRESH_MIN_BATT_PCT equ 50
+; 232  |
+; 233  |// stmp00005071 adds these for mp3 encode stability at low battery per battery type & mmc presence.
+; 234  |
+; 235  |//// Vbat threshholds empirically tuned by profiling max bat current for 3 HW cases: 
+; 236  |//// 1 GigaByte MMC, NAND flash only, & LiIon Buck mode. See voicemenu pre-encode Vbat check.
+; 237  |#if (!defined(CLCD))
+; 238  |#define MP3_ENC_MMC_MIN_V_BAT_MV 1100
+; 239  |#define MP3_ENC_NANDONLY_MIN_V_BAT_MV 1000
+; 240  |#else 
+; 241  |#define MP3_ENC_MMC_MIN_V_BAT_MV 1250
+; 242  |#define MP3_ENC_NANDONLY_MIN_V_BAT_MV 1150
+; 243  |#endif
+; 244  |#define MP3_ENC_BUCKMODE_MIN_V_BAT_MV 3300
+; 245  |
+; 246  |// These Vbat use-range-percentages are derived to correspond with target battery 
+; 247  |// voltages of 1.10V for MMC, 1.0V for nand only (alkaline or nimh), and 3.3V for any LiIon.
+; 248  |// See mp3 encoder overlay.
+; 249  |#define MP3_ENC_MMC_MIN_V_BAT_RANGE_PCT 33
+; 250  |#define MP3_ENC_NANDONLY_MIN_V_BAT_RANGE_PCT 17
+; 251  |#define MP3_ENC_BUCKMODE_MIN_V_BAT_RANGE_PCT 25
+; 252  |
+; 253  |/////////////////////////////////////////////////////////////////////////////////
+; 254  |// Voice recording filenames
+; 255  |// number of digits in filename Vxxx.wav
+; 256  |/////////////////////////////////////////////////////////////////////////////////
+; 257  |#define DIGITS_IN_VOICE_FILENAME 3   
+; 258  |
+; 259  |/////////////////////////////////////////////////////////////////////////////////
+; 260  |// Mic Bias: Set this enable to 1 to internally generate mic bias voltage. 
+; 261  |// Also below, must configure internal resistor value and pin to use for DC bias. 
+; 262  |// Can set to 0 to disable internally generated mic bias voltage at pin lradc1/2.
+; 263  |#if defined(DEVICE_3500)
+; 264  |#define ENABLE_INTERNALLY_GENERATED_MICBIAS 1 
+; 265  |// MIC BIAS circuit source selection: use Low Resolution ADC pin 2 or 1 to bias mic. 
+; 266  |// Per your layout: select LRADC 2 or 1 below 
+; 267  |//   (pin LRADC 2 for 35xx cpu card revB, LRADC 1 for 35xx cpu card revC, ref schematics, & demo player)
+; 268  |#define LRADC_NUM_FOR_MIC_BIAS 1 
+; 269  |// Sets internal mic bias R to value 2, 4, or 8 (in kOhms).
+; 270  |#define MICBIAS_CONFIGURED_RESISTOR_KOHMS 8
+; 271  |
+; 272  |// Allows mic bias to settle before sampling. This delay currently unused. For rec btn when bias not yet ready.
+; 273  |#define REC_BTN_INTERNAL_MIC_BIAS_SETTLING_DELAY_MS 400 
+; 274  |// Option always keeps bias enabled after mainmenu init. This allows for start pop prevention if you use rec button from outside voice menu.
+; 275  |// This selection costs 1 mWatt but gains the desired low record button to sampling latency in the record-from-music-menu use-case.
+; 276  |#define KEEP_MIC_BIAS_ENABLED 0
+; 277  |
+; 278  |#else 
+; 279  |// STMP3410
+; 280  |#define ENABLE_INTERNALLY_GENERATED_MICBIAS 0
+; 281  |#define LRADC_NUM_FOR_MIC_BIAS 1 
+; 282  |#define MICBIAS_CONFIGURED_RESISTOR_KOHMS 2
+; 283  |#endif
+; 284  |
+; 285  |/////////////////////////////////////////////////////////////////////////////////
+; 286  |// Number of available soft timers
+; 287  |/////////////////////////////////////////////////////////////////////////////////
+; 288  |#if defined(SYNC_LYRICS)
+; 289  |#define SOFT_TIMERS 10
+; 290  |#else 
+; 291  |#if defined(JPEG_DECODER)
+; 292  |#define SOFT_TIMERS 10
+; 293  |#else 
+; 294  |#define SOFT_TIMERS 9
+; 295  |#endif
+; 296  |#endif
+; 297  |
+; 298  |/////////////////////////////////////////////////////////////////////////////////
+; 299  |//  sizes
+; 300  |/////////////////////////////////////////////////////////////////////////////////
+; 301  |#if defined(MMC)
+; 302  |#define MENU_STACK_SIZE 1250
+; 303  |#else 
+; 304  |#define MENU_STACK_SIZE 1250
+; 305  |#endif //if @def('MMC')
+; 306  |
+; 307  |// NOTE: SDK2.6 USED 550 FOR NEXT LINE, BUT SDK3.0BETA USED 750. Should it be ifdef MTP 750 else 550 for other builds? TOVERIFY. MYALLOC
+; 308  |// 
+; 309  |#define STACK_L1_SIZE 750
+; 310  |#define STACK_L2_SIZE 100
+; 311  |#define STACK_L3_SIZE 160
+; 312  |
+; 313  |// If we are in MTP mode the overlay task stack can shrink.
+; 314  |// TODO shrink this stack for MTP, I will leave it at 500 until we verify that it 
+; 315  |// is ok with switching code.
+; 316  |#if defined(MTP_BUILD)
+; 317  |#define OVERLAY_MANAGER_STACK_SIZE 300
+; 318  |#endif
+; 319  |
+; 320  |/////////////////////////////////////////////////////////////////////////////////
+; 321  |// maximum number of nested funclets 
+; 322  |/////////////////////////////////////////////////////////////////////////////////
+; 323  |#define MAX_NESTED_FUNCLET 6 
+; 324  |
+; 325  |/////////////////////////////////////////////////////////////////////////////////
+; 326  |//    LCD DEFINITIONS
+; 327  |/////////////////////////////////////////////////////////////////////////////////
+; 328  |
+; 329  |#define SPACE_CHAR 0x000020          
+; 330  |#define ZERO_CHAR 0x000030
+; 331  |#define COLON_CHAR 0x00003A
+; 332  |#define PERIOD_CHAR 0x00002E
+; 333  |
+; 334  |#if (defined(S6B33B0A_LCD))
+; 335  |#define LCD_X_SIZE 128
+; 336  |#define LCD_Y_SIZE 159
+; 337  |#endif
+; 338  |
+; 339  |#if (defined(SED15XX_LCD))
+; 340  |#define LCD_X_SIZE 98
+; 341  |#define LCD_Y_SIZE 64
+; 342  |#endif
+; 343  |
+; 344  |
+; 345  |//////////////////////////////////////////////////////////////////////////////////
+; 346  |//   Details on Customizing Contrast
+; 347  |/////////////////////////////////////////////////////////////////////////////////
+; 348  |//   Max supported LCD range is 0 - 3F; however due to hardware/voltage differences
+; 349  |//   the range of visibility is usually smaller than this.  It is important to 
+; 350  |//   calibrate the visible range, because the contrast setting is saved.
+; 351  |//   If the user shuts off the player while lcd is not visible, the player is useless
+; 352  |//   unless the ezact sequence is remembered.
+; 353  |//   To find out what range your player supports: 
+; 354  |//   change these equs to full range or comment out (full range is default)
+; 355  |//;;;;;;
+; 356  |// uncomment the line below to build code that will provide raw contrast value
+; 357  |// recommended calibration using player -- uncomment 
+; 358  |//;;;;;;
+; 359  |//CONTRAST_CALIBRATION    equ  1
+; 360  |////////////////////////////
+; 361  |#if (defined(DEMO_HW))
+; 362  |// this is the setting for ET301 demos; Next 2 line have not been updated for new Shingyi LCD (June6'05)
+; 363  |#define LCD_MAX_CONTRAST 0x32 
+; 364  |#define LCD_MIN_CONTRAST 0x1E
+; 365  |#else 
+; 366  |
+; 367  |#if (defined(S6B33B0A_LCD))
+; 368  |#define LCD_MAX_CONTRAST 210
+; 369  |#define LCD_MIN_CONTRAST 160	
+; 370  |#endif
+; 371  |
+; 372  |#if (defined(SED15XX_LCD))
+; 373  |// Next 3 line comment was for OLD shingyi LCD: (default LCD before sdk2.6)
+; 374  |// Engineering board regs support range [17-37].
+; 375  |//   Engineering board DC/DC support range [24-46]. 
+; 376  |//   One default contrast range [24-42] works for both.
+; 377  |// The 3 sets of contrast ranges below are updated for SDK2.6 to support either 
+; 378  |// new or old ShingYih LCDs. "File" refers to \resource\shingyih\system_lcd_init_seq.src
+; 379  |// 3/10/05 - Use one of the 2 next contrast ranges depending on which
+; 380  |// ShingYih LCD you have.  See \resources\shingyi\readme.txt 
+; 381  |// Optimal for NEW LCD with NEW file (SDK2.6 default)  
+; 382  |// G098064-41 LCD module (present on engr board revH LCD card)
+; 383  |
+; 384  |#if (defined(NEWSHINGYIH))
+; 385  |#define LCD_MAX_CONTRAST 39
+; 386  |#define LCD_MIN_CONTRAST 17
+; 387  |#else 
+; 388  |//-----
+; 389  |// Near optimal for OLD LCD with NEW file. 
+; 390  |// NOT optimal for the new lcd but pretty good. So u may use this if u want 1 build for both LCDs.
+; 391  |#define LCD_MAX_CONTRAST 32
+; 392  |#define LCD_MIN_CONTRAST 14
+; 393  |
+; 394  |//=====
+; 395  |// Optimal for OLD ShingYih LCD with OLD file (as sdk2.521)
+; 396  |// Suggest going with default new init file & values above for your LCD instead of this historic ver.
+; 397  |//LCD_MAX_CONTRAST equ 42
+; 398  |//LCD_MIN_CONTRAST equ 24 
+; 399  |
+; 400  |#endif
+; 401  |#endif
+; 402  |
+; 403  |#endif
+; 404  |
+; 405  |//////////////////////////////////////////////////////////////////////////////////
+; 406  |// The default value of the lcd contrast in % of range
+; 407  |//   the default value is used when no settings.dat is available
+; 408  |//////////////////////////////////////////////////////////////////////////////////
+; 409  |
+; 410  |#if (defined(S6B33B0A_LCD))
+; 411  |// 60% of range is default value
+; 412  |#define DEFAULT_CONTRAST 50 
+; 413  |#endif
+; 414  |
+; 415  |#if (defined(SED15XX_LCD))
+; 416  |// % of range is default value (was 60%)
+; 417  |#define DEFAULT_CONTRAST 40 
+; 418  |#endif
+; 419  |
+; 420  |
+; 421  |// percentage change per increment/decrement message (LCD_DEC_CONTRAST/LCD_INC_CONTRAST)
+; 422  |// make lower when doing calibration
+; 423  |#define LCD_STEPSIZE_CONTRAST 10  
+; 424  |
+; 425  |
+; 426  |/////////////////////////////////////////////////////////////////////////////////
+; 427  |// For FFWD and RWND
+; 428  |/////////////////////////////////////////////////////////////////////////////////
+; 429  |#define SECONDS_TO_SKIP 1
+; 430  |#define SECONDS_TO_SKIP1 3
+; 431  |#define SECONDS_TO_SKIP2 6
+; 432  |// number of seconds to cause reset to begin of song for PREV push
+; 433  |#define PREV_SONG_THRESHOLD 5  
+; 434  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 435  |#define FIRST_TIME_BOUNDARY 15 
+; 436  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 437  |#define SECOND_TIME_BOUNDARY 30 
+; 438  |
+; 439  |// For audible FFW/RWD
+; 440  |#define SECONDS_TO_SKIP_FOR_3X_RATE 1
+; 441  |#define SECONDS_TO_SKIP_FOR_60X_RATE 18
+; 442  |#define SECONDS_TO_SKIP_FOR_600X_RATE 180
+; 443  |#define SECONDS_TO_SKIP_FOR_1800X_RATE 540
+; 444  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 445  |#define LEVEL1_BOUNDARY 17 
+; 446  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 447  |#define LEVEL2_BOUNDARY 33 
+; 448  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 449  |#define LEVEL3_BOUNDARY 50 
+; 450  |// Stmp00010296 Ticket #71685:  for song shorter than the min. skip size
+; 451  |// if song_time < skip_size, bCurrentSongShort=>TRUE (ignore FWD/RWD commands)
+; 452  |// Short Song Time, songs too short to play.
+; 453  |#define SHORT_SONG_TIME SECONDS_TO_SKIP 	
+; 454  |
+; 455  |/////////////////////////////////////////////////////////////////////////////////
+; 456  |// MP3 Sync Values
+; 457  |/////////////////////////////////////////////////////////////////////////////////
+; 458  |// # bytes to look for sync before marking it bad
+; 459  |#define MP3_SYNC_THRESHOLD 70000 
+; 460  |// # bytes to look for sync before slowing decoder isr frequency (to let menus run)
+; 461  |#define MP3_SYNC_THRESHOLD1 10000 
+; 462  |// once we have sync'd, the isr should be called this frequently
+; 463  |#define MP3_DECODERISR_FAST 7500  
+; 464  |// if decoder is having difficulty syncing, switch isr to be called less frequently
+; 465  |#define MP3_DECODERISR_SLOW 50000 
+; 466  |
+; 467  |
+; 468  |/////////////////////////////////////////////////////////////////////////////////
+; 469  |//// Multi-Stage Volume Control Definitions
+; 470  |/////////////////////////////////////////////////////////////////////////////////
+; 471  |//// Use Multi-Stage Volume
+; 472  |#define MULTI_STAGE_VOLUME 0x1                  
+; 473  |
+; 474  |//// Master Volume definitions
+; 475  |#define MIX_MSTR_MAX_VOL 0x0
+; 476  |#define NUM_MSTR_ATT_STEPS (0x1F-MIX_MSTR_MAX_VOL)
+; 477  |
+; 478  |//// DAC-Mode definitions
+; 479  |//// Adjusts 0dB point
+; 480  |#define MIX_DAC_NOM_VOL 0x6                  
+; 481  |#define MIX_DAC_MIN_VOL 0x1F
+; 482  |// For minimum clipping: Set MIX_DAC_MAX_VOL below to match MIX_DAC_NOM_VOL value 2 lines above.
+; 483  |// For additional gain (with possible clipping): Set MIX_DAC_MAX_VOL in range below. 
+; 484  |//                                               Each integer below MIX_DAC_NOM_VOL provides 1.5 dB gain on Stmp34x0; 
+; 485  |//                                               Max gain possible: 8 step diff would provide +12dB gain.   
+; 486  |// range: [0 to MIX_DAC_NOM_VOL] (0 for loudest volume)
+; 487  |#define MIX_DAC_MAX_VOL 0x0  
+; 488  |
+; 489  |#define NUM_DAC_ATT_STEPS (MIX_DAC_MIN_VOL-MIX_DAC_NOM_VOL+1)
+; 490  |#define NUM_DAC_GAIN_STEPS (MIX_DAC_NOM_VOL-MIX_DAC_MAX_VOL)
+; 491  |#define NUM_DAC_MODE_VOL_STEPS (NUM_DAC_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_DAC_GAIN_STEPS+1)
+; 492  |
+; 493  |//// If there is no stored volume, set to 50% of DAC-Mode max; change if DAC Mode is not the default
+; 494  |//// STMP35xx has 2dB attenuation per step so default needs a few more steps above midpoint.
+; 495  |#define DEFAULT_VOLUME ((NUM_DAC_MODE_VOL_STEPS/2)+6)         
+; 496  |
+; 497  |//// Set maximum restored volume to 75% of DAC-Mode max; change if DAC Mode is not the default
+; 498  |#define MAX_RESTORED_VOLUME ((3*NUM_DAC_MODE_VOL_STEPS)/4)   
+; 499  |
+; 500  |
+; 501  |//// Line In definitions (used for Line-In 1)
+; 502  |//// 0dB point of the Line In
+; 503  |#define MIX_LINE_NOM_VOL 0x8                  
+; 504  |//// Minimum volume of Line In
+; 505  |#define MIX_LINE_MIN_VOL 0x1F                 
+; 506  |//// Maximum volume of Line In (can adjust extra gain)
+; 507  |#define MIX_LINE_MAX_VOL 0x6                  
+; 508  |#define NUM_LINE_ATT_STEPS (MIX_LINE_MIN_VOL-MIX_LINE_NOM_VOL+1)
+; 509  |#define NUM_LINE_GAIN_STEPS (MIX_LINE_NOM_VOL-MIX_LINE_MAX_VOL)
+; 510  |#define NUM_LINE_MODE_VOL_STEPS (NUM_LINE_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_LINE_GAIN_STEPS+1)
+; 511  |
+; 512  |//// Line In definitions (used for FM tuner with 144 pin package)
+; 513  |//// 0dB point of the Line In
+; 514  |#define MIX_FM_NOM_VOL 0x8                  
+; 515  |//// Minimum volume of Line In
+; 516  |#define MIX_FM_MIN_VOL 0x1F                 
+; 517  |//// Maximum volume of Line In (can adjust extra gain)
+; 518  |#define MIX_FM_MAX_VOL 0x6                  
+; 519  |#define NUM_FM_ATT_STEPS (MIX_FM_MIN_VOL-MIX_FM_NOM_VOL+1)
+; 520  |#define NUM_FM_GAIN_STEPS (MIX_FM_NOM_VOL-MIX_FM_MAX_VOL)
+; 521  |#define NUM_FM_MODE_VOL_STEPS (NUM_FM_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_FM_GAIN_STEPS+1)
+; 522  |
+; 523  |/////////////////////////////////////////////////////////////////////////////////
+; 524  |//// When enabled (1), periodically checks for one of several FM state machine invalid deadlock states & recovers. 
+; 525  |//// Define as 0 to disable FM-deadlock-state checking and recovery.
+; 526  |#define FM_WATCHDOG_ENABLE 1
+; 527  |
+; 528  |#if !defined(STMP_BUILD_PLAYER)
+; 529  |////
+; 530  |////! This varible holds the lcd display state for the mtp project.
+; 531  |////
+; 532  |///
+; 533  |#include <types.h>
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\inc\\types.h"
+
+; 1    |////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+; 3    |//
+; 4    |// Filename: types.h
+; 5    |// Description: Standard data types
+; 6    |////////////////////////////////////////////////////////////////////////////////
+; 7    |
+; 8    |#ifndef _TYPES_H
+; 9    |#define _TYPES_H
+; 10   |
+; 11   |// TODO:  move this outta here!
+; 12   |#if !defined(NOERROR)
+; 13   |#define NOERROR 0
+; 14   |#define SUCCESS 0
+; 15   |#endif 
+; 16   |#if !defined(SUCCESS)
+; 17   |#define SUCCESS  0
+; 18   |#endif
+; 19   |#if !defined(ERROR)
+; 20   |#define ERROR   -1
+; 21   |#endif
+; 22   |#if !defined(FALSE)
+; 23   |#define FALSE 0
+; 24   |#endif
+; 25   |#if !defined(TRUE)
+; 26   |#define TRUE  1
+; 27   |#endif
+; 28   |
+; 29   |#if !defined(NULL)
+; 30   |#define NULL 0
+; 31   |#endif
+; 32   |
+; 33   |#define MAX_INT     0x7FFFFF
+; 34   |#define MAX_LONG    0x7FFFFFffffff
+; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+; 36   |#define MAX_ULONG   (-1) 
+; 37   |
+; 38   |#define WORD_SIZE   24              // word size in bits
+; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+; 40   |
+; 41   |
+; 42   |#define BYTE    unsigned char       // btVarName
+; 43   |#define CHAR    signed char         // cVarName
+; 44   |#define USHORT  unsigned short      // usVarName
+; 45   |#define SHORT   unsigned short      // sVarName
+; 46   |#define WORD    unsigned int        // wVarName
+; 47   |#define INT     signed int          // iVarName
+; 48   |#define DWORD   unsigned long       // dwVarName
+; 49   |#define LONG    signed long         // lVarName
+; 50   |#define BOOL    unsigned int        // bVarName
+; 51   |#define FRACT   _fract              // frVarName
+; 52   |#define LFRACT  long _fract         // lfrVarName
+; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+; 54   |#define FLOAT   float               // fVarName
+; 55   |#define DBL     double              // dVarName
+; 56   |#define ENUM    enum                // eVarName
+; 57   |#define CMX     _complex            // cmxVarName
+; 58   |typedef WORD UCS3;                   // 
+; 59   |
+; 60   |#define UINT16  unsigned short
+; 61   |#define UINT8   unsigned char	
+; 62   |#define UINT32  unsigned long
+; 63   |#define UINT64  unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 64   |#define INT64   unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 65   |#define WCHAR   UINT16
+; 66   |
+; 67   |//UINT128 is 16 bytes or 6 words
+; 68   |typedef struct UINT128_3500 {   
+; 69   |    int val[6];     
+; 70   |} UINT128_3500;
+; 71   |
+; 72   |#define UINT128   UINT128_3500
+; 73   |
+; 74   |// Little endian word packed byte strings:   
+; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 77   |// Little endian word packed byte strings:   
+; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 80   |
+; 81   |// Declare Memory Spaces To Use When Coding
+; 82   |// A. Sector Buffers
+; 83   |#define SECTOR_BUFFER_MEM_X _X
+; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+; 88   |// B. Media DDI Memory
+; 89   |#define MEDIA_DDI_MEM _Y
+; 90   |
+; 91   |
+; 92   |
+; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+; 94   |// Examples of circular pointers:
+; 95   |//    INT CIRC cpiVarName
+; 96   |//    DWORD CIRC cpdwVarName
+; 97   |
+; 98   |#define RETCODE INT                 // rcVarName
+; 99   |
+; 100  |// generic bitfield structure
+; 101  |struct Bitfield {
+; 102  |    unsigned int B0  :1;
+; 103  |    unsigned int B1  :1;
+; 104  |    unsigned int B2  :1;
+; 105  |    unsigned int B3  :1;
+; 106  |    unsigned int B4  :1;
+; 107  |    unsigned int B5  :1;
+; 108  |    unsigned int B6  :1;
+; 109  |    unsigned int B7  :1;
+; 110  |    unsigned int B8  :1;
+; 111  |    unsigned int B9  :1;
+; 112  |    unsigned int B10 :1;
+; 113  |    unsigned int B11 :1;
+; 114  |    unsigned int B12 :1;
+; 115  |    unsigned int B13 :1;
+; 116  |    unsigned int B14 :1;
+; 117  |    unsigned int B15 :1;
+; 118  |    unsigned int B16 :1;
+; 119  |    unsigned int B17 :1;
+; 120  |    unsigned int B18 :1;
+; 121  |    unsigned int B19 :1;
+; 122  |    unsigned int B20 :1;
+; 123  |    unsigned int B21 :1;
+; 124  |    unsigned int B22 :1;
+; 125  |    unsigned int B23 :1;
+; 126  |};
+; 127  |
+; 128  |union BitInt {
+; 129  |	struct Bitfield B;
+; 130  |	int	   I;
+; 131  |};
+; 132  |
+; 133  |#define MAX_MSG_LENGTH 10
+; 134  |struct CMessage
+; 135  |{
+; 136  |	unsigned int m_uLength;
+; 137  |	unsigned int m_uMsg[MAX_MSG_LENGTH];
+; 138  |};
+; 139  |
+; 140  |typedef struct {
+; 141  |    WORD m_wLength;
+; 142  |    WORD m_wMessage;
+; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+; 144  |} Message;
+; 145  |
+; 146  |struct MessageQueueDescriptor
+; 147  |{
+; 148  |	int *m_pBase;
+; 149  |	int m_iModulo;
+; 150  |	int m_iSize;
+; 151  |	int *m_pHead;
+; 152  |	int *m_pTail;
+; 153  |};
+; 154  |
+; 155  |struct ModuleEntry
+; 156  |{
+; 157  |    int m_iSignaledEventMask;
+; 158  |    int m_iWaitEventMask;
+; 159  |    int m_iResourceOfCode;
+; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+; 163  |    int m_uTimeOutHigh;
+; 164  |    int m_uTimeOutLow;
+; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+; 166  |};
+; 167  |
+; 168  |union WaitMask{
+; 169  |    struct B{
+; 170  |        unsigned int m_bNone     :1;
+; 171  |        unsigned int m_bMessage  :1;
+; 172  |        unsigned int m_bTimer    :1;
+; 173  |        unsigned int m_bButton   :1;
+; 174  |    } B;
+; 175  |    int I;
+; 176  |} ;
+; 177  |
+; 178  |
+; 179  |struct Button {
+; 180  |	WORD wButtonEvent;
+; 181  |	WORD wUnused[MAX_MSG_LENGTH];	
+; 182  |};
+; 183  |
+; 184  |struct Message {
+; 185  |	WORD wMsgLength;
+; 186  |	WORD wMsgCommand;
+; 187  |	WORD wMsgParms[MAX_MSG_LENGTH-1];
+; 188  |};
+; 189  |
+; 190  |union EventTypes {
+; 191  |	struct CMessage msg;
+; 192  |	struct Button Button ;
+; 193  |	struct Message Message;
+; 194  |};
+; 195  |
+; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+; 197  |#define BUILD_TYPE_UPDATER  0x100
+; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+; 199  |#define BUILD_TYPE_PLAYER   0x102
+; 200  |
+; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+; 204  |
+; 205  |#if DEBUG
+; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+; 208  |#else 
+; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+; 210  |#define DebugBuildAssert(x)    
+; 211  |#endif
+; 212  |
+; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+; 214  |//  #pragma asm
+; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+; 216  |//  #pragma endasm
+; 217  |
+; 218  |
+; 219  |#ifdef COLOR_262K
+; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+; 221  |#elif defined(COLOR_65K)
+; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+; 223  |#else
+; 224  |#define RGB(r,g,b) 	 ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+; 225  |#endif
+; 226  |    
+; 227  |#endif // #ifndef _TYPES_H
+
+	SYMB	ENDF
+
+; 534  |extern volatile WORD g_wActivityState;
+; 535  |#endif // if !@def('STMP_BUILD_PLAYER')
+; 536  |
+; 537  |void _reentrant Init5VSense(void);
+; 538  |void _reentrant ServiceDCDC(void);
+; 539  |
+; 540  |////////////////////////////////////////////////////////////////////////////
+; 541  |//// JPEG Thumbnail Mode Setting
+; 542  |//// number of column in thumbnail mode
+; 543  |#define THUMBNAIL_X 2		
+; 544  |//// number of row in  thumbnail mode
+; 545  |#define THUMBNAIL_Y 2		
+; 546  |//// thumbnail boundary offset x
+; 547  |#define THUMBNAIL_X_OFFSET 4		
+; 548  |//// thumbnail boundary offset y
+; 549  |#define THUMBNAIL_Y_OFFSET 4		
+; 550  |
+; 551  |#endif // if (!@def(_PROJECT_INC))
+; 552  |
+
+	SYMB	ENDF
+
+; 15   |
+; 16   |#ifndef _USB_MEM
+; 17   |//if not overwridden, default to the compiler default memory space
+; 18   |#define _USB_MEM
+; 19   |#endif
+; 20   |
+; 21   |#define USB_LANGUAGE_ENGLISH 0x0409
+; 22   |#define USB_LANGUAGE_CHINESE_PRC 0x0804
+; 23   |#define USB_LANGUAGE_CHINESE_TAIWAN 0x0404
+; 24   |#define USB_LANGUAGE_JAPANESE 0x0411
+; 25   |
+; 26   |#define MAX_STRING 30
+; 27   |
+; 28   |#define  USB_SPEED_FULL                      (0)
+; 29   |#define  USB_SPEED_LOW                       (1)
+; 30   |#define  USB_SPEED_HIGH                      (2)
+; 31   |
+; 32   |#define EP_FS_MAX_PACKET_SIZE               (64)    
+; 33   |
+; 34   |#define EP_HS_MAX_PACKET_SIZE               (512)   
+; 35   |
+; 36   |// Data transferred to devices based on Sigmatel 3500 chip may sometimes be 
+; 37   |// corrupted. The corruption occurs when device is connected in USB High Speed 
+; 38   |// mode, and size of the transfer in bytes is divisible by 128, but not 
+; 39   |// divisible by the packet size. The workaround is implemented in Microsoft MTP 
+; 40   |// driver to allow support for those devices.
+; 41   |
+; 42   |// the bug can corrupt the end of data buffer. It occurs when host sends out a 
+; 43   |// short packet that is multiple of 128 bytes. During this scenario the USB core
+; 44   |// does writes that are voided (byte enable == all zero), which was an undefined 
+; 45   |// capability and thus the gasket did not apply a proper response. This should 
+; 46   |// not affect Mass Storage applications because data transfers are 512 bytes and 
+; 47   |// scsi commands are < 16 bytes. Other applications with their own driver will
+; 48   |// need to pad the packets if they fall into the error case. "What this basically 
+; 49   |// boils down to is that any time the host sends a short packet of 128, 256 or
+; 50   |// 384 bytes to a high-speed connected player a number of bytes will be corrupted.
+; 51   |// This is easiest to reproduce in SendObject commands but can strike any of the 
+; 52   |// commands that take an arbitrary amount of data.
+; 53   |#define ARC_HS_128_MODULO_BUG               (128)
+; 54   |
+; 55   |
+; 56   |/* Error codes */
+; 57   |#define USB_OK                              (0x00)
+; 58   |#define USBERR_REGISTER_SERVICE             (0x01)  // Failed to register a service
+; 59   |#define USBERR_NO_SERVICE                   (0x02)  // No registered service found 
+; 60   |#define USBERR_TX_FAILED                    (0x03)  // Fail to prepare XD descriptor
+; 61   |#define USBERR_SIZE_TOO_LARGE               (0x04)  // Number of bytes to transfer is too large
+; 62   |#define USBERR_EP_INIT_FAILED               (0x05)  // Endpoint init fail
+; 63   |#define USBERR_CONFIG_FAILED                (0x06)  // Error reported by the application
+; 64   |                                                    // if the new config failed or not supported
+; 65   |#define USBERR_DEVICE_NOT_CONFIGURED        (0x07)  // Error reported by the transfer function
+; 66   |                                                    // if attempting to transfer while the device
+; 67   |                                                    // is not configured
+; 68   |#define USBERR_INIT_FAILED                  (0x08)  // Fail to initialize the USB API
+; 69   |
+; 70   |
+; 71   |/* Endpoint types */
+; 72   |#define  USB_CONTROL_ENDPOINT             (0)
+; 73   |#define  USB_ISOCHRONOUS_ENDPOINT         (1)
+; 74   |#define  USB_BULK_ENDPOINT                (2)
+; 75   |#define  USB_INTERRUPT_ENDPOINT           (3)
+; 76   |
+; 77   |/* End point direction */
+; 78   |#define  USB_OUT                         (0)
+; 79   |#define  USB_IN                          (1)
+; 80   |
+; 81   |/* End point packed size */
+; 82   |#define  USB_FS_MAX_PACKET_SIZE           (64)
+; 83   |#define  USB_HS_BULK_OUT_MAX_PACKET_SIZE  (256)
+; 84   |#define  USB_HS_BULK_IN_MAX_PACKET_SIZE   (128)
+; 85   |
+; 86   |
+; 87   |#define  USB_TEST_MODE_TEST_J             (0x01)
+; 88   |#define  USB_TEST_MODE_TEST_K             (0x02)
+; 89   |#define  USB_TEST_MODE_TEST_SE0_NAK       (0x03)
+; 90   |#define  USB_TEST_MODE_TEST_PACKET        (0x04)
+; 91   |
+; 92   |/* Available service types */
+; 93   |/* Services 0 through 15 are reserved for endpoints */
+; 94   |#define  USB_SERVICE_EP0                  (0x00)
+; 95   |#define  USB_SERVICE_EP1                  (0x01)
+; 96   |#define  USB_SERVICE_EP2                  (0x02)
+; 97   |#define  USB_SERVICE_EP3                  (0x03)
+; 98   |#define  USB_SERVICE_EP4                  (0x04)
+; 99   |#define  USB_SERVICE_EP5                  (0x05)
+; 100  |#define  USB_SERVICE_EP6                  (0x06)
+; 101  |#define  USB_SERVICE_EP7                  (0x07)
+; 102  |#define  USB_SERVICE_EP8                  (0x08)
+; 103  |#define  USB_SERVICE_EP9                  (0x09)
+; 104  |#define  USB_SERVICE_EP10                 (0x0a)
+; 105  |#define  USB_SERVICE_EP11                 (0x0b)
+; 106  |#define  USB_SERVICE_EP12                 (0x0c)
+; 107  |#define  USB_SERVICE_EP13                 (0x0d)
+; 108  |#define  USB_SERVICE_EP14                 (0x0e)
+; 109  |#define  USB_SERVICE_EP15                 (0x0f)
+; 110  |#define  USB_SERVICE_BUS_RESET            (0x10)
+; 111  |#define  USB_SERVICE_SUSPEND              (0x11)
+; 112  |#define  USB_SERVICE_SOF                  (0x12)
+; 113  |#define  USB_SERVICE_RESUME               (0x13)
+; 114  |#define  USB_SERVICE_SLEEP                (0x14)
+; 115  |#define  USB_SERVICE_SPEED_DETECTION      (0x15)
+; 116  |#define  USB_SERVICE_TEST                 (0x16)
+; 117  |#define  USB_SERVICE_CHANGE_CONFIG        (0x17)
+; 118  |#define  USB_SERVICE_CHANGE_IFACE         (0x18)   
+; 119  |#define  NON_EP_SERVICES                  (USB_SERVICE_SPEED_DETECTION - USB_SERVICE_EP15)
+; 120  |
+; 121  |// This is the maximum service structures allocated 
+; 122  |// One for each End point + the common services (non endpoint services) 
+; 123  |#define MAX_NUMBER_SERVICES               (MAX_NUM_EP + NON_EP_SERVICES)  
+; 124  |
+; 125  |#define NUMBER_BYTES_IN_SETUP               (8)
+; 126  |
+; 127  |// possible values of btStatus on the xd_struct
+; 128  |#define  USB_STATUS_TRANSFER_IDLE           (0)
+; 129  |#define  USB_STATUS_TRANSFER_SUCCESS        (1)            
+; 130  |#define  USB_STATUS_TRANSFER_ACCEPTED       (2)
+; 131  |#define  USB_STATUS_TRANSFER_IN_PROGRESS    (3)
+; 132  |#define  USB_STATUS_TRANSFER_ERROR          (4)
+; 133  |
+; 134  |// types of status set/returned by set_status() and get_status()
+; 135  |#define  USB_STATUS_DEVICE_STATE          (0x01)
+; 136  |#define  USB_STATUS_INTERFACE             (0x02)
+; 137  |#define  USB_STATUS_ADDRESS               (0x03)
+; 138  |#define  USB_STATUS_CURRENT_CONFIG        (0x04)
+; 139  |#define  USB_STATUS_SOF_COUNT             (0x05)
+; 140  |#define  USB_STATUS                       (0x06)
+; 141  |#define  USB_STATUS_TEST_MODE             (0x07)
+; 142  |#define  USB_STATUS_DEVICE_SPEED          (0x08)  
+; 143  |#define  USB_STATUS_DEVICE_TEST           (0x09)  
+; 144  |#define  USB_STATUS_CURRENT_IFACE         (0x0a)
+; 145  |#define  USB_STATUS_CONNECTION            (0x0b)  
+; 146  |// For status endpoint, the endpoint number is coded in the less significant nibble
+; 147  |#define  USB_STATUS_ENDPOINT              (0x10)
+; 148  |#define  USB_STATUS_ENDPOINT_NUMBER_MASK  (0x0F)
+; 149  |
+; 150  |#define USB_MAX_SIZE_PER_TRANSFER       (0x4000)    // This is the maximum size that
+; 151  |                                                    // we allow per transfer
+; 152  |
+; 153  |//Possible states the device can be in
+; 154  |#define  USB_STATE_UNKNOWN                   (0xff)
+; 155  |#define  USB_STATE_UNPLUGGED                 (0x05) // USB Cable unplugged
+; 156  |#define  USB_STATE_PLUGGED                   (0x04) // USB Cable inserted
+; 157  |#define  USB_STATE_POWERED                   (0x03)
+; 158  |#define  USB_STATE_DEFAULT                   (0x02)
+; 159  |#define  USB_STATE_ADDRESSED                 (0x01)
+; 160  |#define  USB_STATE_CONFIGURED                (0x00)
+; 161  |#define  USB_STATE_SUSPENDED                 (0x80)
+; 162  |
+; 163  |// Possible states the connection can be in
+; 164  |//#define USB_STATE_UNKNOWN                 (0xff)
+; 165  |#define USB_CONNECTED                       (0x00)
+; 166  |#define USB_DISCONNECTED                    (0x01)
+; 167  |
+; 168  |
+; 169  |
+; 170  |typedef union
+; 171  |{
+; 172  |    struct
+; 173  |    {
+; 174  |        int Recipient               : 5;
+; 175  |        int Type                    : 2;
+; 176  |        int DataTransferDirection   : 1;
+; 177  |        int Request                 : 8;
+; 178  |        int                         : 8;
+; 179  |    } B;
+; 180  |    
+; 181  |    int I;
+; 182  |} USBRequestType ;
+
+	SYMB	TYPE, 258, 'g', 1, 5
+	SYMB	TYPE, 259, 'g', 1, 2
+	SYMB	TYPE, 260, 'g', 1, 1
+	SYMB	TYPE, 261, 'g', 1, 8
+	SYMB	TYPE, 262, 'S', 1,\
+		 "Recipient", #258, 0,\
+		 "Type", #259, 5,\
+		 "DataTransferDirection", #260, 7,\
+		 "Request", #261, 8
+	SYMB	TYPE, 263, 'U', 1,\
+		 "B", #262, 0,\
+		 "I", #16, 0
+	SYMB	TYPE, 264, "USBRequestType", 'T', #263
+
+; 183  |
+; 184  |typedef struct {
+; 185  |   BYTE     bValid;
+; 186  |   USBRequestType RequestType;
+; 187  |   BYTE     btRequest;
+; 188  |   WORD     wValue;
+; 189  |   WORD     wIndex;
+; 190  |   WORD     wLength;
+; 191  |    } USB_SetupData;
+; 192  |
+; 193  |// Descriptor sizes in bytes
+; 194  |#define SIZE_DEVICE_DESCRIPTOR_IN_BYTES     (18)
+; 195  |#define SIZE_DEVICE_DESCRIPTOR_IN_WORDS     (6)
+; 196  |#define SIZE_DEVICE_QUALIFIER_DESCRIPTOR_IN_BYTES   (10)
+; 197  |#define SIZE_DEVICE_QUALIFIER_DESCRIPTOR_IN_WORDS   (4)
+; 198  |#define SIZE_CONFIG_DESCRIPTOR_IN_BYTES     (9)
+; 199  |#define SIZE_CONFIG_DESCRIPTOR_IN_WORDS     (3)
+; 200  |#define SIZE_INTERFACE_DESCRIPTOR_IN_BYTES  (9)
+; 201  |#define SIZE_INTERFACE_DESCRIPTOR_IN_WORDS  (3)
+; 202  |#define SIZE_ENDPOINT_DESCRIPTOR_IN_BYTES   (7)
+; 203  |
+; 204  |
+; 205  |// Descriptor types
+; 206  |#define DESCRIPTOR_TYPE_DEVICE              (0x01)
+; 207  |#define DESCRIPTOR_TYPE_CONFIG              (0x02)
+; 208  |#define DESCRIPTOR_TYPE_STRING              (0x03)
+; 209  |#define DESCRIPTOR_TYPE_INTERFACE           (0x04)
+; 210  |#define DESCRIPTOR_TYPE_ENDPOINT            (0x05)
+; 211  |#define DESCRIPTOR_TYPE_DEVICE_QUALIFIER    (0x06)
+; 212  |#define DESCRIPTOR_TYPE_OTHER_SPEED_CONFIG  (0x07)
+; 213  |#define DESCRIPTOR_TYPE_INTERFACE_POWER     (0x08)
+; 214  |
+; 215  |
+; 216  |#define USB_REQUEST_DIRECTION_HOST_TO_DEVICE    ((WORD)0x000000)
+; 217  |#define USB_REQUEST_DIRECTION_DEVICE_TO_HOST    ((WORD)0x000001)
+; 218  |
+; 219  |#define USB_REQUEST_TYPE_STANDARD               ((WORD)0x000000)
+; 220  |#define USB_REQUEST_TYPE_CLASS                  ((WORD)0x000001)
+; 221  |#define USB_REQUEST_TYPE_VENDOR                 ((WORD)0x000002)
+; 222  |#define USB_REQUEST_TYPE_RESERVED               ((WORD)0x000003)
+; 223  |
+; 224  |#define USB_REQUEST_RECIPIENT_DEVICE            ((WORD)0x000000)
+; 225  |#define USB_REQUEST_RECIPIENT_INTERFACE         ((WORD)0x000001)
+; 226  |#define USB_REQUEST_RECIPIENT_ENDPOINT          ((WORD)0x000002)
+; 227  |#define USB_REQUEST_RECIPIENT_OTHER             ((WORD)0x000003)
+; 228  |
+; 229  |#define USB_REQUEST_STANDARD_GET_STATUS         ((WORD)0x000000)
+; 230  |#define USB_REQUEST_STANDARD_CLEAR_FEATURE      ((WORD)0x000001)
+; 231  |#define USB_REQUEST_STANDARD_RESERVED_1         ((WORD)0x000002)
+; 232  |#define USB_REQUEST_STANDARD_SET_FEATURE        ((WORD)0x000003)
+; 233  |#define USB_REQUEST_STANDARD_RESERVED_2         ((WORD)0x000004)
+; 234  |#define USB_REQUEST_STANDARD_SET_ADDRESS        ((WORD)0x000005)
+; 235  |#define USB_REQUEST_STANDARD_GET_DESCRIPTOR     ((WORD)0x000006)
+; 236  |#define USB_REQUEST_STANDARD_SET_DESCRIPTOR     ((WORD)0x000007)
+; 237  |#define USB_REQUEST_STANDARD_GET_CONFIGURATION  ((WORD)0x000008)
+; 238  |#define USB_REQUEST_STANDARD_SET_CONFIGURATION  ((WORD)0x000009)
+; 239  |#define USB_REQUEST_STANDARD_GET_INTERFACE      ((WORD)0x00000A)
+; 240  |#define USB_REQUEST_STANDARD_SET_INTERFACE      ((WORD)0x00000B)
+; 241  |#define USB_REQUEST_STANDARD_SYNCH_FRAME        ((WORD)0x00000C)
+; 242  |
+; 243  |#define USB_CLEAR_FEATURE_ENDPOINT_HALT         (0)
+; 244  |#define USB_CLEAR_FEATURE_REMOTE_WAKEUP         (1)
+; 245  |
+; 246  |
+; 247  |// Struct Device Descriptor
+; 248  |typedef struct {
+; 249  |    BYTE    bLength;                // (0) Size of this descriptor in bytes (18)
+; 250  |    BYTE    btDescriptorType;       // (1) Device descriptor type (1)
+; 251  |    BYTE    btBcdUsbLsb;            // (2) USB specification release number (for version 2.00 0x00)
+; 252  |    BYTE    btBcdUsbMsb;            // (3)                                  (for version 2.00 0x02)     
+; 253  |    BYTE    btDeviceClass;          // (4) Class code
+; 254  |    BYTE    btDeviceSubclass;       // (5) Subclass code
+; 255  |    BYTE    btDeviceProtocol;       // (6) Protocol code
+; 256  |    BYTE    btMaxPacketSize0;       // (7) Maximum packet size for endpoint 0 (8, 16, 32 or 64)
+; 257  |    BYTE    btIdVendorLsb;          // (8) Vendor Id
+; 258  |    BYTE    btIdVendorMsb;          // (9)
+; 259  |    BYTE    btIdProductLsb;         // (10) Product Id
+; 260  |    BYTE    btIdProductMsb;         // (11)
+; 261  |    BYTE    btBcdReleaseLsb;        // (12) Device release number in BCD
+; 262  |    BYTE    btBcdReleaseMsb;        // (13)
+; 263  |    BYTE    btIndexManufacturer;    // (14) Index of string descriptor describing Manufacturer
+; 264  |    BYTE    btIndexProduct;         // (15) Index of string descriptor describing Product
+; 265  |    BYTE    btIndexSerialNumber;    // (16) Index of string descriptor describing Device Serial Number
+; 266  |    BYTE    btNumConfigurations;    // (17) Number of possible configurations
+; 267  |} Struct_Standard_Dev_Desc;
+; 268  |
+; 269  |// Struct Device Qualifier Descriptor
+; 270  |typedef struct {
+; 271  |    BYTE    bLength;                // (0) Size of this descriptor in bytes (10)
+; 272  |    BYTE    btDescriptorType;       // (1) Device descriptor type (6)
+; 273  |    BYTE    btBcdUsbLsb;            // (2) USB specification release number (for version 2.00 0x00)
+; 274  |    BYTE    btBcdUsbMsb;            // (3)                                  (for version 2.00 0x02)     
+; 275  |    BYTE    btDeviceClass;          // (4) Class code
+; 276  |    BYTE    btDeviceSubclass;       // (5) Subclass code
+; 277  |    BYTE    btDeviceProtocol;       // (6) Protocol code
+; 278  |    BYTE    btMaxPacketSize0;       // (7) Maximum packet size for endpoint 0 other speed (8, 16, 32 or 64)
+; 279  |    BYTE    btNumConfigurations;    // (8) Number of other-speed possible configurations
+; 280  |    BYTE    btReserved;             // (9) Reserved for future use, must be 0
+; 281  |} Struct_Dev_Qualifier_Desc;
+; 282  |
+; 283  |// Struct Configuration Descriptor
+; 284  |typedef struct {
+; 285  |    BYTE    bLength;                // (0) Size of this descriptor in bytes (9)
+; 286  |    BYTE    btDescriptorType;       // (1) Device descriptor type (2 or 7)
+; 287  |    BYTE    btTotalLengthLsb;       // (2) Total length of data returned for this config.
+; 288  |    BYTE    btTotalLengthMsb;       // (3)                                  
+; 289  |    BYTE    btNumInterfaces;        // (4) Number of Interfaces supported by this configuration
+; 290  |    BYTE    btConfigurationValue;   // (5) Value to use as an argument to the SetConfiguration() request
+; 291  |    BYTE    btIndexConfiguration;   // (6) Index of string descriptor describing this configuration
+; 292  |    BYTE    btBitMapAttributes;     // (7) Configuration Characteristics
+; 293  |                                    //     D7:      Reserved (set to one)
+; 294  |                                    //     D6:      Self-powered
+; 295  |                                    //     D5:      Remote Wakeup
+; 296  |                                    //     D4..0:   Reserved (reset to zero)        
+; 297  |    BYTE    btMaxPower;             // (8) Maximum power consumption expressed in 2mA units.
+; 298  |} Struct_Standard_Config_Desc, Struct_Other_Speed_Config_Desc;
+; 299  |
+; 300  |// Struct Interface Descriptor
+; 301  |typedef struct {
+; 302  |    BYTE    bLength;                // (0) Size of this descriptor in bytes (9)
+; 303  |    BYTE    btDescriptorType;       // (1) Device descriptor type (4)
+; 304  |    BYTE    btInterfaceNum;         // (2) Number of this interface. Zero-based value.
+; 305  |    BYTE    btAlternateSetting;     // (3)                                  
+; 306  |    BYTE    btNumEndpoints;         // (4) Number of endpointsused by this interface (excluding endpoint 0).
+; 307  |    BYTE    btInterfaceClass;       // (5) Class code
+; 308  |    BYTE    btInterfaceSubClass;    // (6) Sub Class code
+; 309  |    BYTE    btInterfaceProtocol;    // (7) Protocol Code
+; 310  |    BYTE    btIndexInterface;       // (8) Index of string descriptor describing this interface
+; 311  |} Struct_Standard_Interface_Desc;
+; 312  |
+; 313  |// Struct Endpoint Descriptor
+; 314  |typedef struct {
+; 315  |    BYTE    bLength;                // (0) Size of this descriptor in bytes (7)
+; 316  |    BYTE    btDescriptorType;       // (1) Device descriptor type (5)
+; 317  |    BYTE    btEndpointAddress;      // (2) Address of the endpoint on the USB device described by this descriptor
+; 318  |                                    //      Bit 3..0: Endpoint number
+; 319  |                                    //      Bit 6..4: Reserved, reset to zero
+; 320  |                                    //      Bit 7:    Direction. Ignored for control endpoints (0 OUT, 1 IN)
+; 321  |    BYTE    btBitMapAttributes;     // (3) Endpoint attributes
+; 322  |                                    //      bits 1..0: Transfer Type (00 Control, 01 Iso, 10 Bulk, 11 Int)
+; 323  |                                    //      bits 5..2: If not an iso endpoints, they are reserved and must be reset to zero.
+; 324  |                                    //      bits 7..6: Reserved bits, must be reset to zero.                                    
+; 325  |    BYTE    btMaxPacketSizeLsb;     // (4) Maximum packet size. Refer to standard for bits specification
+; 326  |    BYTE    btMaxPacketSizeMsb;     // (5)
+; 327  |    BYTE    btInterval;             // (6) Interval for polling endpoint for data transfers (refer to standard)
+; 328  |} Struct_Standard_Endpoint_Desc;
+; 329  |
+; 330  |typedef struct {
+; 331  |    BYTE    btLength;                   // (0) Size of this descriptor in bytes (2*MAX_USB_LANG + 2)
+; 332  |    BYTE    btDescriptorType;           // (1) String descriptor type (3)
+; 333  |    BYTE    btString[MAX_STRING*2];       
+; 334  |} Struct_String_Desc;
+; 335  |
+; 336  |//
+; 337  |// Externals
+; 338  |//
+; 339  |extern void _reentrant usb_dci_chip_enable (void);
+; 340  |extern void _reentrant usb_dci_shutdown(void);
+; 341  |
+; 342  |BYTE _reentrant usb_device_init(void);
+; 343  |void _inline usb_device_shutdown(void)
+; 344  |{
+; 345  |    usb_dci_shutdown();
+; 346  |}
+; 347  |
+; 348  |BYTE _reentrant usb_device_register_service(BYTE btType, void (* Service)(BOOL bSetup, BYTE btDirection, BYTE _USB_MEM * pbtBuffer, WORD wLength,WORD wPrivateData)); 
+; 349  |//Remove unused function usb_device_get_service() to reclain _P memroy.
+; 350  |//BYTE _reentrant usb_device_get_service(BYTE btType, void (* Service)(BOOL bSetup, BYTE btDirection, BYTE _USB_MEM * pbtBuffer, WORD wLength)); 
+; 351  |
+; 352  |BYTE _reentrant usb_device_init_endpoint(BYTE btEndpoint, USHORT usMaxPacketSize, BYTE btDirection, BYTE btType, BOOL bFlag);
+; 353  |
+; 354  |extern USB_SetupData *_reentrant usb_dci_get_setup_data(BYTE btEndpoint);
+
+	SYMB	TYPE, 265, 'S', 6,\
+		 "bValid", #3, 0,\
+		 "RequestType", #264, 1,\
+		 "btRequest", #3, 2,\
+		 "wValue", #18, 3,\
+		 "wIndex", #18, 4,\
+		 "wLength", #18, 5
+	SYMB	TYPE, 266, "USB_SetupData", 'T', #265
+
+; 355  |#define usb_device_read_setup_data(btEndpoint) usb_dci_get_setup_data(btEndpoint)
+; 356  |
+; 357  |void _reentrant usb_device_get_status(BYTE btType, USHORT * pusStatus);
+; 358  |void _reentrant usb_device_set_status(BYTE btType, USHORT usStatus);
+; 359  |BYTE _reentrant usb_device_get_transfer_status(BYTE btEndpoint, BYTE btDirection);
+; 360  |
+; 361  |extern void _reentrant usb_dci_stall_endpoint(BYTE btEndpoint, BYTE btDirection);
+; 362  |#define usb_device_stall_endpoint(btEndpoint, btDirection) usb_dci_stall_endpoint((btEndpoint), (btDirection))
+; 363  |
+; 364  |extern void _reentrant usb_dci_unstall_endpoint(BYTE btEndpoint, BYTE btDirection);
+; 365  |#define usb_device_unstall_endpoint(btEndpoint, btDirection) usb_dci_unstall_endpoint((btEndpoint), (btDirection))
+; 366  |
+; 367  |extern void _reentrant usb_dci_finish_transaction(BYTE btEndpoint);
+; 368  |#define usb_device_finish_transaction(btEndpoint) usb_dci_finish_transaction(btEndpoint);
+; 369  |
+; 370  |////////////////////////////////////////////////////////////////////////////////
+; 371  |//
+; 372  |//>  Name:          usb_device_enable
+; 373  |//
+; 374  |//   Type:          Function
+; 375  |//
+; 376  |//   Description:   Enables the USB device for transfers
+; 377  |//
+; 378  |//   Inputs:        none
+; 379  |//
+; 380  |//   Outputs:       USB_OK or error code
+; 381  |//
+; 382  |//   Notes:         none
+; 383  |//<
+; 384  |////////////////////////////////////////////////////////////////////////////////
+; 385  |void _inline usb_device_enable(void)
+; 386  |{
+; 387  |    usb_dci_chip_enable();
+; 388  |}
+; 389  |
+; 390  |void _reentrant usb_device_release(void);
+; 391  |void _reentrant usb_device_hold(void);
+; 392  |BYTE _reentrant usb_device_is_hold(void);
+; 393  |void _reentrant usb_device_data_phase_required(void);
+; 394  |
+; 395  |BOOL _reentrant usb_device_is_first_init(void);
+; 396  |void _reentrant usb_device_set_first_init(void);
+; 397  |void _reentrant usb_device_clear_first_init(void);
+; 398  |
+; 399  |WORD _reentrant usb_get_current_limit(void);
+; 400  |RETCODE _reentrant usb_set_current_limit(WORD);
+; 401  |
+; 402  |////////////////////////////////////////////////////////////////////
+; 403  |extern BYTE _reentrant usb_dci_get_endpoint_status(BYTE btEndpoint);
+; 404  |#define usb_device_get_endpoint_status(btEndpoint) usb_dci_get_endpoint_status(btEndpoint)
+; 405  |
+; 406  |#define USB_ENDPOINT_STATUS_OK                          0
+; 407  |#define USB_ENDPOINT_STATUS_STALLED                     1
+; 408  |#define USB_ENDPOINT_STATUS_RECIEVED_UNSTALL_REQUEST    2
+; 409  |// WHQL
+; 410  |#define USB_ENDPOINT_STATUS_HOST_STALLED                3
+; 411  |////////////////////////////////////////////////////////////////////
+; 412  |
+; 413  |
+; 414  |BYTE _reentrant usb_device_send_data(BYTE btEndpoint, WORD _X * pbtStmpWordAdd, BYTE btByteOffset, USHORT usSize, WORD wPrivateData, BOOL bIsDataPhase);
+; 415  |BYTE _reentrant usb_device_recv_data(BYTE btEndpoint, WORD _X * pbtStmpWordAdd, BYTE btByteOffset, USHORT usSize, WORD wPrivateData, BOOL bIsDataPhase);
+; 416  |void _reentrant ch9ServiceEp0(BOOL bSetup, BYTE btDirection, WORD _X *pbtBuffer, WORD wLength,WORD wPrivateData);
+; 417  |BYTE _reentrant usb_device_transfer_data(BYTE btEndpoint, WORD _X* pbtStmpWordAdd, 
+; 418  |                                         BYTE btByteOffset, USHORT usSize, WORD wPrivateData, 
+; 419  |                                         BOOL bIsDataPhase, WORD wDirection);
+; 420  |
+; 421  |#ifndef CUSTOMIZE_UNICODE
+; 422  |extern const BYTE g_Manufacturer[];
+; 423  |extern const BYTE g_ProductName[];
+; 424  |extern const BYTE g_ConfigString[];
+; 425  |extern const BYTE g_Interface0String[];
+; 426  |extern const BYTE g_Interface1String[];
+; 427  |extern const BYTE g_MSOSDescriptorString[];
+; 428  |#else   // CUSTOMIZE_UNICODE
+; 429  |extern const WORD g_Manufacturer[];
+; 430  |extern const WORD g_ProductName[];
+; 431  |extern const WORD g_ConfigString[];
+; 432  |extern const WORD g_Interface0String[];
+; 433  |extern const WORD g_Interface1String[];
+; 434  |extern const WORD g_MSOSDescriptorString[];
+; 435  |#endif
+; 436  |extern WORD g_LanguageList[];
+; 437  |
+; 438  |extern const BYTE g_SCSIVendorID[];
+; 439  |extern const BYTE g_SCSIProductID[];
+; 440  |extern void *g_pStrings[];
+; 441  |
+; 442  |extern WORD g_wUSBVendorID;
+; 443  |extern WORD g_wUSBProductID;
+; 444  |extern WORD g_wUSBReleaseID;
+; 445  |
+; 446  |#endif
+; 447  |/* EOF */
+; 448  |
+
+	SYMB	ENDF
+
+; 9    |#include "..\usb_internal.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\DeviceDriver\\Media\\usb\\Ch9\\..\\usb_internal.h"
+
+; 1    |#ifndef _USB_INTERNAL_H
+; 2    |#define _USB_INTERNAL_H
+; 3    |
+; 4    |#include "project.h"
+
+	SYMB	FILE, "..\\output_3500\\include\\project.h"
+
+; 1    |/////////////////////////////////////////////////////////////////////////////////
+; 2    |//  Copyright(C) SigmaTel, Inc. 2000-2004
+; 3    |//  Filename: project.inc
+; 4    |//  Description: 
+; 5    |/////////////////////////////////////////////////////////////////////////////////
+; 6    |
+; 7    |#if (!defined(_PROJECT_INC))
+; 8    |#define _PROJECT_INC 1
+; 9    |
+; 10   |#if defined(STMP_BUILD_PLAYER)
+; 11   |#include "hwequ.h"
+; 12   |#else 
+; 13   |//include "regscodec.inc"
+; 14   |#endif
+; 15   |
+; 16   |//////////////////////////////////////////////////////////////////////////////////
+; 17   |// Uncomment next define to allow player boot if you have stfm1000 macro enabled (defaults ON) & 
+; 18   |// your board crystal is not able to output nominal voltage range. Used in player main.asm. STMP00012148
+; 19   |// Defining this will result in lower battery life (price of using a lower quality crystal). 
+; 20   |// Those that want to save battery life and have good crystals that meet our HW team's specs can 
+; 21   |// comment out this line to reduce crystal bias current and so battery current in player mode.  
+; 22   |#define SUPPORT_MARGINAL_XTALS 1
+; 23   |
+; 24   |/////////////////////////////////////////////////////////////////////////////////
+; 25   |// BOOT SPEED CONFIG & ASSOCIATED BATTERY VOLTAGE CHECK ENABLE
+; 26   |/////////////////////////////////////////////////////////////////////////////////
+; 27   |// Users can enable one of ATTEMPT_FAST_BOOT or FASTEST boot or neither project define below by defining
+; 28   |// values as 0 or 1, else it defaults to the boot speed used in previous SDKs.
+; 29   |#define ATTEMPT_FAST_BOOT 1
+; 30   |#define ATTEMPT_FASTEST_BOOT 0   
+; 31   |// Changing this define to 0 removes Vbat threshholding & unconditionally gives fast boot config above- 
+; 32   |// disabling this check is suggested for profiling if you want to try to tweak down threshholds by maybe 50mV.
+; 33   |// Also the tests should clear the fast boot config defines to link & boot at normal speed.
+; 34   |#define SPEED_BOOT_BATTERY_CHECK 1
+; 35   |
+; 36   |/////////////////////////////////////////////////////////////////////////////////
+; 37   |// MEDIA DEFINITIONS
+; 38   |/////////////////////////////////////////////////////////////////////////////////
+; 39   |
+; 40   |/////////////////////////////////////////////////////////////////////////////////
+; 41   |// MNAND - Number of chips forming the internal physical device (i.e. # of NANDs)
+; 42   |#if defined(NAND1)
+; 43   |#define SM_INTERNAL_CHIPS 1
+; 44   |#else 
+; 45   |#if defined(NAND2)
+; 46   |#define SM_INTERNAL_CHIPS 2
+; 47   |#else 
+; 48   |#if defined(NAND3)
+; 49   |#define SM_INTERNAL_CHIPS 3
+; 50   |#else 
+; 51   |#if defined(NAND4)
+; 52   |#define SM_INTERNAL_CHIPS 4
+; 53   |#else 
+; 54   |#define SM_INTERNAL_CHIPS 1
+; 55   |#endif
+; 56   |#endif
+; 57   |#endif
+; 58   |#endif
+; 59   |
+; 60   |/////////////////////////////////////////////////////////////////////////////////
+; 61   |// If SMARTMEDIA_DETECT_ACTIVE_HIGH is defined:
+; 62   |//   SmartMedia will be detected as inserted if the GPIO pin reads 1 and removed if it reads 0.  
+; 63   |// If SMARTMEDIA_DETECT_ACTIVE_HIGH is not defined ** comment out next line **
+; 64   |//   SmartMedia will be detected as inserted if the GPIO pin reads 0 and removed if it reads 1.
+; 65   |//*** comment out if active high ****
+; 66   |//SMARTMEDIA_DETECT_ACTIVE_HIGH  equ     1
+; 67   |
+; 68   |#if defined(SMEDIA)
+; 69   |#define NUM_REMOVABLE_MEDIA 1
+; 70   |#define NUM_SM_EXTERNAL 1
+; 71   |#define MMC_MAX_PHYSICAL_DEVICES 0
+; 72   |#define SM_MAX_LOGICAL_DEVICES 2
+; 73   |#else 
+; 74   |#if defined(MMC)
+; 75   |#define NUM_REMOVABLE_MEDIA 1
+; 76   |#define NUM_SM_EXTERNAL 0
+; 77   |#define MMC_MAX_PHYSICAL_DEVICES 1
+; 78   |#define SM_MAX_LOGICAL_DEVICES 1
+; 79   |#else 
+; 80   |#define NUM_REMOVABLE_MEDIA 0
+; 81   |#define NUM_SM_EXTERNAL 0
+; 82   |#define MMC_MAX_PHYSICAL_DEVICES 0
+; 83   |#define SM_MAX_LOGICAL_DEVICES 1
+; 84   |#endif
+; 85   |#endif
+; 86   |
+; 87   |/////////////////////////////////////////////////////////////////////////////////
+; 88   |// Mass Storage Class definitions
+; 89   |/////////////////////////////////////////////////////////////////////////////////
+; 90   |// Set to 0 if Composite Device build is desired.    
+; 91   |#define MULTI_LUN_BUILD 1   
+; 92   |
+; 93   |////////////////////////////////////////////////////////////////////////////////
+; 94   |//  SCSI
+; 95   |#if (MULTI_LUN_BUILD==0)
+; 96   |  #if (NUM_REMOVABLE_MEDIA == 1)
+; 97   |    #define SCSI_NUM_TARGETS                        2
+; 98   |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1
+; 99   |    #define SCSI_DEVICE_NUM_LUNS_DEV_1              1
+; 100  |  #else
+; 101  |    #define SCSI_NUM_TARGETS                        1
+; 102  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1
+; 103  |  #endif
+; 104  |#else
+; 105  |    #define SCSI_NUM_TARGETS                        1
+; 106  |  #if (NUM_REMOVABLE_MEDIA == 1)
+; 107  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              2
+; 108  |  #else
+; 109  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1  
+; 110  |  #endif
+; 111  |#endif
+; 112  |
+; 113  |
+; 114  |#define USBMSC_NUM_DEVICES                      SCSI_NUM_TARGETS
+; 115  |
+; 116  |
+; 117  |////////////////////////////////////////////////////////////////////////////////
+; 118  |// Define number of logical medias and drives for three builds (MTP, USBMSC, and Player)
+; 119  |////////////////////////////////////////////////////////////////////////////////
+; 120  |#ifdef MMC
+; 121  |#ifdef MTP_BUILD
+; 122  |// --------------------
+; 123  |// MTP and MMC
+; 124  |// --------------------
+; 125  |#define NUM_LOGICAL_MEDIA       2
+; 126  |#define NUM_LOGICAL_DRIVES      8
+; 127  |#else  // ifndef MTP_BUILD
+; 128  |#ifdef STMP_BUILD_PLAYER
+; 129  |// --------------------
+; 130  |// Player and MMC
+; 131  |// --------------------
+; 132  |#else
+; 133  |// --------------------
+; 134  |// USBMSC and MMC
+; 135  |// --------------------
+; 136  |#define NUM_LOGICAL_MEDIA       3
+; 137  |#define NUM_LOGICAL_DRIVES      8
+; 138  |#endif // ifdef STMP_BUILD_PLAYER
+; 139  |#endif // ifdef MTP_BUILD
+; 140  |#else  // ifndef MMC
+; 141  |#ifdef MTP_BUILD
+; 142  |// --------------------
+; 143  |// MTP and NAND only
+; 144  |// --------------------
+; 145  |#define NUM_LOGICAL_MEDIA       1
+; 146  |#define NUM_LOGICAL_DRIVES      7
+; 147  |#else  // ifndef MTP_BUILD
+; 148  |#ifdef STMP_BUILD_PLAYER
+; 149  |// --------------------
+; 150  |// Player and NAND only
+; 151  |// --------------------
+; 152  |#else
+; 153  |// --------------------
+; 154  |// USBMSC and NAND only
+; 155  |// --------------------
+; 156  |#define NUM_LOGICAL_MEDIA       2
+; 157  |#define NUM_LOGICAL_DRIVES      7
+; 158  |#endif // ifdef STMP_BUILD_PLAYER
+; 159  |#endif // ifdef MTP_BUILD
+; 160  |#endif // ifdef MMC 
+; 161  |
+; 162  |// If we are in an MTP build then we don't use as many transfers buffers.
+; 163  |#if (defined(MTP_BUILD))
+; 164  |#define MAX_USB_TRANSFERS_QUEUED 16
+; 165  |
+; 166  |////!
+; 167  |////! This varible holds the watchdog count for the store flush.
+; 168  |////!
+; 169  |///
+; 170  |#include <types.h>
+; 171  |extern volatile INT g_StoreWatchDogCount;
+; 172  |extern const INT g_StoreWatchDogTimeout;
+; 173  |#endif
+; 174  |
+; 175  |////////////////////////////////////////////////////////////////////////////////
+; 176  |// These are needed here for Mass Storage Class
+; 177  |// Needs to be cleaned up
+; 178  |////////////////////////////////////////////////////////////////////////////////
+; 179  |#if (!defined(STMP_BUILD_PLAYER))
+; 180  |#define SCRATCH_USER_Y_SIZE 512
+; 181  |#define SCRATCH_USER_X_SIZE 512
+; 182  |
+; 183  |#define BROWNOUT_LEVEL1_DETECTED                0x000001
+; 184  |
+; 185  |#endif
+; 186  |
+; 187  |
+; 188  |/////////////////////////////////////////////////////////////////////////////////
+; 189  |// SmartMedia/NAND defs
+; 190  |#define SM_MAX_PHYSICAL_DEVICES SM_INTERNAL_CHIPS+NUM_SM_EXTERNAL
+; 191  |#define SM_REMOVABLE_DEVICE_NUM SM_INTERNAL_CHIPS
+; 192  |
+; 193  |/////////////////////////////////////////////////////////////////////////////////
+; 194  |// Sysloadresources defs
+; 195  |#define SM_MAX_RESOURCE_DEVICES SM_INTERNAL_CHIPS+NUM_SM_EXTERNAL
+; 196  |
+; 197  |/////////////////////////////////////////////////////////////////////////////////
+; 198  |// MMC defs
+; 199  |#define MMC_MAX_PARTITIONS 1
+; 200  |#define MMC_MAX_LOGICAL_DEVICES MMC_MAX_PHYSICAL_DEVICES*MMC_MAX_PARTITIONS
+; 201  |
+; 202  |/////////////////////////////////////////////////////////////////////////////////
+; 203  |// SPI defs
+; 204  |#define SPI_MAX_DEVICES MMC_MAX_PHYSICAL_DEVICES
+; 205  |
+; 206  |/////////////////////////////////////////////////////////////////////////////////
+; 207  |// Global media defs
+; 208  |#define MAX_PHYSICAL_DEVICES SM_MAX_PHYSICAL_DEVICES+MMC_MAX_PHYSICAL_DEVICES
+; 209  |#define MAX_LOGICAL_DEVICES SM_MAX_LOGICAL_DEVICES+MMC_MAX_LOGICAL_DEVICES
+; 210  |
+; 211  |/////////////////////////////////////////////////////////////////////////////////
+; 212  |// DO NOT CHANGE THESE!!!
+; 213  |#define SM_MAX_PARTITIONS 4
+; 214  |#define MAX_HANDLES 2
+; 215  |/////////////////////////////////////////////////////////////////////////////////
+; 216  |
+; 217  |
+; 218  |/////////////////////////////////////////////////////////////////////////////////
+; 219  |// Battery LRADC Values 
+; 220  |/////////////////////////////////////////////////////////////////////////////////
+; 221  |// brownout trip point in mV (moved by RS)
+; 222  |// BATT_SAFETY_MARGIN:  percentage value used by:
+; 223  |//   * SysSaveSettings to determine if enough power is left to attempt a settings save. 
+; 224  |//   * Recorder to conditionally prevent the start or continuation of 
+; 225  |//     audio recording to media.
+; 226  |#define BATT_SAFETY_MARGIN 10
+; 227  |
+; 228  |//; player resource drive refresh allowed only when battery usable % is above this value. 
+; 229  |//; 50% of usable range [0.9V to 1.5V] is around 1.2V This is the safe target alkaline voltage to do a refresh.
+; 230  |//; LIION will also require 50% which will work but that could be changed in the future. 
+; 231  |//RESOURCE_REFRESH_MIN_BATT_PCT equ 50
+; 232  |
+; 233  |// stmp00005071 adds these for mp3 encode stability at low battery per battery type & mmc presence.
+; 234  |
+; 235  |//// Vbat threshholds empirically tuned by profiling max bat current for 3 HW cases: 
+; 236  |//// 1 GigaByte MMC, NAND flash only, & LiIon Buck mode. See voicemenu pre-encode Vbat check.
+; 237  |#if (!defined(CLCD))
+; 238  |#define MP3_ENC_MMC_MIN_V_BAT_MV 1100
+; 239  |#define MP3_ENC_NANDONLY_MIN_V_BAT_MV 1000
+; 240  |#else 
+; 241  |#define MP3_ENC_MMC_MIN_V_BAT_MV 1250
+; 242  |#define MP3_ENC_NANDONLY_MIN_V_BAT_MV 1150
+; 243  |#endif
+; 244  |#define MP3_ENC_BUCKMODE_MIN_V_BAT_MV 3300
+; 245  |
+; 246  |// These Vbat use-range-percentages are derived to correspond with target battery 
+; 247  |// voltages of 1.10V for MMC, 1.0V for nand only (alkaline or nimh), and 3.3V for any LiIon.
+; 248  |// See mp3 encoder overlay.
+; 249  |#define MP3_ENC_MMC_MIN_V_BAT_RANGE_PCT 33
+; 250  |#define MP3_ENC_NANDONLY_MIN_V_BAT_RANGE_PCT 17
+; 251  |#define MP3_ENC_BUCKMODE_MIN_V_BAT_RANGE_PCT 25
+; 252  |
+; 253  |/////////////////////////////////////////////////////////////////////////////////
+; 254  |// Voice recording filenames
+; 255  |// number of digits in filename Vxxx.wav
+; 256  |/////////////////////////////////////////////////////////////////////////////////
+; 257  |#define DIGITS_IN_VOICE_FILENAME 3   
+; 258  |
+; 259  |/////////////////////////////////////////////////////////////////////////////////
+; 260  |// Mic Bias: Set this enable to 1 to internally generate mic bias voltage. 
+; 261  |// Also below, must configure internal resistor value and pin to use for DC bias. 
+; 262  |// Can set to 0 to disable internally generated mic bias voltage at pin lradc1/2.
+; 263  |#if defined(DEVICE_3500)
+; 264  |#define ENABLE_INTERNALLY_GENERATED_MICBIAS 1 
+; 265  |// MIC BIAS circuit source selection: use Low Resolution ADC pin 2 or 1 to bias mic. 
+; 266  |// Per your layout: select LRADC 2 or 1 below 
+; 267  |//   (pin LRADC 2 for 35xx cpu card revB, LRADC 1 for 35xx cpu card revC, ref schematics, & demo player)
+; 268  |#define LRADC_NUM_FOR_MIC_BIAS 1 
+; 269  |// Sets internal mic bias R to value 2, 4, or 8 (in kOhms).
+; 270  |#define MICBIAS_CONFIGURED_RESISTOR_KOHMS 8
+; 271  |
+; 272  |// Allows mic bias to settle before sampling. This delay currently unused. For rec btn when bias not yet ready.
+; 273  |#define REC_BTN_INTERNAL_MIC_BIAS_SETTLING_DELAY_MS 400 
+; 274  |// Option always keeps bias enabled after mainmenu init. This allows for start pop prevention if you use rec button from outside voice menu.
+; 275  |// This selection costs 1 mWatt but gains the desired low record button to sampling latency in the record-from-music-menu use-case.
+; 276  |#define KEEP_MIC_BIAS_ENABLED 0
+; 277  |
+; 278  |#else 
+; 279  |// STMP3410
+; 280  |#define ENABLE_INTERNALLY_GENERATED_MICBIAS 0
+; 281  |#define LRADC_NUM_FOR_MIC_BIAS 1 
+; 282  |#define MICBIAS_CONFIGURED_RESISTOR_KOHMS 2
+; 283  |#endif
+; 284  |
+; 285  |/////////////////////////////////////////////////////////////////////////////////
+; 286  |// Number of available soft timers
+; 287  |/////////////////////////////////////////////////////////////////////////////////
+; 288  |#if defined(SYNC_LYRICS)
+; 289  |#define SOFT_TIMERS 10
+; 290  |#else 
+; 291  |#if defined(JPEG_DECODER)
+; 292  |#define SOFT_TIMERS 10
+; 293  |#else 
+; 294  |#define SOFT_TIMERS 9
+; 295  |#endif
+; 296  |#endif
+; 297  |
+; 298  |/////////////////////////////////////////////////////////////////////////////////
+; 299  |//  sizes
+; 300  |/////////////////////////////////////////////////////////////////////////////////
+; 301  |#if defined(MMC)
+; 302  |#define MENU_STACK_SIZE 1250
+; 303  |#else 
+; 304  |#define MENU_STACK_SIZE 1250
+; 305  |#endif //if @def('MMC')
+; 306  |
+; 307  |// NOTE: SDK2.6 USED 550 FOR NEXT LINE, BUT SDK3.0BETA USED 750. Should it be ifdef MTP 750 else 550 for other builds? TOVERIFY. MYALLOC
+; 308  |// 
+; 309  |#define STACK_L1_SIZE 750
+; 310  |#define STACK_L2_SIZE 100
+; 311  |#define STACK_L3_SIZE 160
+; 312  |
+; 313  |// If we are in MTP mode the overlay task stack can shrink.
+; 314  |// TODO shrink this stack for MTP, I will leave it at 500 until we verify that it 
+; 315  |// is ok with switching code.
+; 316  |#if defined(MTP_BUILD)
+; 317  |#define OVERLAY_MANAGER_STACK_SIZE 300
+; 318  |#endif
+; 319  |
+; 320  |/////////////////////////////////////////////////////////////////////////////////
+; 321  |// maximum number of nested funclets 
+; 322  |/////////////////////////////////////////////////////////////////////////////////
+; 323  |#define MAX_NESTED_FUNCLET 6 
+; 324  |
+; 325  |/////////////////////////////////////////////////////////////////////////////////
+; 326  |//    LCD DEFINITIONS
+; 327  |/////////////////////////////////////////////////////////////////////////////////
+; 328  |
+; 329  |#define SPACE_CHAR 0x000020          
+; 330  |#define ZERO_CHAR 0x000030
+; 331  |#define COLON_CHAR 0x00003A
+; 332  |#define PERIOD_CHAR 0x00002E
+; 333  |
+; 334  |#if (defined(S6B33B0A_LCD))
+; 335  |#define LCD_X_SIZE 128
+; 336  |#define LCD_Y_SIZE 159
+; 337  |#endif
+; 338  |
+; 339  |#if (defined(SED15XX_LCD))
+; 340  |#define LCD_X_SIZE 98
+; 341  |#define LCD_Y_SIZE 64
+; 342  |#endif
+; 343  |
+; 344  |
+; 345  |//////////////////////////////////////////////////////////////////////////////////
+; 346  |//   Details on Customizing Contrast
+; 347  |/////////////////////////////////////////////////////////////////////////////////
+; 348  |//   Max supported LCD range is 0 - 3F; however due to hardware/voltage differences
+; 349  |//   the range of visibility is usually smaller than this.  It is important to 
+; 350  |//   calibrate the visible range, because the contrast setting is saved.
+; 351  |//   If the user shuts off the player while lcd is not visible, the player is useless
+; 352  |//   unless the ezact sequence is remembered.
+; 353  |//   To find out what range your player supports: 
+; 354  |//   change these equs to full range or comment out (full range is default)
+; 355  |//;;;;;;
+; 356  |// uncomment the line below to build code that will provide raw contrast value
+; 357  |// recommended calibration using player -- uncomment 
+; 358  |//;;;;;;
+; 359  |//CONTRAST_CALIBRATION    equ  1
+; 360  |////////////////////////////
+; 361  |#if (defined(DEMO_HW))
+; 362  |// this is the setting for ET301 demos; Next 2 line have not been updated for new Shingyi LCD (June6'05)
+; 363  |#define LCD_MAX_CONTRAST 0x32 
+; 364  |#define LCD_MIN_CONTRAST 0x1E
+; 365  |#else 
+; 366  |
+; 367  |#if (defined(S6B33B0A_LCD))
+; 368  |#define LCD_MAX_CONTRAST 210
+; 369  |#define LCD_MIN_CONTRAST 160	
+; 370  |#endif
+; 371  |
+; 372  |#if (defined(SED15XX_LCD))
+; 373  |// Next 3 line comment was for OLD shingyi LCD: (default LCD before sdk2.6)
+; 374  |// Engineering board regs support range [17-37].
+; 375  |//   Engineering board DC/DC support range [24-46]. 
+; 376  |//   One default contrast range [24-42] works for both.
+; 377  |// The 3 sets of contrast ranges below are updated for SDK2.6 to support either 
+; 378  |// new or old ShingYih LCDs. "File" refers to \resource\shingyih\system_lcd_init_seq.src
+; 379  |// 3/10/05 - Use one of the 2 next contrast ranges depending on which
+; 380  |// ShingYih LCD you have.  See \resources\shingyi\readme.txt 
+; 381  |// Optimal for NEW LCD with NEW file (SDK2.6 default)  
+; 382  |// G098064-41 LCD module (present on engr board revH LCD card)
+; 383  |
+; 384  |#if (defined(NEWSHINGYIH))
+; 385  |#define LCD_MAX_CONTRAST 39
+; 386  |#define LCD_MIN_CONTRAST 17
+; 387  |#else 
+; 388  |//-----
+; 389  |// Near optimal for OLD LCD with NEW file. 
+; 390  |// NOT optimal for the new lcd but pretty good. So u may use this if u want 1 build for both LCDs.
+; 391  |#define LCD_MAX_CONTRAST 32
+; 392  |#define LCD_MIN_CONTRAST 14
+; 393  |
+; 394  |//=====
+; 395  |// Optimal for OLD ShingYih LCD with OLD file (as sdk2.521)
+; 396  |// Suggest going with default new init file & values above for your LCD instead of this historic ver.
+; 397  |//LCD_MAX_CONTRAST equ 42
+; 398  |//LCD_MIN_CONTRAST equ 24 
+; 399  |
+; 400  |#endif
+; 401  |#endif
+; 402  |
+; 403  |#endif
+; 404  |
+; 405  |//////////////////////////////////////////////////////////////////////////////////
+; 406  |// The default value of the lcd contrast in % of range
+; 407  |//   the default value is used when no settings.dat is available
+; 408  |//////////////////////////////////////////////////////////////////////////////////
+; 409  |
+; 410  |#if (defined(S6B33B0A_LCD))
+; 411  |// 60% of range is default value
+; 412  |#define DEFAULT_CONTRAST 50 
+; 413  |#endif
+; 414  |
+; 415  |#if (defined(SED15XX_LCD))
+; 416  |// % of range is default value (was 60%)
+; 417  |#define DEFAULT_CONTRAST 40 
+; 418  |#endif
+; 419  |
+; 420  |
+; 421  |// percentage change per increment/decrement message (LCD_DEC_CONTRAST/LCD_INC_CONTRAST)
+; 422  |// make lower when doing calibration
+; 423  |#define LCD_STEPSIZE_CONTRAST 10  
+; 424  |
+; 425  |
+; 426  |/////////////////////////////////////////////////////////////////////////////////
+; 427  |// For FFWD and RWND
+; 428  |/////////////////////////////////////////////////////////////////////////////////
+; 429  |#define SECONDS_TO_SKIP 1
+; 430  |#define SECONDS_TO_SKIP1 3
+; 431  |#define SECONDS_TO_SKIP2 6
+; 432  |// number of seconds to cause reset to begin of song for PREV push
+; 433  |#define PREV_SONG_THRESHOLD 5  
+; 434  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 435  |#define FIRST_TIME_BOUNDARY 15 
+; 436  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 437  |#define SECOND_TIME_BOUNDARY 30 
+; 438  |
+; 439  |// For audible FFW/RWD
+; 440  |#define SECONDS_TO_SKIP_FOR_3X_RATE 1
+; 441  |#define SECONDS_TO_SKIP_FOR_60X_RATE 18
+; 442  |#define SECONDS_TO_SKIP_FOR_600X_RATE 180
+; 443  |#define SECONDS_TO_SKIP_FOR_1800X_RATE 540
+; 444  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 445  |#define LEVEL1_BOUNDARY 17 
+; 446  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 447  |#define LEVEL2_BOUNDARY 33 
+; 448  |// number of 300 mSec periods before the numbers of seconds to skip increases
+; 449  |#define LEVEL3_BOUNDARY 50 
+; 450  |// Stmp00010296 Ticket #71685:  for song shorter than the min. skip size
+; 451  |// if song_time < skip_size, bCurrentSongShort=>TRUE (ignore FWD/RWD commands)
+; 452  |// Short Song Time, songs too short to play.
+; 453  |#define SHORT_SONG_TIME SECONDS_TO_SKIP 	
+; 454  |
+; 455  |/////////////////////////////////////////////////////////////////////////////////
+; 456  |// MP3 Sync Values
+; 457  |/////////////////////////////////////////////////////////////////////////////////
+; 458  |// # bytes to look for sync before marking it bad
+; 459  |#define MP3_SYNC_THRESHOLD 70000 
+; 460  |// # bytes to look for sync before slowing decoder isr frequency (to let menus run)
+; 461  |#define MP3_SYNC_THRESHOLD1 10000 
+; 462  |// once we have sync'd, the isr should be called this frequently
+; 463  |#define MP3_DECODERISR_FAST 7500  
+; 464  |// if decoder is having difficulty syncing, switch isr to be called less frequently
+; 465  |#define MP3_DECODERISR_SLOW 50000 
+; 466  |
+; 467  |
+; 468  |/////////////////////////////////////////////////////////////////////////////////
+; 469  |//// Multi-Stage Volume Control Definitions
+; 470  |/////////////////////////////////////////////////////////////////////////////////
+; 471  |//// Use Multi-Stage Volume
+; 472  |#define MULTI_STAGE_VOLUME 0x1                  
+; 473  |
+; 474  |//// Master Volume definitions
+; 475  |#define MIX_MSTR_MAX_VOL 0x0
+; 476  |#define NUM_MSTR_ATT_STEPS (0x1F-MIX_MSTR_MAX_VOL)
+; 477  |
+; 478  |//// DAC-Mode definitions
+; 479  |//// Adjusts 0dB point
+; 480  |#define MIX_DAC_NOM_VOL 0x6                  
+; 481  |#define MIX_DAC_MIN_VOL 0x1F
+; 482  |// For minimum clipping: Set MIX_DAC_MAX_VOL below to match MIX_DAC_NOM_VOL value 2 lines above.
+; 483  |// For additional gain (with possible clipping): Set MIX_DAC_MAX_VOL in range below. 
+; 484  |//                                               Each integer below MIX_DAC_NOM_VOL provides 1.5 dB gain on Stmp34x0; 
+; 485  |//                                               Max gain possible: 8 step diff would provide +12dB gain.   
+; 486  |// range: [0 to MIX_DAC_NOM_VOL] (0 for loudest volume)
+; 487  |#define MIX_DAC_MAX_VOL 0x0  
+; 488  |
+; 489  |#define NUM_DAC_ATT_STEPS (MIX_DAC_MIN_VOL-MIX_DAC_NOM_VOL+1)
+; 490  |#define NUM_DAC_GAIN_STEPS (MIX_DAC_NOM_VOL-MIX_DAC_MAX_VOL)
+; 491  |#define NUM_DAC_MODE_VOL_STEPS (NUM_DAC_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_DAC_GAIN_STEPS+1)
+; 492  |
+; 493  |//// If there is no stored volume, set to 50% of DAC-Mode max; change if DAC Mode is not the default
+; 494  |//// STMP35xx has 2dB attenuation per step so default needs a few more steps above midpoint.
+; 495  |#define DEFAULT_VOLUME ((NUM_DAC_MODE_VOL_STEPS/2)+6)         
+; 496  |
+; 497  |//// Set maximum restored volume to 75% of DAC-Mode max; change if DAC Mode is not the default
+; 498  |#define MAX_RESTORED_VOLUME ((3*NUM_DAC_MODE_VOL_STEPS)/4)   
+; 499  |
+; 500  |
+; 501  |//// Line In definitions (used for Line-In 1)
+; 502  |//// 0dB point of the Line In
+; 503  |#define MIX_LINE_NOM_VOL 0x8                  
+; 504  |//// Minimum volume of Line In
+; 505  |#define MIX_LINE_MIN_VOL 0x1F                 
+; 506  |//// Maximum volume of Line In (can adjust extra gain)
+; 507  |#define MIX_LINE_MAX_VOL 0x6                  
+; 508  |#define NUM_LINE_ATT_STEPS (MIX_LINE_MIN_VOL-MIX_LINE_NOM_VOL+1)
+; 509  |#define NUM_LINE_GAIN_STEPS (MIX_LINE_NOM_VOL-MIX_LINE_MAX_VOL)
+; 510  |#define NUM_LINE_MODE_VOL_STEPS (NUM_LINE_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_LINE_GAIN_STEPS+1)
+; 511  |
+; 512  |//// Line In definitions (used for FM tuner with 144 pin package)
+; 513  |//// 0dB point of the Line In
+; 514  |#define MIX_FM_NOM_VOL 0x8                  
+; 515  |//// Minimum volume of Line In
+; 516  |#define MIX_FM_MIN_VOL 0x1F                 
+; 517  |//// Maximum volume of Line In (can adjust extra gain)
+; 518  |#define MIX_FM_MAX_VOL 0x6                  
+; 519  |#define NUM_FM_ATT_STEPS (MIX_FM_MIN_VOL-MIX_FM_NOM_VOL+1)
+; 520  |#define NUM_FM_GAIN_STEPS (MIX_FM_NOM_VOL-MIX_FM_MAX_VOL)
+; 521  |#define NUM_FM_MODE_VOL_STEPS (NUM_FM_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_FM_GAIN_STEPS+1)
+; 522  |
+; 523  |/////////////////////////////////////////////////////////////////////////////////
+; 524  |//// When enabled (1), periodically checks for one of several FM state machine invalid deadlock states & recovers. 
+; 525  |//// Define as 0 to disable FM-deadlock-state checking and recovery.
+; 526  |#define FM_WATCHDOG_ENABLE 1
+; 527  |
+; 528  |#if !defined(STMP_BUILD_PLAYER)
+; 529  |////
+; 530  |////! This varible holds the lcd display state for the mtp project.
+; 531  |////
+; 532  |///
+; 533  |#include <types.h>
+; 534  |extern volatile WORD g_wActivityState;
+; 535  |#endif // if !@def('STMP_BUILD_PLAYER')
+; 536  |
+; 537  |void _reentrant Init5VSense(void);
+; 538  |void _reentrant ServiceDCDC(void);
+; 539  |
+; 540  |////////////////////////////////////////////////////////////////////////////
+; 541  |//// JPEG Thumbnail Mode Setting
+; 542  |//// number of column in thumbnail mode
+; 543  |#define THUMBNAIL_X 2		
+; 544  |//// number of row in  thumbnail mode
+; 545  |#define THUMBNAIL_Y 2		
+; 546  |//// thumbnail boundary offset x
+; 547  |#define THUMBNAIL_X_OFFSET 4		
+; 548  |//// thumbnail boundary offset y
+; 549  |#define THUMBNAIL_Y_OFFSET 4		
+; 550  |
+; 551  |#endif // if (!@def(_PROJECT_INC))
+; 552  |
+
+	SYMB	ENDF
+
+; 5    |
+; 6    |#ifndef MAX_USB_STRINGS
+; 7    |#define MAX_USB_STRINGS 9
+; 8    |#endif
+; 9    |
+; 10   |
+; 11   |#define  USB_SELF_POWERED                    (0x01)
+; 12   |#define  USB_REMOTE_WAKEUP                   (0x02)
+; 13   |
+; 14   |#define MAX_DESC_SIZE       86      // (255/3)+1
+; 15   |
+; 16   |#define MS_OS_STRING_DESCRIPTOR_INDEX 0xEE
+; 17   |#define MS_OS_STRING_DESCRIPTOR_INDEX_IN_ARRAY 7
+; 18   |
+; 19   |/* The USB Device State Structure */
+; 20   |typedef struct {
+; 21   |   BYTE         btSpeed;                // Speed of device when connected
+; 22   |                                        // High Speed or Full Speed
+; 23   |   BYTE         btCurConfig;            // Current configuration number (0 means not configured yet)
+; 24   |                                        // or default interface
+; 25   |   BYTE         btCurInterface;         // Current Alternate Interface (0 means not configured yet)                                                         
+; 26   |   BYTE         btAddress;              // USB device address
+; 27   |   USHORT       usUsbState;             // State USB (UNKNOWN, POWERED, DEFAULT, ADDRESSED, CONFIGURED, SUSPENDED)
+; 28   |   USHORT       usUsbStatePriorSusp;    // Ste USB prior a SUSPEND. This state needs to be restore
+; 29   |                                        // once the USB resumes
+; 30   |   USHORT       usUsbDeviceState;       // State of the device (SelfPowered, Remote Wakeup)
+; 31   |   USHORT       usSofCount;
+; 32   |   BYTE         btBusResetting;         // Set during a reset phase
+; 33   |   BYTE         btServicesRegistered;   // Number of services registered
+; 34   |   WORD         wError;                 // Increments each time a USB Error Interrupt occurs
+; 35   |   BOOL         bEnterTestMode;         // Set when entered in test mode. To clear the device
+; 36   |                                        // must be powered down
+; 37   |   USHORT       usConnectionState;      // State of the USB connection (CONNECTED, DISCONNECTED, UNKNOWN)                                         
+; 38   |} Dev_State_Struct;
+; 39   |
+; 40   |typedef struct xd_struct_type{
+; 41   |   BYTE         btEndpointNum;          // Endpoint number 
+; 42   |   BYTE         btDirection;            // Direction : Send/Receive
+; 43   |   BYTE         btEndpointType;         // Type of the endpoint: Ctrl, Isoch, Bulk,Int 
+; 44   |   BYTE         btStatus;               // Current transfer status 
+; 45   |   WORD _X *    pbtStartAddressWord;    // Address of first byte (DSP Word address in STMP space)
+; 46   |   BYTE         btStartOffsetByte;      // Address of first byte (Word Byte offset in STMP space)
+; 47   |   USHORT       usTotalLength;          // Number of bytes to send/recv 
+; 48   |   USHORT       usMaxPacketSize;        // Max Packet size 
+; 49   |   BYTE         btDontZeroTerminate;
+; 50   |   BOOL         bIsDataPhase;           // Set to TRUE if the transfer is data phase
+; 51   |                                        // of a setup transfer
+; 52   |   struct xd_struct_type _USB_MEM*pNext;     // pointer to the next xd_struct
+; 53   |   WORD         wPrivateData;           //data to be passed to the service handler
+; 54   |   USHORT       usBytesCopied;          //number of bytes copied so far
+; 55   |   WORD         wCurrentOffsetByte;
+; 56   |   WORD _X*    pbtCurrentAddressWord;
+; 57   |} xd_struct;
+; 58   |
+; 59   |// If MAX_NUM_EP is not defined, default to 4
+; 60   |// *** NOTE: if you change this definition, change the equate for MAX_NUM_EP in usb20ddmem.asm as well.
+; 61   |// The two definitions must be equivalent for proper operation.
+; 62   |#define MAX_NUM_EP  4
+
+	SYMB	TYPE, 267, 'S', 13,\
+		 "btSpeed", #3, 0,\
+		 "btCurConfig", #3, 1,\
+		 "btCurInterface", #3, 2,\
+		 "btAddress", #3, 3,\
+		 "usUsbState", #5, 4,\
+		 "usUsbStatePriorSusp", #5, 5,\
+		 "usUsbDeviceState", #5, 6,\
+		 "usSofCount", #5, 7,\
+		 "btBusResetting", #3, 8,\
+		 "btServicesRegistered", #3, 9,\
+		 "wError", #18, 10,\
+		 "bEnterTestMode", #18, 11,\
+		 "usConnectionState", #5, 12
+	SYMB	TYPE, 268, "Dev_State_Struct", 'T', #267
+
+; 63   |
+; 64   |extern Dev_State_Struct _USB_MEM stDeviceState;
+
+	SYMB	TYPE, 269, 'n', #18, 386
+	SYMB	TYPE, 270, 'P', #269
+	SYMB	TYPE, 272, 'n', #271, 387
+	SYMB	TYPE, 273, 'P', #272
+	SYMB	TYPE, 271, "xd_struct_type", 'S', 15,\
+		 "btEndpointNum", #3, 0,\
+		 "btDirection", #3, 1,\
+		 "btEndpointType", #3, 2,\
+		 "btStatus", #3, 3,\
+		 "pbtStartAddressWord", #270, 4,\
+		 "btStartOffsetByte", #3, 5,\
+		 "usTotalLength", #5, 6,\
+		 "usMaxPacketSize", #5, 7,\
+		 "btDontZeroTerminate", #3, 8,\
+		 "bIsDataPhase", #18, 9,\
+		 "pNext", #273, 10,\
+		 "wPrivateData", #18, 11,\
+		 "usBytesCopied", #5, 12,\
+		 "wCurrentOffsetByte", #18, 13,\
+		 "pbtCurrentAddressWord", #270, 14
+	SYMB	TYPE, 274, "xd_struct", 'T', #271
+
+; 65   |
+; 66   |extern xd_struct _USB_MEM * g_dXD_Queues[MAX_NUM_EP][2];
+; 67   |
+; 68   |BYTE _reentrant usb_device_call_service(BYTE btType, BOOL bSetup, BYTE btDirection, WORD _X*ptbBuffer, WORD wLength, WORD wPrivateData);
+; 69   |xd_struct _USB_MEM * GetEmptyXd(void);
+; 70   |void FreeXd(xd_struct _USB_MEM * pTemp);
+; 71   |void AddXdToQueue(xd_struct _USB_MEM *pHead,xd_struct _USB_MEM *pElement);
+; 72   |void InitXdPool(void);
+; 73   |_reentrant void usb_PackDescriptor(void* pDescriptor,void _X * pDestination, WORD startIndex);
+; 74   |_reentrant void parse_strings(void);
+; 75   |
+; 76   |
+; 77   |    // Service structures.
+; 78   |    // Those are the structures storing the function handler for a specific
+; 79   |    // USB service.
+; 80   |    // There is a service per Endpoint + Reset + Suspend + Start Of Frame
+; 81   |    //                                 + Resume + Sleep + Speed Detection  
+; 82   |    // The service structs are setup by the USB application using the device driver
+; 83   |typedef struct {
+; 84   |   BYTE             btType;     // Which service type
+; 85   |                                // Pointer to the service function
+; 86   |   void (* Service)(BOOL bSetup, BYTE btDirection, WORD _X* pbtBuffer, WORD wLength, WORD wPrivateData);
+; 87   |} Service_Struct;
+; 88   |
+; 89   |
+; 90   |#endif
+
+	SYMB	ENDF
+
+; 10   |#include "regsrevision.h"
+
+	SYMB	FILE, "..\\output_3500\\include\\regsrevision.h"
+
+; 1    |#if !(defined(__HW_REVR))
+; 2    |#define __HW_REVR 1
+; 3    |
+; 4    |
+; 5    |#define HW_GLUE_BASEADDR 0xFA00
+; 6    |
+; 7    |#define HW_REVR_RMN_BITPOS (0)
+; 8    |#define HW_REVR_DCDCMODE_BITPOS (5)
+; 9    |#define HW_REVR_RMJ_BITPOS (8)
+; 10   |
+; 11   |#define HW_REVR_RMN_WIDTH (5)
+; 12   |#define HW_REVR_DCDCMODE_WIDTH (3)
+; 13   |
+; 14   |#define HW_REVR_DCDCMODE_SETMASK (((1<<HW_REVR_DCDCMODE_WIDTH)-1)<<HW_REVR_DCDCMODE_BITPOS)
+; 15   |
+; 16   |#define HW_REVR_DCDCMODE_CLRMASK (~(WORD)HW_REVR_DCDCMODE_SETMASK)
+; 17   |
+; 18   |
+; 19   |/////////////////////////////////////////////////////////////////////////////////
+; 20   |//  Revision Register (HW_REVR) bitfields and values. (read only)
+; 21   |//  June15 2004: C struct updated to be correct: 
+; 22   |//   Added DCDCMODE bitfield. Removed RMP bitfield. Reduced size of RMN bitfield to 5 bits.
+; 23   |typedef union               
+; 24   |{
+; 25   |    struct {
+; 26   |        unsigned RMN    :5;     //Minor Revision
+; 27   |        unsigned DCDCMODE : 3;  //DCDC mode field function depends on DCDC mode pin strapping
+; 28   |           #define DCDCMODE_7_CONVERTER1_2CH_BOOST_CONVERTER2_OFF      7
+; 29   |           #define DCDCMODE_6_RESERVED                                 6
+; 30   |           #define DCDCMODE_5_CONVERTER1_3CH_BOOST_CONVERTER2_OFF      5
+; 31   |           #define DCDCMODE_4_RESERVED                                 4
+; 32   |           #define DCDCMODE_3_CONVERTER1_1CH_BUCK_CONVERTER2_OFF       3
+; 33   |           #define DCDCMODE_2_CONVERTER1_OFF_CONVERTER2_OFF            2
+; 34   |           #define DCDCMODE_1_CONVERTER1_1CH_BUCK_CONVERTER2_1CH_BOOST 1
+; 35   |           #define DCDCMODE_0_CONVERTER1_1CH_BUCK_CONVERTER2_1CH_BUCK  0
+; 36   |           #define DCDCMODE_X_BUCK_MASKED_SETMASK 0x4
+; 37   |        unsigned RMJ    :16;    //Major Revision
+; 38   |    } B;
+; 39   |
+; 40   |    int I;
+; 41   |
+; 42   |} revr_type;
+; 43   |#define HW_REVR (*(volatile revr_type _X*) (HW_GLUE_BASEADDR+2))
+; 44   |
+; 45   |#define HW_REVR_DCDCMODE_B0_BITPOS 5
+; 46   |#define HW_REVR_DCDCMODE_B1_BITPOS 6
+; 47   |#define HW_REVR_DCDCMODE_B2_BITPOS 7
+; 48   |
+; 49   |#define HW_REVR_DCDCMODE_BUCK_MASK_POS HW_REVR_DCDCMODE_B2_BITPOS
+; 50   |// 3 bit bitfield: (HW_REVR_DCDCMODE_B2_BITPOS|HW_REVR_DCDCMODE_B1_BITPOS|HW_REVR_DCDCMODE_B0_BITPOS)
+; 51   |#define HW_REVR_DCDC_MODE_SETMASK 0x0000E0
+; 52   |#define HW_REVR_RMN_SETMASK 0xFF<<HW_REVR_RMN_BITPOS
+; 53   |#define HW_REVR_RMJ_SETMASK 0xFFFF<<HW_REVR_RMJ_BITPOS
+; 54   |
+; 55   |#define HW_REVR_RMN_CLRMASK ~(WORD)HW_REVR_RMN_SETMASK
+; 56   |#define HW_REVR_RMJ_CLRMASK ~(WORD)HW_REVR_RMJ_SETMASK
+; 57   |
+; 58   |#endif //!@def(__HW_REVR)
+; 59   |
+
+	SYMB	ENDF
+
+; 11   |
+; 12   |BYTE _X * _reentrant GetDescriptor(BYTE btDescType, BYTE btDevSpeed, BYTE btIndex);
+; 13   |void _reentrant BuildConfigDescriptor(BYTE _USB_MEM *pConfigRule[], WORD _X *pPackedDescriptor);
+; 14   |void _reentrant BuildStringDescriptor(BYTE _X * _X pbtBuffer);
+; 15   |
+; 16   |//#define MAX_DESC_SIZE       86      // (255/3)+1 //fam:moved to usb_internal.h
+; 17   |WORD _X Descriptor[MAX_DESC_SIZE];
+
+	SYMB	TYPE, 275, 'S', 18,\
+		 "bLength", #3, 0,\
+		 "btDescriptorType", #3, 1,\
+		 "btBcdUsbLsb", #3, 2,\
+		 "btBcdUsbMsb", #3, 3,\
+		 "btDeviceClass", #3, 4,\
+		 "btDeviceSubclass", #3, 5,\
+		 "btDeviceProtocol", #3, 6,\
+		 "btMaxPacketSize0", #3, 7,\
+		 "btIdVendorLsb", #3, 8,\
+		 "btIdVendorMsb", #3, 9,\
+		 "btIdProductLsb", #3, 10,\
+		 "btIdProductMsb", #3, 11,\
+		 "btBcdReleaseLsb", #3, 12,\
+		 "btBcdReleaseMsb", #3, 13,\
+		 "btIndexManufacturer", #3, 14,\
+		 "btIndexProduct", #3, 15,\
+		 "btIndexSerialNumber", #3, 16,\
+		 "btNumConfigurations", #3, 17
+	SYMB	TYPE, 276, "Struct_Standard_Dev_Desc", 'T', #275
+
+; 18   |extern Struct_Standard_Dev_Desc _USB_MEM StDescDevice;
+
+	SYMB	TYPE, 277, 'S', 10,\
+		 "bLength", #3, 0,\
+		 "btDescriptorType", #3, 1,\
+		 "btBcdUsbLsb", #3, 2,\
+		 "btBcdUsbMsb", #3, 3,\
+		 "btDeviceClass", #3, 4,\
+		 "btDeviceSubclass", #3, 5,\
+		 "btDeviceProtocol", #3, 6,\
+		 "btMaxPacketSize0", #3, 7,\
+		 "btNumConfigurations", #3, 8,\
+		 "btReserved", #3, 9
+	SYMB	TYPE, 278, "Struct_Dev_Qualifier_Desc", 'T', #277
+
+; 19   |extern Struct_Dev_Qualifier_Desc _USB_MEM StDescDeviceQualFs;
+; 20   |extern Struct_Dev_Qualifier_Desc _USB_MEM StDescDeviceQualHs;
+; 21   |extern BYTE _USB_MEM *ConfigStruct[];
+; 22   |extern _circ _X WORD *lcl_StringDescriptor[MAX_USB_STRINGS+1];
+; 23   |_reentrant void usb_PackDescriptor(void* pDescriptor,void _X * pDestination, WORD startIndex);
+; 24   |
+; 25   |#ifdef MTP_BUILD
+; 26   |extern _reentrant void usb_PackDescriptor_From_X(Struct_String_Desc _X * pDescriptor,void _X * pDestination, WORD startIndex);
+; 27   |#endif
+; 28   |
+; 29   |
+; 30   |#ifdef MTP_BUILD
+; 31   |extern Struct_String_Desc _X StStringDescriptor[MAX_USB_STRINGS];
+; 32   |#else
+
+	SYMB	TYPE, 279, 'Z', #3, 59
+	SYMB	TYPE, 281, 'S', 62,\
+		 "btLength", #3, 0,\
+		 "btDescriptorType", #3, 1,\
+		 "btString", #279, 2
+	SYMB	TYPE, 282, "Struct_String_Desc", 'T', #281
+
+; 33   |extern Struct_String_Desc StStringDescriptor[MAX_USB_STRINGS];
+; 34   |#endif
+; 35   |
+; 36   |// global flag created from hardware capability bit
+; 37   |extern BOOL g_bUsbHsEnabled;
+; 38   |
+; 39   |////////////////////////////////////////////////////////////////////////////////
+; 40   |//
+; 41   |//>  Name:          GetDescriptor
+; 42   |//
+; 43   |//   Type:          Function
+; 44   |//
+; 45   |//   Description:   Get Descriptor
+; 46   |//
+; 47   |//   Inputs:        
+; 48   |//                  btDescType : Descriptor Type
+; 49   |//                  btDevSpeed : Actual speed of the device
+; 50   |//                  btIndex    : Depends on the type of descriptor
+; 51   |//                               For strings it is the strin Index
+; 52   |//                               For Config, it is the config number    
+; 53   |//   Outputs:       None
+; 54   |//
+; 55   |//   Notes:         
+; 56   |//<
+; 57   |////////////////////////////////////////////////////////////////////////////////
+; 58   |BYTE _X * _reentrant GetDescriptor(BYTE btDescType, BYTE btDevSpeed, BYTE btIndex)
+; 59   |{ /* Body */
+
+	org	p,".ptextpackdesc":
+	SYMB	LINE, 59
+	SYMB	TYPE, 283, 'n', #3, 386
+	SYMB	TYPE, 284, 'P', #283
+	SYMB	TYPE, 285, 'X', 8, #284, 31, 3, #3, #3, #3
+	SYMB	GFUN, "GetDescriptor", FGetDescriptor, #285, 1, 0, 0
+	SYMB	ALAB, FGetDescriptor, #285
+FGetDescriptor:
+	move	ssh,y:(r7)+
+	SYMB	SOFF, 1, 1
+	SYMB	SOFF, -1
+	move	(r7)+
+	SYMB	SOFF, 2, 1
+	SYMB	LTIM, "btDescType", 18, 0, 2253
+	SYMB	LTIM, "btDevSpeed", 22, 0, 2253
+	SYMB	LTIM, "btIndex", 11, 0, 2253
+	SYMB	IDEN, "btDescType", 18, #3, 0, 2061
+	SYMB	IDEN, "btDevSpeed", 22, #3, 0, 2061
+	SYMB	IDEN, "btIndex", 11, #3, 0, 2061
+	SYMB	IDEN, "i", -1, #16, 387, 5
+	SYMB	LTIM, "i", -1, 0, 69
+	SYMB	IDEN, "j", -1, #16, 387, 5
+	SYMB	LTIM, "j", -1, 0, 69
+	SYMB	IDEN, "wReg", -1, #18, 387, 5
+	SYMB	LTIM, "wReg", -1, 0, 69
+	SYMB	TYPE, 286, 'n', #1, 387
+	SYMB	TYPE, 287, 'P', #286
+	SYMB	IDEN, "pDescriptor", -1, #287, 387, 5
+	SYMB	LTIM, "pDescriptor", -1, 0, 69
+	SYMB	IDEN, "bDescTypeOtherSpeed", -1, #18, 387, 5
+	SYMB	LTIM, "bDescTypeOtherSpeed", -1, 0, 69
+
+; 60   |    
+; 61   |    INT     i, j;
+; 62   |    WORD    wReg;
+; 63   |    void _USB_MEM*pDescriptor;
+; 64   |    BOOL    bDescTypeOtherSpeed = FALSE;
+
+	SYMB	LINE, 64
+	move	b1,r5
+	SYMB	LTIM, "btDevSpeed", 22, 0, 2125
+	SYMB	LTIM, "btDevSpeed", 29, 0, 2253
+	move	#0,x1
+	SYMB	LTIM, "bDescTypeOtherSpeed", 12, 0, 205
+
+; 65   |    
+; 66   |    switch (btDescType)
+
+	SYMB	LINE, 66
+	move	#>1,b
+	move	#0,a2
+	sub	b,a	#L62,r2
+	jcs	L51
+	move	#>6,b
+	cmp	b,a	a,n2
+	jgt	L51
+	move	p:(r2+n2),r2
+	nop
+	jmp	(r2)
+
+L62:	dc	L33	; case 1:
+	dc	L37	; case 2:
+	dc	L41	; case 3:
+	dc	L51	; default:
+	dc	L51	; default:
+	dc	L46	; case 6:
+	dc	L34	; case 7:
+
+
+; 67   |    {
+; 68   |
+; 69   |        case DESCRIPTOR_TYPE_DEVICE:
+; 70   |
+; 71   |            // Copy speed dependent information
+; 72   |            
+; 73   |            if (btDevSpeed==USB_SPEED_HIGH)
+
+	SYMB	LINE, 73
+L33:	move	r5,b
+	move	#>2,y0
+	cmp	y0,b
+	jne	L52
+
+; 74   |            {
+; 75   |                StDescDevice.btDeviceClass    = StDescDeviceQualHs.btDeviceClass;
+
+	SYMB	LINE, 75
+	move	y:FStDescDeviceQualHs+4,n6
+	move	n6,y:FStDescDevice+4
+
+; 76   |                StDescDevice.btDeviceSubclass = StDescDeviceQualHs.btDeviceSubclass;
+
+	SYMB	LINE, 76
+	move	y:FStDescDeviceQualHs+5,r4
+	move	r4,y:FStDescDevice+5
+
+; 77   |                StDescDevice.btDeviceProtocol = StDescDeviceQualHs.btDeviceProtocol;
+
+	SYMB	LINE, 77
+	move	y:FStDescDeviceQualHs+6,n3
+	move	n3,y:FStDescDevice+6
+
+; 78   |                StDescDevice.btMaxPacketSize0 = StDescDeviceQualHs.btMaxPacketSize0;
+
+	SYMB	LINE, 78
+	move	y:FStDescDeviceQualHs+7,r1
+	move	r1,y:FStDescDevice+7
+
+; 79   |            }
+
+	SYMB	LINE, 79
+	jmp	L53
+
+; 80   |            else
+; 81   |            {
+; 82   |                StDescDevice.btDeviceClass    = StDescDeviceQualFs.btDeviceClass;
+; 83   |                StDescDevice.btDeviceSubclass = StDescDeviceQualFs.btDeviceSubclass;
+; 84   |                StDescDevice.btDeviceProtocol = StDescDeviceQualFs.btDeviceProtocol;
+; 85   |                StDescDevice.btMaxPacketSize0 = StDescDeviceQualFs.btMaxPacketSize0;
+; 86   |            }
+; 87   |            
+; 88   |
+; 89   |			// For devices that do not support High Speed USB such as STMP3501/02/03
+; 90   |			if(g_bUsbHsEnabled == FALSE)
+; 91   |			{
+; 92   |	            StDescDevice.btBcdUsbLsb = 0x10;
+; 93   |	            StDescDevice.btBcdUsbMsb = 0x01;
+; 94   |			}
+; 95   |
+; 96   |            usb_PackDescriptor(&StDescDevice,Descriptor,0);
+; 97   |
+; 98   |            break;
+; 99   |
+; 100  |        
+; 101  |        case DESCRIPTOR_TYPE_OTHER_SPEED_CONFIG:
+; 102  |            //in this case, lets change report the device speed we're not
+; 103  |            if(btDevSpeed == USB_SPEED_HIGH)
+
+	SYMB	LINE, 103
+L34:	move	r5,a
+	SYMB	LTIM, "btDescType", 18, 0, 2125
+	move	#>2,y1
+	cmp	y1,a
+	jne	L35
+
+; 104  |                btDevSpeed = USB_SPEED_FULL;
+
+	SYMB	LINE, 104
+	move	#0,r5
+	jmp	L36
+
+; 105  |            else
+; 106  |                btDevSpeed = USB_SPEED_HIGH;
+
+	SYMB	LINE, 106
+L35:	move	y1,r5
+L36:	move	r5,b
+
+; 107  |
+; 108  |            // Set flag to modify the descriptor type after building the 
+; 109  |            // configuration descriptor
+; 110  |            bDescTypeOtherSpeed = TRUE;    
+
+	SYMB	LINE, 110
+	move	#>1,x1
+
+; 111  |            
+; 112  |                
+; 113  |        case DESCRIPTOR_TYPE_CONFIG:
+; 114  |        // Prepare Configuration Descriptor transfer.
+; 115  |        // A configuration descriptor includes all related interfaces descriptor (1 or more per configuration)
+; 116  |        // and all related endpoints (1 or more per interface)
+; 117  |            {
+; 118  |                BYTE _USB_MEM **pConfig = ConfigStruct;
+
+	SYMB	LINE, 118
+L37:
+	SYMB	BGNB, 0, 0
+	SYMB	TYPE, 288, 'n', #3, 387
+	SYMB	TYPE, 289, 'P', #288
+	SYMB	TYPE, 290, 'n', #289, 387
+	SYMB	TYPE, 291, 'P', #290
+	SYMB	IDEN, "pConfig", -1, #291, 387, 5
+	SYMB	LTIM, "pConfig", -1, 0, 69
+	move	#FConfigStruct,r6
+	SYMB	LTIM, "pConfig", 30, 0, 205
+	SYMB	IDEN, "iConfigs", -1, #16, 387, 5
+	SYMB	LTIM, "iConfigs", -1, 0, 69
+
+; 119  |                int iConfigs=0;
+
+	SYMB	LINE, 119
+	move	#0,y0
+	SYMB	LTIM, "iConfigs", 14, 0, 205
+
+; 120  |                while(*pConfig)
+
+	SYMB	LINE, 120
+	move	#>1,y1
+	jmp	L39
+
+; 121  |                {
+; 122  |                    pConfig++;
+
+	SYMB	LINE, 122
+L38:	move	(r6)+
+
+; 123  |                    pConfig++;
+
+	SYMB	LINE, 123
+	move	(r6)+
+
+; 124  |                    iConfigs++;
+
+	SYMB	LINE, 124
+	gmove	y0,a
+	add	y1,a
+	SYMB	LTIM, "iConfigs", 14, 0, 77
+	SYMB	LTIM, "iConfigs", 18, 0, 205
+	move	a1,y0
+	SYMB	LTIM, "iConfigs", 18, 0, 77
+	SYMB	LTIM, "iConfigs", 14, 0, 205
+	SYMB	LINE, 120
+L39:	move	y:(r6),b
+	move	b,n6
+	tst	b
+	jne	L38
+
+; 125  |                }
+; 126  |            if((btIndex < 0) || (btIndex >= iConfigs))
+
+	SYMB	LINE, 126
+	gmove	x0,b
+	move	b1,a
+	SYMB	LTIM, "btIndex", 11, 0, 2125
+	SYMB	LTIM, "btIndex", 22, 0, 2253
+	tst	a
+	jlt	L51
+	cmp	y0,a
+	jge	L51
+
+; 127  |                return(NULL);
+; 128  |
+; 129  |            btIndex = 2 * btIndex;
+
+	SYMB	LINE, 129
+	lsl	b
+	SYMB	LTIM, "btIndex", 22, 0, 2125
+	move	b1,a
+	SYMB	LTIM, "btIndex", 18, 0, 2253
+
+; 130  |
+; 131  |            if(btDevSpeed==USB_SPEED_HIGH)
+
+	SYMB	LINE, 131
+	move	r5,b
+	move	#>2,y0
+	cmp	y0,b
+	SYMB	LTIM, "iConfigs", 14, 0, 77
+	jne	L40
+
+; 132  |                btIndex ++;
+
+	SYMB	LINE, 132
+	add	y1,a
+L40:	move	m0,n7
+	nop
+	move	x1,y:(r7+n7)
+	SYMB	LTIM, "bDescTypeOtherSpeed", 12, 0, 77
+	SYMB	LTIM, "bDescTypeOtherSpeed", 50331649, 387, 197
+
+; 133  |           
+; 134  |            BuildConfigDescriptor((void _USB_MEM*)*(ConfigStruct+btIndex),Descriptor);
+
+	SYMB	LINE, 134
+	move	a1,n5
+	move	#FConfigStruct,r5
+	nop
+	lua	(r5)+n5,r6
+	SYMB	LTIM, "btDevSpeed", 29, 0, 2125
+	SYMB	LTIM, "btIndex", 18, 0, 2125
+	SYMB	LTIM, "btIndex", 37, 0, 2253
+	SYMB	LTIM, "pConfig", 30, 0, 77
+	nop
+	move	y:(r6),r0
+	move	#FDescriptor,r4
+	jsr	FBuildConfigDescriptor
+	SYMB	LTIM, "btIndex", 37, 0, 2125
+
+; 135  |            
+; 136  |            if(bDescTypeOtherSpeed == TRUE)
+
+	SYMB	LINE, 136
+	move	m0,n7
+	nop
+	move	y:(r7+n7),a
+	move	#>1,x1
+	move	#0,a2
+	cmp	x1,a
+	SYMB	LTIM, "bDescTypeOtherSpeed", 50331649, 387, 69
+	SYMB	LTIM, "bDescTypeOtherSpeed", 18, 0, 205
+	jne	L60
+
+; 137  |            {
+; 138  |                // Modify the descriptor byte to DESCRIPTOR_TYPE_OTHER_SPEED_CONFIG
+; 139  |                Descriptor[0] &= 0xff00ff;
+
+	SYMB	LINE, 139
+	move	x:FDescriptor,b1
+	move	#16711935,y0
+	and	y0,b
+	move	b1,x:FDescriptor
+
+; 140  |                Descriptor[0] |= (DESCRIPTOR_TYPE_OTHER_SPEED_CONFIG << 8);
+
+	SYMB	LINE, 140
+	bset	#8,b1
+	bset	#9,b1
+	bset	#10,b1
+	move	b1,x:FDescriptor
+	SYMB	ENDB
+
+; 141  |            }
+; 142  |
+; 143  |            }break;
+
+	SYMB	LINE, 143
+	jmp	L60
+
+; 144  |                        
+; 145  |        case DESCRIPTOR_TYPE_STRING:
+; 146  |            {
+; 147  |                int iStrings = 0;
+
+	SYMB	LINE, 147
+L41:
+	SYMB	LTIM, "btIndex", 11, 0, 2253
+	SYMB	BGNB, 0, 0
+	SYMB	IDEN, "iStrings", -1, #16, 387, 5
+	SYMB	LTIM, "iStrings", -1, 0, 69
+	gmove	#0,a
+	SYMB	LTIM, "bDescTypeOtherSpeed", 18, 0, 77
+	SYMB	LTIM, "iStrings", 18, 0, 205
+	SYMB	TYPE, 292, 'n', #18, 387
+	SYMB	TYPE, 293, 'P', #292
+	SYMB	TYPE, 294, 'n', #293, 387
+	SYMB	TYPE, 295, 'P', #294
+	SYMB	IDEN, "pString", -1, #295, 387, 5
+	SYMB	LTIM, "pString", -1, 0, 69
+
+; 148  |                WORD **pString = lcl_StringDescriptor;
+
+	SYMB	LINE, 148
+	move	#Flcl_StringDescriptor,r6
+	SYMB	LTIM, "pString", 30, 0, 205
+
+; 149  |
+; 150  |                while(*pString)
+
+	SYMB	LINE, 150
+	move	#>1,y0
+	jmp	L43
+
+; 151  |                {
+; 152  |                    pString++;
+
+	SYMB	LINE, 152
+L42:	move	(r6)+
+
+; 153  |                    iStrings++;
+
+	SYMB	LINE, 153
+	add	y0,a
+	SYMB	LINE, 150
+L43:	move	y:(r6),b
+	move	b,n6
+	tst	b
+	jne	L42
+
+; 154  |                }
+; 155  |
+; 156  |				if( btIndex == MS_OS_STRING_DESCRIPTOR_INDEX )
+
+	SYMB	LINE, 156
+	gmove	x0,b
+	move	#>238,y0
+	cmp	y0,b
+	jne	L44
+
+; 157  |				{
+; 158  |#ifdef MTP_BUILD
+; 159  |					usb_PackDescriptor_From_X(&StStringDescriptor[MS_OS_STRING_DESCRIPTOR_INDEX_IN_ARRAY],Descriptor,0);
+; 160  |#else				
+; 161  |					usb_PackDescriptor(&StStringDescriptor[MS_OS_STRING_DESCRIPTOR_INDEX_IN_ARRAY],Descriptor,0);
+
+	SYMB	LINE, 161
+	move	#FDescriptor,r4
+	move	#FStStringDescriptor+434,r0
+	gmove	#0,a
+	jsr	Fusb_PackDescriptor
+	SYMB	LTIM, "iStrings", 18, 0, 77
+	SYMB	LTIM, "btIndex", 11, 0, 2125
+	SYMB	LTIM, "pString", 30, 0, 77
+
+; 162  |#endif
+; 163  |					break;
+
+	SYMB	LINE, 163
+	jmp	L60
+
+; 164  |				}
+; 165  |
+; 166  |                if(btIndex < iStrings)
+
+	SYMB	LINE, 166
+L44:
+	SYMB	LTIM, "btIndex", 11, 0, 2253
+	SYMB	LTIM, "iStrings", 18, 0, 205
+	cmp	a,b
+	jge	L45
+
+; 167  |                {
+; 168  |#ifdef MTP_BUILD
+; 169  |                    usb_PackDescriptor_From_X(&StStringDescriptor[btIndex],Descriptor,0);
+; 170  |#else				
+; 171  |                    usb_PackDescriptor(&StStringDescriptor[btIndex],Descriptor,0);
+
+	SYMB	LINE, 171
+	move	#>$3E,x1
+	mpy	x0,x1,b
+	asr	b
+	move	b0,n0
+	move	#FStStringDescriptor,r0
+	nop
+	move	(r0)+n0
+	move	#FDescriptor,r4
+	gmove	#0,a
+	jsr	Fusb_PackDescriptor
+	SYMB	LTIM, "iStrings", 18, 0, 77
+	SYMB	LTIM, "btIndex", 11, 0, 2125
+
+; 172  |#endif
+; 173  |                }
+
+	SYMB	LINE, 173
+	jmp	L60
+
+; 174  |                else
+; 175  |                {
+; 176  |                    // Return the last string descriptor by default
+; 177  |#ifdef MTP_BUILD
+; 178  |                    usb_PackDescriptor_From_X(&StStringDescriptor[iStrings-1],Descriptor,0);
+; 179  |#else				
+; 180  |                    usb_PackDescriptor(&StStringDescriptor[iStrings-1],Descriptor,0);
+
+	SYMB	LINE, 180
+L45:
+	SYMB	LTIM, "iStrings", 18, 0, 205
+	move	#>$3E,y1
+	move	a1,y0
+	mpy	y0,y1,a
+	asr	a
+	SYMB	LTIM, "iStrings", 18, 0, 77
+	SYMB	LTIM, "iStrings", 14, 0, 205
+	move	a0,n6
+	move	#FStStringDescriptor-62,r6
+	nop
+	lua	(r6)+n6,r0
+	move	#FDescriptor,r4
+	gmove	#0,a
+	jsr	Fusb_PackDescriptor
+	SYMB	LTIM, "iStrings", 14, 0, 77
+	SYMB	ENDB
+
+; 181  |#endif
+; 182  |                }
+; 183  |            }break;
+
+	SYMB	LINE, 183
+	jmp	L60
+
+; 184  |
+; 185  |        case DESCRIPTOR_TYPE_DEVICE_QUALIFIER:
+; 186  |            // Copy speed dependent information
+; 187  |            if(btDevSpeed==USB_SPEED_HIGH)
+
+	SYMB	LINE, 187
+L46:
+	SYMB	LTIM, "btDevSpeed", 29, 0, 2253
+	move	r5,b
+	move	#>2,a
+	cmp	a,b
+
+; 188  |                pDescriptor = &StDescDeviceQualHs;
+
+	SYMB	LINE, 188
+	move	#FStDescDeviceQualHs,r0
+	SYMB	LTIM, "pDescriptor", 24, 0, 205
+	jeq	L48
+
+; 189  |            else 
+; 190  |                pDescriptor = &StDescDeviceQualFs;
+
+	SYMB	LINE, 190
+	move	#FStDescDeviceQualFs,r0
+
+; 191  |
+; 192  |            usb_PackDescriptor(pDescriptor,Descriptor,0);
+
+	SYMB	LINE, 192
+L48:	move	#FDescriptor,r4
+	gmove	#0,a
+	jsr	Fusb_PackDescriptor
+	SYMB	LTIM, "pDescriptor", 24, 0, 77
+	SYMB	LTIM, "btDevSpeed", 29, 0, 2125
+
+; 193  |                
+; 194  |            break;
+
+	SYMB	LINE, 194
+	jmp	L60
+
+; 195  |
+; 196  |        default:
+; 197  |            return(NULL);
+
+	SYMB	LINE, 197
+L51:	move	#0,r0
+	jmp	L61
+	SYMB	LINE, 82
+L52:	move	y:FStDescDeviceQualFs+4,x0
+	move	x0,y:FStDescDevice+4
+	SYMB	LINE, 83
+	move	y:FStDescDeviceQualFs+5,b1
+	move	b1,y:FStDescDevice+5
+	SYMB	LINE, 84
+	move	y:FStDescDeviceQualFs+6,a1
+	move	a1,y:FStDescDevice+6
+	SYMB	LINE, 85
+	move	y:FStDescDeviceQualFs+7,r6
+	move	r6,y:FStDescDevice+7
+	SYMB	LINE, 90
+L53:	move	y:Fg_bUsbHsEnabled,b
+	move	#0,b2
+	tst	b
+	jne	L54
+	SYMB	LINE, 92
+	move	#$10,r4
+	move	r4,y:FStDescDevice+2
+	SYMB	LINE, 93
+	move	#1,n3
+	move	n3,y:FStDescDevice+3
+	SYMB	LINE, 96
+L54:	move	#FDescriptor,r4
+	move	#FStDescDevice,r0
+	gmove	#0,a
+	jsr	Fusb_PackDescriptor
+
+; 198  |
+; 199  |    } /* Endswitch */
+; 200  |
+; 201  |    return((BYTE _X *)Descriptor);
+
+	SYMB	LINE, 201
+L60:	move	#FDescriptor,r0
+
+; 202  |} /* Endbody */
+
+	SYMB	LINE, 202
+L61:	move	(r7)-
+	SYMB	SOFF, 1, 1
+	move	y:-(r7),ssh
+	SYMB	SOFF, 0, 1
+	SYMB	SOFF, 0
+	nop
+	rts
+	SYMB	EFUN
+
+; 203  |
+; 204  |
+; 205  |
+; 206  |////////////////////////////////////////////////////////////////////////////////
+; 207  |//
+; 208  |//>  Name:          BuildConfigDescriptor
+; 209  |//
+; 210  |//   Type:          Function
+; 211  |//
+; 212  |//   Description:   Build the string descriptor
+; 213  |//
+; 214  |//   Inputs:        BYTE _USB_MEM *pConfigRule[]        The rule to build a descriptor for
+; 215  |//
+; 216  |//   Outputs:       None
+; 217  |//
+; 218  |//   Notes:
+; 219  |//      This function is not really reentrant. It uses 1 global variable
+; 220  |//      that is not protected.         
+; 221  |//<
+; 222  |////////////////////////////////////////////////////////////////////////////////
+; 223  |void _reentrant BuildConfigDescriptor(BYTE _USB_MEM *pConfigRule[], WORD _X *pPackedDescriptor)
+; 224  |{
+
+	SYMB	LINE, 224
+	SYMB	TYPE, 296, 'X', 8, #1, 31, 2, #291, #270
+	SYMB	GFUN, "BuildConfigDescriptor", FBuildConfigDescriptor, #296, 1, 0, 0
+	SYMB	ALAB, FBuildConfigDescriptor, #296
+FBuildConfigDescriptor:
+	move	ssh,y:(r7)+
+	SYMB	SOFF, 1, 1
+	SYMB	SOFF, -1
+	move	#4,n7
+	nop
+	move	(r7)+n7
+	SYMB	SOFF, 5, 1
+	SYMB	LTIM, "pConfigRule", 24, 0, 2253
+	SYMB	LTIM, "pPackedDescriptor", 28, 0, 2253
+	SYMB	IDEN, "pConfigRule", 24, #291, 0, 2061
+	SYMB	IDEN, "pPackedDescriptor", 28, #270, 0, 2061
+	SYMB	IDEN, "i", -1, #16, 387, 5
+	SYMB	LTIM, "i", -1, 0, 69
+	SYMB	IDEN, "wSizeMask", -1, #18, 387, 5
+	SYMB	LTIM, "wSizeMask", -1, 0, 69
+	SYMB	IDEN, "btByteOffset", -1, #3, 387, 5
+	SYMB	LTIM, "btByteOffset", -1, 0, 69
+	SYMB	IDEN, "btCurElem", -1, #3, 387, 5
+	SYMB	LTIM, "btCurElem", -1, 0, 69
+	SYMB	IDEN, "usTotalBytes", -1, #5, 387, 5
+	SYMB	LTIM, "usTotalBytes", -1, 0, 69
+	SYMB	IDEN, "pDescriptor", -1, #289, 387, 5
+	SYMB	LTIM, "pDescriptor", -1, 0, 69
+
+; 225  |    INT     i;
+; 226  |    WORD    wSizeMask;
+; 227  |    BYTE    btByteOffset, btCurElem;
+; 228  |    USHORT  usTotalBytes;    
+; 229  |    BYTE    _USB_MEM *pDescriptor;
+
+	SYMB	LINE, 229
+	move	#-3,n7
+	nop
+	move	r4,y:(r7+n7)
+	SYMB	LTIM, "pPackedDescriptor", 28, 0, 2125
+	SYMB	LTIM, "pPackedDescriptor", 50331650, 387, 2245
+
+; 230  |
+; 231  |
+; 232  |    btByteOffset = 0;
+; 233  |    btCurElem = 0;                      //  Current element descriptor array
+; 234  |    usTotalBytes = 0;
+
+	SYMB	LINE, 234
+	move	#0,n3
+	SYMB	LTIM, "usTotalBytes", 35, 0, 205
+
+; 235  |    
+; 236  |    pDescriptor= *(pConfigRule);    // Points Current Descriptor
+
+	SYMB	LINE, 236
+	move	y:(r0),r6
+	SYMB	LTIM, "pDescriptor", 30, 0, 205
+
+; 237  |
+; 238  |    while(pDescriptor != NULL)          // Process all descriptors from the Config Rule
+
+	SYMB	LINE, 238
+	jmp	L70
+L69:	move	#-4,n7
+	nop
+	move	r0,y:(r7+n7)
+	SYMB	LTIM, "pConfigRule", 24, 0, 2125
+	SYMB	LTIM, "pConfigRule", 50331649, 387, 2245
+
+; 239  |    {                                   // NULL pointer demarks end of config
+; 240  |        usb_PackDescriptor(pDescriptor,pPackedDescriptor,usTotalBytes);
+
+	SYMB	LINE, 240
+	move	m0,n7
+	nop
+	move	r6,y:(r7+n7)
+	move	r6,r0
+	SYMB	LTIM, "pDescriptor", 30, 0, 77
+	SYMB	LTIM, "pDescriptor", 50331652, 387, 197
+	move	#-3,n7
+	nop
+	move	y:(r7+n7),r4
+	move	#-2,n7
+	nop
+	move	n3,y:(r7+n7)
+	move	n3,a
+	SYMB	LTIM, "usTotalBytes", 35, 0, 77
+	SYMB	LTIM, "usTotalBytes", 50331651, 387, 197
+	SYMB	LTIM, "usTotalBytes", 50331651, 387, 69
+	SYMB	LTIM, "usTotalBytes", 18, 0, 205
+	jsr	Fusb_PackDescriptor
+	SYMB	LTIM, "usTotalBytes", 18, 0, 77
+	SYMB	LTIM, "usTotalBytes", 50331651, 387, 197
+
+; 241  |        usTotalBytes += *pDescriptor;   // Update total descriptor length
+
+	SYMB	LINE, 241
+	move	m0,n7
+	nop
+	move	y:(r7+n7),r6
+	nop
+	move	y:(r6),y0
+	SYMB	LTIM, "pDescriptor", 50331652, 387, 69
+	SYMB	LTIM, "pDescriptor", 30, 0, 205
+	move	#-2,n7
+	nop
+	move	y:(r7+n7),b
+	add	y0,b
+	SYMB	LTIM, "usTotalBytes", 50331651, 387, 69
+	SYMB	LTIM, "usTotalBytes", 22, 0, 205
+	SYMB	LTIM, "usTotalBytes", 22, 0, 77
+	move	b1,n3
+	SYMB	LTIM, "usTotalBytes", 35, 0, 205
+
+; 242  |         
+; 243  |
+; 244  |        pDescriptor = *(++pConfigRule);      // Points Current Descriptor
+
+	SYMB	LINE, 244
+	move	#-4,n7
+	nop
+	move	y:(r7+n7),r6
+	nop
+	move	(r6)+
+	SYMB	LTIM, "pConfigRule", 50331649, 387, 2117
+	SYMB	LTIM, "pConfigRule", 30, 0, 2253
+	SYMB	LTIM, "pConfigRule", 30, 0, 2125
+	SYMB	LTIM, "pDescriptor", 30, 0, 77
+	SYMB	LTIM, "pConfigRule", 30, 0, 2253
+	move	r6,r0
+	SYMB	LTIM, "pConfigRule", 30, 0, 2125
+	SYMB	LTIM, "pConfigRule", 24, 0, 2253
+	move	y:(r6),r6
+	SYMB	LTIM, "pDescriptor", 30, 0, 205
+	SYMB	LINE, 238
+L70:	move	r6,b
+	tst	b
+	jne	L69
+
+; 245  |    
+; 246  |    };
+; 247  |    
+; 248  |    // Update the descriptor size
+; 249  |    *pPackedDescriptor &= 0x00ffff;
+
+	SYMB	LINE, 249
+	move	#-3,n7
+	nop
+	move	y:(r7+n7),r3
+	nop
+	move	x:(r3),a1
+	SYMB	LTIM, "pPackedDescriptor", 50331650, 387, 2117
+	SYMB	LTIM, "pPackedDescriptor", 27, 0, 2253
+	move	#$FFFF,y0
+	and	y0,a
+	move	a1,x:(r3)
+
+; 250  |    wSizeMask = usTotalBytes & 0x0000ff;
+
+	SYMB	LINE, 250
+	move	n3,b1
+	move	#>$FF,x0
+	and	x0,b
+	move	b1,y0
+	SYMB	LTIM, "wSizeMask", 14, 0, 205
+
+; 251  |    *pPackedDescriptor |= (wSizeMask << 16);
+
+	SYMB	LINE, 251
+	mpy	y0,#8,b
+	move	b0,y0
+	or	y0,a
+	SYMB	LTIM, "wSizeMask", 14, 0, 77
+	move	a1,x:(r3)+
+	SYMB	LTIM, "pPackedDescriptor", 27, 0, 2125
+
+; 252  |     
+; 253  |    *(pPackedDescriptor+1) &= 0xffff00;
+
+	SYMB	LINE, 253
+	move	x:(r3),b1
+	move	#$FFFF00,y0
+	and	y0,b
+	move	b1,x:(r3)
+
+; 254  |    wSizeMask = usTotalBytes & 0x00ff00;
+
+	SYMB	LINE, 254
+	move	n3,a1
+	move	#$FF00,x0
+	and	x0,a
+	SYMB	LTIM, "usTotalBytes", 35, 0, 77
+	SYMB	LTIM, "usTotalBytes", 18, 0, 205
+	SYMB	LTIM, "usTotalBytes", 18, 0, 77
+	SYMB	LTIM, "wSizeMask", 18, 0, 205
+
+; 255  |    *(pPackedDescriptor+1) |= (wSizeMask >> 8);
+
+	SYMB	LINE, 255
+	do	#8,L71
+	SYMB	SOFF, 1
+	lsr	a
+	nop
+L71:
+	SYMB	SOFF, -1
+	SYMB	LTIM, "wSizeMask", 18, 0, 77
+	move	a1,y0
+	or	y0,b
+	move	b1,x:(r3)
+
+; 256  |
+; 257  |}
+
+	SYMB	LINE, 257
+	move	#-5,n7
+	nop
+	move	y:(r7+n7),ssh
+	SYMB	SOFF, 0
+	move	(r7)+n7
+	SYMB	SOFF, 1, 1
+	rts
+	SYMB	LTIM, "pDescriptor", 30, 0, 77
+	SYMB	LTIM, "pConfigRule", 24, 0, 2125
+	SYMB	EFUN
+	SYMB	ENDF
+	SYMB	TYPE, 297, 'Z', #289, -1
+	SYMB	ALAB, FConfigStruct, #297
+	SYMB	TYPE, 299, 'Z', #282, 8
+	SYMB	ALAB, FStStringDescriptor, #299
+	SYMB	TYPE, 302, 'n', #1, 386
+	SYMB	TYPE, 303, 'P', #302
+	SYMB	TYPE, 301, 'X', 8, #1, 31, 3, #287, #303, #18
+	SYMB	ALAB, Fusb_PackDescriptor, #301
+	SYMB	ALAB, FStDescDeviceQualFs, #278
+	SYMB	ALAB, FStDescDevice, #276
+	SYMB	ALAB, Fg_bUsbHsEnabled, #18
+	SYMB	TYPE, 304, 'n', #18, 4482
+	SYMB	TYPE, 305, 'P', #304
+	SYMB	TYPE, 306, 'Z', #305, 9
+	SYMB	ALAB, Flcl_StringDescriptor, #306
+	SYMB	ALAB, FStDescDeviceQualHs, #278
+
+	SYMB	TYPE, 308, 'Z', #18, 85
+	SYMB	IDEN, "Descriptor", FDescriptor, #308, 386, 0
+	SYMB	ALAB, FDescriptor, #308
+
+	org	x,".xbsspackdesc",bss:
+FDescriptor:
+	ds	86
+
+	extern	y:FConfigStruct, y:FStDescDevice, y:FStDescDeviceQualFs
+	extern	y:FStDescDeviceQualHs, y:FStStringDescriptor
+	extern	y:Fg_bUsbHsEnabled, y:Flcl_StringDescriptor
+	extern	Fusb_PackDescriptor
+
+	global	FBuildConfigDescriptor, FDescriptor, FGetDescriptor
+
+	local	L33, L34, L35, L36, L37, L38, L39, L40, L41, L42, L43, L44
+	local	L45, L46, L48, L51, L52, L53, L54, L60, L61, L62, L69, L70
+	local	L71
+
+	calls	"BuildConfigDescriptor", "usb_PackDescriptor"
+	calls	"GetDescriptor", "BuildConfigDescriptor"
+	calls	"GetDescriptor", "usb_PackDescriptor"
+
+	end	

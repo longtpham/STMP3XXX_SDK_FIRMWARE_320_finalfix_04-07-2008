@@ -1,0 +1,58 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright(C) SigmaTel, Inc. 2002
+//
+// Filename: misc.h
+// Description: 
+////////////////////////////////////////////////////////////////////////////////
+
+#ifndef _MISC_H
+#define _MISC_H
+
+////////////////////////////////////////////////////////////////////////////////
+// Defs
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Error codes
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Typedefs
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Prototypes
+////////////////////////////////////////////////////////////////////////////////
+
+RETCODE PowerInit(void);
+RETCODE PllInit(void);
+RETCODE _reentrant SystemShutdown(void);
+RETCODE _reentrant SysGpioDisableAll(void);
+RETCODE _reentrant SysPadPowerDownAll(void);
+RETCODE _reentrant SysPllShutdown(void);
+RETCODE GoToSleep(void);
+void _reentrant SysDelayMs(WORD wDelay);
+DWORD GetDclkCount(void);
+#ifdef USE_PLAYLIST2
+DWORD GetDclkCount_PL2(void);
+#endif
+void SetDclkCount(DWORD dwCount);
+RETCODE SmartMediaSetPortTiming(WORD wTiming);
+RETCODE ProgramPll(INT iSpeed);
+void _reentrant SystemReset(void);
+void _reentrant SystemPowerOff(void);
+void _reentrant ReconfigureAsDcc(void);
+void _reentrant PowerDownFMTuners(void);
+#ifdef TUNER_5767
+void _reentrant  Philips5767_3WireWriteByte(INT data);
+void _reentrant Philips5767_3WireClockDelay(void);
+#endif
+extern BOOL g_bPowerOff;
+
+#ifndef DISABLE_USB_CURRENT_REQUIREMENT_FOR_MMC_DRIVER
+extern int g_iHighPwrPeriphInitMode; // def in usbmscmisc.c
+ #define STRUCTURE_INIT_ONLY                            2
+ #define USB_HIGH_CURRENT_GRANTED                       3
+#endif
+
+#endif // #ifndef _MISC_H

@@ -1,0 +1,694 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\encoder\imaadpcm\enc_adpcm_nonoverlay.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ; Filename: enc_adpcm_nonoverlay.asm
+                                4 ; STMP3 ISR-level Encoder ADPCM IMA Module (CANNOT be overlayed)
+                                5 ;///////////////////////////////////////////////////////////////////////////////
+                                6     section ENCAPP_EncAdpcmImaNonOverlay
+                                9 ;///////////////////////////////////////////////////////////////////////////////
+                               10 ;   External Definitions
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               23 ;///////////////////////////////////////////////////////////////////////////////
+                               24 ;   External References
+                               25 ;///////////////////////////////////////////////////////////////////////////////
+                               31     
+                               61     
+                               68     ; TODO - Get rid of this stuff!!!! Used only for adpcm dev.
+                               69 ;   EXTERN   CurrEncIsrCount
+                               70     
+                              101     
+                              102     ;tt 1/6/04 additions    
+                              104 ;    EXTERN  EncoderWriteStatus0
+                              105 ;    EXTERN  WriteIndex
+                              106 ;    EXTERN  ProcessIndex
+                              111     
+                              115     
+                              117     
+                              118     USE_JSR: EQU 0
+                              119     USE_OLD: EQU 0
+                              120     TRACE_PCM: EQU 0
+                              121          
+                              123 ;///////////////////////////////////////////////////////////////////////////////
+                              124 ;   Includes
+                              125 ;///////////////////////////////////////////////////////////////////////////////
+                              139     list
+                              140     page    132,60,0,0,0
+                              142 ;///////////////////////////////////////////////////////////////////////////////
+                              143 ;   Equates
+                              144 ;///////////////////////////////////////////////////////////////////////////////
+                              145 ENCODER_WRITE_BUSY_BIT      equ 0           ;0 WriteToDisk function not busy
+                              146 ENCODER_SKIP_WRITE_BIT      equ 1           ;1 Skip Decoder File Read.
+                              148 ;///////////////////////////////////////////////////////////////////////////////
+                              149 ;   X Memory
+                              150 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        151        org     x,"ENCAPP_EncAdpcmImaNonOverlay_X":
+                              153 Fg_wEncoderIsrSR
+X:0000 000000                 154 EncoderIsrSR            dc      0       ; For signalling special conditions to
+                              155                                         ; the overlay section of the encoder.
+                              156                                         ; Bit flags are same as EncoderSR but
+                              157                                         ; are private to the Encoder.
+                              159 ;///////////////////////////////////////////////////////////////////////////////
+                              160 ;   Y Memory
+                              161 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        162        org     y,"ENCAPP_EncAdpcmImaNonOverlay_Y":
+Y:0000 000000                 164 EncoderIsrEntryCount    dc      0
+Y:0001 000000                 166 EncoderIsrState         dc      0
+Y:0002 000000                 168 EncoderWriteSaveR6      dc      0
+                              170         
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              171 ;///////////////////////////////////////////////////////////////////////////////
+                              172 ;   Code
+                              173 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        174        org     p,"ENCAPP_EncAdpcmImaNonOverlay_P":
+                              176 ;*******************************************************************************
+                              177 ; EncAdpcmImaModuleTimerDisable Routine
+                              178 ;*******************************************************************************
+                              179 EncAdpcmImaModuleTimerDisable
+                              180     ; CANNOT be overlayed, called by ISR.
+P:0000 00000C         4    4  181     rts
+                              183 ;*******************************************************************************
+                              184 ; EncoderFileWrite Routine
+                              185 ;*******************************************************************************
+                              186 EncoderFileWrite
+P:0001 00000C         4    8  187     rts
+                              189 ;*******************************************************************************
+                              190 ; EncAdpcmImaModuleIsrInit
+                              191 ;*******************************************************************************
+                              192 EncAdpcmImaModuleIsrInit
+P:0002 200013         2   10  221     clr     a
+P:0003 5C7000 rrrrrr  3   13  222     move    a1,y:EncoderIsrEntryCount
+P:0005 5C7000 rrrrrr  3   16  223     move    a1,y:EncoderSampleCountHigh
+P:0007 5C7000 rrrrrr  3   19  224     move    a1,y:EncoderSampleCountLow   
+P:0009 5C7000 rrrrrr  3   22  225     move    a1,y:EncWriteFailCount
+P:000B 5C7000 rrrrrr  3   25  226     move    a1,y:EncBytesWrittenHigh 
+P:000D 5C7000 rrrrrr  3   28  227     move    a1,y:EncBytesWrittenLow  
+P:000F 5C7000 rrrrrr  3   31  228     move    a1,y:EncIsrFlags
+P:0011 5C7000 rrrrrr  3   34  229     move    a1,y:EncoderWritesWaiting
+P:0013 5C7000 rrrrrr  3   37  230     move    a1,y:gEncoderWriteStatus
+P:0015 0ACC60         4   41  233     bset    #ENC_ISR_STATE_STOPPED,a1
+P:0016 5C7000 rrrrrr  3   44  234     move    a1,y:EncoderIsrState
+                              235 ; this will cause FM MSADPCM 32ksample to reboot, so comment out
+                              236 ;   bset    #0,y:EncodingFileWriteFlag
+                              237     
+                              238     ; Initialize the Enocoder Source & Sink Buffers
+P:0018 68F000 rrrrrr  3   47  239     move    y:EncoderBufAddrPtr,r0
+P:001A 05F420 FFFFFF  4   51  240     movec   #-1,m0
+P:001C 4CF000 rrrrrr  3   54  241     move    y:EncoderBufSizePtr,x0
+P:001E 06C400 rrrrrr  6   60  242     do      x0,_done_source
+P:0020 200013         2   62  243         clr     a
+P:0021 5E5800         2   64  244         move    a,y:(r0)+
+                         (4)  245 _done_source
+P:0022 00000C         4   68  246     rts
+                              247     
+                              248 ;*******************************************************************************
+                              249 ; EncAdpcmImaModuleIsr
+                              250 ;*******************************************************************************
+                              251 EncAdpcmImaModuleIsr
+                              253         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              254         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              255         ; will be popped back off System Stack Low (SSL).
+                              256         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              257         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:0023 00BFB8         2   70  258         andi #$BF,mr
+P:0024 4C7000 rrrrrr  3   73  260     move    x0,y:IntL1_SaveR6           ; save x0 state
+                              262     ; Check if spirous interrupt. If so exit ...
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0026 44F000 00F302  3   76  263     move    x:HW_ICLSTATUS0R,x0
+P:0028 0AC42D rrrrrr  6   82  264     jset    #HW_ICLSTATUS0R_SST13_BITPOS,x0,_ContinueIsr
+                              265     ; None of the above, exit interruption
+P:002A 4CF000 rrrrrr  3   85  266     move    y:IntL1_SaveR6,x0           ; restore x0 state
+P:002C 000004         4   89  267     rti
+                              269 _ContinueIsr
+P:002D 4CF000 rrrrrr  3   92  270     move    y:IntL1_SaveR6,x0           ; restore x0 state
+                              271     
+                              276     ; save off all registers
+P:002F 6E7000 rrrrrr  3   95  277     move    r6,y:IntL1_SaveR6            ; r6 used for return mechanism
+P:0031 66F400 rrrrrr  3   98  278     move    #_EncoderSaveRegReturn,r6    ; setup the return address
+P:0033 0AF080 rrrrrr  6  104  279     jmp     SaveRegs                     ; save the remaining registers
+                              280 _EncoderSaveRegReturn
+                              282     ; save off stack
+P:0035 66F400 rrrrrr  3  107  283     move    #_EncoderSaveStackReturn,r6  ; setup the return address
+P:0037 65F400 rrrrrr  3  110  284     move    #EncIsrSp,r5                 ; pointer to the SP local save
+P:0039 0AF080 rrrrrr  6  116  285     jmp     SaveSystemStack              ; save the hardware stack
+                              286 _EncoderSaveStackReturn
+P:003B 0BF080 rrrrrr  6  122  288     jsr     SysAllLinear
+                              290     ; Check for isr overflow.  This error occurs if this routine is interrupted
+                              291     ;   by itself.  This should never happen.  The check is mainly for debug and
+                              292     ;   could be removed when dev is complete.
+P:003D 4CF000 rrrrrr  3  125  293     move    y:EncIsrFlags,x0
+P:003F 0AC420 rrrrrr  6  131  294     jset    #0,x0,big_trouble
+                              301     ; Isr is active
+P:0041 0AC460         4  135  302     bset    #0,x0
+P:0042 4C7000 rrrrrr  3  138  303     move    x0,y:EncIsrFlags
+                              304     
+                              305     ; keep track of entries to this isr
+P:0044 200013         2  140  306     clr     a
+P:0045 58F000 rrrrrr  3  143  307     move    y:EncoderIsrEntryCount,a0
+P:0047 000008         2  145  308     inc     a
+P:0048 587000 rrrrrr  3  148  309     move    a0,y:EncoderIsrEntryCount
+                              310     ; TODO - get rid of this!!! dev only!
+                              311 ;    move    a0,y:CurrEncIsrCount
+                              313 _EncoderStateMachine
+                              314 ;*******************************************************************************
+                              315 _IsrStateRecording 
+P:004A 0A7041 rrrrrr  6  154  317     bclr    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus        
+P:004C 44F000 rrrrrr  3  157  319     move    x:EncoderCSR,x0
+P:004E 0AC426 rrrrrr  6  163  320     jset    #Stop,x0,_StopRecording
+                              322     ; clear the flag
+P:0050 0AC44C         4  167  323     bclr    #Play,x0
+P:0051 447000 rrrrrr  3  170  324     move    x0,x:EncoderCSR
+                              326     ; flag for recording
+P:0053 44F000 rrrrrr  3  173  327     move    x:EncoderSR,x0
+P:0055 0AC446         4  177  328     bclr    #Stop,x0
+P:0056 0AC445         4  181  329     bclr    #Pause,x0
+P:0057 0AC46C         4  185  330     bset    #Play,x0
+P:0058 447000 rrrrrr  3  188  331     move    x0,x:EncoderSR
+P:005A 240000         2  190  333     move    #0,x0                       ; Clear encoder private status flags
+P:005B 447000 rrrrrr  3  193  334     move    x0,x:EncoderIsrSR
+                              335     
+                              336     ; TODO - add recorder change state message here?
+                              338     ; if we have enough samples to process then do it
+P:005D 60F400 rrrrrr  3  196  339     move    #EncoderSourceBufDesc,r0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:005F 05F420 00FFFF  4  200  340     movec   #$ffff,m0
+P:0061 0BF080 rrrrrr  6  206  341     jsr     GetFilledSpace                  ; returns filled space count in A
+P:0063 4CF000 rrrrrr  3  209  342         move    y:FTotalSamplesPerBlock,x0
+P:0065 200045         2  211  343     cmp     x0,A
+P:0066 0AF0A9 rrrrrr  6  217  344     jlt     _ExitIsr                        ; bail if not enough samples
+P:0068 44F000 rrrrrr  3  220  348     move    x:EncoderIsrSR,x0                   ; Check for (already) Out Of Space
+P:006A 0AC421 rrrrrr  6  226  349     jset    #EncRanOutOfSpace,x0,_skip_write
+P:006C 5AF000 rrrrrr  3  229  351     move    y:Fg_wEncCurrentDeviceNum,a2                ; Check for about out of space
+P:006E 0BF080 rrrrrr  6  235  352     jsr     DiskBytesFree
+                              353     ;           b1 = number of free clusters
+                              354     ;           b0 = number of bytes per cluster    
+P:0070 0AF0A0 rrrrrr  6  241  355     jcc     _disk_ok
+                              356     error
+P:0072 000200         4  245  356     debug
+                              358 _disk_ok
+P:0073 21AE00         2  247  359     move    b1,a                                        ; Number of free clusters
+                              360     ;---
+                              361     ; Warn when free clusters reaches defined threshold.  DVRWARN
+                              362     ; Base case: bytes/cluster is 16 kiloBytes. /4000 bytes/sec adpcm data =  4.096 sec/cluster
+                              363     ; (at 32kbps)
+                              364     ; A 3 cluster threshhold warning above the record free cluster limit 
+                              365     ; gives ~12 sec warning before recording stops. 
+                              366     ;
+                              367     ;  Note: Alternate approach checks remaining record seconds but is not worth the system perfor
+                                  mance  
+                              368     ;        hit as this condition is checked in a high frequency periodic timer ISR. Just check f
+                                  ree clusters.
+                              370     ;move    #>(ENC_FREE_CLUSTERS_WARN_THRESHOLD-1),a  ; DEBUG line only. COMMENT LINE OUT. Forces
+                                   "low record memory warn" <<<<<
+P:0074 44F400 000005  3  250  372     move    #>ENC_FREE_CLUSTERS_WARN_THRESHOLD,x0 
+P:0076 200045         2  252  373     cmp     x0,a                                ; A is free clusters.
+P:0077 0AF0A7 rrrrrr  6  258  374     jgt     _clr_space_warn                     ; Fall into _warn_low_space if we're below or at t
+                                  o the free clusters warning threshhold.
+                              375     ; Next clear x:EncoderIsrSR EncWarnLowSpace 
+                              377     ; x:EncoderSR EncWarningSent bit must not be cleared in the ISR 
+                              378     ; It will be cleared when reinitializing the encoder. Avoids race condition.
+                              381 _warn_low_space
+P:0079 44F000 rrrrrr  3  261  382     move    x:EncoderIsrSR,x0                   ; warn near out of Space.  
+P:007B 0AC467         4  265  383     bset    #EncWarnLowSpace,x0 
+P:007C 447000 rrrrrr  3  268  384     move    x0,x:EncoderIsrSR
+                              386     ; Check for 'low enough space to stop' condition.
+P:007E 44F400 000002  3  271  387     move    #>ENC_MIN_FREE_CLUSTER_LIM,x0       ; Stop when minimum free cluster limit hit. 
+P:0080 200045         2  273  388     cmp     x0,a                                ; A is free clusters.
+P:0081 0AF0A7 rrrrrr  6  279  389     jgt     _write_ok
+                              391 _out_of_space
+P:0083 44F000 rrrrrr  3  282  392     move    x:EncoderIsrSR,x0                   ; Out of Space.  Stop recording.
+P:0085 0AC461         4  286  393     bset    #EncRanOutOfSpace,x0
+P:0086 447000 rrrrrr  3  289  394     move    x0,x:EncoderIsrSR                   ; Flag the overlay section to clean up.
+P:0088 0AF080 rrrrrr  6  295  395     jmp     _skip_write
+                              397 _clr_space_warn
+                              398     ; Remove space warning (clear bit) since free clusters are known to exist above threshold
+P:008A 44F000 rrrrrr  3  298  400     move    x:EncoderIsrSR,x0                   ; Clears Encoder ISR SR 'low space warn bit' when 
+                                  space available.
+P:008C 0AC447         4  302  401     bclr    #EncWarnLowSpace,x0
+P:008D 447000 rrrrrr  3  305  402     move    x0,x:EncoderIsrSR
+                              404 _write_ok    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:008F 0BF080 rrrrrr  6  311  405     jsr     AdpcmProcess  
+P:0091 0A7041 rrrrrr  6  317  406     bclr    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus
+P:0093 0AF080 rrrrrr  6  323  407     jmp     _ExitIsr  
+                              408     
+                              409 _skip_write
+P:0095 0A7061 rrrrrr  6  329  410     bset    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus
+P:0097 0AF080 rrrrrr  6  335  411     jmp     _ExitIsr
+                              412     
+                              413 _StopRecording
+                              414     ; clear the flag
+P:0099 0AC446         4  339  415     bclr    #Stop,x0
+P:009A 447000 rrrrrr  3  342  416     move    x0,x:EncoderCSR
+                              417     
+P:009C 0A7040 rrrrrr  6  348  418     bclr    #0,y:EncodingFileWriteFlag
+                              419     
+                              420     ; stop the ADC
+P:009E 200013         2  350  422     clr a
+P:009F 58F000 rrrrrr  3  353  423     move        y:Fg_ADCsource,a0               ; if encoding from Steely Dan, ADC is not running
+P:00A1 00000A         2  355  424     dec         a
+P:00A2 0AF0A2 rrrrrr  6  361  425     jne     _DisableADCdriver
+P:00A4 58F000 rrrrrr  3  364  426         move    y:Fg_EncodeStfm,a0
+P:00A6 0AC840         4  368  427         bclr    #0,a0
+P:00A7 587000 rrrrrr  3  371  428         move    a0,y:Fg_EncodeStfm
+P:00A9 0AF080 rrrrrr  6  377  429     jmp     _byPassDisablePort
+                              431 _DisableADCdriver
+P:00AB 0BF080 rrrrrr  6  383  432     jsr     AdcDriverDisablePort
+                              433 _byPassDisablePort    
+                              434     ; flag for stopped
+P:00AD 44F000 rrrrrr  3  386  435     move    x:EncoderSR,x0
+P:00AF 0AC466         4  390  436     bset    #Stop,x0
+P:00B0 0AC44C         4  394  437     bclr    #Play,x0
+P:00B1 447000 rrrrrr  3  397  438     move    x0,x:EncoderSR
+                              439     
+                              440     ; change isr state
+P:00B3 200013         2  399  441     clr     a
+P:00B4 0ACC60         4  403  442     bset    #ENC_ISR_STATE_STOPPED,a1
+P:00B5 5C7000 rrrrrr  3  406  443     move    a1,y:EncoderIsrState
+                              445     ; Turn Timer Module Off
+P:00B7 44F400 rrrrrr  3  409  446     move    #>EncoderTimerNum,x0
+P:00B9 60F400 rrrrrr  3  412  447     move    #_TimerDisabled,r0
+P:00BB 0AF080 rrrrrr  6  418  448     jmp     SysDisableTimer
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\encoder\imaadpcm\enc_adpcm_nonoverlay.asm: line 448 : inserted "extern SysDisableTimer"
+                              449 _TimerDisabled
+                              451     
+P:00BD 0AF080 rrrrrr  6  424  452     jmp     _ExitOnStop
+                              454     
+                              455 ;*******************************************************************************
+                              456 ;_StartRecording
+                              460 ;*******************************************************************************
+                              461 _ExitIsr
+                              471     
+                              473     ; reset the isr for next time
+P:00BF 44F400 rrrrrr  3  427  474     move    #>EncoderTimerNum,x0
+P:00C1 60F400 rrrrrr  3  430  475     move    #_TimerReset,r0
+P:00C3 0AF080 rrrrrr  6  436  476     jmp     SysClearTimerIrq
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              477 _ExitOnStop
+                              478 _TimerReset
+                              482 ;    jsr     WriteToDisk
+                              484     ;  if (EncoderWritesWaiting == 0) don't call WriteToDisk
+P:00C5 5EF000 rrrrrr  3  439  485     move    y:EncoderWritesWaiting,a
+P:00C7 2A0000         2  441  486     move    #0,a2
+P:00C8 200003         2  443  487     tst     a
+P:00C9 0AF0A2 rrrrrr  6  449  488     jne     _EndEncoderWriteTest
+P:00CB 0A7061 rrrrrr  6  455  489     bset    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus    
+                              490 _EndEncoderWriteTest   
+                              491     
+                              492     ; restore stack
+P:00CD 65F400 rrrrrr  3  458  493     move    #EncIsrSp,r5                 ; pointer to the SP local save
+P:00CF 66F400 rrrrrr  3  461  494     move    #_stackRestored,r6           ; setup the return address
+P:00D1 0AF080 rrrrrr  6  467  495     jmp     RestoreSystemStack           ; restore the hardware stack
+                              496 _stackRestored
+                              498     ; restore all registers
+P:00D3 66F400 rrrrrr  3  470  499     move    #EncoderRestoreRegReturn,r6  ; setup the return address
+P:00D5 0AF080 rrrrrr  6  476  500     jmp     RestoreRegs                  ; restore registers
+                              501 EncoderRestoreRegReturn
+P:00D7 6EF000 rrrrrr  3  479  502     move    y:IntL1_SaveR6,r6            ; restore minimal reg set
+                              507     ;tt 1/6/04 - Multithread voice record.
+                              508     ; Test to see if a file write is in progress
+                              509     ; Determines if need to start Encoder File Write Function
+                              510    
+P:00D9 0A7041 rrrrrr  6  485  511     bclr    #ENCODER_SKIP_WRITE_BIT,y:gEncoderWriteStatus
+P:00DB 0AF0A8 rrrrrr  6  491  512     jcs     _End
+                              513     
+P:00DD 0B7060 rrrrrr  6  497  514     btst    #ENCODER_WRITE_BUSY_BIT,y:gEncoderWriteStatus
+P:00DF 0AF0A8 rrrrrr  6  503  515     jcs     _End
+                              516         
+                              517     ; tt 1/6/04 - Set busy flag.
+P:00E1 0A7060 rrrrrr  6  509  518     bset    #ENCODER_WRITE_BUSY_BIT,y:gEncoderWriteStatus
+                              519     
+                              520     ; Store off the present Stack Register and PC - take a detour through
+                              521     ; WriteToDisk, then reinstate these and continue where we left off. 
+P:00E3 0003F8         2  511  522     ori     #$3,mr              ; Block interrupts
+                              523 ;    bset    #9,SR                   ; Block interrupts
+P:00E4 05707D rrrrrr  4  515  524     movec   ssl,y:PCMEncSaveSR     ;Saves return address and status register
+P:00E6 05707C rrrrrr  4  519  525     movec   ssh,y:PCMEncSavePC     ;Call back address to use from WriteToDisk()
+P:00E8 000000         2  521  526     nop
+P:00E9 05F43C rrrrrr  4  525  527     movec   #WriteToDisk,ssh   ;Forces WriteToDisk call after rti                          
+P:00EB 0AF949         4  529  528     bclr    #9,SR               ; Re-enable interrupts
+                              530 _End   
+                              531     ; Isr is inactive
+P:00EC 0A7040 rrrrrr  6  535  532     bclr    #0,y:EncIsrFlags
+P:00EE 000000         2  537  533     nop
+                              534     
+P:00EF 000004         4  541  535     rti                     ;Int level is dropped to 0 (user level)
+                              536                             ;WriteToDisk() operates at user level
+                              538 big_trouble
+                              539     error
+P:00F0 000200         4  545  539     debug
+                              540     
+                              541 ;///////////////////////////////////////////////////////////////////////////////
+                              542 ;   AdpcmProcess
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              543 ;   On Entry:
+                              544 ;///////////////////////////////////////////////////////////////////////////////
+                              545 AdpcmProcess        
+                              547     ; tt - 1/6/04 changes to make this a multithreaded voice record implementation  
+P:00F1 20001B         2  547  548     clr     b
+P:00F2 5FF000 rrrrrr  3  550  549     move    y:EncoderWritesWaiting,b
+P:00F4 44F400 000014  3  553  550     move    #>NUM_ADPCM_BUFS,x0
+P:00F6 2B0000         2  555  551     move    #0,b2
+P:00F7 20004D         2  557  552     cmp     x0,b
+P:00F8 0AF0A1 rrrrrr  6  563  553     jge     _EndOfAdpcmProcess
+                              555 ;    debug     
+P:00FA 68F000 rrrrrr  3  566  556     move    y:ProcessSinkPointer,r0     ; Load Sink Pointer for processing.
+P:00FC 000000         2  568  557     nop
+P:00FD 68E000         2  570  558     move    y:(r0),r0
+                              559     ; tt end of additions.
+                              560     
+                              561     ; Old method
+P:00FE 05F064 rrrrrr  4  574  565     movec   y:EncoderBufModPtr,m4
+P:0100 6CF000 rrrrrr  3  577  566     move    y:EncoderBufTailPtr,r4
+P:0102 6EF000 rrrrrr  3  580  567     move    y:AdpcmEncoderPointer,r6
+P:0104 5EF000 rrrrrr  3  583  568     move    y:Fg_Wave_wChannels,A
+                              569     ; Call the appropriate Encoding algorithm
+P:0106 0BE680         4  587  570     jsr     (r6)
+                              571     ; update pointers
+P:0107 6CF000 rrrrrr  3  590  572     move    y:EncoderBufTailPtr,r4
+P:0109 7CF000 rrrrrr  3  593  573         move    y:FTotalSamplesPerBlock,n4
+P:010B 000000         2  595  574     nop
+P:010C 204C00         2  597  575     move    (r4)+n4
+P:010D 058064r        2  599  576     movec   y:<Const_ffffff,m4
+P:010E 6C7000 rrrrrr  3  602  577     move    r4,y:EncoderBufTailPtr
+                              578     ; Now write to the Disk
+                              579     ; Pass the size in Bytes in A
+P:0110 0BF080 rrrrrr  6  608  581     jsr     SysAllLinear
+P:0112 0BF080 rrrrrr  6  614  582     jsr     FIncrement_Counters
+                              583     
+                              584     ; tt 1/6/04 add code for multithread.    
+P:0114 68F000 rrrrrr  3  617  585     move    y:ProcessSinkPointer,r0
+                              586     ; if (++ProcessSinkPointer >= &pEncoderSinkBufPtr[NUM_ADPCM_BUFS])
+P:0116 20001B         2  619  587     clr     b
+P:0117 200013         2  621  588     clr     a
+P:0118 205800         2  623  589     move    (r0)+
+P:0119 220F00         2  625  590     move    r0,b
+P:011A 56F400 rrrrrr  3  628  591     move    #pEncoderSinkBufPtr0+NUM_ADPCM_BUFS,a
+P:011C 20000D         2  630  592     cmp     a,b
+P:011D 0AF0A9 rrrrrr  6  636  593     jlt     _ContinueWithADPCM_Process
+                              594     ;{
+                              595     ;   ProcessSinkPointer = &pEncoderSinkBufPtr[0];
+P:011F 60F400 rrrrrr  3  639  596         move    #pEncoderSinkBufPtr0,r0
+                              597     ;}
+                              598 _ContinueWithADPCM_Process       
+P:0121 687000 rrrrrr  3  642  599     move    r0,y:ProcessSinkPointer
+                              600     ;EncoderWritesWaiting++;
+P:0123 5EF000 rrrrrr  3  645  601     move    y:EncoderWritesWaiting,a
+P:0125 44F400 000001  3  648  602     move    #>1,x0
+P:0127 200040         2  650  603     add     x0,a
+P:0128 5C7000 rrrrrr  3  653  604     move    a1,y:EncoderWritesWaiting
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              605     ; tt - end of changes
+                              606     
+                              607 _EndOfAdpcmProcess    
+P:012A 000000         2  655  608     nop
+P:012B 00000C         4  659  609     rts
+                              611     
+                              612 ;///////////////////////////////////////////////////////////////////////////////
+                              613 ;   WriteToDisk
+                              614 ;///////////////////////////////////////////////////////////////////////////////
+                              615 WriteToDisk
+                              616         ;Here the Interruption level is dropped automatically to 0 (user level)
+                              617         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              618         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              619         ; will be popped back off System Stack Low (SSL).
+                              620         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              621         ; Next cycle after clearing it should NOT be an ALU instruction.        
+P:012C 00BFB8         2  661  622     andi #$BF,mr
+                              623     
+P:012D 000000         2  663  625     nop
+P:012E 000000         2  665  626     nop
+P:012F 000000         2  667  627     nop
+                              628 ;    jset    #8,SR,_Problem
+                              629 ;    jclr    #9,SR,_StartOK  
+                              630 ;_Problem
+                              631 ;    debug  
+                              633 ;_StartOK       
+                              635     ; save off all registers
+P:0130 6E7000 rrrrrr  3  670  636     move    r6,y:EncoderWriteSaveR6         ; r6 used for return mechanism
+P:0132 66F400 rrrrrr  3  673  637     move    #_EncoderWriteSaveRegReturn,r6  ; setup the return address
+P:0134 0AF080 rrrrrr  6  679  638     jmp     SaveRegs                        ; save the remaining registers
+                              639 _EncoderWriteSaveRegReturn
+                              640         
+                              641     ; save off stack
+P:0136 66F400 rrrrrr  3  682  642     move    #_EncoderWriteSaveStackReturn,r6 ; setup the return address
+P:0138 65F400 rrrrrr  3  685  643     move    #EncoderFileWriteIsrSp,r5       ; pointer to the SP local save
+P:013A 0AF080 rrrrrr  6  691  644     jmp     SaveSystemStack                 ; save the hardware stack
+                              645 _EncoderWriteSaveStackReturn
+P:013C 4CF000 rrrrrr  3  694  647     move   y:Fg_bPartialRefreshInProgress,x0
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\encoder\imaadpcm\enc_adpcm_nonoverlay.asm: line 647 : inserted "extern Fg_bPartialRefreshInProgress"
+P:013E 0AC400 rrrrrr  6  700  648     jclr  #0,x0,_Continue_EraseOneSystemDriveBlock
+P:0140 0AF080 rrrrrr  6  706  649     jmp   _return
+                              650 _Continue_EraseOneSystemDriveBlock
+                              651     
+                              656     
+                              660   
+P:0142 0A7060 rrrrrr  6  712  661     bset    #0,y:EncodingFileWriteFlag    
+                              663 ; tt - 1/6/04 adding multithread voice record writes.    
+P:0144 68F000 rrrrrr  3  715  664     move    y:WriteSinkPointer,r0    ; Load next Sink Buffer to write.
+P:0146 000000         2  717  665     nop
+P:0147 68E000         2  719  666     move    y:(r0),r0
+                              667 ;tt end of multithread write changes section.
+P:0148 5EF000 rrrrrr  3  722  668     move    y:Fg_Wave_wBlockAlign,A
+P:014A 0BF080 rrrrrr  6  728  669     jsr     SysAllLinear                ; for now we're gonna go linear
+P:014C 5AF000 rrrrrr  3  731  670     move    y:AdpcmEncFileHandle,a2
+P:014E 0AC877         4  735  671     bset    #23,a0                      ; x memory
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              675 ;        debug
+P:014F 0BF080 rrrrrr  6  741  676     jsr     FileWrite
+P:0151 0AF0A8 rrrrrr  6  747  677     jcs     _failed_the_write
+                              678     ; keep track of #bytes written
+P:0153 4DF01B rrrrrr  3  750  679     clr     b               y:EncBytesWrittenHigh,x1
+P:0155 218900         2  752  680     move    a1,b0
+P:0156 4CF000 rrrrrr  3  755  681     move    y:EncBytesWrittenLow,x0
+P:0158 200028         2  757  682     add     x,b
+P:0159 5D7000 rrrrrr  3  760  683     move    b1,y:EncBytesWrittenHigh
+P:015B 597000 rrrrrr  3  763  684     move    b0,y:EncBytesWrittenLow    
+                              685   
+                              695 ; tt 1/6/04 - changes to multithreaded buffer implementation. 
+                              696     
+P:015D 68F000 rrrrrr  3  766  697     move    y:WriteSinkPointer,r0
+                              698     ; if (++WriteSinkPointer >= &pEncoderSinkBufPtr[NUM_ADPCM_BUFS])
+P:015F 20001B         2  768  699     clr     b
+P:0160 200013         2  770  700     clr     a
+P:0161 205800         2  772  701     move    (r0)+
+P:0162 220F00         2  774  702     move    r0,b
+P:0163 56F400 rrrrrr  3  777  703     move    #pEncoderSinkBufPtr0+NUM_ADPCM_BUFS,a
+P:0165 20000D         2  779  704     cmp     a,b
+P:0166 0AF0A9 rrrrrr  6  785  705     jlt     _ContinueWithWriteToDisk_Process
+                              706     ;{
+                              707     ;   ProcessSinkPointer = &pEncoderSinkBufPtr[0];
+P:0168 60F400 rrrrrr  3  788  708         move    #pEncoderSinkBufPtr0,r0
+                              709     ;}
+                              710 _ContinueWithWriteToDisk_Process    
+P:016A 687000 rrrrrr  3  791  711     move    r0,y:WriteSinkPointer
+P:016C 0A7040 rrrrrr  6  797  712     bclr    #0,y:EncodingFileWriteFlag
+                              713      
+                              714 _return  
+                              715 _RestoreSystem
+                              716     ;Raise Int level to 1 so we can update the BUSY flag without being
+                              717     ;interrupted by the Decoder Isr
+P:016E 0AF968         4  801  719     bset    #8,sr                       ; Raise interrupt level to 1
+P:016F 000000         2  803  720     nop                                 ; Those nops make sure that 
+P:0170 000000         2  805  721     nop                                 ; any interrupt pending is processed
+P:0171 000000         2  807  722     nop                                 ; DO NOT REMOVED, UNLESS YOU HAVE 
+                              723                                         ; A FREE DAY TO DEBUG CODE                                
+                                                      
+                              724                               
+                              725     ; Need to decrement counter.                                 
+                              726     ;EncoderWritesWaiting--;
+P:0172 5FF000 rrrrrr  3  810  727     move    y:EncoderWritesWaiting,b
+P:0174 47F400 000001  3  813  728     move    #>1,y1
+P:0176 20007C         2  815  729     sub     y1,b
+P:0177 5D7000 rrrrrr  3  818  730     move    b1,y:EncoderWritesWaiting
+                              731     
+                              735                                                     
+                              736     ; tt 1/6/04 - Clear busy flag.
+P:0179 0A7040 rrrrrr  6  824  737     bclr    #ENCODER_WRITE_BUSY_BIT,y:gEncoderWriteStatus
+                              738         
+                              739     ; restore stack
+P:017B 65F400 rrrrrr  3  827  740     move    #EncoderFileWriteIsrSp,r5         ; pointer to the SP local save
+P:017D 66F400 rrrrrr  3  830  741     move    #_EncoderWriteStackRestored,r6   ; setup the return address
+P:017F 0AF080 rrrrrr  6  836  742     jmp     RestoreSystemStack              ; restore the hardware stack
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              743 _EncoderWriteStackRestored
+P:0181 66F400 rrrrrr  3  839  745     move    #_EncoderWriteRestoreRegReturn,r6 ; setup the return address
+P:0183 0AF080 rrrrrr  6  845  746     jmp     RestoreRegs                     ; restore registers
+                              747 _EncoderWriteRestoreRegReturn
+P:0185 6EF000 rrrrrr  3  848  748     move    y:EncoderWriteSaveR6,r6          ; restore minimal reg set
+P:0187 05F07C rrrrrr  4  852  749     movec   y:PCMEncSavePC,ssh              ;Force return 
+P:0189 05F07D rrrrrr  4  856  750     movec   y:PCMEncSaveSR,ssl
+P:018B 000000         2  858  751     nop
+P:018C 000004         4  862  752     rti                            ;This needs to be a RTI to restore the SR
+                              754 ; Old Code  
+                              755 ;    nop
+                              756 ;    rts    
+                              758 ; todo - we don't check EncWriteFailCount right now.
+                              759 _failed_the_write
+P:018D 200013         2  864  760     clr     a
+P:018E 58F000 rrrrrr  3  867  761     move    y:EncWriteFailCount,a0    
+P:0190 000008         2  869  762     inc     a
+P:0191 587000 rrrrrr  3  872  763     move    a0,y:EncWriteFailCount
+P:0193 0A7060 rrrrrr  6  878  764     bset    #0,y:EncodingFileWriteFlag
+                              765     error
+P:0195 000200         4  882  765     debug
+P:0196 0AF080 rrrrrr  6  888  766     jmp     _return  
+                              768 ;///////////////////////////////////////////////////////////////////////////////
+                              769 ;   EncCheckDiskSpace          
+                              770 ;       Exit
+                              771 ;           a1 = num bytes high
+                              772 ;           a0 = num bytes low
+                              773 ;           b1 = number of free clusters
+                              774 ;           b0 = number of bytes per cluster
+                              775 ;           Carry clear => enough space to record
+                              776 ;           Carry set => not enough space to record
+                              777 ;///////////////////////////////////////////////////////////////////////////////
+                              778 EncCheckDiskSpace
+                              779     ; TODO - create a "current disk" variable instead of using the default disk 0
+P:0198 5AF000 rrrrrr  3  891  780     move    y:Fg_wEncCurrentDeviceNum,a2
+P:019A 0BF080 rrrrrr  6  897  781     jsr     DiskBytesFree               ; get # bytes available on disk
+P:019C 0AF0A8 rrrrrr  6  903  782     jcs     _uh_oh
+                              783 ;           a1 = num bytes high
+                              784 ;           a0 = num bytes low
+                              785 ;           b1 = number of free clusters
+                              786 ;           b0 = number of bytes per cluster
+P:019E 212600         2  905  787     move    b0,y0                       ; temp save bytes per cluster
+P:019F 21A71B         2  907  788     clr     b           b1,y1           ; temp save free clusters
+P:01A0 57F400 000008  3  910  789     move    #>ENC_MIN_CLUSTERS,b
+P:01A2 20007D         2  912  790     cmp     y1,b
+P:01A3 20C900         2  914  791     move    y0,b0                       ; restore bytes per cluster
+P:01A4 20ED00         2  916  792     move    y1,b1                       ; restore free clusters
+P:01A5 0AF0A1 rrrrrr  6  922  793     jge     _not_enough_disk_space
+                              794     ; we have enough clusters so exit
+P:01A7 0AF940         4  926  795     bclr    #HW_SR_C_BITPOS,sr
+P:01A8 00000C         4  930  796     rts
+                              798 _not_enough_disk_space
+P:01A9 0AF960         4  934  799     bset    #HW_SR_C_BITPOS,sr
+P:01AA 00000C         4  938  800     rts
+                              802 _uh_oh
+                              803     error
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01AB 000200         4  942  803     debug
+                              805 ;///////////////////////////////////////////////////////////////////////////////
+                              806 ;   CalcMaxRecordTime          
+                              807 ;       Entry
+                              808 ;           b1 = number of free clusters
+                              809 ;           b0 = number of bytes per cluster
+                              810 ;       Exit
+                              811 ;     y0 = hours
+                              812 ;     x1 = minutes
+                              813 ;     x0 = seconds
+                              814 ;
+                              815 ; seconds per cluster = t
+                              816 ; t = [(bytespercx/nblockalign)*wsamplesperblock]/nsamplespersec
+                              817 ; A = wsamplesperblock/nblockalign/nsamplespersec
+                              818 ; t = bytespercx * A
+                              819 ; so max seconds tm = freecx * t
+                              820 ;///////////////////////////////////////////////////////////////////////////////
+                              821 CalcMaxRecordTime
+P:01AC 4CF000 rrrrrr  3  945  822     move    y:InvSampleRate,x0
+P:01AE 212500         2  947  823     move    b0,x1                           ; get bytespercluster ready
+P:01AF 21A4A0         2  949  824     mpy     x0,x1,a               b1,x0     ; a = (2^32)*(bytespercx * A)
+P:01B0 060580 rrrrrr  6  955  825     do      #5,_end_scale_adjust
+P:01B2 200032         2  957  826         asl     a
+P:01B3 200032         2  959  827         asl     a
+                         (4)  828 _end_scale_adjust
+P:01B4 218500         2  961  829     move    a1,x1                           ; x1 = bytespercx * A = t
+P:01B5 2000A0         2  963  830     mpy     x0,x1,a                         ; a = (some hacked scale factor)*(freecx * t)
+P:01B6 060280 rrrrrr  6  969  831     do      #2,_end_scale_adjust2
+P:01B8 200032         2  971  832         asl     a
+P:01B9 200032         2  973  833         asl     a
+                         (4)  834 _end_scale_adjust2
+P:01BA 00000C         4  977  835     rts
+                              836     
+                              837 ;///////////////////////////////////////////////////////////////////////////////
+                              838 ; CalcHrsMinSec
+                              839 ;   Entry:
+                              840 ;     a0 = seconds
+                              841 ;   Exit
+                              842 ;     y0 = hours
+                              843 ;     x1 = minutes
+                              844 ;     x0 = seconds
+                              845 ;///////////////////////////////////////////////////////////////////////////////
+                              846 CalcHrsMinSec
+                              847     ; now calculate total minutes
+P:01BB 21071B         2  979  848     clr     b               a0,y1   ; y1 = total seconds
+P:01BC 44F400 022222  3  982  849     move    #>$022222,x0            ; 1/60 * 2^23
+P:01BE 2000C0         2  984  850     mpy     x0,y1,a
+P:01BF 218600         2  986  851     move    a1,y0                   ; y0 = total minutes
+                              852     ; and total hours
+P:01C0 2000D0         2  988  853     mpy     x0,y0,a                 ; a1 = hours
+P:01C1 218500         2  990  854     move    a1,x1                   ; x1 = hours
+P:01C2 44F400 00003C  3  993  855     move    #>60,x0
+P:01C4 2000A8         2  995  856     mpy     x0,x1,b
+P:01C5 20002A         2  997  857     asr     b
+P:01C6 212413         2  999  858     clr     a               b0,x0
+P:01C7 20CC00         2 1001  859     move    y0,a1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01C8 200044         2 1003  860     sub     x0,a                    ; a1 = minutes mod hours
+                              861     push    a1                      ; save it
+P:01C9 5C5F00         2 1005  861     move    a1,y:(r7)+
+P:01CA 44F41B 00003C  3 1008  862     clr     b               #>60,x0
+P:01CC 20EFD0         2 1010  863     mpy     y0,x0,a         y1,b
+P:01CD 200022         2 1012  864     asr     a
+P:01CE 210400         2 1014  865     move    a0,x0
+P:01CF 20004C         2 1016  866     sub     x0,b                    ; b1 = seconds mod minutes
+P:01D0 21A400         2 1018  867     move    b1,x0                   ; x0 = seconds
+P:01D1 20A600         2 1020  868     move    x1,y0                   ; hours
+                              869     pop     x1                      ; minutes
+P:01D2 4DFF00         4 1024  869     move    y:-(r7),x1
+P:01D3 56F400 00003C  3 1027  870     move    #>60,a
+P:01D5 200045         2 1029  871     cmp     x0,a
+P:01D6 0AF0A2 rrrrrr  6 1035  872     jne     _no_second_wrap
+P:01D8 4C8000r        2 1037  873     move    y:<Const_000000,x0      ; wrap
+P:01D9 20001B         2 1039  874     clr     b                       ; increment by 1 minute
+P:01DA 20A900         2 1041  875     move    x1,b0
+P:01DB 000009         2 1043  876     inc     b
+P:01DC 212500         2 1045  877     move    b0,x1
+                              878 _no_second_wrap
+P:01DD 200065         2 1047  879     cmp     x1,a
+P:01DE 0AF0A2 rrrrrr  6 1053  880     jne     _no_minute_wrap
+P:01E0 4D8000r        2 1055  881     move    y:<Const_000000,x1      
+P:01E1 20001B         2 1057  882     clr     b                       ; increment by 1 hour
+P:01E2 20C900         2 1059  883     move    y0,b0
+P:01E3 000009         2 1061  884     inc     b
+P:01E4 212600         2 1063  885     move    b0,y0
+                              886 _no_minute_wrap
+P:01E5 00000C         4 1067  887     rts
+                              891     
+                              892     endsec

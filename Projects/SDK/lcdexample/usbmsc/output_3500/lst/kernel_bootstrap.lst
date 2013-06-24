@@ -1,0 +1,451 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\kernel\kernel_bootstrap.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;//////////////////////////////////////////////////////////////////////////////
+                                2 ;/                                               
+                                3 ;/ Filename: kernel_bootstrap.asm
+                                4 ;/                                               
+                                5 ;/ Description:   
+                                6 ;/
+                                7 ;/ Copyright (c) SigmaTel, Inc. Unpublished
+                                8 ;/
+                                9 ;/ SigmaTel, Inc.
+                               10 ;/ Proprietary  Confidential
+                               11 ;/
+                               12 ;/ This source code and the algorithms implemented therein constitute
+                               13 ;/ confidential information and may comprise trade secrets of SigmaTel, Inc.
+                               14 ;/ or its associates, and any use thereof is subject to the terms and
+                               15 ;/ conditions of the Confidential Disclosure Agreement pursuant to which this
+                               16 ;/ source code was originally received.
+                               17 ;/                                               
+                               18 ;//////////////////////////////////////////////////////////////////////////////
+                               20     include 'const.xref'    
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 const.EXTERN 
+                                5 ;******************************************************************************
+                                7    DEFINE   const_xref  '1'
+                               42     ; Parthus compatability
+                               21         include 'regsgpio.inc'
+                                2 __REGS_GPIO_INC equ 1
+                                4 ;C Insert
+                                5 ;#include "types.h"
+                                6 ;endc
+                                8 ;///////////////////////////////////////////////////////////////////////////////
+                                9 ;  Interrupt Collector Registers
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               12 HW_GPIO_BASEADDR                        equ     $F400
+                               14 HW_GPB0_BASEADDR                        equ     HW_GPIO_BASEADDR
+                               15 HW_GPB1_BASEADDR                        equ     HW_GPIO_BASEADDR+$10
+                               16 HW_GPB2_BASEADDR                        equ     HW_GPIO_BASEADDR+$20
+                               17 HW_GPB3_BASEADDR                        equ     HW_GPIO_BASEADDR+$30
+                               19 HW_GPB0_BLOCKNUM                        equ     0
+                               20 HW_GPB1_BLOCKNUM                        equ     1
+                               21 HW_GPB2_BLOCKNUM                        equ     2
+                               22 HW_GPB3_BLOCKNUM                        equ     3
+                               24 HW_GPB_GPENR                            equ     0
+                               25 HW_GPB_GPDOR                            equ     1
+                               26 HW_GPB_GPDIR                            equ     2
+                               27 HW_GPB_GPDOER                           equ     3
+                               28 HW_GPB_GPIPENR                          equ     4
+                               29 HW_GPB_GPIENR                           equ     5
+                               30 HW_GPB_GPILVLR                          equ     6
+                               31 HW_GPB_GPIPOLR                          equ     7
+                               32 HW_GPB_GPISTATR                         equ     8
+                               33 HW_GPB_GPPWR                            equ     9
+                               34 HW_GPB_GP8MA                            equ     10
+                               36 ;ASM Only
+                               37 HW_GP0ENR                               equ     HW_GPB0_BASEADDR+HW_GPB_GPENR
+                               38 HW_GP0DOR                               equ     HW_GPB0_BASEADDR+HW_GPB_GPDOR
+                               39 HW_GP0DIR                               equ     HW_GPB0_BASEADDR+HW_GPB_GPDIR
+                               40 HW_GP0DOER                              equ     HW_GPB0_BASEADDR+HW_GPB_GPDOER
+                               41 HW_GP0IPENR                             equ     HW_GPB0_BASEADDR+HW_GPB_GPIPENR
+                               42 HW_GP0IENR                              equ     HW_GPB0_BASEADDR+HW_GPB_GPIENR
+                               43 HW_GP0ILVLR                             equ     HW_GPB0_BASEADDR+HW_GPB_GPILVLR
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               44 HW_GP0IPOLR                             equ     HW_GPB0_BASEADDR+HW_GPB_GPIPOLR
+                               45 HW_GP0ISTATR                            equ     HW_GPB0_BASEADDR+HW_GPB_GPISTATR
+                               46 HW_GP0PWR                               equ     HW_GPB0_BASEADDR+HW_GPB_GPPWR
+                               47 HW_GP08MA                               equ     HW_GPB0_BASEADDR+HW_GPB_GP8MA
+                               49 HW_GP1ENR                               equ     HW_GPB1_BASEADDR+HW_GPB_GPENR
+                               50 HW_GP1DOR                               equ     HW_GPB1_BASEADDR+HW_GPB_GPDOR
+                               51 HW_GP1DIR                               equ     HW_GPB1_BASEADDR+HW_GPB_GPDIR
+                               52 HW_GP1DOER                              equ     HW_GPB1_BASEADDR+HW_GPB_GPDOER
+                               53 HW_GP1IPENR                             equ     HW_GPB1_BASEADDR+HW_GPB_GPIPENR
+                               54 HW_GP1IENR                              equ     HW_GPB1_BASEADDR+HW_GPB_GPIENR
+                               55 HW_GP1ILVLR                             equ     HW_GPB1_BASEADDR+HW_GPB_GPILVLR
+                               56 HW_GP1IPOLR                             equ     HW_GPB1_BASEADDR+HW_GPB_GPIPOLR
+                               57 HW_GP1ISTATR                            equ     HW_GPB1_BASEADDR+HW_GPB_GPISTATR
+                               58 HW_GP1PWR                               equ     HW_GPB1_BASEADDR+HW_GPB_GPPWR
+                               59 HW_GP18MA                               equ     HW_GPB1_BASEADDR+HW_GPB_GP8MA
+                               61 HW_GP2ENR                               equ     HW_GPB2_BASEADDR+HW_GPB_GPENR
+                               62 HW_GP2DOR                               equ     HW_GPB2_BASEADDR+HW_GPB_GPDOR
+                               63 HW_GP2DIR                               equ     HW_GPB2_BASEADDR+HW_GPB_GPDIR
+                               64 HW_GP2DOER                              equ     HW_GPB2_BASEADDR+HW_GPB_GPDOER
+                               65 HW_GP2IPENR                             equ     HW_GPB2_BASEADDR+HW_GPB_GPIPENR
+                               66 HW_GP2IENR                              equ     HW_GPB2_BASEADDR+HW_GPB_GPIENR
+                               67 HW_GP2ILVLR                             equ     HW_GPB2_BASEADDR+HW_GPB_GPILVLR
+                               68 HW_GP2IPOLR                             equ     HW_GPB2_BASEADDR+HW_GPB_GPIPOLR
+                               69 HW_GP2ISTATR                            equ     HW_GPB2_BASEADDR+HW_GPB_GPISTATR
+                               70 HW_GP2PWR                               equ     HW_GPB2_BASEADDR+HW_GPB_GPPWR
+                               71 HW_GP28MA                               equ     HW_GPB2_BASEADDR+HW_GPB_GP8MA
+                               73 HW_GP3ENR                               equ     HW_GPB3_BASEADDR+HW_GPB_GPENR
+                               74 HW_GP3DOR                               equ     HW_GPB3_BASEADDR+HW_GPB_GPDOR
+                               75 HW_GP3DIR                               equ     HW_GPB3_BASEADDR+HW_GPB_GPDIR
+                               76 HW_GP3DOER                              equ     HW_GPB3_BASEADDR+HW_GPB_GPDOER
+                               77 HW_GP3IPENR                             equ     HW_GPB3_BASEADDR+HW_GPB_GPIPENR
+                               78 HW_GP3IENR                              equ     HW_GPB3_BASEADDR+HW_GPB_GPIENR
+                               79 HW_GP3ILVLR                             equ     HW_GPB3_BASEADDR+HW_GPB_GPILVLR
+                               80 HW_GP3IPOLR                             equ     HW_GPB3_BASEADDR+HW_GPB_GPIPOLR
+                               81 HW_GP3ISTATR                            equ     HW_GPB3_BASEADDR+HW_GPB_GPISTATR
+                               82 HW_GP3PWR                               equ     HW_GPB3_BASEADDR+HW_GPB_GPPWR
+                               83 HW_GP38MA                               equ     HW_GPB3_BASEADDR+HW_GPB_GP8MA
+                               84 ;endasm
+                               87 ;///////////////////////////////////////////////////////////////////////////////
+                               88 ;  GPIO Register Bit Positions
+                               89 ;C Insert
+                               90 ;typedef union               /* GPIO Pin Register Bank 0 */
+                               91 ;{
+                               92 ;    struct Bitfield B;      // Bitfield is generic structure B0 - B23 in types.h
+                               93 ;    unsigned int I;
+                               94 ;    unsigned int U;
+                               95 ;} gpr_type;
+                               96 ;endc
+                               98 HW_GP_B0_BITPOS                         equ     0
+                               99 HW_GP_B1_BITPOS                         equ     1
+                              100 HW_GP_B2_BITPOS                         equ     2
+                              101 HW_GP_B3_BITPOS                         equ     3
+                              102 HW_GP_B4_BITPOS                         equ     4
+                              103 HW_GP_B5_BITPOS                         equ     5
+                              104 HW_GP_B6_BITPOS                         equ     6
+                              105 HW_GP_B7_BITPOS                         equ     7
+                              106 HW_GP_B8_BITPOS                         equ     8
+                              107 HW_GP_B9_BITPOS                         equ     9
+                              108 HW_GP_B10_BITPOS                        equ     10
+                              109 HW_GP_B11_BITPOS                        equ     11
+                              110 HW_GP_B12_BITPOS                        equ     12
+                              111 HW_GP_B13_BITPOS                        equ     13
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              112 HW_GP_B14_BITPOS                        equ     14
+                              113 HW_GP_B15_BITPOS                        equ     15
+                              114 HW_GP_B16_BITPOS                        equ     16
+                              115 HW_GP_B17_BITPOS                        equ     17
+                              116 HW_GP_B18_BITPOS                        equ     18
+                              117 HW_GP_B19_BITPOS                        equ     19
+                              118 HW_GP_B20_BITPOS                        equ     20
+                              119 HW_GP_B21_BITPOS                        equ     21
+                              120 HW_GP_B22_BITPOS                        equ     22
+                              121 HW_GP_B23_BITPOS                        equ     23
+                              123 HW_GP_B0_SETMASK                        equ     (1<<HW_GP_B0_BITPOS)
+                              124 HW_GP_B1_SETMASK                        equ     (1<<HW_GP_B1_BITPOS)
+                              125 HW_GP_B2_SETMASK                        equ     (1<<HW_GP_B2_BITPOS)
+                              126 HW_GP_B3_SETMASK                        equ     (1<<HW_GP_B3_BITPOS)
+                              127 HW_GP_B4_SETMASK                        equ     (1<<HW_GP_B4_BITPOS)
+                              128 HW_GP_B5_SETMASK                        equ     (1<<HW_GP_B5_BITPOS)
+                              129 HW_GP_B6_SETMASK                        equ     (1<<HW_GP_B6_BITPOS)
+                              130 HW_GP_B7_SETMASK                        equ     (1<<HW_GP_B7_BITPOS)
+                              131 HW_GP_B8_SETMASK                        equ     (1<<HW_GP_B8_BITPOS)
+                              132 HW_GP_B9_SETMASK                        equ     (1<<HW_GP_B9_BITPOS)
+                              133 HW_GP_B10_SETMASK                       equ     (1<<HW_GP_B10_BITPOS)
+                              134 HW_GP_B11_SETMASK                       equ     (1<<HW_GP_B11_BITPOS)
+                              135 HW_GP_B12_SETMASK                       equ     (1<<HW_GP_B12_BITPOS)
+                              136 HW_GP_B13_SETMASK                       equ     (1<<HW_GP_B13_BITPOS)
+                              137 HW_GP_B14_SETMASK                       equ     (1<<HW_GP_B14_BITPOS)
+                              138 HW_GP_B15_SETMASK                       equ     (1<<HW_GP_B15_BITPOS)
+                              139 HW_GP_B16_SETMASK                       equ     (1<<HW_GP_B16_BITPOS)
+                              140 HW_GP_B17_SETMASK                       equ     (1<<HW_GP_B17_BITPOS)
+                              141 HW_GP_B18_SETMASK                       equ     (1<<HW_GP_B18_BITPOS)
+                              142 HW_GP_B19_SETMASK                       equ     (1<<HW_GP_B19_BITPOS)
+                              143 HW_GP_B20_SETMASK                       equ     (1<<HW_GP_B20_BITPOS)
+                              144 HW_GP_B21_SETMASK                       equ     (1<<HW_GP_B21_BITPOS)
+                              145 HW_GP_B22_SETMASK                       equ     (1<<HW_GP_B22_BITPOS)
+                              146 HW_GP_B23_SETMASK                       equ     (1<<HW_GP_B23_BITPOS)
+                              148 HW_GP_B0_CLRMASK                        equ     (~HW_GP_B0_SETMASK)
+                              149 HW_GP_B1_CLRMASK                        equ     (~HW_GP_B1_SETMASK)
+                              150 HW_GP_B2_CLRMASK                        equ     (~HW_GP_B2_SETMASK)
+                              151 HW_GP_B3_CLRMASK                        equ     (~HW_GP_B3_SETMASK)
+                              152 HW_GP_B4_CLRMASK                        equ     (~HW_GP_B4_SETMASK)
+                              153 HW_GP_B5_CLRMASK                        equ     (~HW_GP_B5_SETMASK)
+                              154 HW_GP_B6_CLRMASK                        equ     (~HW_GP_B6_SETMASK)
+                              155 HW_GP_B7_CLRMASK                        equ     (~HW_GP_B7_SETMASK)
+                              156 HW_GP_B8_CLRMASK                        equ     (~HW_GP_B8_SETMASK)
+                              157 HW_GP_B9_CLRMASK                        equ     (~HW_GP_B9_SETMASK)
+                              158 HW_GP_B10_CLRMASK                       equ     (~HW_GP_B10_SETMASK)
+                              159 HW_GP_B11_CLRMASK                       equ     (~HW_GP_B11_SETMASK)
+                              160 HW_GP_B12_CLRMASK                       equ     (~HW_GP_B12_SETMASK)
+                              161 HW_GP_B13_CLRMASK                       equ     (~HW_GP_B13_SETMASK)
+                              162 HW_GP_B14_CLRMASK                       equ     (~HW_GP_B14_SETMASK)
+                              163 HW_GP_B15_CLRMASK                       equ     (~HW_GP_B15_SETMASK)
+                              164 HW_GP_B16_CLRMASK                       equ     (~HW_GP_B16_SETMASK)
+                              165 HW_GP_B17_CLRMASK                       equ     (~HW_GP_B17_SETMASK)
+                              166 HW_GP_B18_CLRMASK                       equ     (~HW_GP_B18_SETMASK)
+                              167 HW_GP_B19_CLRMASK                       equ     (~HW_GP_B19_SETMASK)
+                              168 HW_GP_B20_CLRMASK                       equ     (~HW_GP_B20_SETMASK)
+                              169 HW_GP_B21_CLRMASK                       equ     (~HW_GP_B21_SETMASK)
+                              170 HW_GP_B22_CLRMASK                       equ     (~HW_GP_B22_SETMASK)
+                              171 HW_GP_B23_CLRMASK                       equ     (~HW_GP_B23_SETMASK)
+                              173 ;///////////////////////////////////////////////////////////////////////////////
+                              174 ;  GPIO 8mA Register Bit Positions
+                              175 HW_GP8MA_B7_B0_BITPOS                   equ     0
+                              176 HW_GP8MA_B15_B8_BITPOS                  equ     1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              177 HW_GP8MA_B23_B16_BITPOS                 equ     2
+                              178 HW_GP8MA_CLK_GATE_BITPOS                equ     23
+                              181 ;///////////////////////////////////////////////////////////////////////////////
+                              182 ;  Logical GPIO numbers
+                              183 HW_GPIO_000                             equ     0
+                              184 HW_GPIO_001                             equ     1
+                              185 HW_GPIO_002                             equ     2
+                              186 HW_GPIO_003                             equ     3
+                              187 HW_GPIO_004                             equ     4
+                              188 HW_GPIO_005                             equ     5
+                              189 HW_GPIO_006                             equ     6
+                              190 HW_GPIO_007                             equ     7
+                              191 HW_GPIO_008                             equ     8
+                              192 HW_GPIO_009                             equ     9
+                              193 HW_GPIO_010                             equ     10
+                              194 HW_GPIO_011                             equ     11
+                              195 HW_GPIO_012                             equ     12
+                              196 HW_GPIO_013                             equ     13
+                              197 HW_GPIO_014                             equ     14
+                              198 HW_GPIO_015                             equ     15
+                              199 HW_GPIO_016                             equ     16
+                              200 HW_GPIO_017                             equ     17
+                              201 HW_GPIO_018                             equ     18
+                              202 HW_GPIO_019                             equ     19
+                              203 HW_GPIO_020                             equ     20
+                              204 HW_GPIO_021                             equ     21
+                              205 HW_GPIO_022                             equ     22
+                              206 HW_GPIO_023                             equ     23
+                              207 HW_GPIO_024                             equ     24
+                              208 HW_GPIO_025                             equ     25
+                              209 HW_GPIO_026                             equ     26
+                              210 HW_GPIO_027                             equ     27
+                              211 HW_GPIO_028                             equ     28
+                              212 HW_GPIO_029                             equ     29
+                              213 HW_GPIO_030                             equ     30
+                              214 HW_GPIO_031                             equ     31
+                              215 HW_GPIO_032                             equ     32
+                              216 HW_GPIO_033                             equ     33
+                              217 HW_GPIO_034                             equ     34
+                              218 HW_GPIO_035                             equ     35
+                              219 HW_GPIO_036                             equ     36
+                              220 HW_GPIO_037                             equ     37
+                              221 HW_GPIO_038                             equ     38
+                              222 HW_GPIO_039                             equ     39
+                              223 HW_GPIO_040                             equ     40
+                              224 HW_GPIO_041                             equ     41
+                              225 HW_GPIO_042                             equ     42
+                              226 HW_GPIO_043                             equ     43
+                              227 HW_GPIO_044                             equ     44
+                              228 HW_GPIO_045                             equ     45
+                              229 HW_GPIO_046                             equ     46
+                              230 HW_GPIO_047                             equ     47
+                              231 HW_GPIO_048                             equ     48
+                              232 HW_GPIO_049                             equ     49
+                              233 HW_GPIO_050                             equ     50
+                              234 HW_GPIO_051                             equ     51
+                              235 HW_GPIO_052                             equ     52
+                              236 HW_GPIO_053                             equ     53
+                              237 HW_GPIO_054                             equ     54
+                              238 HW_GPIO_055                             equ     55
+                              239 HW_GPIO_056                             equ     56
+                              240 HW_GPIO_057                             equ     57
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              241 HW_GPIO_058                             equ     58
+                              242 HW_GPIO_059                             equ     59
+                              243 HW_GPIO_060                             equ     60
+                              244 HW_GPIO_061                             equ     61
+                              245 HW_GPIO_062                             equ     62
+                              246 HW_GPIO_063                             equ     63
+                              247 HW_GPIO_064                             equ     64
+                              248 HW_GPIO_065                             equ     65
+                              249 HW_GPIO_066                             equ     66
+                              250 HW_GPIO_067                             equ     67
+                              251 HW_GPIO_068                             equ     68
+                              252 HW_GPIO_069                             equ     69
+                              253 HW_GPIO_070                             equ     70
+                              254 HW_GPIO_071                             equ     71
+                              255 HW_GPIO_072                             equ     72
+                              256 HW_GPIO_073                             equ     73
+                              257 HW_GPIO_074                             equ     74
+                              258 HW_GPIO_075                             equ     75
+                              259 HW_GPIO_076                             equ     76
+                              260 HW_GPIO_077                             equ     77
+                              261 HW_GPIO_078                             equ     78
+                              262 HW_GPIO_079                             equ     79
+                              263 HW_GPIO_080                             equ     80
+                              264 HW_GPIO_081                             equ     81
+                              265 HW_GPIO_082                             equ     82
+                              266 HW_GPIO_083                             equ     83
+                              267 HW_GPIO_084                             equ     84
+                              268 HW_GPIO_085                             equ     85
+                              269 HW_GPIO_086                             equ     86
+                              270 HW_GPIO_087                             equ     87
+                              271 HW_GPIO_088                             equ     88
+                              272 HW_GPIO_089                             equ     89
+                              273 HW_GPIO_090                             equ     90
+                              274 HW_GPIO_091                             equ     91
+                              275 HW_GPIO_092                             equ     92
+                              276 HW_GPIO_093                             equ     93
+                              277 HW_GPIO_094                             equ     94
+                              278 HW_GPIO_095                             equ     95
+                              279 HW_GPIO_LAST                            equ     HW_GPIO_095
+                              281 ;C Insert
+                              282 ;#define HW_GP0ENR      (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPENR))  /* GPIO 0 Enab
+                                  le Register   */
+                              283 ;#define HW_GP0DOR      (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPDOR)) /* GPIO 0 Data 
+                                  Out Register */
+                              284 ;#define HW_GP0DIR      (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPDIR)) /* GPIO 0 Dait 
+                                  In Register  */
+                              285 ;#define HW_GP0DOER     (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPDOER)) /* GPIO 0 Dait
+                                   Out Enable Register  */
+                              286 ;#define HW_GP0IPENR    (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPIPENR)) /* GPIO 0 Int
+                                  errupt Pin Enable Register */
+                              287 ;#define HW_GP0IENR     (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPIENR)) /* GPIO 0 Inte
+                                  rrupt Enable Register */
+                              288 ;#define HW_GP0ILVLR    (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPILVLR)) /* GPIO 0 Int
+                                  errupt Level Register  */
+                              289 ;#define HW_GP0IPOLR    (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPIPOLR)) /* GPIO 0 Int
+                                  errupt Polarity Register   */
+                              290 ;#define HW_GP0ISTATR   (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPISTATR)) /* GPIO 0 In
+                                  terrupt Status Register */
+                              291 ;#define HW_GP0PWR      (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GPPWR)) /* GPIO 0 Power
+                                   Register */
+                              292 ;#define HW_GP08MA      (*(volatile gpr_type _X*) (HW_GPB0_BASEADDR+HW_GPB_GP8MA)) 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              294 ;#define HW_GP1ENR      (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPENR))     /* GPIO 1 E
+                                  nable Register   */
+                              295 ;#define HW_GP1DOR      (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPDOR)) /* GPIO 1 Data 
+                                  Out Register */
+                              296 ;#define HW_GP1DIR      (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPDIR)) /* GPIO 1 Dait 
+                                  In Register  */
+                              297 ;#define HW_GP1DOER     (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPDOER)) /* GPIO 1 Dait
+                                   Out Enable Register  */
+                              298 ;#define HW_GP1IPENR    (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPIPENR)) /* GPIO 1 Int
+                                  errupt Pin Enable Register */
+                              299 ;#define HW_GP1IENR     (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPIENR)) /* GPIO 1 Inte
+                                  rrupt Enable Register */
+                              300 ;#define HW_GP1ILVLR    (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPILVLR)) /* GPIO 1 Int
+                                  errupt Level Register  */
+                              301 ;#define HW_GP1IPOLR    (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPIPOLR)) /* GPIO 1 Int
+                                  errupt Polarity Register   */
+                              302 ;#define HW_GP1ISTATR   (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPISTATR)) /* GPIO 1 In
+                                  terrupt Status Register */
+                              303 ;#define HW_GP1PWR      (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GPPWR)) /* GPIO 0 Power
+                                   Register */
+                              304 ;#define HW_GP18MA      (*(volatile gpr_type _X*) (HW_GPB1_BASEADDR+HW_GPB_GP8MA)) 
+                              306 ;#define HW_GP2ENR      (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPENR))     /* GPIO 2 E
+                                  nable Register   */
+                              307 ;#define HW_GP2DOR      (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPDOR)) /* GPIO 2 Data 
+                                  Out Register */
+                              308 ;#define HW_GP2DIR      (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPDIR)) /* GPIO 2 Dait 
+                                  In Register  */
+                              309 ;#define HW_GP2DOER     (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPDOER)) /* GPIO 2 Dait
+                                   Out Enable Register  */
+                              310 ;#define HW_GP2IPENR    (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPIPENR)) /* GPIO 2 Int
+                                  errupt Pin Enable Register */
+                              311 ;#define HW_GP2IENR     (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPIENR)) /* GPIO 2 Inte
+                                  rrupt Enable Register */
+                              312 ;#define HW_GP2ILVLR    (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPILVLR)) /* GPIO 2 Int
+                                  errupt Level Register  */
+                              313 ;#define HW_GP2IPOLR    (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPIPOLR)) /* GPIO 2 Int
+                                  errupt Polarity Register   */
+                              314 ;#define HW_GP2ISTATR   (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPISTATR)) /* GPIO 2 In
+                                  terrupt Status Register */
+                              315 ;#define HW_GP2PWR      (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GPPWR)) /* GPIO 0 Power
+                                   Register */
+                              316 ;#define HW_GP28MA      (*(volatile gpr_type _X*) (HW_GPB2_BASEADDR+HW_GPB_GP8MA)) 
+                              318 ;#define HW_GP3ENR      (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPENR))     /* GPIO 2 E
+                                  nable Register   */
+                              319 ;#define HW_GP3DOR      (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPDOR)) /* GPIO 2 Data 
+                                  Out Register */
+                              320 ;#define HW_GP3DIR      (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPDIR)) /* GPIO 2 Dait 
+                                  In Register  */
+                              321 ;#define HW_GP3DOER     (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPDOER)) /* GPIO 2 Dait
+                                   Out Enable Register  */
+                              322 ;#define HW_GP3IPENR    (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPIPENR)) /* GPIO 2 Int
+                                  errupt Pin Enable Register */
+                              323 ;#define HW_GP3IENR     (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPIENR)) /* GPIO 2 Inte
+                                  rrupt Enable Register */
+                              324 ;#define HW_GP3ILVLR    (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPILVLR)) /* GPIO 2 Int
+                                  errupt Level Register  */
+                              325 ;#define HW_GP3IPOLR    (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPIPOLR)) /* GPIO 2 Int
+                                  errupt Polarity Register   */
+                              326 ;#define HW_GP3ISTATR   (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPISTATR)) /* GPIO 2 In
+                                  terrupt Status Register */
+                              327 ;#define HW_GP3PWR      (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GPPWR)) /* GPIO 0 Power
+                                   Register */
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              328 ;#define HW_GP38MA      (*(volatile gpr_type _X*) (HW_GPB3_BASEADDR+HW_GPB_GP8MA)) 
+                              329 ;endc
+P:0000                         30     org p,".ptextkernel_startup":
+                               34 SysAllLinear
+P:0000 058060r        2    2   35     movec   y:<Const_ffffff,m0
+P:0001 058061r        2    4   36     movec   y:<Const_ffffff,m1
+P:0002 058062r        2    6   37     movec   y:<Const_ffffff,m2
+P:0003 058063r        2    8   38     movec   y:<Const_ffffff,m3
+P:0004 058064r        2   10   39     movec   y:<Const_ffffff,m4
+P:0005 058065r        2   12   40     movec   y:<Const_ffffff,m5
+P:0006 058066r        2   14   41     movec   y:<Const_ffffff,m6
+P:0007 058067r        2   16   42     movec   y:<Const_ffffff,m7
+P:0008 00000C         4   20   43     rts
+                               45 ; Note: In mtp and usbmsc, Exec resides in kernel_startup section    
+                               46 ; 
+                               47 Exec
+                               48     ; 3410 and 3500 use this to allow repeated reset and go in boxview. 
+                               49     ; Added to 35xx debug builds Apr 21, 2005.  Player already had this.
+                               55     ;set up kernel stack
+P:0009 67F400 rrrrrr  3   23   56     move    #Fg_KernelStack,r7
+P:000B 05F43B 000000  4   27   57     movec   #>0,sp
+P:000D 05F439 000000  4   31   58     movec   #>0,sr
+P:000F 0BF080 rrrrrr  6   37   59     jsr     SysAllLinear
+                               60     ;do kernel specific setup stuff
+P:0011 0BF080 rrrrrr  6   43   61     jsr     FKernel_Startup
+                               62     ;Do project specific setup stuff
+P:0013 0BF080 rrrrrr  6   49   63     jsr     FProject_Startup
+                               64     
+                               65 ;; GP32 or MMC_DETECT. STMP9220 Let pin float high to reduce USB suspend current
+                               66 ;;      bset #HW_GP_B8_BITPOS,x:HW_GP1ENR
+P:0015 0A7008 00F413  6   55   67         bclr #HW_GP_B8_BITPOS,x:HW_GP1DOER      ;; make sure pin is used as input
+                               68 ;;      bset #HW_GP_B8_BITPOS,x:HW_GP1DOR
+                               69         
+                               70 ;; GP39  STMP9222 and STMP9223 Reduce current to STFM1000 (Turn off VDDD, VDDIO, and I2S_WCLK)
+P:0017 0A702F 00F410  6   61   71         bset #HW_GP_B15_BITPOS,x:HW_GP1ENR
+P:0019 0A702F 00F413  6   67   72         bset #HW_GP_B15_BITPOS,x:HW_GP1DOER
+P:001B 0A702F 00F411  6   73   73         bset #HW_GP_B15_BITPOS,x:HW_GP1DOR
+                               74  
+                               75 ;; GP42 or SCAN_C4. STMP9221 Let pin float high to reduce USB suspend current
+P:001D 0A7012 00F419  6   79   76                 bclr #HW_GP_B18_BITPOS,x:HW_GP1PWR              ;; tri-state the pin
+                               77 ;;      bset #HW_GP_B18_BITPOS,x:HW_GP1ENR
+                               78 ;;      bset #HW_GP_B18_BITPOS,x:HW_GP1DOER  
+                               79 ;;      bset #HW_GP_B18_BITPOS,x:HW_GP1DOR
+                               80         
+P:001F 0BF080 rrrrrr  6   85   81     jsr     FKernel_MainLoop
+P:0021 0AF080 rrrrrr  6   91   82     jmp     *
+                               84 ;--------------------------------------------------------------
+                               85 ; Vector Note: DSP hardware reset vector at P:0 has "jmp Exec"
+P:0000                         86     org p,".ptextResetVector":$0
+P:0000 0AF080 rrrrrr  6    6   87     jmp Exec
+                               88 ;--------------------------------------------------------------
+                               89     

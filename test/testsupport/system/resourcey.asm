@@ -1,0 +1,21 @@
+;///////////////////////////////////////////////////////////////////////////////
+;  Copyright(C) SigmaTel, Inc. 2000-2001
+;
+;  File        : resourcey.asm
+;  Description : Includes resources in Y memory 
+;///////////////////////////////////////////////////////////////////////////////
+        section Resourcey
+
+    global  Resource
+    global  FResource 
+;///////////////////////////////////////////////////////////////////////////////
+; Y
+;///////////////////////////////////////////////////////////////////////////////
+
+    org    y,"Resourcey_Y":
+
+    ; NOTE: The resource.asm file is output from the resource compiler using the -a option
+    ;       For this test code, the resource.asm is generated automatically by the makefile
+    include "resource.asm"
+
+    endsec 

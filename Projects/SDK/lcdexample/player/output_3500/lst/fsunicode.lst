@@ -1,0 +1,1243 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc674b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;    fsunicode.c:
+                               96 ; 1    |/*----------------------------------------------------------------------------
+                               97 ; 2    | SigmaTel Inc
+                               98 ; 3    | $Archive: /Fatfs/FileSystem/Fat32/Utility/FSUnicode.c $                                        
+                               99 ; 4    | $Revision: 10 $                                       
+                              100 ; 5    | $Date: 9/13/03 7:07p $                                           
+                              101 ; 6    | Description: FSUnicode.c
+                              102 ; 7    |----------------------------------------------------------------------------*/
+                              103 ; 8    |
+                              104 ; 9    |/*----------------------------------------------------------------------------
+                              105 ; 10   |                File Includes
+                              106 ; 11   |----------------------------------------------------------------------------*/
+                              107 ; 12   |
+                              108 ; 13   |#include "types.h"
+                              109 
+                              111 
+                              112 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              113 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              114 ; 3    |//
+                              115 ; 4    |// Filename: types.h
+                              116 ; 5    |// Description: Standard data types
+                              117 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              118 ; 7    |
+                              119 ; 8    |#ifndef _TYPES_H
+                              120 ; 9    |#define _TYPES_H
+                              121 ; 10   |
+                              122 ; 11   |// TODO:  move this outta here!
+                              123 ; 12   |#if !defined(NOERROR)
+                              124 ; 13   |#define NOERROR 0
+                              125 ; 14   |#define SUCCESS 0
+                              126 ; 15   |#endif 
+                              127 ; 16   |#if !defined(SUCCESS)
+                              128 ; 17   |#define SUCCESS  0
+                              129 ; 18   |#endif
+                              130 ; 19   |#if !defined(ERROR)
+                              131 ; 20   |#define ERROR   -1
+                              132 ; 21   |#endif
+                              133 ; 22   |#if !defined(FALSE)
+                              134 ; 23   |#define FALSE 0
+                              135 ; 24   |#endif
+                              136 ; 25   |#if !defined(TRUE)
+                              137 ; 26   |#define TRUE  1
+                              138 ; 27   |#endif
+                              139 ; 28   |
+                              140 ; 29   |#if !defined(NULL)
+                              141 ; 30   |#define NULL 0
+                              142 ; 31   |#endif
+                              143 ; 32   |
+                              144 ; 33   |#define MAX_INT     0x7FFFFF
+                              145 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              146 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              147 ; 36   |#define MAX_ULONG   (-1) 
+                              148 ; 37   |
+                              149 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              150 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              151 ; 40   |
+                              152 ; 41   |
+                              153 ; 42   |#define BYTE    unsigned char       // btVarName
+                              154 ; 43   |#define CHAR    signed char         // cVarName
+                              155 ; 44   |#define USHORT  unsigned short      // usVarName
+                              156 ; 45   |#define SHORT   unsigned short      // sVarName
+                              157 ; 46   |#define WORD    unsigned int        // wVarName
+                              158 ; 47   |#define INT     signed int          // iVarName
+                              159 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              160 ; 49   |#define LONG    signed long         // lVarName
+                              161 ; 50   |#define BOOL    unsigned int        // bVarName
+                              162 ; 51   |#define FRACT   _fract              // frVarName
+                              163 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              164 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              165 ; 54   |#define FLOAT   float               // fVarName
+                              166 ; 55   |#define DBL     double              // dVarName
+                              167 ; 56   |#define ENUM    enum                // eVarName
+                              168 ; 57   |#define CMX     _complex            // cmxVarName
+                              169 ; 58   |typedef WORD UCS3;                   // 
+                              170 ; 59   |
+                              171 ; 60   |#define UINT16  unsigned short
+                              172 ; 61   |#define UINT8   unsigned char   
+                              173 ; 62   |#define UINT32  unsigned long
+                              174 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              175 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              176 ; 65   |#define WCHAR   UINT16
+                              177 ; 66   |
+                              178 ; 67   |//UINT128 is 16 bytes or 6 words
+                              179 ; 68   |typedef struct UINT128_3500 {   
+                              180 ; 69   |    int val[6];     
+                              181 ; 70   |} UINT128_3500;
+                              182 ; 71   |
+                              183 ; 72   |#define UINT128   UINT128_3500
+                              184 ; 73   |
+                              185 ; 74   |// Little endian word packed byte strings:   
+                              186 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              187 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              188 ; 77   |// Little endian word packed byte strings:   
+                              189 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              190 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              191 ; 80   |
+                              192 ; 81   |// Declare Memory Spaces To Use When Coding
+                              193 ; 82   |// A. Sector Buffers
+                              194 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              195 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              196 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              197 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              198 
+                              200 
+                              201 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              202 ; 88   |// B. Media DDI Memory
+                              203 ; 89   |#define MEDIA_DDI_MEM _Y
+                              204 ; 90   |
+                              205 ; 91   |
+                              206 ; 92   |
+                              207 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              208 ; 94   |// Examples of circular pointers:
+                              209 ; 95   |//    INT CIRC cpiVarName
+                              210 ; 96   |//    DWORD CIRC cpdwVarName
+                              211 ; 97   |
+                              212 ; 98   |#define RETCODE INT                 // rcVarName
+                              213 ; 99   |
+                              214 ; 100  |// generic bitfield structure
+                              215 ; 101  |struct Bitfield {
+                              216 ; 102  |    unsigned int B0  :1;
+                              217 ; 103  |    unsigned int B1  :1;
+                              218 ; 104  |    unsigned int B2  :1;
+                              219 ; 105  |    unsigned int B3  :1;
+                              220 ; 106  |    unsigned int B4  :1;
+                              221 ; 107  |    unsigned int B5  :1;
+                              222 ; 108  |    unsigned int B6  :1;
+                              223 ; 109  |    unsigned int B7  :1;
+                              224 ; 110  |    unsigned int B8  :1;
+                              225 ; 111  |    unsigned int B9  :1;
+                              226 ; 112  |    unsigned int B10 :1;
+                              227 ; 113  |    unsigned int B11 :1;
+                              228 ; 114  |    unsigned int B12 :1;
+                              229 ; 115  |    unsigned int B13 :1;
+                              230 ; 116  |    unsigned int B14 :1;
+                              231 ; 117  |    unsigned int B15 :1;
+                              232 ; 118  |    unsigned int B16 :1;
+                              233 ; 119  |    unsigned int B17 :1;
+                              234 ; 120  |    unsigned int B18 :1;
+                              235 ; 121  |    unsigned int B19 :1;
+                              236 ; 122  |    unsigned int B20 :1;
+                              237 ; 123  |    unsigned int B21 :1;
+                              238 ; 124  |    unsigned int B22 :1;
+                              239 ; 125  |    unsigned int B23 :1;
+                              240 ; 126  |};
+                              241 ; 127  |
+                              242 ; 128  |union BitInt {
+                              243 ; 129  |        struct Bitfield B;
+                              244 ; 130  |        int        I;
+                              245 ; 131  |};
+                              246 ; 132  |
+                              247 ; 133  |#define MAX_MSG_LENGTH 10
+                              248 ; 134  |struct CMessage
+                              249 ; 135  |{
+                              250 ; 136  |        unsigned int m_uLength;
+                              251 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              252 ; 138  |};
+                              253 ; 139  |
+                              254 ; 140  |typedef struct {
+                              255 ; 141  |    WORD m_wLength;
+                              256 ; 142  |    WORD m_wMessage;
+                              257 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              258 ; 144  |} Message;
+                              259 ; 145  |
+                              260 ; 146  |struct MessageQueueDescriptor
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              261 ; 147  |{
+                              262 ; 148  |        int *m_pBase;
+                              263 ; 149  |        int m_iModulo;
+                              264 ; 150  |        int m_iSize;
+                              265 ; 151  |        int *m_pHead;
+                              266 ; 152  |        int *m_pTail;
+                              267 ; 153  |};
+                              268 ; 154  |
+                              269 ; 155  |struct ModuleEntry
+                              270 ; 156  |{
+                              271 ; 157  |    int m_iSignaledEventMask;
+                              272 ; 158  |    int m_iWaitEventMask;
+                              273 ; 159  |    int m_iResourceOfCode;
+                              274 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              275 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              276 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              277 ; 163  |    int m_uTimeOutHigh;
+                              278 ; 164  |    int m_uTimeOutLow;
+                              279 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              280 ; 166  |};
+                              281 ; 167  |
+                              282 ; 168  |union WaitMask{
+                              283 ; 169  |    struct B{
+                              284 ; 170  |        unsigned int m_bNone     :1;
+                              285 ; 171  |        unsigned int m_bMessage  :1;
+                              286 ; 172  |        unsigned int m_bTimer    :1;
+                              287 ; 173  |        unsigned int m_bButton   :1;
+                              288 ; 174  |    } B;
+                              289 ; 175  |    int I;
+                              290 ; 176  |} ;
+                              291 ; 177  |
+                              292 ; 178  |
+                              293 ; 179  |struct Button {
+                              294 ; 180  |        WORD wButtonEvent;
+                              295 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              296 ; 182  |};
+                              297 ; 183  |
+                              298 ; 184  |struct Message {
+                              299 ; 185  |        WORD wMsgLength;
+                              300 ; 186  |        WORD wMsgCommand;
+                              301 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              302 ; 188  |};
+                              303 ; 189  |
+                              304 ; 190  |union EventTypes {
+                              305 ; 191  |        struct CMessage msg;
+                              306 ; 192  |        struct Button Button ;
+                              307 ; 193  |        struct Message Message;
+                              308 ; 194  |};
+                              309 ; 195  |
+                              310 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              311 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              312 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              313 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              314 ; 200  |
+                              315 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              316 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              317 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              318 ; 204  |
+                              319 ; 205  |#if DEBUG
+                              320 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              321 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              322 ; 208  |#else 
+                              323 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              324 ; 210  |#define DebugBuildAssert(x)    
+                              325 ; 211  |#endif
+                              326 ; 212  |
+                              327 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              328 ; 214  |//  #pragma asm
+                              329 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              330 ; 216  |//  #pragma endasm
+                              331 ; 217  |
+                              332 ; 218  |
+                              333 ; 219  |#ifdef COLOR_262K
+                              334 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              335 ; 221  |#elif defined(COLOR_65K)
+                              336 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              337 ; 223  |#else
+                              338 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              339 ; 225  |#endif
+                              340 ; 226  |    
+                              341 ; 227  |#endif // #ifndef _TYPES_H
+                              342 
+                              344 
+                              345 ; 14   |#include "fstypes.h"
+                              346 
+                              348 
+                              349 ; 1    |#ifndef _FS_TYPE_H_
+                              350 ; 2    |#define _FS_TYPE_H_
+                              351 ; 3    |
+                              352 ; 4    |#include   "types.h"
+                              353 
+                              355 
+                              356 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              357 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              358 ; 3    |//
+                              359 ; 4    |// Filename: types.h
+                              360 ; 5    |// Description: Standard data types
+                              361 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              362 ; 7    |
+                              363 ; 8    |#ifndef _TYPES_H
+                              364 ; 9    |#define _TYPES_H
+                              365 ; 10   |
+                              366 ; 11   |// TODO:  move this outta here!
+                              367 ; 12   |#if !defined(NOERROR)
+                              368 ; 13   |#define NOERROR 0
+                              369 ; 14   |#define SUCCESS 0
+                              370 ; 15   |#endif 
+                              371 ; 16   |#if !defined(SUCCESS)
+                              372 ; 17   |#define SUCCESS  0
+                              373 ; 18   |#endif
+                              374 ; 19   |#if !defined(ERROR)
+                              375 ; 20   |#define ERROR   -1
+                              376 ; 21   |#endif
+                              377 ; 22   |#if !defined(FALSE)
+                              378 ; 23   |#define FALSE 0
+                              379 ; 24   |#endif
+                              380 ; 25   |#if !defined(TRUE)
+                              381 ; 26   |#define TRUE  1
+                              382 ; 27   |#endif
+                              383 ; 28   |
+                              384 ; 29   |#if !defined(NULL)
+                              385 ; 30   |#define NULL 0
+                              386 ; 31   |#endif
+                              387 ; 32   |
+                              388 ; 33   |#define MAX_INT     0x7FFFFF
+                              389 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              390 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              391 ; 36   |#define MAX_ULONG   (-1) 
+                              392 ; 37   |
+                              393 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              394 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              395 ; 40   |
+                              396 ; 41   |
+                              397 ; 42   |#define BYTE    unsigned char       // btVarName
+                              398 ; 43   |#define CHAR    signed char         // cVarName
+                              399 ; 44   |#define USHORT  unsigned short      // usVarName
+                              400 ; 45   |#define SHORT   unsigned short      // sVarName
+                              401 ; 46   |#define WORD    unsigned int        // wVarName
+                              402 ; 47   |#define INT     signed int          // iVarName
+                              403 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              404 ; 49   |#define LONG    signed long         // lVarName
+                              405 ; 50   |#define BOOL    unsigned int        // bVarName
+                              406 ; 51   |#define FRACT   _fract              // frVarName
+                              407 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              408 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              409 ; 54   |#define FLOAT   float               // fVarName
+                              410 ; 55   |#define DBL     double              // dVarName
+                              411 ; 56   |#define ENUM    enum                // eVarName
+                              412 ; 57   |#define CMX     _complex            // cmxVarName
+                              413 ; 58   |typedef WORD UCS3;                   // 
+                              414 ; 59   |
+                              415 ; 60   |#define UINT16  unsigned short
+                              416 ; 61   |#define UINT8   unsigned char   
+                              417 ; 62   |#define UINT32  unsigned long
+                              418 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              419 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              420 ; 65   |#define WCHAR   UINT16
+                              421 ; 66   |
+                              422 ; 67   |//UINT128 is 16 bytes or 6 words
+                              423 ; 68   |typedef struct UINT128_3500 {   
+                              424 ; 69   |    int val[6];     
+                              425 ; 70   |} UINT128_3500;
+                              426 ; 71   |
+                              427 ; 72   |#define UINT128   UINT128_3500
+                              428 ; 73   |
+                              429 ; 74   |// Little endian word packed byte strings:   
+                              430 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              431 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              432 ; 77   |// Little endian word packed byte strings:   
+                              433 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              434 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              435 ; 80   |
+                              436 ; 81   |// Declare Memory Spaces To Use When Coding
+                              437 ; 82   |// A. Sector Buffers
+                              438 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              439 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              440 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              441 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              442 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              443 ; 88   |// B. Media DDI Memory
+                              444 ; 89   |#define MEDIA_DDI_MEM _Y
+                              445 ; 90   |
+                              446 ; 91   |
+                              447 ; 92   |
+                              448 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              449 ; 94   |// Examples of circular pointers:
+                              450 ; 95   |//    INT CIRC cpiVarName
+                              451 ; 96   |//    DWORD CIRC cpdwVarName
+                              452 ; 97   |
+                              453 ; 98   |#define RETCODE INT                 // rcVarName
+                              454 ; 99   |
+                              455 ; 100  |// generic bitfield structure
+                              456 ; 101  |struct Bitfield {
+                              457 ; 102  |    unsigned int B0  :1;
+                              458 ; 103  |    unsigned int B1  :1;
+                              459 ; 104  |    unsigned int B2  :1;
+                              460 ; 105  |    unsigned int B3  :1;
+                              461 ; 106  |    unsigned int B4  :1;
+                              462 ; 107  |    unsigned int B5  :1;
+                              463 ; 108  |    unsigned int B6  :1;
+                              464 ; 109  |    unsigned int B7  :1;
+                              465 ; 110  |    unsigned int B8  :1;
+                              466 ; 111  |    unsigned int B9  :1;
+                              467 ; 112  |    unsigned int B10 :1;
+                              468 ; 113  |    unsigned int B11 :1;
+                              469 ; 114  |    unsigned int B12 :1;
+                              470 ; 115  |    unsigned int B13 :1;
+                              471 ; 116  |    unsigned int B14 :1;
+                              472 ; 117  |    unsigned int B15 :1;
+                              473 ; 118  |    unsigned int B16 :1;
+                              474 ; 119  |    unsigned int B17 :1;
+                              475 ; 120  |    unsigned int B18 :1;
+                              476 ; 121  |    unsigned int B19 :1;
+                              477 ; 122  |    unsigned int B20 :1;
+                              478 ; 123  |    unsigned int B21 :1;
+                              479 ; 124  |    unsigned int B22 :1;
+                              480 ; 125  |    unsigned int B23 :1;
+                              481 ; 126  |};
+                              482 ; 127  |
+                              483 ; 128  |union BitInt {
+                              484 ; 129  |        struct Bitfield B;
+                              485 ; 130  |        int        I;
+                              486 ; 131  |};
+                              487 ; 132  |
+                              488 ; 133  |#define MAX_MSG_LENGTH 10
+                              489 ; 134  |struct CMessage
+                              490 ; 135  |{
+                              491 ; 136  |        unsigned int m_uLength;
+                              492 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              493 ; 138  |};
+                              494 ; 139  |
+                              495 ; 140  |typedef struct {
+                              496 ; 141  |    WORD m_wLength;
+                              497 ; 142  |    WORD m_wMessage;
+                              498 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              499 ; 144  |} Message;
+                              500 ; 145  |
+                              501 ; 146  |struct MessageQueueDescriptor
+                              502 ; 147  |{
+                              503 ; 148  |        int *m_pBase;
+                              504 ; 149  |        int m_iModulo;
+                              505 ; 150  |        int m_iSize;
+                              506 ; 151  |        int *m_pHead;
+                              507 ; 152  |        int *m_pTail;
+                              508 ; 153  |};
+                              509 ; 154  |
+                              510 ; 155  |struct ModuleEntry
+                              511 ; 156  |{
+                              512 ; 157  |    int m_iSignaledEventMask;
+                              513 ; 158  |    int m_iWaitEventMask;
+                              514 ; 159  |    int m_iResourceOfCode;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              515 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              516 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              517 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              518 ; 163  |    int m_uTimeOutHigh;
+                              519 ; 164  |    int m_uTimeOutLow;
+                              520 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              521 ; 166  |};
+                              522 ; 167  |
+                              523 ; 168  |union WaitMask{
+                              524 ; 169  |    struct B{
+                              525 ; 170  |        unsigned int m_bNone     :1;
+                              526 ; 171  |        unsigned int m_bMessage  :1;
+                              527 ; 172  |        unsigned int m_bTimer    :1;
+                              528 ; 173  |        unsigned int m_bButton   :1;
+                              529 ; 174  |    } B;
+                              530 ; 175  |    int I;
+                              531 ; 176  |} ;
+                              532 ; 177  |
+                              533 ; 178  |
+                              534 ; 179  |struct Button {
+                              535 ; 180  |        WORD wButtonEvent;
+                              536 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              537 ; 182  |};
+                              538 ; 183  |
+                              539 ; 184  |struct Message {
+                              540 ; 185  |        WORD wMsgLength;
+                              541 ; 186  |        WORD wMsgCommand;
+                              542 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              543 ; 188  |};
+                              544 ; 189  |
+                              545 ; 190  |union EventTypes {
+                              546 ; 191  |        struct CMessage msg;
+                              547 ; 192  |        struct Button Button ;
+                              548 ; 193  |        struct Message Message;
+                              549 ; 194  |};
+                              550 ; 195  |
+                              551 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              552 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              553 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              554 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              555 ; 200  |
+                              556 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              557 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              558 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              559 ; 204  |
+                              560 ; 205  |#if DEBUG
+                              561 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              562 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              563 ; 208  |#else 
+                              564 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              565 ; 210  |#define DebugBuildAssert(x)    
+                              566 ; 211  |#endif
+                              567 ; 212  |
+                              568 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              569 ; 214  |//  #pragma asm
+                              570 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              571 ; 216  |//  #pragma endasm
+                              572 ; 217  |
+                              573 ; 218  |
+                              574 ; 219  |#ifdef COLOR_262K
+                              575 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              576 ; 221  |#elif defined(COLOR_65K)
+                              577 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              578 ; 223  |#else
+                              579 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              580 ; 225  |#endif
+                              581 ; 226  |    
+                              582 ; 227  |#endif // #ifndef _TYPES_H
+                              583 
+                              585 
+                              586 ; 5    |
+                              587 ; 6    |// move FSMEDIA_TABLE from devicetable.h  15Apr2005   First moved in SDK2.6.
+                              588 ; 7    |typedef struct
+                              589 ; 8    |{
+                              590 ; 9    |
+                              591 ; 10   |INT     _Y BytesPerSector;
+                              592 ; 11   |INT     _Y SectorsPerCluster;
+                              593 ; 12   |INT     _Y RsvdSectors;
+                              594 ; 13   |INT     _Y NoOfFATs;
+                              595 ; 14   |INT     _Y MaxRootDirEntries;
+                              596 ; 15   |LONG    _Y TotalSectors;
+                              597 ; 16   |LONG    _Y FATSize;
+                              598 ; 17   |LONG    _Y RootdirCluster;
+                              599 ; 18   |//INT   _Y FSInfoSector;
+                              600 ; 19   |//INT   _Y BkBootSector;
+                              601 ; 20   |LONG    _Y NextFreeCluster;
+                              602 ; 21   |LONG    _Y TotalFreeClusters;
+                              603 ; 22   |INT     _Y RootDirSectors;
+                              604 ; 23   |INT     _Y FIRSTDataSector;
+                              605 ; 24   |INT    _Y FATType;
+                              606 ; 25   |LONG   _Y TotalNoofclusters;
+                              607 ; 26   |INT    _Y ClusterMask;
+                              608 ; 27   |INT    _Y ClusterShift;
+                              609 ; 28   |INT    _Y SectorShift;
+                              610 ; 29   |INT    _Y SectorMask;
+                              611 ; 30   |INT    _Y DevicePresent;
+                              612 ; 31   |LONG   _Y FirRootdirsec;
+                              613 ; 32   |INT             _Y FSInfoSector;
+                              614 ; 33   |}FSMEDIA_TABLE;
+                              615 ; 34   |
+                              616 ; 35   |
+                              617 ; 36   |#define         MAXDEVICES              2
+                              618 ; 37   |//#define       NUMCACHES               8  // this is already in fsproj.h (2 for player 2 for mtp as of 28jun2005) TOVERIFY 2 ok for player and mtp. 
+                              619 ; 38   |
+                              620 ; 39   |// NOTE:  This offset is the same no matter what the sector actual size!  
+                              621 ; 40   |//        TOVERIFY 3.0 doesn't have this defined but uses it in filesystempresent.c. lbmlc def'd it here so I insert it here.
+                              622 ; 41   |#define         FATFS_SIGNATURE_OFFSET  510
+                              623 ; 42   |#define         BOOTSECTOR              0
+                              624 ; 43   |#define     FSINFOSECTOR        1
+                              625 ; 44   |
+                              626 ; 45   |#define     READ_MODE           1
+                              627 ; 46   |#define     WRITE_MODE          2
+                              628 ; 47   |#define     APPEND_MODE         4
+                              629 ; 48   |#define     SEQ_WRITE_MODE      8
+                              630 ; 49   |#define     DIRECTORY_MODE         16
+                              631 ; 50   |#define     CREATE_MODE        32
+                              632 ; 51   |
+                              633 ; 52   |#define     RPLUS               5
+                              634 ; 53   |#define     WPLUS                   6
+                              635 ; 54   |#define     APLUS               7
+                              636 ; 55   |
+                              637 ; 56   |
+                              638 ; 57   |
+                              639 ; 58   |#define     X_MEMORY            0
+                              640 ; 59   |#define     Y_MEMORY            2
+                              641 ; 60   |#define     P_MEMORY            4
+                              642 ; 61   |
+                              643 ; 62   |#define     FAT12               0 
+                              644 ; 63   |#define     FAT16               1   
+                              645 ; 64   |#define     FAT32               2 
+                              646 ; 65   |
+                              647 ; 66   |
+                              648 ; 67   |#define FAT12EOF            0x0FFF
+                              649 ; 68   |#define FAT16EOF            0xFFFF
+                              650 ; 69   |#define FAT32EOF            0x0FFFFFFF
+                              651 ; 70   |
+                              652 ; 71   |
+                              653 ; 72   |
+                              654 ; 73   |#define FAT12FREECX         0x000
+                              655 ; 74   |#define FAT16FREECX         0x0000
+                              656 ; 75   |#define FAT32FREECX         0x00000000
+                              657 ; 76   |
+                              658 ; 77   |
+                              659 ; 78   |#define  DBCS               1
+                              660 ; 79   |#define  UNICODE            2
+                              661 ; 80   |
+                              662 ; 81   |
+                              663 ; 82   |#define     CREATION_DATE       1
+                              664 ; 83   |#define     CREATION_TIME       2
+                              665 ; 84   |#define     MODIFICATION_DATE   3
+                              666 ; 85   |#define     MODIFICATION_TIME   4
+                              667 ; 86   |
+                              668 ; 87   |
+                              669 ; 88   |#define     READ_ONLY      0X01
+                              670 ; 89   |#define     HIDDEN         0X02
+                              671 ; 90   |#define     SYSTEM         0X04
+                              672 ; 91   |#define     VOLUME_ID      0X08
+                              673 ; 92   |#define     DIRECTORY      0X10
+                              674 ; 93   |#define     ARCHIVE        0X20
+                              675 ; 94   |
+                              676 ; 95   |#define READCOUNTER         105
+                              677 ; 96   |#define WRITECOUNTER        100
+                              678 ; 97   |#define FLUSHCOUNTER        200
+                              679 ; 98   |
+                              680 ; 99   |
+                              681 ; 100  |#define DEFAULT_MEMORY      Y_MEMORY
+                              682 ; 101  |
+                              683 ; 102  |#define  CWD_HANDLE           0
+                              684 ; 103  |#define  DIRECTORY_HANDLE     1
+                              685 ; 104  |#define  FIRST_VALID_HANDLE   2
+                              686 ; 105  |#define  END_OF_DIR_PATH      3
+                              687 ; 106  |
+                              688 ; 107  |//Constants for Sector read and write (Normal and FAT 
+                              689 ; 108  |#define         NORMALTYPE              0
+                              690 ; 109  |#define         FATTYPE                 1
+                              691 ; 110  |#define     RAWTYPE         2
+                              692 ; 111  |
+                              693 ; 112  |#define  SHORTNAMERES_CH      6
+                              694 ; 113  |#define  LONGNAMERES_CH       9
+                              695 ; 114  |#define  MAXFILENAME_CH       260
+                              696 ; 115  |
+                              697 ; 116  |#define VOLUME_TYPE          0
+                              698 ; 117  |#define DIR_TYPE             1
+                              699 ; 118  |#define FILE_TYPE            2
+                              700 ; 119  |                                           
+                              701 ; 120  |#define WRITE_TYPE_RANDOM               0
+                              702 ; 121  |#define WRITE_TYPE_SEQ_FIRST    1
+                              703 ; 122  |#define WRITE_TYPE_SEQ_NEXT             2
+                              704 ; 123  |#define WRITE_TYPE_NOREADBACK   3
+                              705 ; 124  |                  
+                              706 ; 125  |
+                              707 ; 126  |#define     HANDLEENTRYSIZE         19
+                              708 ; 127  |
+                              709 ; 128  |// DEVICERECORDSIZE is now only defined in cachedef.h so deleted from here in first 3.1 prelim 
+                              710 ; 129  |
+                              711 ; 130  |#define     CACHEDESCRSIZE          8
+                              712 ; 131  |#define     CACHEBUFSIZE            705
+                              713 ; 132  |
+                              714 ; 133  |#define     UCS2s                     0
+                              715 ; 134  |#define     UCS3s                     1
+                              716 ; 135  |
+                              717 ; 136  |#define     FAT32FSIFREECOUNTSIZE       4
+                              718 ; 137  |
+                              719 ; 138  |#endif // _FS_TYPE_H_
+                              720 ; 139  |
+                              721 
+                              723 
+                              724 ; 15   |#include "fserror.h"
+                              725 
+                              727 
+                              728 ; 1    |#define                 FS_SUCCESS                                      0
+                              729 ; 2    |#define         NOT_WRITE_MODE              0
+                              730 ; 3    |
+                              731 ; 4    |#define                 FILESYSTEM_NOT_FOUND            -32767  // 0xFFFF8001
+                              732 ; 5    |
+                              733 ; 6    |#define         FS_HANDLE_NOT_ACTIVE        -16384  // 0xFFFFC000
+                              734 ; 7    |#define         FS_MAX_HANDLES_EXCEEDED     -16385  // 0xFFFFBFFF
+                              735 ; 8    |#define         FS_NO_FREE_HANDLE           -16386  // 0xFFFFBFFE
+                              736 ; 9    |#define         FSEEK_FAILED                -16387  // 0xFFFFBFFD
+                              737 ; 10   |#define         INVALID_MODE                -16388  // 0xFFFFBFFC
+                              738 ; 11   |#define         NOSPACE_IN_ROOTDIRECTORY    -16389  // 0xFFFFBFFB
+                              739 ; 12   |#define         FS_EOF                      -16390  // 0xFFFFBFFA
+                              740 ; 13   |#define         SECTOR_FULL_OF_RECORD       -16391  // 0xFFFFBFF9
+                              741 ; 14   |#define         NO_FREE_CLUSTER             -16392  // 0xFFFFBFF8
+                              742 ; 15   |#define         FILE_FOUND                  -16393  // 0xFFFFBFF7
+                              743 ; 16   |#define         FILE_NOT_FOUND              -16394  // 0xFFFFBFF6
+                              744 ; 17   |#define         FILE_WRITE_FAILED           -16395  // 0xFFFFBFF5
+                              745 ; 18   |#define         DIRECTORY_IS_NOT_WRITABLE       -16396  // 0xFFFFBFF4
+                              746 ; 19   |#define         CACHE_BUF_RELEASE_ERR       -16397  // 0xFFFFBFF3
+                              747 ; 20   |#define         DIR_NOT_EMPTY                           -16398  // 0xFFFFBFF2
+                              748 ; 21   |#define         FILE_OPEN                       -16399  // 0xFFFFBFF1
+                              749 ; 22   |#define         FILE_DELETE_FAILED          -16400  // 0xFFFFBFF0
+                              750 ; 23   |#define         DUPLICATE_FILE_NAME         -16401  // 0xFFFFBFEF
+                              751 ; 24   |#define         INVALID_DIR_PATH            -16402  // 0xFFFFBFEE
+                              752 ; 25   |#define         CHANGEPATH_NOT_POSSIBLE     -16403  // 0xFFFFBFED
+                              753 ; 26   |#define         FS_MAX_DEVICES_EXCEEDED     -16404  // 0xFFFFBFEC
+                              754 ; 27   |#define         MEDIA_TYPE_NOT_SUPPORTED    -16405  // 0xFFFFBFEB
+                              755 ; 28   |#define         MODE_NOT_SUPPORTED          -16406  // 0xFFFFBFEA
+                              756 ; 29   |#define         INVALID_CLUSTER_NO          -16407  // 0xFFFFBFE9
+                              757 ; 30   |#define         CANNOT_DELETE_CWD           -16408  // 0xFFFFBFE8
+                              758 ; 31   |#define         CURRENT_WORK_DIR            -16409  // 0xFFFFBFE7
+                              759 ; 32   |#define         DIR_NOT_REMOVABLE           -16410  // 0xFFFFBFE6
+                              760 ; 33   |#define         INVALID_RECORD_NUMBER       -16411  // 0xFFFFBFE5
+                              761 ; 34   |#define                 LONG_FILE_NAME                          -16412  // 0xFFFFBFE4
+                              762 ; 35   |#define                 NO_MATCHING_RECORD                      -16413  // 0xFFFFBFE3
+                              763 ; 36   |#define                 NOT_VALID_SECTOR                        -16414  // 0xFFFFBFE2
+                              764 ; 37   |#define                 DEVICE_NOT_SUPPORTED            -16415  // 0xFFFFBFE1
+                              765 ; 38   |#define         FS_ERROR                                        -16416  // 0xFFFFBEE0
+                              766 ; 39   |#define                 READSECTOR_FAIL                         -16417  // 0xFFFFBFDF
+                              767 ; 40   |#define                 DEVICE_NOT_ACTIVE                       -16418  // 0xFFFFBFDE
+                              768 ; 41   |#define                 ILLEGAL_FILENAME_CHARA          -16419  // 0xFFFFBFDD
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              769 ; 42   |#define                 MEDIAREAD_FAILED                        -16420  // 0xFFFFBFDC
+                              770 ; 43   |#define                 MEDIAWRITE_FAILED                       -16421  // 0xFFFFBFDB
+                              771 ; 44   |#define                 CANNOT_OPEN_DIRECTORY           -16422  // 0xFFFFBFDA
+                              772 ; 45   |#define         VOLUMELABEL_NOT_FOUND           -16423
+                              773 ; 46   |
+                              774 ; 47   |
+                              775 ; 48   |
+                              776 ; 49   |
+                              777 
+                              779 
+                              780 ; 16   |
+                              781 ; 17   |#ifdef FUNCLET
+                              782 ; 18   |#pragma asm
+                              783     extern SysCallFunclet
+                              784 ; 20   |#pragma endasm
+                              785 ; 21   |#endif
+                              786 ; 22   |
+                              787 ; 23   |
+                              788 ; 24   |extern INT FSGetByte(void *buffer, INT Offset,INT MemoryType);
+                              789 ; 25   |extern INT FSGetWord(void *buffer, INT Offset,INT MemoryType);
+                              790 ; 26   |extern void PutByte(void *buffer, INT byte,INT Offset ,INT MemoryType);
+                              791 ; 27   |extern void PutWord(void *buffer, INT word, INT Offset,INT MemoryType);
+                              792 ; 28   |
+                              793 ; 29   |
+                              794 ; 30   |INT Long_NameRes_Ch[10]={0x22,0x2A,0x2F,0x3A,0x3C,0x3E,0x3F,0x5C,0x7C}; 
+                              795 
+                              796 
+Y:0000                        797         org     y,".ydatafsunicode",init:
+                              798 FLong_NameRes_Ch:
+Y:0000 000022 00002A          799         dc      $000022,$00002a,$00002f,$00003a,$00003c,$00003e,$00003f,$00005c
+       00002F 00003A              
+       00003C 00003E              
+       00003F 00005C              
+Y:0008 00007C 000000          800         dc      $00007c,$000000
+                              804 
+                              805 ; 31   |INT Short_NameRes_Ch[6]={0X2B,0X2C,0X3B,0X3D,0X5B,0X5D};  
+                              806 
+                              807 FShort_NameRes_Ch:
+Y:000A 00002B 00002C          808         dc      $00002b,$00002c,$00003b,$00003d,$00005b,$00005d
+       00003B 00003D              
+       00005B 00005D              
+                              812 
+                              813 ; 32   |
+                              814 ; 33   |static void do_nothing(void) {      // This function is here to make the dang FUNCLET, below, work right.
+                              815 
+P:0000                        816         org     p,".ptextfsunicode":
+                              820 Fdo_nothing:
+                              821 
+                              822 ; 34   |                                    // Without this here, the compiler switches back to ".ptext..." as soon
+                              823 ; 35   |                                    // as it hits some code.  With this here, the "org p,"SYSFUNCLET_..._P"
+                              824 ; 36   |                                    // stays in effect.
+                              825 ; 37   |                                    // The function is declared "static" so that it's invisible outside this file.
+                              826 ; 38   |  return;
+                              827 ; 39   |}
+                              828 
+P:0000 00000C         4    4  830         rts
+                              832 
+                              833 ; 40   |
+                              834 ; 41   |
+                              835 ; 42   |/*----------------------------------------------------------------------------
+                              836 ; 43   |
+                              837 ; 44   |>  Function Name:  _reentrant void DBCStoUnicode(_packed char *filepath,_packed char *buf,INT index,INT length)
+                              838 ; 45   |
+                              839 ; 46   |   FunctionType:   Reentrant
+                              840 ; 47   |
+                              841 ; 48   |   Inputs:         1) Pointer to file name
+                              842 ; 49   |                                   2) Pointer to buffer
+                              843 ; 50   |                                   3) Index   (starting point for string)
+                              844 ; 51   |                   4) Length  (Ending point for string)
+                              845 ; 52   |
+                              846 ; 53   |  Outputs:         Nil
+                              847 ; 54   |     
+                              848 ; 55   |  Description:     Convert the given DBCS string to unicode
+                              849 ; 56   |----------------------------------------------------------------------------*/
+                              850 ; 57   |
+                              851 ; 58   |#ifdef FUNCLET
+                              852 ; 59   |    #pragma asm
+                              853         FDBCStoUnicode:
+                              854 
+                              859 
+                              860         ;If using funclet, function will be executed via funclet kernel
+                              861         CallFunclet RSRC_FUNCLET_DBCSTOUNICODE
+P:0001 0D0080         4    8  861     jsr       $80
+P:0002 00025E                 861     DC       RSRC_FUNCLET_DBCSTOUNICODE  ; 1 word
+                              862 
+P:0000                        863         org p,"SYSFUNCLET_DBCSTOUNICODE_P":
+P:0000 00025E                 864         dc      RSRC_FUNCLET_DBCSTOUNICODE
+                              865 ; 72   |    #pragma endasm
+                              866 ; 73   |    
+                              867 ; 74   |        //Use the exact same prototype of the static function to convert
+                              868 ; 75   |void _reentrant DBCStoUnicode_Funclet(_packed char *filepath,_packed char *buf,INT index,INT length)
+                              869 ; 76   |#else
+                              870 ; 77   |void _reentrant DBCStoUnicode(_packed char *filepath,_packed char *buf,INT index,INT length)
+                              871 ; 78   |#endif
+                              872 ; 79   |
+                              873 ; 80   |{
+                              874 
+                              881 FDBCStoUnicode_Funclet:
+P:0001 055F7C         2    2  882         movec   ssh,y:(r7)+
+P:0002 3F0600         2    4  885         move    #6,n7
+P:0003 000000         2    6  886         nop
+P:0004 204F00         2    8  887         move    (r7)+n7
+                              899 
+                              900 ; 81   |   INT offset=0,word=0,i;
+                              901 
+P:0005 77F400 FFFFFD  3   11  903         move    #-3,n7
+P:0007 000000         2   13  904         nop
+P:0008 5D6F00         4   17  905         move    b1,y:(r7+n7)
+P:0009 77F400 FFFFFC  3   20  908         move    #-4,n7
+P:000B 000000         2   22  909         nop
+P:000C 6C6F00         4   26  910         move    r4,y:(r7+n7)
+P:000D 77F400 FFFFFB  3   29  913         move    #-5,n7
+P:000F 000000         2   31  914         nop
+P:0010 686F00         4   35  915         move    r0,y:(r7+n7)
+P:0011 260000         2   37  918         move    #0,y0
+P:0012 20001B         2   39  919         clr     b   
+P:0013 77F400 FFFFFA  3   42  922         move    #-6,n7
+P:0015 000000         2   44  923         nop
+P:0016 4E6F00         4   48  924         move    y0,y:(r7+n7)
+                              930 
+                              931 ; 82   |   INT Byte;
+                              932 ; 83   |
+                              933 ; 84   |  for(i=index;i<length;i++)
+                              934 
+P:0017 44F400 000002  3   51  936         move    #>2,x0
+P:0019 0AF080 rrrrrr  6   57  937         jmp     L5
+P:001B 77F400 FFFFFE  3   60  938 L3:     move    #-2,n7
+P:001D 000000         2   62  939         nop
+P:001E 5D6F00         4   66  940         move    b1,y:(r7+n7)
+                              943 
+                              944 ; 85   |   {
+                              945 ; 86   |   Byte = FSGetByte(filepath,i,DEFAULT_MEMORY);
+                              946 
+P:001F 77F400 FFFFFB  3   69  948         move    #-5,n7
+P:0021 000000         2   71  949         nop
+P:0022 68EF00         4   75  950         move    y:(r7+n7),r0
+P:0023 045FA0         2   77  953         movec   m0,n7
+P:0024 000000         2   79  954         nop
+P:0025 5C6F00         4   83  955         move    a1,y:(r7+n7)
+P:0026 57F400 000002  3   86  961         move    #>2,b
+P:0028 0BF080 rrrrrr  6   92  962         jsr     FFSGetByte
+P:002A 21C600         2   94  967         move    a,y0
+                              969 
+                              970 ; 87   |   if(Byte=='/')
+                              971 
+P:002B 57F400 00002F  3   97  973         move    #>47,b
+P:002D 200005         2   99  974         cmp     b,a
+P:002E 0AF0A2 rrrrrr  6  105  975         jne     L4
+                              976 
+                              977 ; 88   |        Byte=0;
+                              978 
+P:0030 260000         2  107  980         move    #0,y0
+                              981 
+                              982 ; 89   |   PutByte(&word,Byte,0,DEFAULT_MEMORY);
+                              983 
+P:0031 77F400 FFFFFA  3  110  985 L4:     move    #-6,n7
+P:0033 000000         2  112  986         nop
+P:0034 044F10         4  116  987         lua     (r7)+n7,r0
+P:0035 44F400 000002  3  119  988         move    #>2,x0
+P:0037 20001B         2  121  989         clr     b   
+P:0038 200051         2  123  990         tfr     y0,a
+P:0039 0BF080 rrrrrr  6  129  991         jsr     FPutByte
+                              995 
+                              996 ; 90   |   PutWord(buf,word,offset,DEFAULT_MEMORY); 
+                              997 
+P:003B 77F400 FFFFFC  3  132  999         move    #-4,n7
+P:003D 000000         2  134 1000         nop
+P:003E 68EF00         4  138 1001         move    y:(r7+n7),r0
+P:003F 77F400 FFFFFE  3  141 1004         move    #-2,n7
+P:0041 000000         2  143 1005         nop
+P:0042 5FEF00         4  147 1006         move    y:(r7+n7),b
+P:0043 44F400 000002  3  150 1009         move    #>2,x0
+P:0045 77F400 FFFFFA  3  153 1010         move    #-6,n7
+P:0047 000000         2  155 1011         nop
+P:0048 5EEF00         4  159 1012         move    y:(r7+n7),a
+P:0049 0BF080 rrrrrr  6  165 1013         jsr     FPutWord
+                             1018 
+                             1019 ; 91   |   offset+=2; 
+                             1020 
+P:004B 77F400 FFFFFE  3  168 1022         move    #-2,n7
+P:004D 000000         2  170 1023         nop
+P:004E 5EEF00         4  174 1024         move    y:(r7+n7),a
+P:004F 57F400 000002  3  177 1025         move    #>2,b
+P:0051 21E400         2  179 1026         move    b,x0
+P:0052 200010         2  181 1027         add     b,a
+P:0053 218F00         2  183 1030         move    a1,b
+P:0054 045FA0         2  185 1034         movec   m0,n7
+P:0055 000000         2  187 1035         nop
+P:0056 5EEF00         4  191 1036         move    y:(r7+n7),a
+P:0057 46F400 000001  3  194 1037         move    #>1,y0
+P:0059 200050         2  196 1038         add     y0,a
+P:005A 77F400 FFFFFD  3  199 1041 L5:     move    #-3,n7
+P:005C 000000         2  201 1042         nop
+P:005D 4FEF00         4  205 1043         move    y:(r7+n7),y1
+P:005E 200075         2  207 1044         cmp     y1,a
+P:005F 0AF0A9 rrrrrr  6  213 1045         jlt     L3
+                             1046 
+                             1047 ; 92   |   } 
+                             1048 ; 93   |   PutWord(buf,0,offset,DEFAULT_MEMORY); 
+                             1049 
+P:0061 77F400 FFFFFC  3  216 1051         move    #-4,n7
+P:0063 000000         2  218 1052         nop
+P:0064 68EF00         4  222 1053         move    y:(r7+n7),r0
+P:0065 200013         2  224 1054         clr     a   
+P:0066 0BF080 rrrrrr  6  230 1055         jsr     FPutWord
+                             1061 
+                             1062 ; 94   | }
+                             1063 
+P:0068 77F400 FFFFF9  3  233 1065         move    #-7,n7
+P:006A 000000         2  235 1066         nop
+P:006B 05EF7C         4  239 1067         movec   y:(r7+n7),ssh
+P:006C 204F00         2  241 1069         move    (r7)+n7
+P:006D 00000C         4  245 1071         rts
+                             1075 
+                             1076 ; 95   |
+                             1077 ; 96   |#ifdef FUNCLET
+                             1078 ; 97   |    #pragma asm
+P:0000                       1079         org p,".ptextFsunicode":
+                             1080 ; 99   |    #pragma endasm
+                             1081 ; 100  |#endif
+                             1082 ; 101  |
+                             1083 ; 102  |
+                             1084 ; 103  |/*----------------------------------------------------------------------------
+                             1085 ; 104  |
+                             1086 ; 105  |>  Function Name:  Void  UnicodeToOEM(_packed char *file,_packed char *shortname,INT length,INT index)
+                             1087 ; 106  |
+                             1088 ; 107  |   FunctionType:   Reentrant
+                             1089 ; 108  |
+                             1090 ; 109  |   Inputs:         1) Ponter to file name
+                             1091 ; 110  |                   2) Ponter to Character
+                             1092 ; 111  |                   3) Length  (Ending point for string)
+                             1093 ; 112  |                   4) Index   (strating point for string)
+                             1094 ; 113  |                   
+                             1095 ; 114  |   
+                             1096 ; 115  |   Outputs:       None
+                             1097 ; 116  |      
+                             1098 ; 117  | ----------------------------------------------------------------------------*/
+                             1099 ; 118  |              
+                             1100 ; 119  |#ifdef FUNCLET
+                             1101 ; 120  |    #pragma asm
+                             1102         FUnicodeToOEM:
+                             1103 
+                             1108 
+                             1109         ;If using funclet, function will be executed via funclet kernel
+                             1110         CallFunclet RSRC_FUNCLET_UNICODETOOEM
+P:0000 0D0080         4    4 1110     jsr       $80
+P:0001 000259                1110     DC       RSRC_FUNCLET_UNICODETOOEM  ; 1 word
+                             1111 
+P:0000                       1112         org p,"SYSFUNCLET_UNICODETOOEM_P":
+P:0000 000259                1113         dc      RSRC_FUNCLET_UNICODETOOEM
+                             1114 ; 133  |    #pragma endasm
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1115 ; 134  |    
+                             1116 ; 135  |        //Use the exact same prototype of the static function to convert
+                             1117 ; 136  |void _reentrant UnicodeToOEM_Funclet(_packed char *file,_packed char *shortname,INT length,INT index)
+                             1118 ; 137  |#else
+                             1119 ; 138  |void _reentrant UnicodeToOEM(_packed char *file,_packed char *shortname,INT length,INT index)
+                             1120 ; 139  |#endif
+                             1121 ; 140  |
+                             1122 ; 141  |{
+                             1123 
+                             1128 FUnicodeToOEM_Funclet:
+P:0001 055F7C         2    2 1129         movec   ssh,y:(r7)+
+P:0002 3F0500         2    4 1132         move    #5,n7
+P:0003 000000         2    6 1133         nop
+P:0004 204F00         2    8 1134         move    (r7)+n7
+                             1150 
+                             1151 ; 142  |INT offset=0,j,k=0;
+                             1152 
+P:0005 77F400 FFFFFD  3   11 1154         move    #-3,n7
+P:0007 000000         2   13 1155         nop
+P:0008 5C6F00         4   17 1156         move    a1,y:(r7+n7)
+P:0009 77F400 FFFFFC  3   20 1159         move    #-4,n7
+P:000B 000000         2   22 1160         nop
+P:000C 6C6F00         4   26 1161         move    r4,y:(r7+n7)
+P:000D 77F400 FFFFFB  3   29 1164         move    #-5,n7
+P:000F 000000         2   31 1165         nop
+P:0010 686F00         4   35 1166         move    r0,y:(r7+n7)
+P:0011 240000         2   37 1169         move    #0,x0
+P:0012 77F400 FFFFFE  3   40 1171         move    #-2,n7
+P:0014 000000         2   42 1172         nop
+P:0015 4C6F00         4   46 1173         move    x0,y:(r7+n7)
+                             1180 
+                             1181 ; 143  |INT word=0;
+                             1182 ; 144  |INT highbyte=0;
+                             1183 ; 145  |  offset=index;
+                             1184 
+P:0016 21AE00         2   48 1186         move    b1,a
+                             1188 
+                             1189 ; 146  |  while(offset<length) // offset<length is 3.05 ver.  sdk2.600 uses k<length
+                             1190 
+P:0017 0AF080 rrrrrr  6   54 1192         jmp     L26
+                             1193 
+                             1194 ; 147  |  {
+                             1195 ; 148  |   word =FSGetWord(file,offset,DEFAULT_MEMORY);
+                             1196 
+P:0019 77F400 FFFFFB  3   57 1198 L17:    move    #-5,n7
+P:001B 000000         2   59 1199         nop
+P:001C 68EF00         4   63 1200         move    y:(r7+n7),r0
+P:001D 045FA0         2   65 1203         movec   m0,n7
+P:001E 000000         2   67 1204         nop
+P:001F 5C6F00         4   71 1205         move    a1,y:(r7+n7)
+P:0020 57F400 000002  3   74 1210         move    #>2,b
+P:0022 0BF080 rrrrrr  6   80 1212         jsr     FFSGetWord
+                             1218 
+                             1219 ; 149  |
+                             1220 ; 150  |    //start 3.095.RC0 block which modified the sgtl-HK version that is on sdk2.600
+                             1221 ; 151  |        // Modified By SGTL-HK, 20-5-2005
+                             1222 ; 152  |        if (word == 0x0000)
+                             1223 
+P:0024 200003         2   82 1225         tst     a
+P:0025 0AF0AA rrrrrr  6   88 1226         jeq     L27
+                             1227 
+                             1228 ; 153  |                break;
+                             1229 ; 154  |    highbyte = ((word & 0xff00) >> 8);
+                             1230 
+P:0027 46F400 00FF00  3   91 1232         move    #$FF00,y0
+P:0029 200009         2   93 1233         tfr     a,b
+P:002A 20005E         2   95 1234         and     y0,b
+P:002B 21A600         2   97 1235         move    b1,y0
+P:002C 0108E8         2   99 1236         mpy     y0,#8,b
+                             1238 
+                             1239 ; 155  |                //      Modified By SGTL-HK, 16-2-2005
+                             1240 ; 156  |        word = word & 0xFF;
+                             1241 
+P:002D 45F400 0000FF  3  102 1243         move    #>$FF,x1
+P:002F 200066         2  104 1244         and     x1,a
+                             1245 
+                             1246 ; 157  |        if (word == 0x00)
+                             1247 
+P:0030 218E00         2  106 1249         move    a1,a
+P:0031 0AF0A2 rrrrrr  6  112 1250         jne     L18
+                             1251 
+                             1252 ; 158  |                word = 0x5F;
+                             1253 
+P:0033 56F400 00005F  3  115 1255         move    #>95,a
+                             1256 
+                             1257 ; 159  |        for (j = 0; j < LONGNAMERES_CH; j++)
+                             1258 
+                             1260 L18:
+P:0035 66F400 rrrrrr  3  118 1262         move    #FLong_NameRes_Ch,r6
+P:0037 060980 rrrrrr  6  124 1263         do      #9,L28
+                             1265 
+                             1266 ; 160  |        {
+                             1267 ; 161  |                if (word == Long_NameRes_Ch[j])
+                             1268 
+P:0039 4DDE00         2  126 1270         move    y:(r6)+,x1
+P:003A 200065         2  128 1271         cmp     x1,a
+P:003B 0AF0A2 rrrrrr  6  134 1272         jne     L20
+                             1273 
+                             1274 ; 162  |                word = 0x5F;
+                             1275 
+P:003D 56F400 00005F  3  137 1277         move    #>95,a
+                             1278 L20:
+P:003F 000000         2  139 1280         nop
+P:0040 000000         2  141 1281         nop
+                        (17) 1282 L28:
+                             1285 
+                             1286 ; 163  |        }
+                             1287 ; 164  |        //if (word > 0x7F)
+                             1288 ; 165  |        //      word = 0x5F;
+                             1289 ; 166  |    //end 3.095.RC0 block.
+                             1290 ; 167  |
+                             1291 ; 168  |
+                             1292 ; 169  |   for(j=0;j<SHORTNAMERES_CH;j++)
+                             1293 
+P:0041 66F400 rrrrrr  3  144 1295         move    #FShort_NameRes_Ch,r6
+P:0043 060680 rrrrrr  6  150 1296         do      #6,L29
+                             1298 
+                             1299 ; 170  |        {
+                             1300 ; 171  |         if(word == Short_NameRes_Ch[j])
+                             1301 
+P:0045 4EDE00         2  152 1303         move    y:(r6)+,y0
+P:0046 200055         2  154 1304         cmp     y0,a
+P:0047 0AF0A2 rrrrrr  6  160 1305         jne     L22
+                             1306 
+                             1307 ; 172  |                word = 0x5F;
+                             1308 
+P:0049 56F400 00005F  3  163 1310         move    #>95,a
+                             1311 L22:
+P:004B 000000         2  165 1313         nop
+P:004C 000000         2  167 1314         nop
+                        (17) 1315 L29:
+                             1317 
+                             1318 ; 173  |    }
+                             1319 ; 174  |
+                             1320 ; 175  |    if (((word==' ')||(word=='.'))&&(highbyte!=0))
+                             1321 
+P:004D 46F400 000020  3  170 1323         move    #>$20,y0
+P:004F 200055         2  172 1324         cmp     y0,a
+P:0050 0AF0AA rrrrrr  6  178 1325         jeq     L23
+P:0052 44F400 00002E  3  181 1326         move    #>46,x0
+P:0054 200045         2  183 1327         cmp     x0,a
+P:0055 0AF0A2 rrrrrr  6  189 1328         jne     L25
+P:0057 21AF00         2  191 1329 L23:    move    b1,b
+P:0058 20000B         2  193 1330         tst     b
+P:0059 0AF0AA rrrrrr  6  199 1332         jeq     L25
+                             1333 
+                             1334 ; 176  |        word = 0x5f;
+                             1335 
+P:005B 56F400 00005F  3  202 1337         move    #>95,a
+                             1338 
+                             1339 ; 177  |
+                             1340 ; 178  |     PutByte(shortname,word,k,DEFAULT_MEMORY);
+                             1341 
+P:005D 77F400 FFFFFC  3  205 1343 L25:    move    #-4,n7
+P:005F 000000         2  207 1344         nop
+P:0060 68EF00         4  211 1345         move    y:(r7+n7),r0
+P:0061 77F400 FFFFFE  3  214 1348         move    #-2,n7
+P:0063 000000         2  216 1349         nop
+P:0064 5FEF00         4  220 1350         move    y:(r7+n7),b
+P:0065 44F400 000002  3  223 1353         move    #>2,x0
+P:0067 0BF080 rrrrrr  6  229 1354         jsr     FPutByte
+                             1360 
+                             1361 ; 179  |         offset+=2; 
+                             1362 
+P:0069 045FA0         2  231 1364         movec   m0,n7
+P:006A 000000         2  233 1365         nop
+P:006B 5EEF00         4  237 1366         move    y:(r7+n7),a
+P:006C 57F400 000002  3  240 1367         move    #>2,b
+P:006E 200010         2  242 1368         add     b,a
+                             1371 
+                             1372 ; 180  |         k++;
+                             1373 
+P:006F 77F400 FFFFFE  3  245 1375         move    #-2,n7
+P:0071 000000         2  247 1376         nop
+P:0072 5FEF00         4  251 1377         move    y:(r7+n7),b
+P:0073 46F400 000001  3  254 1378         move    #>1,y0
+P:0075 200058         2  256 1379         add     y0,b
+P:0076 5D6F00         4  260 1382         move    b1,y:(r7+n7)
+P:0077 77F400 FFFFFD  3  263 1386 L26:    move    #-3,n7
+P:0079 000000         2  265 1387         nop
+P:007A 4CEF00         4  269 1388         move    y:(r7+n7),x0
+P:007B 200045         2  271 1389         cmp     x0,a
+P:007C 0AF0A9 rrrrrr  6  277 1390         jlt     L17
+                             1391 
+                             1392 ; 181  |  } 
+                             1393 ; 182  |  PutByte(shortname,0,k,DEFAULT_MEMORY);
+                             1394 
+P:007E 77F400 FFFFFE  3  280 1396 L27:    move    #-2,n7
+P:0080 000000         2  282 1397         nop
+P:0081 5FEF00         4  286 1398         move    y:(r7+n7),b
+P:0082 77F400 FFFFFC  3  289 1399         move    #-4,n7
+P:0084 000000         2  291 1400         nop
+P:0085 68EF00         4  295 1401         move    y:(r7+n7),r0
+P:0086 44F400 000002  3  298 1402         move    #>2,x0
+P:0088 200013         2  300 1403         clr     a   
+P:0089 0BF080 rrrrrr  6  306 1404         jsr     FPutByte
+                             1412 
+                             1413 ; 183  |}
+                             1414 
+P:008B 77F400 FFFFFA  3  309 1416         move    #-6,n7
+P:008D 000000         2  311 1417         nop
+P:008E 05EF7C         4  315 1418         movec   y:(r7+n7),ssh
+P:008F 204F00         2  317 1420         move    (r7)+n7
+P:0090 00000C         4  321 1422         rts
+                             1427 
+                             1428 ; 184  |
+                             1429 
+                             1441 
+                             1442         extern  FFSGetByte, FFSGetWord, FPutByte, FPutWord
+                             1443 
+                             1444         global  FDBCStoUnicode_Funclet, FLong_NameRes_Ch
+                             1445         global  FShort_NameRes_Ch, FUnicodeToOEM_Funclet
+                             1446 
+                             1447         local   Fdo_nothing, L3, L4, L5, L17, L18, L20, L22, L23, L25, L26
+                             1448         local   L27, L28, L29
+                             1449 
+                             1450         calls   "DBCStoUnicode_Funclet", "FSGetByte", "PutByte", "PutWord"
+                             1451         calls   "UnicodeToOEM_Funclet", "FSGetWord", "PutByte"
+                             1452 

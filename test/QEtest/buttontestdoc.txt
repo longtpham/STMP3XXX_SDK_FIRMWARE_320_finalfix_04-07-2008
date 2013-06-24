@@ -1,0 +1,28 @@
+Quadrature encoder or Rotary encoder and Button test Documentation
+-------------------------
+
+Functional Description
+----------------------
+This test combined the Rotary encoder test with the existed buttontest.  The absolute encoder position between 0 and 100 is displayed on the LCD.  The initial value of the encoder is 50.  This test the GPIO and the interrupt service routine of the encoder.
+
+Build Options
+-------------
+Usage : QEtest DEVICE [ALL]
+	DEVICE = 3400 or 3410
+     	ALL    = rebuilds all files
+
+Test Execution
+--------------
+The QEtest starts out with making a graphical display of the button matrix on the LCD. 
+The main component of the test is a while(1) loop in which we poll for a button-press event and the encoder is rotated.
+
+1. Rotate the rotary encoder clockwise and the position should be increased by one of each click. Rotating the encoder counter clockwise and the position is decreased accordingly.  
+
+2. After a button press event is trapped, the event number is displayed and the respective button on the bitmap is toggled (drawn inverted or regular). Thus we have visual correlation for each button press. The test includes button events for press-and-hold as well as press-and-release.  During a press-and-hold event the corresponding button on the LCD will flash.  A two key press is also present, and can be tested by pressing and holding vol + and vol - simultaneously.  The list of active buttons events can be modified using the 'buttonsdef.inc' file.
+
+Test Architecture
+-----------------
+Modules used in the test:
+DisplayModule - for display functionality
+
+The resources are in Y memory. The test uses forced processing of the module queues. This is done by calling the 'RetrieveLcdMessage()' function in the 'lcdsupport.c' file.

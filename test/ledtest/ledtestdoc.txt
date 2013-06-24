@@ -1,0 +1,24 @@
+LED test Documentation
+----------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the LEDs by testing the APIs provided. Information about the LED API can be found in the document "Customizing the User Interface User Manual" on the extranet. 
+
+Build Options
+-------------
+Usage : ledtest DEVICE [ALL]
+	DEVICE = 3400 or 3410
+     	ALL    = rebuilds all files
+
+Test Execution
+--------------
+The test is uses the control functionality of the LED module. No button functionality is used in this test. The main module has a while(1) loop which turns the LEDs ON and OFF and also makes them blink.  One LED is set to blink at half the rate of the other to ensure that synchronization has been achieved.  The ON, OFF, and BLINK times may be changed in the source code to a desired length by changing the argument to Wait().  This argument does not represent any known value of discrete time.
+
+Test Architecture
+-----------------
+Modules used in the test:
+LedModule - for LED control functionality
+
+The resources are in Y memory. The test uses timers to execute modules. This is done because timers are needed to define accurately the ON and OFF time of the LEDs.LED control functionality is present in the 'led.asm' file under 'system\msgmodules\hardware\led'.
+No resources are needed by the test. The 'resource.inc' is just a fake file needed by the build.

@@ -1,0 +1,14 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright(C) SigmaTel, Inc. 2004-2006
+//
+// File        : displaytask_color.h
+// Description : LCD display driver header file
+////////////////////////////////////////////////////////////////////////////////
+#ifndef _DISPLAY_MODULE_H
+#define _DISPLAY_MODULE_H
+
+
+#define SIMPLE_RESOURCE 0
+#define NESTED_RESOURCE 1
+
+#endif

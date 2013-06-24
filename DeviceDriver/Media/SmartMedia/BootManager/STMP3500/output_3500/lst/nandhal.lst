@@ -1,0 +1,110 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\common\nandhal.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2002-2003
+                                3 ;
+                                4 ;  File        : nandhal.asm
+                                5 ;  Description : NAND Hardware Layer
+                                6 ;
+                                7 ;  To dos:
+                                8 ;       In powerupflashpads function we need to add a check to determine if 
+                                9 ;       the boot mode NAND is 1.8V. If so, setup the pads for 1.8 volts 
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 
+                               13 
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               15 ;   Includes
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 
+                               27 
+                               28         section BOOTROM_FLASH
+                               29 
+                               30 
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               32 ;   External Definitions
+                               33 ;///////////////////////////////////////////////////////////////////////////////
+                               34 
+                               35     global  PowerUpFlashPads
+                               36     global  FPowerUpFlashPads
+                               37     global  PowerUpFlashPads_16bit
+                               38     global  FPowerUpFlashPads_16bit
+                               39     
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               41 ;   External References
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               43 
+                               45         extern  b1p8Volts
+                               47 
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   Equates
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               51 
+                               52 ;///////////////////////////////////////////////////////////////////////////////
+                               53 ;   X Memory
+                               54 ;
+                               55 ;///////////////////////////////////////////////////////////////////////////////
+                               56         
+                               57 ;///////////////////////////////////////////////////////////////////////////////
+                               58 ;   Y Memory
+                               59 ;///////////////////////////////////////////////////////////////////////////////
+                               60         
+                               61 ;///////////////////////////////////////////////////////////////////////////////
+                               62 ;   Code
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+                               64 
+P:0000                         65     org     p,"BOOTROM_Flash_P":
+                               66 
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               68 ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               69 ;>  Name:           PowerUpFlashPads
+                               70 ;
+                               71 ;   Type:           Function
+                               72 ;
+                               73 ;   Description:    
+                               74 ;
+                               75 ;   Inputs:         
+                               76 ;
+                               77 ;   Outputs:        
+                               78 ;
+                               79 ;   Notes:          
+                               80 ;           All Pads must be powered already
+                               81 ;<
+                               82 ;///////////////////////////////////////////////////////////////////////////////
+                               83 FPowerUpFlashPads
+                               84 PowerUpFlashPads
+                               85     
+P:0000 200013         2    2   86     clr     a                       ; Return SUCCESS
+P:0001 00000C         4    6   87     rts
+                               88 
+                               89 
+                               90 
+                               91 ;///////////////////////////////////////////////////////////////////////////////
+                               92 ;
+                               93 ;>  Name:           PowerUpFlashPads_16bit
+                               94 ;
+                               95 ;   Type:           Function
+                               96 ;
+                               97 ;   Description:    Power up the extra pins needed for 16-bit NAND data buses (D8-15)
+                               98 ;
+                               99 ;   Inputs:         
+                              100 ;
+                              101 ;   Outputs:        
+                              102 ;
+                              103 ;   Notes:          
+                              104 ;           All Pads must be powered already
+                              105 ;<
+                              106 ;///////////////////////////////////////////////////////////////////////////////
+                              107 FPowerUpFlashPads_16bit
+                              108 PowerUpFlashPads_16bit
+                              109 
+P:0002 200013         2    8  110     clr     a                       ; Return SUCCESS
+P:0003 00000C         4   12  111     rts
+                              112 
+                              113 
+                              114     endsec

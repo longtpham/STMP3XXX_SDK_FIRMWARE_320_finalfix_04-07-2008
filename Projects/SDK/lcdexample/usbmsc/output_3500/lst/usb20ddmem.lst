@@ -1,0 +1,2425 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\usb\usb20\devctrlint\usb20ddmem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2002-2003
+                                3 ;
+                                4 ;  File        : usb20ddmem.asm
+                                5 ;  Description : Memory allocation for usb 2.0 device driver
+                                6 ;                and functions to manipulate DQHs and dTDs 
+                                7 ;///////////////////////////////////////////////////////////////////////////////
+                               10     page    132,60,0,0,0
+                               12 ;*******************************************************************************
+                               13 ;  Include files
+                               14 ;*******************************************************************************
+                               18         list
+                               19         
+                               20 ;*******************************************************************************
+                               21 ;  Macros
+                               22 ;*******************************************************************************
+                               24 ;*******************************************************************************
+                               25 ;  Extern definitions
+                               26 ;*******************************************************************************
+                               40     
+                               43 ;*******************************************************************************
+                               44 ;  Extern references
+                               45 ;*******************************************************************************
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   Equates
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               51     ; *** NOTE: if you change this equate, change the define for MAX_NUM_EP in usb_internal.h as well.
+                               52     ; The two definitions must be equivalent for proper operation.
+                               53     MAX_NUM_EP: equ 4
+                               55     ; Calculates the STMP Space Address for each dQH entry. The address is coded
+                               56     ; in STMP Word Address, Byte Offset in STMP word
+                               58     DUPF    OUTNUM,0,(MAX_NUM_EP-1)
+                               59         DUPF INNUM,0,1
+                               60 BASE\OUTNUM\\INNUM                   equ     (((OUTNUM*2)+INNUM)*64)       
+                               61 dQH_IOS_W\OUTNUM\\INNUM              equ     (((BASE\OUTNUM\\INNUM)/3)+FdQH_Base_Add)
+                               62 dQH_IOS_BO\OUTNUM\\INNUM             equ     (BASE\OUTNUM\\INNUM)-((dQH_IOS_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               63 dQH_MAX_PKT_LENGTH_W\OUTNUM\\INNUM   equ     ((BASE\OUTNUM\\INNUM+2)/3)+FdQH_Base_Add
+                               64 dQH_MAX_PKT_LENGTH_BO\OUTNUM\\INNUM  equ     (BASE\OUTNUM\\INNUM+2)-((dQH_MAX_PKT_LENGTH_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               65 dQH_NEXT_dTD_PTR_LOWER_BYTES_W\OUTNUM\\INNUM     equ     ((BASE\OUTNUM\\INNUM+8)/3)+FdQH_Base_Add
+                               66 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO\OUTNUM\\INNUM    equ     (BASE\OUTNUM\\INNUM+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               67 dQH_NEXT_dTD_PTR_UPPER_BYTES_W\OUTNUM\\INNUM     equ     ((BASE\OUTNUM\\INNUM+10)/3)+FdQH_Base_Add
+                               68 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO\OUTNUM\\INNUM    equ     (BASE\OUTNUM\\INNUM+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               69 dQH_STATUS_W\OUTNUM\\INNUM           equ     ((BASE\OUTNUM\\INNUM+12)/3)+FdQH_Base_Add
+                               70 dQH_STATUS_BO\OUTNUM\\INNUM          equ     (BASE\OUTNUM\\INNUM+12)-((dQH_STATUS_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               71 dQH_TOTAL_BYTES_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+14)/3)+FdQH_Base_Add
+                               72 dQH_TOTAL_BYTES_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+14)-((dQH_TOTAL_BYTES_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               73 dQH_SETUP_BYTE0_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+40)/3)+FdQH_Base_Add
+                               74 dQH_SETUP_BYTE0_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+40)-((dQH_SETUP_BYTE0_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               75 dQH_SETUP_BYTE1_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+41)/3)+FdQH_Base_Add
+                               76 dQH_SETUP_BYTE1_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+41)-((dQH_SETUP_BYTE1_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               77 dQH_SETUP_BYTE2_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+42)/3)+FdQH_Base_Add
+                               78 dQH_SETUP_BYTE2_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+42)-((dQH_SETUP_BYTE2_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               79 dQH_SETUP_BYTE3_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+43)/3)+FdQH_Base_Add
+                               80 dQH_SETUP_BYTE3_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+43)-((dQH_SETUP_BYTE3_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               81 dQH_SETUP_BYTE4_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+44)/3)+FdQH_Base_Add
+                               82 dQH_SETUP_BYTE4_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+44)-((dQH_SETUP_BYTE4_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               83 dQH_SETUP_BYTE5_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+45)/3)+FdQH_Base_Add
+                               84 dQH_SETUP_BYTE5_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+45)-((dQH_SETUP_BYTE5_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               85 dQH_SETUP_BYTE6_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+46)/3)+FdQH_Base_Add
+                               86 dQH_SETUP_BYTE6_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+46)-((dQH_SETUP_BYTE6_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               87 dQH_SETUP_BYTE7_W\OUTNUM\\INNUM      equ     ((BASE\OUTNUM\\INNUM+47)/3)+FdQH_Base_Add
+                               88 dQH_SETUP_BYTE7_BO\OUTNUM\\INNUM     equ     (BASE\OUTNUM\\INNUM+47)-((dQH_SETUP_BYTE7_W\OUTNUM\\INNUM-FdQH_Base_Add)*3)
+                               89         ENDM
+                               90     ENDM
+                               90         DUPF INNUM,0,1
+                               90 BASE0\INNUM                   equ     (((0*2)+INNUM)*64)       
+                               90 dQH_IOS_W0\INNUM              equ     (((BASE0\INNUM)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO0\INNUM             equ     (BASE0\INNUM)-((dQH_IOS_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W0\INNUM   equ     ((BASE0\INNUM+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO0\INNUM  equ     (BASE0\INNUM+2)-((dQH_MAX_PKT_LENGTH_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W0\INNUM     equ     ((BASE0\INNUM+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO0\INNUM    equ     (BASE0\INNUM+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W0\INNUM     equ     ((BASE0\INNUM+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO0\INNUM    equ     (BASE0\INNUM+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W0\INNUM           equ     ((BASE0\INNUM+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO0\INNUM          equ     (BASE0\INNUM+12)-((dQH_STATUS_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W0\INNUM      equ     ((BASE0\INNUM+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO0\INNUM     equ     (BASE0\INNUM+14)-((dQH_TOTAL_BYTES_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W0\INNUM      equ     ((BASE0\INNUM+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO0\INNUM     equ     (BASE0\INNUM+40)-((dQH_SETUP_BYTE0_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W0\INNUM      equ     ((BASE0\INNUM+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO0\INNUM     equ     (BASE0\INNUM+41)-((dQH_SETUP_BYTE1_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W0\INNUM      equ     ((BASE0\INNUM+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO0\INNUM     equ     (BASE0\INNUM+42)-((dQH_SETUP_BYTE2_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W0\INNUM      equ     ((BASE0\INNUM+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO0\INNUM     equ     (BASE0\INNUM+43)-((dQH_SETUP_BYTE3_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W0\INNUM      equ     ((BASE0\INNUM+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO0\INNUM     equ     (BASE0\INNUM+44)-((dQH_SETUP_BYTE4_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W0\INNUM      equ     ((BASE0\INNUM+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO0\INNUM     equ     (BASE0\INNUM+45)-((dQH_SETUP_BYTE5_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W0\INNUM      equ     ((BASE0\INNUM+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO0\INNUM     equ     (BASE0\INNUM+46)-((dQH_SETUP_BYTE6_W0\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W0\INNUM      equ     ((BASE0\INNUM+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO0\INNUM     equ     (BASE0\INNUM+47)-((dQH_SETUP_BYTE7_W0\INNUM-FdQH_Base_Add)*3)
+                               90         ENDM
+                               90 BASE00                   equ     (((0*2)+0)*64)       
+                               90 dQH_IOS_W00              equ     (((BASE00)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO00             equ     (BASE00)-((dQH_IOS_W00-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W00   equ     ((BASE00+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO00  equ     (BASE00+2)-((dQH_MAX_PKT_LENGTH_W00-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W00     equ     ((BASE00+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO00    equ     (BASE00+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W00-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W00     equ     ((BASE00+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO00    equ     (BASE00+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W00-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W00           equ     ((BASE00+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO00          equ     (BASE00+12)-((dQH_STATUS_W00-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W00      equ     ((BASE00+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO00     equ     (BASE00+14)-((dQH_TOTAL_BYTES_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W00      equ     ((BASE00+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO00     equ     (BASE00+40)-((dQH_SETUP_BYTE0_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W00      equ     ((BASE00+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO00     equ     (BASE00+41)-((dQH_SETUP_BYTE1_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W00      equ     ((BASE00+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO00     equ     (BASE00+42)-((dQH_SETUP_BYTE2_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W00      equ     ((BASE00+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO00     equ     (BASE00+43)-((dQH_SETUP_BYTE3_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W00      equ     ((BASE00+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO00     equ     (BASE00+44)-((dQH_SETUP_BYTE4_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W00      equ     ((BASE00+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO00     equ     (BASE00+45)-((dQH_SETUP_BYTE5_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W00      equ     ((BASE00+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO00     equ     (BASE00+46)-((dQH_SETUP_BYTE6_W00-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W00      equ     ((BASE00+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO00     equ     (BASE00+47)-((dQH_SETUP_BYTE7_W00-FdQH_Base_Add)*3)
+                               90 BASE01                   equ     (((0*2)+1)*64)       
+                               90 dQH_IOS_W01              equ     (((BASE01)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO01             equ     (BASE01)-((dQH_IOS_W01-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W01   equ     ((BASE01+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO01  equ     (BASE01+2)-((dQH_MAX_PKT_LENGTH_W01-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W01     equ     ((BASE01+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO01    equ     (BASE01+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W01-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W01     equ     ((BASE01+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO01    equ     (BASE01+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W01-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W01           equ     ((BASE01+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO01          equ     (BASE01+12)-((dQH_STATUS_W01-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W01      equ     ((BASE01+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO01     equ     (BASE01+14)-((dQH_TOTAL_BYTES_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W01      equ     ((BASE01+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO01     equ     (BASE01+40)-((dQH_SETUP_BYTE0_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W01      equ     ((BASE01+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO01     equ     (BASE01+41)-((dQH_SETUP_BYTE1_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W01      equ     ((BASE01+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO01     equ     (BASE01+42)-((dQH_SETUP_BYTE2_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W01      equ     ((BASE01+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO01     equ     (BASE01+43)-((dQH_SETUP_BYTE3_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W01      equ     ((BASE01+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO01     equ     (BASE01+44)-((dQH_SETUP_BYTE4_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W01      equ     ((BASE01+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO01     equ     (BASE01+45)-((dQH_SETUP_BYTE5_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W01      equ     ((BASE01+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO01     equ     (BASE01+46)-((dQH_SETUP_BYTE6_W01-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W01      equ     ((BASE01+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO01     equ     (BASE01+47)-((dQH_SETUP_BYTE7_W01-FdQH_Base_Add)*3)
+                               90         DUPF INNUM,0,1
+                               90 BASE1\INNUM                   equ     (((1*2)+INNUM)*64)       
+                               90 dQH_IOS_W1\INNUM              equ     (((BASE1\INNUM)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO1\INNUM             equ     (BASE1\INNUM)-((dQH_IOS_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W1\INNUM   equ     ((BASE1\INNUM+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO1\INNUM  equ     (BASE1\INNUM+2)-((dQH_MAX_PKT_LENGTH_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W1\INNUM     equ     ((BASE1\INNUM+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO1\INNUM    equ     (BASE1\INNUM+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W1\INNUM     equ     ((BASE1\INNUM+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO1\INNUM    equ     (BASE1\INNUM+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W1\INNUM           equ     ((BASE1\INNUM+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO1\INNUM          equ     (BASE1\INNUM+12)-((dQH_STATUS_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W1\INNUM      equ     ((BASE1\INNUM+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO1\INNUM     equ     (BASE1\INNUM+14)-((dQH_TOTAL_BYTES_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W1\INNUM      equ     ((BASE1\INNUM+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO1\INNUM     equ     (BASE1\INNUM+40)-((dQH_SETUP_BYTE0_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W1\INNUM      equ     ((BASE1\INNUM+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO1\INNUM     equ     (BASE1\INNUM+41)-((dQH_SETUP_BYTE1_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W1\INNUM      equ     ((BASE1\INNUM+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO1\INNUM     equ     (BASE1\INNUM+42)-((dQH_SETUP_BYTE2_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W1\INNUM      equ     ((BASE1\INNUM+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO1\INNUM     equ     (BASE1\INNUM+43)-((dQH_SETUP_BYTE3_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W1\INNUM      equ     ((BASE1\INNUM+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO1\INNUM     equ     (BASE1\INNUM+44)-((dQH_SETUP_BYTE4_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W1\INNUM      equ     ((BASE1\INNUM+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO1\INNUM     equ     (BASE1\INNUM+45)-((dQH_SETUP_BYTE5_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W1\INNUM      equ     ((BASE1\INNUM+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO1\INNUM     equ     (BASE1\INNUM+46)-((dQH_SETUP_BYTE6_W1\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W1\INNUM      equ     ((BASE1\INNUM+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO1\INNUM     equ     (BASE1\INNUM+47)-((dQH_SETUP_BYTE7_W1\INNUM-FdQH_Base_Add)*3)
+                               90         ENDM
+                               90 BASE10                   equ     (((1*2)+0)*64)       
+                               90 dQH_IOS_W10              equ     (((BASE10)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO10             equ     (BASE10)-((dQH_IOS_W10-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W10   equ     ((BASE10+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO10  equ     (BASE10+2)-((dQH_MAX_PKT_LENGTH_W10-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W10     equ     ((BASE10+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO10    equ     (BASE10+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W10-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W10     equ     ((BASE10+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO10    equ     (BASE10+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W10-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W10           equ     ((BASE10+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO10          equ     (BASE10+12)-((dQH_STATUS_W10-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W10      equ     ((BASE10+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO10     equ     (BASE10+14)-((dQH_TOTAL_BYTES_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W10      equ     ((BASE10+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO10     equ     (BASE10+40)-((dQH_SETUP_BYTE0_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W10      equ     ((BASE10+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO10     equ     (BASE10+41)-((dQH_SETUP_BYTE1_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W10      equ     ((BASE10+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO10     equ     (BASE10+42)-((dQH_SETUP_BYTE2_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W10      equ     ((BASE10+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO10     equ     (BASE10+43)-((dQH_SETUP_BYTE3_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W10      equ     ((BASE10+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO10     equ     (BASE10+44)-((dQH_SETUP_BYTE4_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W10      equ     ((BASE10+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO10     equ     (BASE10+45)-((dQH_SETUP_BYTE5_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W10      equ     ((BASE10+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO10     equ     (BASE10+46)-((dQH_SETUP_BYTE6_W10-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W10      equ     ((BASE10+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO10     equ     (BASE10+47)-((dQH_SETUP_BYTE7_W10-FdQH_Base_Add)*3)
+                               90 BASE11                   equ     (((1*2)+1)*64)       
+                               90 dQH_IOS_W11              equ     (((BASE11)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO11             equ     (BASE11)-((dQH_IOS_W11-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W11   equ     ((BASE11+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO11  equ     (BASE11+2)-((dQH_MAX_PKT_LENGTH_W11-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W11     equ     ((BASE11+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO11    equ     (BASE11+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W11-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W11     equ     ((BASE11+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO11    equ     (BASE11+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W11-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W11           equ     ((BASE11+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO11          equ     (BASE11+12)-((dQH_STATUS_W11-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W11      equ     ((BASE11+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO11     equ     (BASE11+14)-((dQH_TOTAL_BYTES_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W11      equ     ((BASE11+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO11     equ     (BASE11+40)-((dQH_SETUP_BYTE0_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W11      equ     ((BASE11+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO11     equ     (BASE11+41)-((dQH_SETUP_BYTE1_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W11      equ     ((BASE11+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO11     equ     (BASE11+42)-((dQH_SETUP_BYTE2_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W11      equ     ((BASE11+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO11     equ     (BASE11+43)-((dQH_SETUP_BYTE3_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W11      equ     ((BASE11+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO11     equ     (BASE11+44)-((dQH_SETUP_BYTE4_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W11      equ     ((BASE11+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO11     equ     (BASE11+45)-((dQH_SETUP_BYTE5_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W11      equ     ((BASE11+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO11     equ     (BASE11+46)-((dQH_SETUP_BYTE6_W11-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W11      equ     ((BASE11+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO11     equ     (BASE11+47)-((dQH_SETUP_BYTE7_W11-FdQH_Base_Add)*3)
+                               90         DUPF INNUM,0,1
+                               90 BASE2\INNUM                   equ     (((2*2)+INNUM)*64)       
+                               90 dQH_IOS_W2\INNUM              equ     (((BASE2\INNUM)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO2\INNUM             equ     (BASE2\INNUM)-((dQH_IOS_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W2\INNUM   equ     ((BASE2\INNUM+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO2\INNUM  equ     (BASE2\INNUM+2)-((dQH_MAX_PKT_LENGTH_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W2\INNUM     equ     ((BASE2\INNUM+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO2\INNUM    equ     (BASE2\INNUM+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W2\INNUM     equ     ((BASE2\INNUM+10)/3)+FdQH_Base_Add
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO2\INNUM    equ     (BASE2\INNUM+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W2\INNUM           equ     ((BASE2\INNUM+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO2\INNUM          equ     (BASE2\INNUM+12)-((dQH_STATUS_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W2\INNUM      equ     ((BASE2\INNUM+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO2\INNUM     equ     (BASE2\INNUM+14)-((dQH_TOTAL_BYTES_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W2\INNUM      equ     ((BASE2\INNUM+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO2\INNUM     equ     (BASE2\INNUM+40)-((dQH_SETUP_BYTE0_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W2\INNUM      equ     ((BASE2\INNUM+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO2\INNUM     equ     (BASE2\INNUM+41)-((dQH_SETUP_BYTE1_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W2\INNUM      equ     ((BASE2\INNUM+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO2\INNUM     equ     (BASE2\INNUM+42)-((dQH_SETUP_BYTE2_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W2\INNUM      equ     ((BASE2\INNUM+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO2\INNUM     equ     (BASE2\INNUM+43)-((dQH_SETUP_BYTE3_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W2\INNUM      equ     ((BASE2\INNUM+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO2\INNUM     equ     (BASE2\INNUM+44)-((dQH_SETUP_BYTE4_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W2\INNUM      equ     ((BASE2\INNUM+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO2\INNUM     equ     (BASE2\INNUM+45)-((dQH_SETUP_BYTE5_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W2\INNUM      equ     ((BASE2\INNUM+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO2\INNUM     equ     (BASE2\INNUM+46)-((dQH_SETUP_BYTE6_W2\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W2\INNUM      equ     ((BASE2\INNUM+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO2\INNUM     equ     (BASE2\INNUM+47)-((dQH_SETUP_BYTE7_W2\INNUM-FdQH_Base_Add)*3)
+                               90         ENDM
+                               90 BASE20                   equ     (((2*2)+0)*64)       
+                               90 dQH_IOS_W20              equ     (((BASE20)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO20             equ     (BASE20)-((dQH_IOS_W20-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W20   equ     ((BASE20+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO20  equ     (BASE20+2)-((dQH_MAX_PKT_LENGTH_W20-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W20     equ     ((BASE20+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO20    equ     (BASE20+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W20-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W20     equ     ((BASE20+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO20    equ     (BASE20+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W20-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W20           equ     ((BASE20+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO20          equ     (BASE20+12)-((dQH_STATUS_W20-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W20      equ     ((BASE20+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO20     equ     (BASE20+14)-((dQH_TOTAL_BYTES_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W20      equ     ((BASE20+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO20     equ     (BASE20+40)-((dQH_SETUP_BYTE0_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W20      equ     ((BASE20+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO20     equ     (BASE20+41)-((dQH_SETUP_BYTE1_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W20      equ     ((BASE20+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO20     equ     (BASE20+42)-((dQH_SETUP_BYTE2_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W20      equ     ((BASE20+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO20     equ     (BASE20+43)-((dQH_SETUP_BYTE3_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W20      equ     ((BASE20+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO20     equ     (BASE20+44)-((dQH_SETUP_BYTE4_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W20      equ     ((BASE20+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO20     equ     (BASE20+45)-((dQH_SETUP_BYTE5_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W20      equ     ((BASE20+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO20     equ     (BASE20+46)-((dQH_SETUP_BYTE6_W20-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W20      equ     ((BASE20+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO20     equ     (BASE20+47)-((dQH_SETUP_BYTE7_W20-FdQH_Base_Add)*3)
+                               90 BASE21                   equ     (((2*2)+1)*64)       
+                               90 dQH_IOS_W21              equ     (((BASE21)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO21             equ     (BASE21)-((dQH_IOS_W21-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W21   equ     ((BASE21+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO21  equ     (BASE21+2)-((dQH_MAX_PKT_LENGTH_W21-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W21     equ     ((BASE21+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO21    equ     (BASE21+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W21-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W21     equ     ((BASE21+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO21    equ     (BASE21+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W21-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W21           equ     ((BASE21+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO21          equ     (BASE21+12)-((dQH_STATUS_W21-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W21      equ     ((BASE21+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO21     equ     (BASE21+14)-((dQH_TOTAL_BYTES_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W21      equ     ((BASE21+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO21     equ     (BASE21+40)-((dQH_SETUP_BYTE0_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W21      equ     ((BASE21+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO21     equ     (BASE21+41)-((dQH_SETUP_BYTE1_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W21      equ     ((BASE21+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO21     equ     (BASE21+42)-((dQH_SETUP_BYTE2_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W21      equ     ((BASE21+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO21     equ     (BASE21+43)-((dQH_SETUP_BYTE3_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W21      equ     ((BASE21+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO21     equ     (BASE21+44)-((dQH_SETUP_BYTE4_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W21      equ     ((BASE21+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO21     equ     (BASE21+45)-((dQH_SETUP_BYTE5_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W21      equ     ((BASE21+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO21     equ     (BASE21+46)-((dQH_SETUP_BYTE6_W21-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W21      equ     ((BASE21+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO21     equ     (BASE21+47)-((dQH_SETUP_BYTE7_W21-FdQH_Base_Add)*3)
+                               90         DUPF INNUM,0,1
+                               90 BASE3\INNUM                   equ     (((3*2)+INNUM)*64)       
+                               90 dQH_IOS_W3\INNUM              equ     (((BASE3\INNUM)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO3\INNUM             equ     (BASE3\INNUM)-((dQH_IOS_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W3\INNUM   equ     ((BASE3\INNUM+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO3\INNUM  equ     (BASE3\INNUM+2)-((dQH_MAX_PKT_LENGTH_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W3\INNUM     equ     ((BASE3\INNUM+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO3\INNUM    equ     (BASE3\INNUM+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W3\INNUM     equ     ((BASE3\INNUM+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO3\INNUM    equ     (BASE3\INNUM+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W3\INNUM           equ     ((BASE3\INNUM+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO3\INNUM          equ     (BASE3\INNUM+12)-((dQH_STATUS_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W3\INNUM      equ     ((BASE3\INNUM+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO3\INNUM     equ     (BASE3\INNUM+14)-((dQH_TOTAL_BYTES_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W3\INNUM      equ     ((BASE3\INNUM+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO3\INNUM     equ     (BASE3\INNUM+40)-((dQH_SETUP_BYTE0_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W3\INNUM      equ     ((BASE3\INNUM+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO3\INNUM     equ     (BASE3\INNUM+41)-((dQH_SETUP_BYTE1_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W3\INNUM      equ     ((BASE3\INNUM+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO3\INNUM     equ     (BASE3\INNUM+42)-((dQH_SETUP_BYTE2_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W3\INNUM      equ     ((BASE3\INNUM+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO3\INNUM     equ     (BASE3\INNUM+43)-((dQH_SETUP_BYTE3_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W3\INNUM      equ     ((BASE3\INNUM+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO3\INNUM     equ     (BASE3\INNUM+44)-((dQH_SETUP_BYTE4_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W3\INNUM      equ     ((BASE3\INNUM+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO3\INNUM     equ     (BASE3\INNUM+45)-((dQH_SETUP_BYTE5_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W3\INNUM      equ     ((BASE3\INNUM+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO3\INNUM     equ     (BASE3\INNUM+46)-((dQH_SETUP_BYTE6_W3\INNUM-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W3\INNUM      equ     ((BASE3\INNUM+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO3\INNUM     equ     (BASE3\INNUM+47)-((dQH_SETUP_BYTE7_W3\INNUM-FdQH_Base_Add)*3)
+                               90         ENDM
+                               90 BASE30                   equ     (((3*2)+0)*64)       
+                               90 dQH_IOS_W30              equ     (((BASE30)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO30             equ     (BASE30)-((dQH_IOS_W30-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W30   equ     ((BASE30+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO30  equ     (BASE30+2)-((dQH_MAX_PKT_LENGTH_W30-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W30     equ     ((BASE30+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO30    equ     (BASE30+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W30-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W30     equ     ((BASE30+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO30    equ     (BASE30+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W30-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W30           equ     ((BASE30+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO30          equ     (BASE30+12)-((dQH_STATUS_W30-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W30      equ     ((BASE30+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO30     equ     (BASE30+14)-((dQH_TOTAL_BYTES_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W30      equ     ((BASE30+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO30     equ     (BASE30+40)-((dQH_SETUP_BYTE0_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W30      equ     ((BASE30+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO30     equ     (BASE30+41)-((dQH_SETUP_BYTE1_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W30      equ     ((BASE30+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO30     equ     (BASE30+42)-((dQH_SETUP_BYTE2_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W30      equ     ((BASE30+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO30     equ     (BASE30+43)-((dQH_SETUP_BYTE3_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W30      equ     ((BASE30+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO30     equ     (BASE30+44)-((dQH_SETUP_BYTE4_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W30      equ     ((BASE30+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO30     equ     (BASE30+45)-((dQH_SETUP_BYTE5_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W30      equ     ((BASE30+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO30     equ     (BASE30+46)-((dQH_SETUP_BYTE6_W30-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W30      equ     ((BASE30+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO30     equ     (BASE30+47)-((dQH_SETUP_BYTE7_W30-FdQH_Base_Add)*3)
+                               90 BASE31                   equ     (((3*2)+1)*64)       
+                               90 dQH_IOS_W31              equ     (((BASE31)/3)+FdQH_Base_Add)
+                               90 dQH_IOS_BO31             equ     (BASE31)-((dQH_IOS_W31-FdQH_Base_Add)*3)
+                               90 dQH_MAX_PKT_LENGTH_W31   equ     ((BASE31+2)/3)+FdQH_Base_Add
+                               90 dQH_MAX_PKT_LENGTH_BO31  equ     (BASE31+2)-((dQH_MAX_PKT_LENGTH_W31-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_W31     equ     ((BASE31+8)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_LOWER_BYTES_BO31    equ     (BASE31+8)-((dQH_NEXT_dTD_PTR_LOWER_BYTES_W31-FdQH_Base_Add)*3)
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_W31     equ     ((BASE31+10)/3)+FdQH_Base_Add
+                               90 dQH_NEXT_dTD_PTR_UPPER_BYTES_BO31    equ     (BASE31+10)-((dQH_NEXT_dTD_PTR_UPPER_BYTES_W31-FdQH_Base_Add)*3)
+                               90 dQH_STATUS_W31           equ     ((BASE31+12)/3)+FdQH_Base_Add
+                               90 dQH_STATUS_BO31          equ     (BASE31+12)-((dQH_STATUS_W31-FdQH_Base_Add)*3)
+                               90 dQH_TOTAL_BYTES_W31      equ     ((BASE31+14)/3)+FdQH_Base_Add
+                               90 dQH_TOTAL_BYTES_BO31     equ     (BASE31+14)-((dQH_TOTAL_BYTES_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE0_W31      equ     ((BASE31+40)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE0_BO31     equ     (BASE31+40)-((dQH_SETUP_BYTE0_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE1_W31      equ     ((BASE31+41)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE1_BO31     equ     (BASE31+41)-((dQH_SETUP_BYTE1_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE2_W31      equ     ((BASE31+42)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE2_BO31     equ     (BASE31+42)-((dQH_SETUP_BYTE2_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE3_W31      equ     ((BASE31+43)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE3_BO31     equ     (BASE31+43)-((dQH_SETUP_BYTE3_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE4_W31      equ     ((BASE31+44)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE4_BO31     equ     (BASE31+44)-((dQH_SETUP_BYTE4_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE5_W31      equ     ((BASE31+45)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE5_BO31     equ     (BASE31+45)-((dQH_SETUP_BYTE5_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE6_W31      equ     ((BASE31+46)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE6_BO31     equ     (BASE31+46)-((dQH_SETUP_BYTE6_W31-FdQH_Base_Add)*3)
+                               90 dQH_SETUP_BYTE7_W31      equ     ((BASE31+47)/3)+FdQH_Base_Add
+                               90 dQH_SETUP_BYTE7_BO31     equ     (BASE31+47)-((dQH_SETUP_BYTE7_W31-FdQH_Base_Add)*3)
+                               92 MASK_TOTAL_BYTES        equ     $3fff
+                               95 ;///////////////////////////////////////////////////////////////////////////////
+                               96 ;   Memory Reservation
+                               97 ; 
+                               98 ;   The equates below are declared here for a better comprehension of the code
+                               99 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        101     org x,"USB20_Device_Driver":
+                              103         ; Reserve memory space for dQHs
+                              104 START_MEM_dQH       equ     *
+                              106 FdQH_Base_Add
+X:0000                        107     ds      ((MAX_NUM_EP*2*64)/3)+1   ; Each End point has 2 DQHs. Each dQH is 64 bytes long
+   |   RESERVED                   
+X:00AA
+                              109 USB20_dQH_ALLOCATED_SIZE_BYTES  equ ((*-FdQH_Base_Add)*3) 
+                              112         ; Reserve dQH scratch endpoint capabilities space
+                              113         ; This structure is also defined in C. All dQH writes go thru this structure.
+                              114         ; To update the actual dQH, use the assembly function dQHPackCap()  
+X:00AB                        115 FdQH_Scratch_Cap            ds  5
+   |   RESERVED                   
+X:00AF
+                              117 dQH_SCRATCH_CAP_IOS_POS                 equ     0   ; 16-bit value. All bits set to 0 except bit 15 (ios)
+                              118 dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS      equ     1   ; 16 bit value
+                              119                                                     ; bits 0-10 = Maximum Packet Length
+                              120                                                     ; bits 11-12 - always 0
+                              121                                                     ; bit 13 - zlt
+                              122                                                     ; bit 14-15 - Mult
+                              123 dQH_SCRATCH_CAP_dTD_PTR_POS             equ     2   ; 16 bit pointer. We limit the ARC address space to 64Kbytes
+                              124 dQH_SCRATCH_CAP_STATUS_POS              equ     3   ; 16 bit value
+                              125                                                     ; bits 0-7 Status
+                              126                                                     ; bits 8-14 - always 0
+                              127                                                     ; bit 15 - ioc
+                              128 dQH_SCRATCH_TOTAL_BYTES_POS             equ     4   ; 16 bit value
+                              129                                                     ; bits 0-13 Total Bytes transfered
+                              130                                                     ; bits 14-15 - always 0 
+                              133         ; Reserve dQH scratch setup buffer
+                              134         ; This structure is also defined in C. All dQH setup reads go thru this structure.
+                              135         ; To update with the actual dQH information, use the assembly function dQHUnpackSetup()
+X:00B0                        136 FdQH_Scratch_Setup_Buf  ds  8
+   |   RESERVED                   
+X:00B7
+                              138     DUPF    NUM,0,7
+                              139 dQH_SCRATCH_SETUP_BUF_POS_\NUM          equ     NUM
+                              140     ENDM
+                              140 dQH_SCRATCH_SETUP_BUF_POS_0          equ     0
+                              140 dQH_SCRATCH_SETUP_BUF_POS_1          equ     1
+                              140 dQH_SCRATCH_SETUP_BUF_POS_2          equ     2
+                              140 dQH_SCRATCH_SETUP_BUF_POS_3          equ     3
+                              140 dQH_SCRATCH_SETUP_BUF_POS_4          equ     4
+                              140 dQH_SCRATCH_SETUP_BUF_POS_5          equ     5
+                              140 dQH_SCRATCH_SETUP_BUF_POS_6          equ     6
+                              140 dQH_SCRATCH_SETUP_BUF_POS_7          equ     7
+                              141                                                                 
+                              142     ; The sum of those sizes must be less or equal 32 words (96 bytes)
+                              143 dTD_SIZE            equ 10
+                              144 dTD_SCRATCH_SIZE    equ 9
+                              145 dXD_SIZE            equ 10
+                              146 dTD_RESERVED_SIZE   equ 32-(dTD_SIZE+dTD_SCRATCH_SIZE+dXD_SIZE)
+                              149         ; Force alignment for the next data section on a 96 bytes boundary
+                              150 dQH_N_96BYTE_BOUNDARY       equ     ((*-FdQH_Base_Add)/32)+1
+                              151 dQH_RESERVED_AREA_SIZE      equ     (dQH_N_96BYTE_BOUNDARY*32)-(*-FdQH_Base_Add)     
+X:00B8                        153 dQH_Reserved            ds  dQH_RESERVED_AREA_SIZE          ; section on a 96 byte boundary
+   |   RESERVED                   
+X:00BF
+                              155 END_MEM_dQH         equ     *
+                              157         ; Reserve memory space for dTDs
+                              158         ; Each dTD must be exactly 32 words apart for aligment purposes
+                              160 START_dTD_MEM       equ     *
+                              161     DUPF    NUM,0,((2*MAX_NUM_EP)-1)
+                              162 dTD_\NUM                ds  dTD_SIZE                ; The actual dTD used by ARC
+                              163 FdTD_SCRATCH_\NUM       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+                              164                                                     ; to and from the actual dTD
+                              165                                                     ; This structure is also defined in C. All dTD reads/writes
+                              166                                                     ; used this structure. To update this structure with the actual
+                              167                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              168                                                     ; the values of this structure, use dTDUnpack().
+                              169 FdXD_\NUM               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+                              170                                                     ; This structure is also defined in C.
+                              171 dTD_Reserved_\NUM       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+                              172     ENDM
+X:00C0                        172 dTD_0                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:00C9
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:00CA                        172 FdTD_SCRATCH_0       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:00D2
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:00D3                        172 FdXD_0               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:00DC
+                              172                                                     ; This structure is also defined in C.
+X:00DD                        172 dTD_Reserved_0       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:00DF
+X:00E0                        172 dTD_1                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:00E9
+X:00EA                        172 FdTD_SCRATCH_1       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:00F2
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:00F3                        172 FdXD_1               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:00FC
+                              172                                                     ; This structure is also defined in C.
+X:00FD                        172 dTD_Reserved_1       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:00FF
+X:0100                        172 dTD_2                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:0109
+X:010A                        172 FdTD_SCRATCH_2       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:0112
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:0113                        172 FdXD_2               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:011C
+                              172                                                     ; This structure is also defined in C.
+X:011D                        172 dTD_Reserved_2       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:011F
+X:0120                        172 dTD_3                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:0129
+X:012A                        172 FdTD_SCRATCH_3       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:0132
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:0133                        172 FdXD_3               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:013C
+                              172                                                     ; This structure is also defined in C.
+X:013D                        172 dTD_Reserved_3       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:013F
+X:0140                        172 dTD_4                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:0149
+X:014A                        172 FdTD_SCRATCH_4       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:0152
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:0153                        172 FdXD_4               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:015C
+                              172                                                     ; This structure is also defined in C.
+X:015D                        172 dTD_Reserved_4       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:015F
+X:0160                        172 dTD_5                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:0169
+X:016A                        172 FdTD_SCRATCH_5       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:0172
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:0173                        172 FdXD_5               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:017C
+                              172                                                     ; This structure is also defined in C.
+X:017D                        172 dTD_Reserved_5       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:017F
+X:0180                        172 dTD_6                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:0189
+X:018A                        172 FdTD_SCRATCH_6       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:0192
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:0193                        172 FdXD_6               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:019C
+                              172                                                     ; This structure is also defined in C.
+X:019D                        172 dTD_Reserved_6       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:019F
+X:01A0                        172 dTD_7                ds  dTD_SIZE                ; The actual dTD used by ARC
+   |   RESERVED                   
+X:01A9
+X:01AA                        172 FdTD_SCRATCH_7       ds  dTD_SCRATCH_SIZE        ; Scratch structure to pass and read parameters
+   |   RESERVED                   
+X:01B2
+                              172                                                     ; to and from the actual dTD
+                              172                                                     ; This structure is also defined in C. All dTD reads/writes
+                              172                                                     ; used this structure. To update this structure with the actual
+                              172                                                     ; dTD values use dTDUnpack(). To update the actual dTD with
+                              172                                                     ; the values of this structure, use dTDUnpack().
+X:01B3                        172 FdXD_7               ds  dXD_SIZE                ; Structure to define the transfer in progress on this dTD
+   |   RESERVED                   
+X:01BC
+                              172                                                     ; This structure is also defined in C.
+X:01BD                        172 dTD_Reserved_7       ds  dTD_RESERVED_SIZE       ; Force alignment on 32 words (96 bytes) boundary
+   |   RESERVED                   
+X:01BF
+                              174 END_dTD_MEM         equ     *
+                              176 USB20_STRUCT_ALLOCATED_SIZE_BYTES   equ ((*-FdQH_Base_Add)*3) 
+X:01C0                        178 FdTD_Base_Address           ds  (2*MAX_NUM_EP)
+   |   RESERVED                   
+X:01C7
+X:01C8                        179 FdTD_Base_Scratch_Address   ds  (2*MAX_NUM_EP)
+   |   RESERVED                   
+X:01CF
+X:01D0                        180 FdXD_Base_Address           ds  (2*MAX_NUM_EP)
+   |   RESERVED                   
+X:01D7
+                              182 dTD_NEXT_LINK_PTR_POS   equ 0       ; 16 bit pointer. We limit the ARC address space to 64Kbytes
+                              183 dTD_STATUS_IOC_POS      equ 1       ; 16 bit value
+                              184                                     ; bits 0-7 Status
+                              185                                     ; bits 8-14 - always 0
+                              186                                     ; bit 15 - ioc
+                              187 dTD_TOTAL_BYTES_POS     equ 2       ; 16 bit value
+                              188                                     ; bits 0-13 Total Bytes to transfer
+                              189                                     ; bits 14-15 - always 0 
+                              190 dTD_CUR_OFF_POS         equ 3       ; 16 bit value
+                              191                                     ; Offset into the 4KB buffer where the packet is to begin
+                              192                                     ; (limited to 12 bits)
+                              193 dTD_BP0_POS             equ 4       ; 16 bit pointer - Page 0 offset for the packet buffer
+                              194 dTD_BP1_POS             equ 5       ; 16 bit pointer - Page 1 offset for the packet buffer
+                              195 dTD_BP2_POS             equ 6       ; 16 bit pointer - Page 2 offset for the packet buffer
+                              196 dTD_BP3_POS             equ 7       ; 16 bit pointer - Page 3 offset for the packet buffer
+                              197 dTD_BP4_POS             equ 8       ; 16 bit pointer - Page 4 offset for the packet buffer
+                              199 ;*******************************************************************************
+                              200 ;  P memory
+                              201 ;*******************************************************************************
+P:0000                        203     org     p,"BOOTROM_CmdHandler_P":
+                              205 ;///////////////////////////////////////////////////////////////////////////////
+                              206 ;       FInitUsbStructures
+                              207 ;       
+                              208 ; On Entry: 
+                              209 ;   none
+                              210 ; On Exit:
+                              211 ;   none
+                              212 ; Modified:
+                              213 ;   Address Regs:  m0, r0
+                              214 ;   Accumulators:  
+                              215 ;   Data Regs:     x0
+                              216 ;
+                              217 ; This functions:
+                              218 ;       . zeroes out dQH and associated structures
+                              219 ;       . zeroes out dTD and associated structures
+                              220 ;       . Initializes dTDs table pointers
+                              221 ;       . Initializes dXDs table pointers
+                              222 ;       . Initializes dTDs Scratch table pointers
+                              223 ;///////////////////////////////////////////////////////////////////////////////
+                              224 FInitUsbStructures
+P:0000 05F420 00FFFF  4    4  225     movec   #>$ffff,m0
+                              227     ; Zero out dTD memory allocation and associated structures
+P:0002 44F400 000000  3    7  228     move    #>0,x0
+P:0004 60F400 rrrrrr  3   10  229     move    #>START_dTD_MEM,r0
+P:0006 0600A1         4   14  230     rep     #(END_dTD_MEM-START_dTD_MEM)
+P:0007 445800         2   16  231         move    x0,x:(r0)+
+                              233     ; Zero out dQH memory allocation and associated structures
+P:0008 60F400 rrrrrr  3   19  234     move    #>START_MEM_dQH,r0
+P:000A 44F400 000000  3   22  235     move    #>0,x0
+P:000C 06C0A0         4   26  236     rep     #(END_MEM_dQH-START_MEM_dQH)
+P:000D 445800         2   28  237         move    x0,x:(r0)+
+P:000E 60F400 rrrrrr  3   31  239     move    #>FdTD_Base_Address,r0
+                              240     DUPF    NUM,0,((2*MAX_NUM_EP)-1)
+                              241         move    #>dTD_\NUM,x0
+                              242         move    x0,x:(r0)+
+                              243     ENDM
+P:0010 44F400 rrrrrr  3   34  243         move    #>dTD_0,x0
+P:0012 445800         2   36  243         move    x0,x:(r0)+
+P:0013 44F400 rrrrrr  3   39  243         move    #>dTD_1,x0
+P:0015 445800         2   41  243         move    x0,x:(r0)+
+P:0016 44F400 rrrrrr  3   44  243         move    #>dTD_2,x0
+P:0018 445800         2   46  243         move    x0,x:(r0)+
+P:0019 44F400 rrrrrr  3   49  243         move    #>dTD_3,x0
+P:001B 445800         2   51  243         move    x0,x:(r0)+
+P:001C 44F400 rrrrrr  3   54  243         move    #>dTD_4,x0
+P:001E 445800         2   56  243         move    x0,x:(r0)+
+P:001F 44F400 rrrrrr  3   59  243         move    #>dTD_5,x0
+P:0021 445800         2   61  243         move    x0,x:(r0)+
+P:0022 44F400 rrrrrr  3   64  243         move    #>dTD_6,x0
+P:0024 445800         2   66  243         move    x0,x:(r0)+
+P:0025 44F400 rrrrrr  3   69  243         move    #>dTD_7,x0
+P:0027 445800         2   71  243         move    x0,x:(r0)+
+P:0028 60F400 rrrrrr  3   74  245     move    #>FdTD_Base_Scratch_Address,r0
+                              246     DUPF    NUM,0,((2*MAX_NUM_EP)-1)
+                              247         move    #>FdTD_SCRATCH_\NUM,x0
+                              248         move    x0,x:(r0)+
+                              249     ENDM
+P:002A 44F400 rrrrrr  3   77  249         move    #>FdTD_SCRATCH_0,x0
+P:002C 445800         2   79  249         move    x0,x:(r0)+
+P:002D 44F400 rrrrrr  3   82  249         move    #>FdTD_SCRATCH_1,x0
+P:002F 445800         2   84  249         move    x0,x:(r0)+
+P:0030 44F400 rrrrrr  3   87  249         move    #>FdTD_SCRATCH_2,x0
+P:0032 445800         2   89  249         move    x0,x:(r0)+
+P:0033 44F400 rrrrrr  3   92  249         move    #>FdTD_SCRATCH_3,x0
+P:0035 445800         2   94  249         move    x0,x:(r0)+
+P:0036 44F400 rrrrrr  3   97  249         move    #>FdTD_SCRATCH_4,x0
+P:0038 445800         2   99  249         move    x0,x:(r0)+
+P:0039 44F400 rrrrrr  3  102  249         move    #>FdTD_SCRATCH_5,x0
+P:003B 445800         2  104  249         move    x0,x:(r0)+
+P:003C 44F400 rrrrrr  3  107  249         move    #>FdTD_SCRATCH_6,x0
+P:003E 445800         2  109  249         move    x0,x:(r0)+
+P:003F 44F400 rrrrrr  3  112  249         move    #>FdTD_SCRATCH_7,x0
+P:0041 445800         2  114  249         move    x0,x:(r0)+
+P:0042 60F400 rrrrrr  3  117  251     move    #>FdXD_Base_Address,r0
+                              252     DUPF    NUM,0,((2*MAX_NUM_EP)-1)
+                              253         move    #>FdXD_\NUM,x0
+                              254         move    x0,x:(r0)+
+                              255     ENDM
+P:0044 44F400 rrrrrr  3  120  255         move    #>FdXD_0,x0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0046 445800         2  122  255         move    x0,x:(r0)+
+P:0047 44F400 rrrrrr  3  125  255         move    #>FdXD_1,x0
+P:0049 445800         2  127  255         move    x0,x:(r0)+
+P:004A 44F400 rrrrrr  3  130  255         move    #>FdXD_2,x0
+P:004C 445800         2  132  255         move    x0,x:(r0)+
+P:004D 44F400 rrrrrr  3  135  255         move    #>FdXD_3,x0
+P:004F 445800         2  137  255         move    x0,x:(r0)+
+P:0050 44F400 rrrrrr  3  140  255         move    #>FdXD_4,x0
+P:0052 445800         2  142  255         move    x0,x:(r0)+
+P:0053 44F400 rrrrrr  3  145  255         move    #>FdXD_5,x0
+P:0055 445800         2  147  255         move    x0,x:(r0)+
+P:0056 44F400 rrrrrr  3  150  255         move    #>FdXD_6,x0
+P:0058 445800         2  152  255         move    x0,x:(r0)+
+P:0059 44F400 rrrrrr  3  155  255         move    #>FdXD_7,x0
+P:005B 445800         2  157  255         move    x0,x:(r0)+
+P:005C 00000C         4  161  256     rts
+                              258 ;///////////////////////////////////////////////////////////////////////////////
+                              259 ;       FdTDPack
+                              260 ;       
+                              261 ; On Entry: 
+                              262 ;   a1 : Endpoint Number
+                              263 ;   b1 : Direction
+                              264 ; On Exit:
+                              265 ;   none
+                              266 ; Modified:
+                              267 ;   Address Regs:  m0, r0, n0, m1, r1, n1
+                              268 ;   Accumulators:  a, b
+                              269 ;   Data Regs:     x0, x1, y0
+                              270 ;
+                              271 ; This functions copies the info from the dTD_SCRATCH structure back to the dTD
+                              272 ; for the specific endpoint.
+                              273 ; The function is quite messy due to the ARC IP and STMP having different
+                              274 ; word length.
+                              275 ;///////////////////////////////////////////////////////////////////////////////
+                              276 FdTDPack
+                              277    ; ** This function can be called from any context, and it needs mutual
+                              278    ; ** exclusion with itself.
+                              279     push    a1
+P:005D 5C5F00         2  163  279     move    a1,y:(r7)+
+                              280     push    b1
+P:005E 5D5F00         2  165  280     move    b1,y:(r7)+
+P:005F 0BF080 rrrrrr  6  171  282     jsr     FSysMaskAllInterrupts
+P:0061 218600         2  173  283     move    a1,y0                   ; Save old ISR level
+                              285     pop     b1
+P:0062 5DFF00         4  177  285     move    y:-(r7),b1
+                              286     pop     a1
+P:0063 5CFF00         4  181  286     move    y:-(r7),a1
+                              288     ; Insure linear addressing
+P:0064 05F420 00FFFF  4  185  289     movec   #>$ffff,m0
+P:0066 0461A0         2  187  290     movec   m0,m1
+                              292     ; Get the specific dTD and scratch structure base address
+P:0067 21A433         2  189  293     lsl     a1      b1,x0
+P:0068 200040         2  191  294     add     x0,a
+P:0069 219800         2  193  295     move    a1,n0                       ; a1 is the endpoint number
+P:006A 219900         2  195  296     move    a1,n1
+P:006B 60F400 rrrrrr  3  198  297     move    #>FdTD_Base_Address,r0
+P:006D 61F400 rrrrrr  3  201  298     move    #>FdTD_Base_Scratch_Address,r1 
+P:006F 60E800         4  205  299     move    x:(r0+n0),r0                ; r0 = Specific dTD Base Address
+P:0070 61E900         4  209  300     move    x:(r1+n1),r1                ; r1 = Specific Scratch Structure Base Address
+                              302     ; Copy and Pack the Next Link Pointer and IOC_Status
+P:0071 71F400 000000  3  212  303     move    #>dTD_NEXT_LINK_PTR_POS,n1
+P:0073 200013         2  214  304     clr     a
+P:0074 50E900         4  218  305     move    x:(r1+n1),a0
+P:0075 71F400 000001  3  221  306     move    #>dTD_STATUS_IOC_POS,n1
+P:0077 0AC860         4  225  307     bset    #0,a0                       ; Set TER bit. We always use one dTD per transfer
+P:0078 55E900         4  229  308     move    x:(r1+n1),b1                ;Load the status + IOC 
+P:0079 0608A0         4  233  309     rep     #8
+P:007A 20003B         2  235  310         lsl     b                       ;Shift left 8 times
+P:007B 21A500         2  237  311     move    b1,x1        
+P:007C 200062         2  239  312     or      x1,a
+P:007D 505800         2  241  313     move    a0,x:(r0)+                  ; Save results to the dTD (word 0 and word 1)
+P:007E 545800         2  243  314     move    a1,x:(r0)+
+                              316     ; Copy and pack Total Bytes and Current Offset
+P:007F 71F400 000003  3  246  317     move    #>dTD_CUR_OFF_POS,n1
+P:0081 45F400 008000  3  249  318     move    #>(1<<(16-1)),x1                ; Current Offset starts at bit 16 0f dTD word 2 (STMP Space)
+P:0083 44E900         4  253  319     move    x:(r1+n1),x0
+P:0084 2000A0         2  255  320     mpy     x0,x1,a
+P:0085 71F400 000002  3  258  321     move    #>dTD_TOTAL_BYTES_POS,n1
+P:0087 210D00         2  260  322     move    a0,b1
+P:0088 45E900         4  264  323     move    x:(r1+n1),x1
+P:0089 20006A         2  266  324     or      x1,b                    ; b1 = TotalBytes + 1st byte Current Offset
+P:008A 555800         2  268  325     move    b1,x:(r0)+              ; Save result to the dTD (word 2)
+                              327     ; Copy and Pack Buffer Pointer Page 0
+P:008B 71F400 000004  3  271  328     move    #>dTD_BP0_POS,n1
+P:008D 45F400 000008  3  274  329     move    #>(1<<(4-1)),x1             ; BP0 starts at bit 4 of dTD word 3 (STMP Space)
+P:008F 44E900         4  278  330     move    x:(r1+n1),x0
+P:0090 2000A8         2  280  331     mpy     x0,x1,b
+P:0091 212500         2  282  332     move    b0,x1
+P:0092 200062         2  284  333     or      x1,a                    ; a1 had the 4 upper bits of Current Offset
+P:0093 545800         2  286  334     move    a1,x:(r0)+              ; Save result to the dTD (word 3)
+                              336     ; Copy and pack Buffer Pointer Page 1
+P:0094 71F400 000005  3  289  337     move    #>dTD_BP1_POS,n1
+P:0096 45F400 000800  3  292  338     move    #>(1<<(12-1)),x1            ; BP1 starts at bit 12 of dTD word 4 (STMP Space)
+P:0098 44E900         4  296  339     move    x:(r1+n1),x0
+P:0099 2000A0         2  298  340     mpy     x0,x1,a
+P:009A 505800         2  300  341     move    a0,x:(r0)+              ; Save Result to the dTD (word 4)
+                              342                                     ; We only save the 1st 12 bits of BP1. The rest most be 0
+                              343                                     ; because we only have (96K*3)bytes disponible.
+                              345     ; Copy and Pack Buffer Pointer Page 2
+P:009B 71F400 000006  3  303  346     move    #>dTD_BP2_POS,n1
+P:009D 45F400 080000  3  306  347     move    #>(1<<(20-1)),x1            ; BP2 starts at bit 20 of dTD word 5 (STMP Space)
+P:009F 44E900         4  310  348     move    x:(r1+n1),x0
+P:00A0 2000A0         2  312  349     mpy     x1,x0,a
+P:00A1 505800         2  314  350     move    a0,x:(r0)+              ; Save Results to dTD (word 5 and word 6)
+P:00A2 545800         2  316  351     move    a1,x:(r0)+
+                              353     ; Copy and Pack Buffer Pointer Page 3
+P:00A3 71F400 000007  3  319  354     move    #>dTD_BP3_POS,n1
+P:00A5 45F400 000008  3  322  355     move    #>(1<<(4-1)),x1             ; BP3 starts at bit 4 of dTD word 7 (STMP Space)
+P:00A7 44E900         4  326  356     move    x:(r1+n1),x0
+P:00A8 2000A0         2  328  357     mpy     x1,x0,a
+P:00A9 505800         2  330  358     move    a0,x:(r0)+              ; Save Result to dTD (word 7)
+                              360     ; Copy and Pack Buffer Pointer Page 4
+P:00AA 71F400 000008  3  333  361     move    #>dTD_BP4_POS,n1
+P:00AC 45F400 000800  3  336  362     move    #>(1<<(12-1)),x1            ; BP3 starts at bit 12 of dTD word 8 (STMP Space)
+P:00AE 44E900         4  340  363     move    x:(r1+n1),x0
+P:00AF 2000A0         2  342  364     mpy     x1,x0,a
+P:00B0 505800         2  344  365     move    a0,x:(r0)+              ; Save Result to dTD (word 8 and word 9)
+P:00B1 546000         2  346  366     move    a1,x:(r0)
+P:00B2 20CC00         2  348  369     move    y0,a1                   ; Restore old ISR level
+P:00B3 0BF080 rrrrrr  6  354  370     jsr     FSysUnMaskAllInterrupts
+P:00B5 00000C         4  358  372    rts
+                              376 ;///////////////////////////////////////////////////////////////////////////////
+                              377 ;       FdTDUnpack
+                              378 ;       
+                              379 ; On Entry: 
+                              380 ;   a1 : Endpoint Number
+                              381 ;   b1 : Direction
+                              382 ; On Exit:
+                              383 ;   none
+                              384 ; Modified:
+                              385 ;   Address Regs:  m0, r0, n0, m1, r1, n1
+                              386 ;   Accumulators:  a
+                              387 ;   Data Regs:     x0, y0
+                              388 ;
+                              389 ; This functions copies the info from the dTD for the specific endpoint
+                              390 ; to the dTD_SCRATCH structure for the specific endpoint.
+                              391 ;
+                              392 ; The only entries updated by this function are:
+                              393 ;   dTD_STATUS_IOC_POS  
+                              394 ;   dTD_TOTAL_BYTES_POS 
+                              395 ;   dTD_CUR_OFF_POS
+                              396 ; The other entries are irrelevant and not touch by the USB20 device
+                              397 ;
+                              398 ; The function is quite messy due to the ARC IP and STMP having different
+                              399 ; word length.
+                              400 ;///////////////////////////////////////////////////////////////////////////////
+                              401 FdTDUnpack
+                              402     ; ** This function can be called from any context, and it needs mutual
+                              403     ; ** exclusion with itself.
+                              404     push    a1
+P:00B6 5C5F00         2  360  404     move    a1,y:(r7)+
+                              405     push    b1
+P:00B7 5D5F00         2  362  405     move    b1,y:(r7)+
+P:00B8 0BF080 rrrrrr  6  368  407     jsr     FSysMaskAllInterrupts
+P:00BA 218600         2  370  408     move    a1,y0                   ; Save old ISR level
+                              410     pop     b1
+P:00BB 5DFF00         4  374  410     move    y:-(r7),b1
+                              411     pop     a1
+P:00BC 5CFF00         4  378  411     move    y:-(r7),a1
+                              413     ; Insure linear addressing
+P:00BD 05F420 00FFFF  4  382  414     movec   #>$ffff,m0
+P:00BF 0461A0         2  384  415     movec   m0,m1
+                              417     ; Get the specific dTD and scratch structure base address
+P:00C0 21A433         2  386  418     lsl     a1      b1,x0
+P:00C1 200040         2  388  419     add     x0,a
+P:00C2 219800         2  390  420     move    a1,n0                   ; a1 is the endpoint number
+P:00C3 219900         2  392  421     move    a1,n1
+P:00C4 60F400 rrrrrr  3  395  422     move    #>FdTD_Base_Address,r0
+P:00C6 61F400 rrrrrr  3  398  423     move    #>FdTD_Base_Scratch_Address,r1 
+P:00C8 60E800         4  402  424     move    x:(r0+n0),r0            ; r0 = Specific dTD Base Address
+P:00C9 61E900         4  406  425     move    x:(r1+n1),r1            ; r1 = Specific Scratch Structure Base Address
+                              427     ; Get the STATUS_IOC field
+P:00CA 70F400 000001  3  409  428     move    #>1,n0                  ; STATUS_IOC field is word 1 of dTD (STMP Space)                    
+P:00CC 71F400 000001  3  412  429     move    #>dTD_STATUS_IOC_POS,n1
+P:00CE 54E800         4  416  430     move    x:(r0+n0),a1
+P:00CF 546900         4  420  431     move    a1,x:(r1+n1)
+                              433     ; Get the TOTAL_BYTES field
+P:00D0 70F400 000002  3  423  434     move    #>2,n0                  ; TOTAL_BYTES field is word 2 of dTD (STMP Space)
+P:00D2 44F400 003FFF  3  426  435     move    #>MASK_TOTAL_BYTES,x0
+P:00D4 54E800         4  430  436     move    x:(r0+n0),a1
+P:00D5 71F400 000002  3  433  437     move    #>dTD_TOTAL_BYTES_POS,n1    
+P:00D7 200046         2  435  438     and     x0,a                    ; Remove unrelevant bits
+P:00D8 546900         4  439  439     move    a1,x:(r1+n1)
+P:00D9 20CC00         2  441  442     move    y0,a1                   ; Restore old ISR level
+P:00DA 0BF080 rrrrrr  6  447  443     jsr     FSysUnMaskAllInterrupts
+P:00DC 00000C         4  451  445     rts
+                              447         
+                              449     
+                              450 ;///////////////////////////////////////////////////////////////////////////////
+                              451 ;       GetNext2Bytes
+                              452 ;       
+                              453 ; On Entry: 
+                              454 ;   r0 : Word Address
+                              455 ;   x0 : Byte Offset
+                              456 ; On Exit:
+                              457 ;   a1 : Results
+                              458 ; Modified:
+                              459 ;   Address Regs:  r0
+                              460 ;   Accumulators:  a
+                              461 ;   Data Regs:     x0, x1
+                              462 ;
+                              463 ; Fetches the next 2 bytes starting at word address and byte offset.
+                              464 ; The bytes are copied into the less significant bytes of a1. The most
+                              465 ; significant byte of a1 is cleared.
+                              466 ;
+                              467 ;///////////////////////////////////////////////////////////////////////////////
+                              468 GetNext2Bytes
+                              469     push    y0
+P:00DD 4E5F00         2  453  469     move    y0,y:(r7)+
+                              470     
+P:00DE 200013         2  455  471     clr     a
+P:00DF 208E00         2  457  472     move    x0,a
+P:00E0 44F403 000001  3  460  473     tst     a       #>1,x0
+P:00E2 45D800         2  462  474     move    x:(r0)+,x1          
+P:00E3 0AF0A2 rrrrrr  6  468  475     jne     _CheckByteOffset1
+                              477     ; Byte offset is 0
+P:00E5 20AC00         2  470  478     move    x1,a1
+                              479 _MaskUnused
+P:00E6 44F400 00FFFF  3  473  480     move    #>$00ffff,x0
+P:00E8 200046         2  475  481     and     x0,a1
+                              482     pop     y0
+P:00E9 4EFF00         4  479  482     move    y:-(r7),y0
+P:00EA 00000C         4  483  483     rts
+                              485     ; Byte Offset is 1
+                              486 _CheckByteOffset1
+P:00EB 44F445 008000  3  486  487     cmp     x0,a    #>(1<<(16-1)),x0
+P:00ED 0AF0A2 rrrrrr  6  492  488     jne     _ByteOffset2
+P:00EF 2000A0         2  494  489     mpy     x0,x1,a
+P:00F0 0AF080 rrrrrr  6  500  490     jmp     _MaskUnused
+                              492     ; Most difficult - Byte Offset is 2
+                              493     ; The 2 bytes to get are splitted across 2 words
+                              494 _ByteOffset2
+P:00F2 44F400 000080  3  503  495     move    #>(1<<(8-1)),x0
+P:00F4 44F4A0 0000FF  3  506  496     mpy     x0,x1,a     #>$0000ff,x0
+P:00F6 45F446 000080  3  509  497     and     x0,a        #>(1<<(8-1)),x1
+P:00F8 218600         2  511  498     move    a1,y0                           ; y0 = Partial result
+P:00F9 44E000         2  513  499     move    x:(r0),x0
+P:00FA 44F4A0 00FF00  3  516  500     mpy     x0,x1,a     #>$00ff00,x0
+P:00FC 210C00         2  518  501     move    a0,a1
+P:00FD 200046         2  520  502     and     x0,a
+P:00FE 200052         2  522  503     or      y0,a
+                              504     
+                              505     pop     y0
+P:00FF 4EFF00         4  526  505     move    y:-(r7),y0
+P:0100 00000C         4  530  506     rts
+                              507                 
+                              510 ;///////////////////////////////////////////////////////////////////////////////
+                              511 ;       PutNext2Bytes
+                              512 ;       
+                              513 ; On Entry: 
+                              514 ;   r0 : Word Address
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              515 ;   x0 : Byte Offset
+                              516 ;   x1 : Data to put (most significant byte is 00) 00ABCD
+                              517 ; On Exit:
+                              518 ;   none
+                              519 ; Modified:
+                              520 ;   Address Regs:  r0
+                              521 ;   Accumulators:  a, b
+                              522 ;   Data Regs:     x0, x1
+                              523 ;
+                              524 ; Fetches the next 2 bytes starting at word address and byte offset and
+                              525 ; replaces them by the 2 bytes passed in x1
+                              526 ;
+                              527 ;///////////////////////////////////////////////////////////////////////////////
+                              528 PutNext2Bytes
+P:0101 20001B         2  532  529     clr     b
+P:0102 208D00         2  534  530     move    x0,b1                       ; b1 = Byte Offset
+P:0103 54E000         2  536  531     move    x:(r0),a1                   ; a1 = Destination word
+P:0104 44F40B 000001  3  539  532     tst     b   #>1,x0                  
+P:0106 0AF0A2 rrrrrr  6  545  533     jne     _CheckByteOffset1
+                              535     ; Byte Offset 0 - a1=DDXXXX where XXXX is bytes to replace
+P:0108 44F400 FF0000  3  548  536     move    #>$ff0000,x0
+                              537 _MaskAndSave
+P:010A 200046         2  550  538     and     x0,a                        ; zeroed out the XX in a1
+P:010B 200062         2  552  539     or      x1,a                        ; put in new bytes
+P:010C 546000         2  554  540     move    a1,x:(r0)                   ; save value
+P:010D 00000C         4  558  541     rts
+                              543 _CheckByteOffset1
+P:010E 44F44D 000080  3  561  544     cmp     x0,b    #>(1<<(8-1)),x0
+P:0110 0AF0A2 rrrrrr  6  567  545     jne     _ByteOffset2
+                              547     ; Byte Offset 1 - a1=XXXXDD where XXXX is bytes to replace
+P:0112 44F4A8 0000FF  3  570  548     mpy     x0,x1,b #>$0000ff,x0        ; b0 = ABCD00
+P:0114 212500         2  572  549     move    b0,x1                       ; x1 = ABCD00
+P:0115 0AF080 rrrrrr  6  578  550     jmp     _MaskAndSave
+                              552 _ByteOffset2
+                              553     ; Byte Offset 2 - a1=XXDDDD and x:(r0)+=DDDDXX
+                              554     ; The bytes to replace span across 2 words
+P:0117 44F400 008000  3  581  555     move    #>(1<<(16-1)),x0
+P:0119 44F4A8 00FFFF  3  584  556     mpy     x0,x1,b     #>$00ffff,x0    ; b1b0 = 0000AB CD0000
+P:011B 212446         2  586  557     and     x0,a        b0,x0           ; a1=00DDDD x0=CD0000
+P:011C 44F442 FFFF00  3  589  558     or      x0,a        #>$ffff00,x0    ; a1=CDDDDD
+P:011E 545800         2  591  559     move    a1,x:(r0)+                   ; Save 1st byte to replace
+P:011F 54E000         2  593  560     move    x:(r0),a1                   ; Get next word a1=DDDDXX
+P:0120 21A500         2  595  561     move    b1,x1                       ; x1=0000AB
+P:0121 0AF080 rrrrrr  6  601  562     jmp     _MaskAndSave
+                              566 ;///////////////////////////////////////////////////////////////////////////////
+                              567 ;       GetNextByte
+                              568 ;       
+                              569 ; On Entry: 
+                              570 ;   r0 : Word Address
+                              571 ;   x0 : Byte Offset
+                              572 ; On Exit:
+                              573 ;   a1 : Result
+                              574 ; Modified:
+                              575 ;   Address Regs:  r0
+                              576 ;   Accumulators:  a
+                              577 ;   Data Regs:     x0, x1
+                              578 ;
+                              579 ; Fetches the next byte starting at word address and byte offset.
+                              580 ; The byte is copied into the less significant byte of a1. The most
+                              581 ; significant bytes of a1 are cleared.
+                              582 ;
+                              583 ;///////////////////////////////////////////////////////////////////////////////
+                              584 GetNextByte
+P:0123 200013         2  603  585     clr     a
+P:0124 208E00         2  605  586     move    x0,a
+P:0125 44F403 000001  3  608  587     tst     a       #>1,x0
+P:0127 45E000         2  610  588     move    x:(r0),x1           
+P:0128 0AF0A2 rrrrrr  6  616  589     jne     _CheckByteOffset1
+                              591     ; Byte offset is 0
+P:012A 20AC00         2  618  592     move    x1,a1
+                              593 _MaskUnused
+P:012B 44F400 0000FF  3  621  594     move    #>$0000ff,x0
+P:012D 200046         2  623  595     and     x0,a1
+P:012E 00000C         4  627  596     rts
+                              598     ; Byte Offset is 1
+                              599 _CheckByteOffset1
+P:012F 44F445 008000  3  630  600     cmp     x0,a    #>(1<<(16-1)),x0
+P:0131 0AF0A2 rrrrrr  6  636  601     jne     _ByteOffset2
+P:0133 2000A0         2  638  602     mpy     x0,x1,a
+P:0134 0AF080 rrrrrr  6  644  603     jmp     _MaskUnused
+                              605     ; Byte Offset is 2
+                              606 _ByteOffset2
+P:0136 44F400 000080  3  647  607     move    #>(1<<(8-1)),x0
+P:0138 2000A0         2  649  608     mpy     x0,x1,a
+P:0139 0AF080 rrrrrr  6  655  609     jmp     _MaskUnused
+                              614 ;///////////////////////////////////////////////////////////////////////////////
+                              615 ;       FdQHUnpackCap
+                              616 ;       
+                              617 ; On Entry: 
+                              618 ;   a1 : Endpoint Number
+                              619 ;   b1 : Direction
+                              620 ; On Exit:
+                              621 ;   none
+                              622 ; Modified:
+                              623 ;   Address Regs:  m0, r0, n0 
+                              624 ;   Accumulators:  
+                              625 ;   Data Regs: y0     
+                              626 ;
+                              627 ; This functions copies the info from the dQH for the specific endpoint/direction
+                              628 ; to the dQH_SCRATCH_CAP structure.
+                              629 ;
+                              630 ; The only entries updated by this function are:
+                              631 ;   dQH_SCRATCH_CAP_IOS_POS 
+                              632 ;   dQH_SCRATCH_CAP_STATUS_POS  
+                              633 ;   dQH_SCRATCH_TOTAL_BYTES_POS
+                              634 ; The other entries are irrelevant.
+                              635 ;
+                              636 ; The function is quite messy due to the ARC IP and STMP having different
+                              637 ; word length.
+                              638 ; dQHs must be organized per ARC IP recomendations. All dQHs are in memory
+                              639 ; located back to back. The problem is that they are 64 bytes long, therefore
+                              640 ; accessing each entry in the STMP address space is quite difficult. To avoid
+                              641 ; lengthy divisions each endpoint has its own unpack function. This function
+                              642 ; finds the appropriate unpack function to call and calls it.
+                              643 ;///////////////////////////////////////////////////////////////////////////////
+                              644 FdQHUnpackCap
+                              646     ; ** This function can be called from any context, and it needs mutual
+                              647     ; ** exclusion with itself.
+                              648     push    a1
+P:013B 5C5F00         2  657  648     move    a1,y:(r7)+
+                              649     push    b1
+P:013C 5D5F00         2  659  649     move    b1,y:(r7)+
+P:013D 0BF080 rrrrrr  6  665  651     jsr     FSysMaskAllInterrupts
+P:013F 218600         2  667  652     move    a1,y0                   ; Save old ISR level
+                              654     pop     b1
+P:0140 5DFF00         4  671  654     move    y:-(r7),b1
+                              655     pop     a1
+P:0141 5CFF00         4  675  655     move    y:-(r7),a1
+                              656     
+                              658     ; Insure linear addressing
+P:0142 05F420 00FFFF  4  679  659     movec   #>$ffff,m0
+P:0144 60F400 rrrrrr  3  682  660     move    #>BaseAdddQHUnpackCapEndPoint,r0
+P:0146 219800         2  684  661     move    a1,n0
+P:0147 000000         2  686  662     nop
+P:0148 07E890         8  694  663     movem   p:(r0+n0),r0
+P:0149 21A800         2  696  664     move    b1,a0
+P:014A 0BE080         4  700  665     jsr     (r0)
+P:014B 000000         2  702  666     nop
+P:014C 20CC00         2  704  669     move    y0,a1                   ; Restore old ISR level
+P:014D 0BF080 rrrrrr  6  710  670     jsr     FSysUnMaskAllInterrupts
+P:014F 00000C         4  714  672     rts
+                              676 ;///////////////////////////////////////////////////////////////////////////////
+                              677 ;       dQHUnpackCapEndPoint_\NUM
+                              678 ;       
+                              679 ; On Entry: 
+                              680 ;   a0 : EndPoint Direction
+                              681 ; On Exit:
+                              682 ;   none
+                              683 ; Modified:
+                              684 ;   Address Regs:  m0, r0, n0, m1, r1, n1 
+                              685 ;   Accumulators:  a
+                              686 ;   Data Regs: x0           
+                              687 ;
+                              688 ; This functions is called by the dQHUnpack() (see comments for more details)
+                              689 ;
+                              690 ; One function is generated per endpoint.
+                              691 ;///////////////////////////////////////////////////////////////////////////////
+                              692     DUPF    NUM,0,(MAX_NUM_EP-1)
+                              693 dQHUnpackCapEndPoint\NUM
+                              694     move    #>$ffff,m1
+                              695     move    m1,m0
+                              696     move    #>FdQH_Scratch_Cap,r1
+                              697     move    a0,a1
+                              698     move    #>USB_OUT,x0
+                              699     cmp     x0,a
+                              700     jeq     _EP_DirOut\NUM
+                              702 _EP_DirIn\NUM
+                              703     ; Get IOS entry
+                              704     move    #>dQH_IOS_W\NUM\1,r0
+                              705     move    #>dQH_IOS_BO\NUM\1,x0
+                              706     jsr     GetNext2Bytes
+                              707     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+                              708     nop
+                              709     move    a1,x:(r1+n1)    
+                              711     ; Get Status
+                              712     move    #>dQH_STATUS_W\NUM\1,r0
+                              713     move    #>dQH_STATUS_BO\NUM\1,x0
+                              714     jsr     GetNext2Bytes
+                              715     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+                              716     nop
+                              717     move    a1,x:(r1+n1)    
+                              719     ; Get Total Bytes Transfered
+                              720     move    #>dQH_TOTAL_BYTES_W\NUM\1,r0
+                              721     move    #>dQH_TOTAL_BYTES_BO\NUM\1,x0
+                              722     jsr     GetNext2Bytes
+                              723     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+                              724     nop
+                              725     move    a1,x:(r1+n1)    
+                              726     rts
+                              728 _EP_DirOut\NUM
+                              729     ; Get IOS entry
+                              730     move    #>dQH_IOS_W\NUM\0,r0
+                              731     move    #>dQH_IOS_BO\NUM\0,x0
+                              732     jsr     GetNext2Bytes
+                              733     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+                              734     nop
+                              735     move    a1,x:(r1+n1)    
+                              737     ; Get Status
+                              738     move    #>dQH_STATUS_W\NUM\0,r0
+                              739     move    #>dQH_STATUS_BO\NUM\0,x0
+                              740     jsr     GetNext2Bytes
+                              741     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+                              742     nop
+                              743     move    a1,x:(r1+n1)    
+                              745     ; Get Total Bytes Transfered
+                              746     move    #>dQH_TOTAL_BYTES_W\NUM\0,r0
+                              747     move    #>dQH_TOTAL_BYTES_BO\NUM\0,x0
+                              748     jsr     GetNext2Bytes
+                              749     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+                              750     nop
+                              751     move    a1,x:(r1+n1)    
+                              752     rts
+                              754     ENDM
+                              754 dQHUnpackCapEndPoint0
+P:0150 05F421 00FFFF  4  718  754     movec   #>$ffff,m1
+P:0152 0460A1         2  720  754     movec   m1,m0
+P:0153 61F400 rrrrrr  3  723  754     move    #>FdQH_Scratch_Cap,r1
+P:0155 210C00         2  725  754     move    a0,a1
+P:0156 44F400 000000  3  728  754     move    #>USB_OUT,x0
+P:0158 200045         2  730  754     cmp     x0,a
+P:0159 0AF0AA rrrrrr  6  736  754     jeq     EP_DirOut__M_L0000680
+                              754 EP_DirIn__M_L0000680
+                              754     ; Get IOS entry
+P:015B 60F400 rrrrrr  3  739  754     move    #>dQH_IOS_W01,r0
+P:015D 44F400 rrrrrr  3  742  754     move    #>dQH_IOS_BO01,x0
+P:015F 0BF080 rrrrrr  6  748  754     jsr     GetNext2Bytes
+P:0161 71F400 000000  3  751  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:0163 000000         2  753  754     nop
+P:0164 546900         4  757  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:0165 60F400 rrrrrr  3  760  754     move    #>dQH_STATUS_W01,r0
+P:0167 44F400 rrrrrr  3  763  754     move    #>dQH_STATUS_BO01,x0
+P:0169 0BF080 rrrrrr  6  769  754     jsr     GetNext2Bytes
+P:016B 71F400 000003  3  772  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:016D 000000         2  774  754     nop
+P:016E 546900         4  778  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:016F 60F400 rrrrrr  3  781  754     move    #>dQH_TOTAL_BYTES_W01,r0
+P:0171 44F400 rrrrrr  3  784  754     move    #>dQH_TOTAL_BYTES_BO01,x0
+P:0173 0BF080 rrrrrr  6  790  754     jsr     GetNext2Bytes
+P:0175 71F400 000004  3  793  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:0177 000000         2  795  754     nop
+P:0178 546900         4  799  754     move    a1,x:(r1+n1)    
+P:0179 00000C         4  803  754     rts
+                              754 EP_DirOut__M_L0000680
+                              754     ; Get IOS entry
+P:017A 60F400 rrrrrr  3  806  754     move    #>dQH_IOS_W00,r0
+P:017C 44F400 rrrrrr  3  809  754     move    #>dQH_IOS_BO00,x0
+P:017E 0BF080 rrrrrr  6  815  754     jsr     GetNext2Bytes
+P:0180 71F400 000000  3  818  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:0182 000000         2  820  754     nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0183 546900         4  824  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:0184 60F400 rrrrrr  3  827  754     move    #>dQH_STATUS_W00,r0
+P:0186 44F400 rrrrrr  3  830  754     move    #>dQH_STATUS_BO00,x0
+P:0188 0BF080 rrrrrr  6  836  754     jsr     GetNext2Bytes
+P:018A 71F400 000003  3  839  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:018C 000000         2  841  754     nop
+P:018D 546900         4  845  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:018E 60F400 rrrrrr  3  848  754     move    #>dQH_TOTAL_BYTES_W00,r0
+P:0190 44F400 rrrrrr  3  851  754     move    #>dQH_TOTAL_BYTES_BO00,x0
+P:0192 0BF080 rrrrrr  6  857  754     jsr     GetNext2Bytes
+P:0194 71F400 000004  3  860  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:0196 000000         2  862  754     nop
+P:0197 546900         4  866  754     move    a1,x:(r1+n1)    
+P:0198 00000C         4  870  754     rts
+                              754 dQHUnpackCapEndPoint1
+P:0199 05F421 00FFFF  4  874  754     movec   #>$ffff,m1
+P:019B 0460A1         2  876  754     movec   m1,m0
+P:019C 61F400 rrrrrr  3  879  754     move    #>FdQH_Scratch_Cap,r1
+P:019E 210C00         2  881  754     move    a0,a1
+P:019F 44F400 000000  3  884  754     move    #>USB_OUT,x0
+P:01A1 200045         2  886  754     cmp     x0,a
+P:01A2 0AF0AA rrrrrr  6  892  754     jeq     EP_DirOut__M_L0000691
+                              754 EP_DirIn__M_L0000691
+                              754     ; Get IOS entry
+P:01A4 60F400 rrrrrr  3  895  754     move    #>dQH_IOS_W11,r0
+P:01A6 44F400 rrrrrr  3  898  754     move    #>dQH_IOS_BO11,x0
+P:01A8 0BF080 rrrrrr  6  904  754     jsr     GetNext2Bytes
+P:01AA 71F400 000000  3  907  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:01AC 000000         2  909  754     nop
+P:01AD 546900         4  913  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:01AE 60F400 rrrrrr  3  916  754     move    #>dQH_STATUS_W11,r0
+P:01B0 44F400 rrrrrr  3  919  754     move    #>dQH_STATUS_BO11,x0
+P:01B2 0BF080 rrrrrr  6  925  754     jsr     GetNext2Bytes
+P:01B4 71F400 000003  3  928  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:01B6 000000         2  930  754     nop
+P:01B7 546900         4  934  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:01B8 60F400 rrrrrr  3  937  754     move    #>dQH_TOTAL_BYTES_W11,r0
+P:01BA 44F400 rrrrrr  3  940  754     move    #>dQH_TOTAL_BYTES_BO11,x0
+P:01BC 0BF080 rrrrrr  6  946  754     jsr     GetNext2Bytes
+P:01BE 71F400 000004  3  949  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:01C0 000000         2  951  754     nop
+P:01C1 546900         4  955  754     move    a1,x:(r1+n1)    
+P:01C2 00000C         4  959  754     rts
+                              754 EP_DirOut__M_L0000691
+                              754     ; Get IOS entry
+P:01C3 60F400 rrrrrr  3  962  754     move    #>dQH_IOS_W10,r0
+P:01C5 44F400 rrrrrr  3  965  754     move    #>dQH_IOS_BO10,x0
+P:01C7 0BF080 rrrrrr  6  971  754     jsr     GetNext2Bytes
+P:01C9 71F400 000000  3  974  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:01CB 000000         2  976  754     nop
+P:01CC 546900         4  980  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:01CD 60F400 rrrrrr  3  983  754     move    #>dQH_STATUS_W10,r0
+P:01CF 44F400 rrrrrr  3  986  754     move    #>dQH_STATUS_BO10,x0
+P:01D1 0BF080 rrrrrr  6  992  754     jsr     GetNext2Bytes
+P:01D3 71F400 000003  3  995  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:01D5 000000         2  997  754     nop
+P:01D6 546900         4 1001  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:01D7 60F400 rrrrrr  3 1004  754     move    #>dQH_TOTAL_BYTES_W10,r0
+P:01D9 44F400 rrrrrr  3 1007  754     move    #>dQH_TOTAL_BYTES_BO10,x0
+P:01DB 0BF080 rrrrrr  6 1013  754     jsr     GetNext2Bytes
+P:01DD 71F400 000004  3 1016  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:01DF 000000         2 1018  754     nop
+P:01E0 546900         4 1022  754     move    a1,x:(r1+n1)    
+P:01E1 00000C         4 1026  754     rts
+                              754 dQHUnpackCapEndPoint2
+P:01E2 05F421 00FFFF  4 1030  754     movec   #>$ffff,m1
+P:01E4 0460A1         2 1032  754     movec   m1,m0
+P:01E5 61F400 rrrrrr  3 1035  754     move    #>FdQH_Scratch_Cap,r1
+P:01E7 210C00         2 1037  754     move    a0,a1
+P:01E8 44F400 000000  3 1040  754     move    #>USB_OUT,x0
+P:01EA 200045         2 1042  754     cmp     x0,a
+P:01EB 0AF0AA rrrrrr  6 1048  754     jeq     EP_DirOut__M_L0000702
+                              754 EP_DirIn__M_L0000702
+                              754     ; Get IOS entry
+P:01ED 60F400 rrrrrr  3 1051  754     move    #>dQH_IOS_W21,r0
+P:01EF 44F400 rrrrrr  3 1054  754     move    #>dQH_IOS_BO21,x0
+P:01F1 0BF080 rrrrrr  6 1060  754     jsr     GetNext2Bytes
+P:01F3 71F400 000000  3 1063  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:01F5 000000         2 1065  754     nop
+P:01F6 546900         4 1069  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:01F7 60F400 rrrrrr  3 1072  754     move    #>dQH_STATUS_W21,r0
+P:01F9 44F400 rrrrrr  3 1075  754     move    #>dQH_STATUS_BO21,x0
+P:01FB 0BF080 rrrrrr  6 1081  754     jsr     GetNext2Bytes
+P:01FD 71F400 000003  3 1084  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:01FF 000000         2 1086  754     nop
+P:0200 546900         4 1090  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:0201 60F400 rrrrrr  3 1093  754     move    #>dQH_TOTAL_BYTES_W21,r0
+P:0203 44F400 rrrrrr  3 1096  754     move    #>dQH_TOTAL_BYTES_BO21,x0
+P:0205 0BF080 rrrrrr  6 1102  754     jsr     GetNext2Bytes
+P:0207 71F400 000004  3 1105  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:0209 000000         2 1107  754     nop
+P:020A 546900         4 1111  754     move    a1,x:(r1+n1)    
+P:020B 00000C         4 1115  754     rts
+                              754 EP_DirOut__M_L0000702
+                              754     ; Get IOS entry
+P:020C 60F400 rrrrrr  3 1118  754     move    #>dQH_IOS_W20,r0
+P:020E 44F400 rrrrrr  3 1121  754     move    #>dQH_IOS_BO20,x0
+P:0210 0BF080 rrrrrr  6 1127  754     jsr     GetNext2Bytes
+P:0212 71F400 000000  3 1130  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:0214 000000         2 1132  754     nop
+P:0215 546900         4 1136  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:0216 60F400 rrrrrr  3 1139  754     move    #>dQH_STATUS_W20,r0
+P:0218 44F400 rrrrrr  3 1142  754     move    #>dQH_STATUS_BO20,x0
+P:021A 0BF080 rrrrrr  6 1148  754     jsr     GetNext2Bytes
+P:021C 71F400 000003  3 1151  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:021E 000000         2 1153  754     nop
+P:021F 546900         4 1157  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:0220 60F400 rrrrrr  3 1160  754     move    #>dQH_TOTAL_BYTES_W20,r0
+P:0222 44F400 rrrrrr  3 1163  754     move    #>dQH_TOTAL_BYTES_BO20,x0
+P:0224 0BF080 rrrrrr  6 1169  754     jsr     GetNext2Bytes
+P:0226 71F400 000004  3 1172  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:0228 000000         2 1174  754     nop
+P:0229 546900         4 1178  754     move    a1,x:(r1+n1)    
+P:022A 00000C         4 1182  754     rts
+                              754 dQHUnpackCapEndPoint3
+P:022B 05F421 00FFFF  4 1186  754     movec   #>$ffff,m1
+P:022D 0460A1         2 1188  754     movec   m1,m0
+P:022E 61F400 rrrrrr  3 1191  754     move    #>FdQH_Scratch_Cap,r1
+P:0230 210C00         2 1193  754     move    a0,a1
+P:0231 44F400 000000  3 1196  754     move    #>USB_OUT,x0
+P:0233 200045         2 1198  754     cmp     x0,a
+P:0234 0AF0AA rrrrrr  6 1204  754     jeq     EP_DirOut__M_L0000713
+                              754 EP_DirIn__M_L0000713
+                              754     ; Get IOS entry
+P:0236 60F400 rrrrrr  3 1207  754     move    #>dQH_IOS_W31,r0
+P:0238 44F400 rrrrrr  3 1210  754     move    #>dQH_IOS_BO31,x0
+P:023A 0BF080 rrrrrr  6 1216  754     jsr     GetNext2Bytes
+P:023C 71F400 000000  3 1219  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:023E 000000         2 1221  754     nop
+P:023F 546900         4 1225  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:0240 60F400 rrrrrr  3 1228  754     move    #>dQH_STATUS_W31,r0
+P:0242 44F400 rrrrrr  3 1231  754     move    #>dQH_STATUS_BO31,x0
+P:0244 0BF080 rrrrrr  6 1237  754     jsr     GetNext2Bytes
+P:0246 71F400 000003  3 1240  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:0248 000000         2 1242  754     nop
+P:0249 546900         4 1246  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:024A 60F400 rrrrrr  3 1249  754     move    #>dQH_TOTAL_BYTES_W31,r0
+P:024C 44F400 rrrrrr  3 1252  754     move    #>dQH_TOTAL_BYTES_BO31,x0
+P:024E 0BF080 rrrrrr  6 1258  754     jsr     GetNext2Bytes
+P:0250 71F400 000004  3 1261  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:0252 000000         2 1263  754     nop
+P:0253 546900         4 1267  754     move    a1,x:(r1+n1)    
+P:0254 00000C         4 1271  754     rts
+                              754 EP_DirOut__M_L0000713
+                              754     ; Get IOS entry
+P:0255 60F400 rrrrrr  3 1274  754     move    #>dQH_IOS_W30,r0
+P:0257 44F400 rrrrrr  3 1277  754     move    #>dQH_IOS_BO30,x0
+P:0259 0BF080 rrrrrr  6 1283  754     jsr     GetNext2Bytes
+P:025B 71F400 000000  3 1286  754     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:025D 000000         2 1288  754     nop
+P:025E 546900         4 1292  754     move    a1,x:(r1+n1)    
+                              754     ; Get Status
+P:025F 60F400 rrrrrr  3 1295  754     move    #>dQH_STATUS_W30,r0
+P:0261 44F400 rrrrrr  3 1298  754     move    #>dQH_STATUS_BO30,x0
+P:0263 0BF080 rrrrrr  6 1304  754     jsr     GetNext2Bytes
+P:0265 71F400 000003  3 1307  754     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:0267 000000         2 1309  754     nop
+P:0268 546900         4 1313  754     move    a1,x:(r1+n1)    
+                              754     ; Get Total Bytes Transfered
+P:0269 60F400 rrrrrr  3 1316  754     move    #>dQH_TOTAL_BYTES_W30,r0
+P:026B 44F400 rrrrrr  3 1319  754     move    #>dQH_TOTAL_BYTES_BO30,x0
+P:026D 0BF080 rrrrrr  6 1325  754     jsr     GetNext2Bytes
+P:026F 71F400 000004  3 1328  754     move    #>dQH_SCRATCH_TOTAL_BYTES_POS,n1
+P:0271 000000         2 1330  754     nop
+P:0272 546900         4 1334  754     move    a1,x:(r1+n1)    
+P:0273 00000C         4 1338  754     rts
+                              757 ;///////////////////////////////////////////////////////////////////////////////
+                              758 ;       FdQHPackCap
+                              759 ;       
+                              760 ; On Entry: 
+                              761 ;   a1 : Endpoint Number
+                              762 ;   b1 : Direction
+                              763 ;   x0 : Init
+                              764 ; On Exit:
+                              765 ;   none
+                              766 ; Modified:
+                              767 ;   Address Regs:  m0, r0, n0 
+                              768 ;   Accumulators:  
+                              769 ;   Data Regs: y0     
+                              770 ;
+                              771 ; This functions copies the info from the dQH for the specific endpoint/direction
+                              772 ; to the dQH_SCRATCH_CAP structure.
+                              773 ;
+                              774 ; If Init is clear (0) :
+                              775 ;   The only entries updated by this function are:
+                              776 ;       Status_IOC field
+                              777 ;       dTD pointer field
+                              778 ; Else
+                              779 ;       Status_IOC field
+                              780 ;       dTD pointer field
+                              781 ;       MaxPacketLength field
+                              782 ;       IOS field
+                              783 ;
+                              784 ; The other entries are irrelevant.
+                              785 ;
+                              786 ; The function is quite messy due to the ARC IP and STMP having different
+                              787 ; word length.
+                              788 ; dQHs must be organized per ARC IP recomendations. All dQHs are in memory
+                              789 ; located back to back. The problem is that they are 64 bytes long, therefore
+                              790 ; accessing each entry in the STMP address space is quite difficult. To avoid
+                              791 ; lengthy divisions each endpoint has its own pack function. This function
+                              792 ; finds the appropriate pack function to call and calls it.
+                              793 ;///////////////////////////////////////////////////////////////////////////////
+                              794 FdQHPackCap
+                              796     ; ** This function can be called from any context, and it needs mutual
+                              797     ; ** exclusion with itself.
+                              798     push    a1
+P:0274 5C5F00         2 1340  798     move    a1,y:(r7)+
+                              799     push    b1
+P:0275 5D5F00         2 1342  799     move    b1,y:(r7)+
+                              800     push    x0
+P:0276 4C5F00         2 1344  800     move    x0,y:(r7)+
+P:0277 0BF080 rrrrrr  6 1350  802     jsr     FSysMaskAllInterrupts
+P:0279 218600         2 1352  803     move    a1,y0                   ; Save old ISR level
+                              805     pop     x0
+P:027A 4CFF00         4 1356  805     move    y:-(r7),x0
+                              806     pop     b1
+P:027B 5DFF00         4 1360  806     move    y:-(r7),b1
+                              807     pop     a1
+P:027C 5CFF00         4 1364  807     move    y:-(r7),a1
+                              809     ; Insure linear addressing
+P:027D 05F420 00FFFF  4 1368  810     movec   #>$ffff,m0
+P:027F 60F400 rrrrrr  3 1371  811     move    #>BaseAdddQHPackCapEndPoint,r0
+P:0281 219800         2 1373  812     move    a1,n0
+P:0282 000000         2 1375  813     nop
+P:0283 07E890         8 1383  814     movem   p:(r0+n0),r0
+P:0284 21A800         2 1385  815     move    b1,a0
+P:0285 0BE080         4 1389  816     jsr     (r0)
+P:0286 000000         2 1391  817     nop
+P:0287 20CC00         2 1393  820     move    y0,a1                   ; Restore old ISR level
+P:0288 0BF080 rrrrrr  6 1399  821     jsr     FSysUnMaskAllInterrupts
+P:028A 00000C         4 1403  823     rts
+                              828 ;///////////////////////////////////////////////////////////////////////////////
+                              829 ;       dQHPackCapEndPoint_\NUM
+                              830 ;       
+                              831 ; On Entry: 
+                              832 ;   a0 : EndPoint Direction
+                              833 ;   x0 : init
+                              834 ; On Exit:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              835 ;   none
+                              836 ; Modified:
+                              837 ;   Address Regs:  m0, r0, n0, m1, r1, n1 
+                              838 ;   Accumulators:  a
+                              839 ;   Data Regs: x0, x1           
+                              840 ;
+                              841 ; This functions is called by the dQHPack() (see comments for more details)
+                              842 ;
+                              843 ; One function is generated per endpoint.
+                              844 ;///////////////////////////////////////////////////////////////////////////////
+                              845     DUPF    NUM,0,(MAX_NUM_EP-1)
+                              846 dQHPackCapEndPoint\NUM
+                              847     move    #>$ffff,m1
+                              848     move    m1,m0
+                              849     move    #>FdQH_Scratch_Cap,r1
+                              850     move    a0,a1
+                              851     move    #>USB_OUT,x1
+                              852     cmp     x1,a
+                              853     jeq     _EP_\NUM\_DirOut
+                              855 _EP_\NUM\_DirIn
+                              856     ; Check if init fields also required
+                              857     move    x0,a
+                              858     tst     a
+                              859     jeq     _Bypass_Init_\NUM\_DirIn
+                              861     ; Put IOS entry
+                              862     move    #>dQH_IOS_W\NUM\1,r0
+                              863     move    #>dQH_IOS_BO\NUM\1,x0
+                              864     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+                              865     nop
+                              866     move    x:(r1+n1),x1    
+                              867     jsr     PutNext2Bytes
+                              869     ; Put Max Packet Length
+                              870     move    #>dQH_MAX_PKT_LENGTH_W\NUM\1,r0
+                              871     move    #>dQH_MAX_PKT_LENGTH_BO\NUM\1,x0
+                              872     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+                              873     nop
+                              874     move    x:(r1+n1),x1    
+                              875     jsr     PutNext2Bytes
+                              877 _Bypass_Init_\NUM\_DirIn
+                              878     ; Put Status
+                              879     move    #>dQH_STATUS_W\NUM\1,r0
+                              880     move    #>dQH_STATUS_BO\NUM\1,x0
+                              881     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+                              882     nop
+                              883     move    x:(r1+n1),x1
+                              884     jsr     PutNext2Bytes
+                              886     ; Put Next dTD Pointer (2 LS Bytes)
+                              887     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W\NUM\1,r0
+                              888     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+                              889     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO\NUM\1,x0
+                              890     move    x:(r1+n1),x1
+                              891     jsr     PutNext2Bytes
+                              893     rts
+                              895 _EP_\NUM\_DirOut
+                              896     ; Check if init fields also required
+                              897     move    x0,a
+                              898     tst     a
+                              899     jeq     _Bypass_Init_\NUM\_DirOut
+                              901     ; Put IOS entry
+                              902     move    #>dQH_IOS_W\NUM\0,r0
+                              903     move    #>dQH_IOS_BO\NUM\0,x0
+                              904     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+                              905     nop
+                              906     move    x:(r1+n1),x1    
+                              907     jsr     PutNext2Bytes
+                              909     ; Put Max Packet Length
+                              910     move    #>dQH_MAX_PKT_LENGTH_W\NUM\0,r0
+                              911     move    #>dQH_MAX_PKT_LENGTH_BO\NUM\0,x0
+                              912     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+                              913     nop
+                              914     move    x:(r1+n1),x1    
+                              915     jsr     PutNext2Bytes
+                              917 _Bypass_Init_\NUM\_DirOut
+                              918     ; Put Status
+                              919     move    #>dQH_STATUS_W\NUM\0,r0
+                              920     move    #>dQH_STATUS_BO\NUM\0,x0
+                              921     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+                              922     nop
+                              923     move    x:(r1+n1),x1
+                              924     jsr     PutNext2Bytes
+                              926     ; Put Next dTD Pointer (2 LS Bytes)
+                              927     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W\NUM\0,r0
+                              928     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+                              929     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO\NUM\0,x0
+                              930     move    x:(r1+n1),x1
+                              931     jsr     PutNext2Bytes
+                              933     rts
+                              935     ENDM
+                              935 dQHPackCapEndPoint0
+P:028B 05F421 00FFFF  4 1407  935     movec   #>$ffff,m1
+P:028D 0460A1         2 1409  935     movec   m1,m0
+P:028E 61F400 rrrrrr  3 1412  935     move    #>FdQH_Scratch_Cap,r1
+P:0290 210C00         2 1414  935     move    a0,a1
+P:0291 45F400 000000  3 1417  935     move    #>USB_OUT,x1
+P:0293 200065         2 1419  935     cmp     x1,a
+P:0294 0AF0AA rrrrrr  6 1425  935     jeq     EP___M_L0000780DirOut__M_L000078
+                              935 EP___M_L0000780DirIn__M_L000078
+                              935     ; Check if init fields also required
+P:0296 208E00         2 1427  935     move    x0,a
+P:0297 200003         2 1429  935     tst     a
+P:0298 0AF0AA rrrrrr  6 1435  935     jeq     Bypass_Init___M_L0000780DirIn__M_L000078
+                              935     ; Put IOS entry
+P:029A 60F400 rrrrrr  3 1438  935     move    #>dQH_IOS_W01,r0
+P:029C 44F400 rrrrrr  3 1441  935     move    #>dQH_IOS_BO01,x0
+P:029E 71F400 000000  3 1444  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:02A0 000000         2 1446  935     nop
+P:02A1 45E900         4 1450  935     move    x:(r1+n1),x1    
+P:02A2 0BF080 rrrrrr  6 1456  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:02A4 60F400 rrrrrr  3 1459  935     move    #>dQH_MAX_PKT_LENGTH_W01,r0
+P:02A6 44F400 rrrrrr  3 1462  935     move    #>dQH_MAX_PKT_LENGTH_BO01,x0
+P:02A8 71F400 000001  3 1465  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:02AA 000000         2 1467  935     nop
+P:02AB 45E900         4 1471  935     move    x:(r1+n1),x1    
+P:02AC 0BF080 rrrrrr  6 1477  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000780DirIn__M_L000078
+                              935     ; Put Status
+P:02AE 60F400 rrrrrr  3 1480  935     move    #>dQH_STATUS_W01,r0
+P:02B0 44F400 rrrrrr  3 1483  935     move    #>dQH_STATUS_BO01,x0
+P:02B2 71F400 000003  3 1486  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:02B4 000000         2 1488  935     nop
+P:02B5 45E900         4 1492  935     move    x:(r1+n1),x1
+P:02B6 0BF080 rrrrrr  6 1498  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:02B8 60F400 rrrrrr  3 1501  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W01,r0
+P:02BA 71F400 000002  3 1504  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:02BC 44F400 rrrrrr  3 1507  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO01,x0
+P:02BE 45E900         4 1511  935     move    x:(r1+n1),x1
+P:02BF 0BF080 rrrrrr  6 1517  935     jsr     PutNext2Bytes
+P:02C1 00000C         4 1521  935     rts
+                              935 EP___M_L0000780DirOut__M_L000078
+                              935     ; Check if init fields also required
+P:02C2 208E00         2 1523  935     move    x0,a
+P:02C3 200003         2 1525  935     tst     a
+P:02C4 0AF0AA rrrrrr  6 1531  935     jeq     Bypass_Init___M_L0000780DirOut__M_L000078
+                              935     ; Put IOS entry
+P:02C6 60F400 rrrrrr  3 1534  935     move    #>dQH_IOS_W00,r0
+P:02C8 44F400 rrrrrr  3 1537  935     move    #>dQH_IOS_BO00,x0
+P:02CA 71F400 000000  3 1540  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:02CC 000000         2 1542  935     nop
+P:02CD 45E900         4 1546  935     move    x:(r1+n1),x1    
+P:02CE 0BF080 rrrrrr  6 1552  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:02D0 60F400 rrrrrr  3 1555  935     move    #>dQH_MAX_PKT_LENGTH_W00,r0
+P:02D2 44F400 rrrrrr  3 1558  935     move    #>dQH_MAX_PKT_LENGTH_BO00,x0
+P:02D4 71F400 000001  3 1561  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:02D6 000000         2 1563  935     nop
+P:02D7 45E900         4 1567  935     move    x:(r1+n1),x1    
+P:02D8 0BF080 rrrrrr  6 1573  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000780DirOut__M_L000078
+                              935     ; Put Status
+P:02DA 60F400 rrrrrr  3 1576  935     move    #>dQH_STATUS_W00,r0
+P:02DC 44F400 rrrrrr  3 1579  935     move    #>dQH_STATUS_BO00,x0
+P:02DE 71F400 000003  3 1582  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:02E0 000000         2 1584  935     nop
+P:02E1 45E900         4 1588  935     move    x:(r1+n1),x1
+P:02E2 0BF080 rrrrrr  6 1594  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:02E4 60F400 rrrrrr  3 1597  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W00,r0
+P:02E6 71F400 000002  3 1600  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:02E8 44F400 rrrrrr  3 1603  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO00,x0
+P:02EA 45E900         4 1607  935     move    x:(r1+n1),x1
+P:02EB 0BF080 rrrrrr  6 1613  935     jsr     PutNext2Bytes
+P:02ED 00000C         4 1617  935     rts
+                              935 dQHPackCapEndPoint1
+P:02EE 05F421 00FFFF  4 1621  935     movec   #>$ffff,m1
+P:02F0 0460A1         2 1623  935     movec   m1,m0
+P:02F1 61F400 rrrrrr  3 1626  935     move    #>FdQH_Scratch_Cap,r1
+P:02F3 210C00         2 1628  935     move    a0,a1
+P:02F4 45F400 000000  3 1631  935     move    #>USB_OUT,x1
+P:02F6 200065         2 1633  935     cmp     x1,a
+P:02F7 0AF0AA rrrrrr  6 1639  935     jeq     EP___M_L0000791DirOut__M_L000079
+                              935 EP___M_L0000791DirIn__M_L000079
+                              935     ; Check if init fields also required
+P:02F9 208E00         2 1641  935     move    x0,a
+P:02FA 200003         2 1643  935     tst     a
+P:02FB 0AF0AA rrrrrr  6 1649  935     jeq     Bypass_Init___M_L0000791DirIn__M_L000079
+                              935     ; Put IOS entry
+P:02FD 60F400 rrrrrr  3 1652  935     move    #>dQH_IOS_W11,r0
+P:02FF 44F400 rrrrrr  3 1655  935     move    #>dQH_IOS_BO11,x0
+P:0301 71F400 000000  3 1658  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:0303 000000         2 1660  935     nop
+P:0304 45E900         4 1664  935     move    x:(r1+n1),x1    
+P:0305 0BF080 rrrrrr  6 1670  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:0307 60F400 rrrrrr  3 1673  935     move    #>dQH_MAX_PKT_LENGTH_W11,r0
+P:0309 44F400 rrrrrr  3 1676  935     move    #>dQH_MAX_PKT_LENGTH_BO11,x0
+P:030B 71F400 000001  3 1679  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:030D 000000         2 1681  935     nop
+P:030E 45E900         4 1685  935     move    x:(r1+n1),x1    
+P:030F 0BF080 rrrrrr  6 1691  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000791DirIn__M_L000079
+                              935     ; Put Status
+P:0311 60F400 rrrrrr  3 1694  935     move    #>dQH_STATUS_W11,r0
+P:0313 44F400 rrrrrr  3 1697  935     move    #>dQH_STATUS_BO11,x0
+P:0315 71F400 000003  3 1700  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:0317 000000         2 1702  935     nop
+P:0318 45E900         4 1706  935     move    x:(r1+n1),x1
+P:0319 0BF080 rrrrrr  6 1712  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:031B 60F400 rrrrrr  3 1715  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W11,r0
+P:031D 71F400 000002  3 1718  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:031F 44F400 rrrrrr  3 1721  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO11,x0
+P:0321 45E900         4 1725  935     move    x:(r1+n1),x1
+P:0322 0BF080 rrrrrr  6 1731  935     jsr     PutNext2Bytes
+P:0324 00000C         4 1735  935     rts
+                              935 EP___M_L0000791DirOut__M_L000079
+                              935     ; Check if init fields also required
+P:0325 208E00         2 1737  935     move    x0,a
+P:0326 200003         2 1739  935     tst     a
+P:0327 0AF0AA rrrrrr  6 1745  935     jeq     Bypass_Init___M_L0000791DirOut__M_L000079
+                              935     ; Put IOS entry
+P:0329 60F400 rrrrrr  3 1748  935     move    #>dQH_IOS_W10,r0
+P:032B 44F400 rrrrrr  3 1751  935     move    #>dQH_IOS_BO10,x0
+P:032D 71F400 000000  3 1754  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:032F 000000         2 1756  935     nop
+P:0330 45E900         4 1760  935     move    x:(r1+n1),x1    
+P:0331 0BF080 rrrrrr  6 1766  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:0333 60F400 rrrrrr  3 1769  935     move    #>dQH_MAX_PKT_LENGTH_W10,r0
+P:0335 44F400 rrrrrr  3 1772  935     move    #>dQH_MAX_PKT_LENGTH_BO10,x0
+P:0337 71F400 000001  3 1775  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:0339 000000         2 1777  935     nop
+P:033A 45E900         4 1781  935     move    x:(r1+n1),x1    
+P:033B 0BF080 rrrrrr  6 1787  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000791DirOut__M_L000079
+                              935     ; Put Status
+P:033D 60F400 rrrrrr  3 1790  935     move    #>dQH_STATUS_W10,r0
+P:033F 44F400 rrrrrr  3 1793  935     move    #>dQH_STATUS_BO10,x0
+P:0341 71F400 000003  3 1796  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:0343 000000         2 1798  935     nop
+P:0344 45E900         4 1802  935     move    x:(r1+n1),x1
+P:0345 0BF080 rrrrrr  6 1808  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:0347 60F400 rrrrrr  3 1811  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W10,r0
+P:0349 71F400 000002  3 1814  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:034B 44F400 rrrrrr  3 1817  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO10,x0
+P:034D 45E900         4 1821  935     move    x:(r1+n1),x1
+P:034E 0BF080 rrrrrr  6 1827  935     jsr     PutNext2Bytes
+P:0350 00000C         4 1831  935     rts
+                              935 dQHPackCapEndPoint2
+P:0351 05F421 00FFFF  4 1835  935     movec   #>$ffff,m1
+P:0353 0460A1         2 1837  935     movec   m1,m0
+P:0354 61F400 rrrrrr  3 1840  935     move    #>FdQH_Scratch_Cap,r1
+P:0356 210C00         2 1842  935     move    a0,a1
+P:0357 45F400 000000  3 1845  935     move    #>USB_OUT,x1
+P:0359 200065         2 1847  935     cmp     x1,a
+P:035A 0AF0AA rrrrrr  6 1853  935     jeq     EP___M_L0000802DirOut__M_L000080
+                              935 EP___M_L0000802DirIn__M_L000080
+                              935     ; Check if init fields also required
+P:035C 208E00         2 1855  935     move    x0,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:035D 200003         2 1857  935     tst     a
+P:035E 0AF0AA rrrrrr  6 1863  935     jeq     Bypass_Init___M_L0000802DirIn__M_L000080
+                              935     ; Put IOS entry
+P:0360 60F400 rrrrrr  3 1866  935     move    #>dQH_IOS_W21,r0
+P:0362 44F400 rrrrrr  3 1869  935     move    #>dQH_IOS_BO21,x0
+P:0364 71F400 000000  3 1872  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:0366 000000         2 1874  935     nop
+P:0367 45E900         4 1878  935     move    x:(r1+n1),x1    
+P:0368 0BF080 rrrrrr  6 1884  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:036A 60F400 rrrrrr  3 1887  935     move    #>dQH_MAX_PKT_LENGTH_W21,r0
+P:036C 44F400 rrrrrr  3 1890  935     move    #>dQH_MAX_PKT_LENGTH_BO21,x0
+P:036E 71F400 000001  3 1893  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:0370 000000         2 1895  935     nop
+P:0371 45E900         4 1899  935     move    x:(r1+n1),x1    
+P:0372 0BF080 rrrrrr  6 1905  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000802DirIn__M_L000080
+                              935     ; Put Status
+P:0374 60F400 rrrrrr  3 1908  935     move    #>dQH_STATUS_W21,r0
+P:0376 44F400 rrrrrr  3 1911  935     move    #>dQH_STATUS_BO21,x0
+P:0378 71F400 000003  3 1914  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:037A 000000         2 1916  935     nop
+P:037B 45E900         4 1920  935     move    x:(r1+n1),x1
+P:037C 0BF080 rrrrrr  6 1926  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:037E 60F400 rrrrrr  3 1929  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W21,r0
+P:0380 71F400 000002  3 1932  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:0382 44F400 rrrrrr  3 1935  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO21,x0
+P:0384 45E900         4 1939  935     move    x:(r1+n1),x1
+P:0385 0BF080 rrrrrr  6 1945  935     jsr     PutNext2Bytes
+P:0387 00000C         4 1949  935     rts
+                              935 EP___M_L0000802DirOut__M_L000080
+                              935     ; Check if init fields also required
+P:0388 208E00         2 1951  935     move    x0,a
+P:0389 200003         2 1953  935     tst     a
+P:038A 0AF0AA rrrrrr  6 1959  935     jeq     Bypass_Init___M_L0000802DirOut__M_L000080
+                              935     ; Put IOS entry
+P:038C 60F400 rrrrrr  3 1962  935     move    #>dQH_IOS_W20,r0
+P:038E 44F400 rrrrrr  3 1965  935     move    #>dQH_IOS_BO20,x0
+P:0390 71F400 000000  3 1968  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:0392 000000         2 1970  935     nop
+P:0393 45E900         4 1974  935     move    x:(r1+n1),x1    
+P:0394 0BF080 rrrrrr  6 1980  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:0396 60F400 rrrrrr  3 1983  935     move    #>dQH_MAX_PKT_LENGTH_W20,r0
+P:0398 44F400 rrrrrr  3 1986  935     move    #>dQH_MAX_PKT_LENGTH_BO20,x0
+P:039A 71F400 000001  3 1989  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:039C 000000         2 1991  935     nop
+P:039D 45E900         4 1995  935     move    x:(r1+n1),x1    
+P:039E 0BF080 rrrrrr  6 2001  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000802DirOut__M_L000080
+                              935     ; Put Status
+P:03A0 60F400 rrrrrr  3 2004  935     move    #>dQH_STATUS_W20,r0
+P:03A2 44F400 rrrrrr  3 2007  935     move    #>dQH_STATUS_BO20,x0
+P:03A4 71F400 000003  3 2010  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:03A6 000000         2 2012  935     nop
+P:03A7 45E900         4 2016  935     move    x:(r1+n1),x1
+P:03A8 0BF080 rrrrrr  6 2022  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:03AA 60F400 rrrrrr  3 2025  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W20,r0
+P:03AC 71F400 000002  3 2028  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:03AE 44F400 rrrrrr  3 2031  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO20,x0
+P:03B0 45E900         4 2035  935     move    x:(r1+n1),x1
+P:03B1 0BF080 rrrrrr  6 2041  935     jsr     PutNext2Bytes
+P:03B3 00000C         4 2045  935     rts
+                              935 dQHPackCapEndPoint3
+P:03B4 05F421 00FFFF  4 2049  935     movec   #>$ffff,m1
+P:03B6 0460A1         2 2051  935     movec   m1,m0
+P:03B7 61F400 rrrrrr  3 2054  935     move    #>FdQH_Scratch_Cap,r1
+P:03B9 210C00         2 2056  935     move    a0,a1
+P:03BA 45F400 000000  3 2059  935     move    #>USB_OUT,x1
+P:03BC 200065         2 2061  935     cmp     x1,a
+P:03BD 0AF0AA rrrrrr  6 2067  935     jeq     EP___M_L0000813DirOut__M_L000081
+                              935 EP___M_L0000813DirIn__M_L000081
+                              935     ; Check if init fields also required
+P:03BF 208E00         2 2069  935     move    x0,a
+P:03C0 200003         2 2071  935     tst     a
+P:03C1 0AF0AA rrrrrr  6 2077  935     jeq     Bypass_Init___M_L0000813DirIn__M_L000081
+                              935     ; Put IOS entry
+P:03C3 60F400 rrrrrr  3 2080  935     move    #>dQH_IOS_W31,r0
+P:03C5 44F400 rrrrrr  3 2083  935     move    #>dQH_IOS_BO31,x0
+P:03C7 71F400 000000  3 2086  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:03C9 000000         2 2088  935     nop
+P:03CA 45E900         4 2092  935     move    x:(r1+n1),x1    
+P:03CB 0BF080 rrrrrr  6 2098  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:03CD 60F400 rrrrrr  3 2101  935     move    #>dQH_MAX_PKT_LENGTH_W31,r0
+P:03CF 44F400 rrrrrr  3 2104  935     move    #>dQH_MAX_PKT_LENGTH_BO31,x0
+P:03D1 71F400 000001  3 2107  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:03D3 000000         2 2109  935     nop
+P:03D4 45E900         4 2113  935     move    x:(r1+n1),x1    
+P:03D5 0BF080 rrrrrr  6 2119  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000813DirIn__M_L000081
+                              935     ; Put Status
+P:03D7 60F400 rrrrrr  3 2122  935     move    #>dQH_STATUS_W31,r0
+P:03D9 44F400 rrrrrr  3 2125  935     move    #>dQH_STATUS_BO31,x0
+P:03DB 71F400 000003  3 2128  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:03DD 000000         2 2130  935     nop
+P:03DE 45E900         4 2134  935     move    x:(r1+n1),x1
+P:03DF 0BF080 rrrrrr  6 2140  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:03E1 60F400 rrrrrr  3 2143  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W31,r0
+P:03E3 71F400 000002  3 2146  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:03E5 44F400 rrrrrr  3 2149  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO31,x0
+P:03E7 45E900         4 2153  935     move    x:(r1+n1),x1
+P:03E8 0BF080 rrrrrr  6 2159  935     jsr     PutNext2Bytes
+P:03EA 00000C         4 2163  935     rts
+                              935 EP___M_L0000813DirOut__M_L000081
+                              935     ; Check if init fields also required
+P:03EB 208E00         2 2165  935     move    x0,a
+P:03EC 200003         2 2167  935     tst     a
+P:03ED 0AF0AA rrrrrr  6 2173  935     jeq     Bypass_Init___M_L0000813DirOut__M_L000081
+                              935     ; Put IOS entry
+P:03EF 60F400 rrrrrr  3 2176  935     move    #>dQH_IOS_W30,r0
+P:03F1 44F400 rrrrrr  3 2179  935     move    #>dQH_IOS_BO30,x0
+P:03F3 71F400 000000  3 2182  935     move    #>dQH_SCRATCH_CAP_IOS_POS,n1
+P:03F5 000000         2 2184  935     nop
+P:03F6 45E900         4 2188  935     move    x:(r1+n1),x1    
+P:03F7 0BF080 rrrrrr  6 2194  935     jsr     PutNext2Bytes
+                              935     ; Put Max Packet Length
+P:03F9 60F400 rrrrrr  3 2197  935     move    #>dQH_MAX_PKT_LENGTH_W30,r0
+P:03FB 44F400 rrrrrr  3 2200  935     move    #>dQH_MAX_PKT_LENGTH_BO30,x0
+P:03FD 71F400 000001  3 2203  935     move    #>dQH_SCRATCH_CAP_MAX_PKT_LENGTH_POS,n1
+P:03FF 000000         2 2205  935     nop
+P:0400 45E900         4 2209  935     move    x:(r1+n1),x1    
+P:0401 0BF080 rrrrrr  6 2215  935     jsr     PutNext2Bytes
+                              935 Bypass_Init___M_L0000813DirOut__M_L000081
+                              935     ; Put Status
+P:0403 60F400 rrrrrr  3 2218  935     move    #>dQH_STATUS_W30,r0
+P:0405 44F400 rrrrrr  3 2221  935     move    #>dQH_STATUS_BO30,x0
+P:0407 71F400 000003  3 2224  935     move    #>dQH_SCRATCH_CAP_STATUS_POS,n1
+P:0409 000000         2 2226  935     nop
+P:040A 45E900         4 2230  935     move    x:(r1+n1),x1
+P:040B 0BF080 rrrrrr  6 2236  935     jsr     PutNext2Bytes
+                              935     ; Put Next dTD Pointer (2 LS Bytes)
+P:040D 60F400 rrrrrr  3 2239  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_W30,r0
+P:040F 71F400 000002  3 2242  935     move    #>dQH_SCRATCH_CAP_dTD_PTR_POS,n1
+P:0411 44F400 rrrrrr  3 2245  935     move    #>dQH_NEXT_dTD_PTR_LOWER_BYTES_BO30,x0
+P:0413 45E900         4 2249  935     move    x:(r1+n1),x1
+P:0414 0BF080 rrrrrr  6 2255  935     jsr     PutNext2Bytes
+P:0416 00000C         4 2259  935     rts
+                              939 ;///////////////////////////////////////////////////////////////////////////////
+                              940 ;       FdQHUnpackSetup
+                              941 ;       
+                              942 ; On Entry: 
+                              943 ;   a1 : Endpoint Number
+                              944 ;   b1 : Direction
+                              945 ; On Exit:
+                              946 ;   none
+                              947 ; Modified:
+                              948 ;   Address Regs:  m0, r0, n0 
+                              949 ;   Accumulators:  
+                              950 ;   Data Regs: y0     
+                              951 ;
+                              952 ; This functions copies the info from the dQH for the specific endpoint/direction
+                              953 ; to the dQH_SCRATCH_SETUP structure.
+                              954 ;
+                              955 ; The only entries updated by this function are:
+                              956 ;   dQH_SCRATCH_SETUP_BUF_0_POS
+                              957 ;   dQH_SCRATCH_SETUP_BUF_1_POS
+                              958 ;   dQH_SCRATCH_SETUP_BUF_2_POS
+                              959 ;   dQH_SCRATCH_SETUP_BUF_3_POS
+                              960 ;   dQH_SCRATCH_SETUP_BUF_4_POS
+                              961 ;   dQH_SCRATCH_SETUP_BUF_5_POS
+                              962 ;   dQH_SCRATCH_SETUP_BUF_6_POS
+                              963 ;   dQH_SCRATCH_SETUP_BUF_7_POS
+                              964 ; The other entries are irrelevant.
+                              965 ;
+                              966 ; The function is quite messy due to the ARC IP and STMP having different
+                              967 ; word length.
+                              968 ; dQHs must be organized per ARC IP recomendations. All dQHs are in memory
+                              969 ; located back to back. The problem is that they are 64 bytes long, therefore
+                              970 ; accessing each entry in the STMP address space is quite difficult. To avoid
+                              971 ; lengthy divisions each endpoint has its own unpack function. This function
+                              972 ; finds the appropriate unpack function to call and calls it.
+                              973 ;///////////////////////////////////////////////////////////////////////////////
+                              974 FdQHUnpackSetup
+                              976     ; ** This function can be called from any context, and it needs mutual
+                              977     ; ** exclusion with itself.
+                              978     push    a1
+P:0417 5C5F00         2 2261  978     move    a1,y:(r7)+
+                              979     push    b1
+P:0418 5D5F00         2 2263  979     move    b1,y:(r7)+
+P:0419 0BF080 rrrrrr  6 2269  981     jsr     FSysMaskAllInterrupts
+P:041B 218600         2 2271  982     move    a1,y0                   ; Save old ISR level
+                              984     pop     b1
+P:041C 5DFF00         4 2275  984     move    y:-(r7),b1
+                              985     pop     a1
+P:041D 5CFF00         4 2279  985     move    y:-(r7),a1
+                              987     ; Insure linear addressing
+P:041E 05F420 00FFFF  4 2283  988     movec   #>$ffff,m0
+P:0420 60F400 rrrrrr  3 2286  989     move    #>BaseAdddQHUnpackSetupEndPoint,r0
+P:0422 219800         2 2288  990     move    a1,n0
+P:0423 000000         2 2290  991     nop
+P:0424 07E890         8 2298  992     movem   p:(r0+n0),r0
+P:0425 21A800         2 2300  993     move    b1,a0
+P:0426 0BE080         4 2304  994     jsr     (r0)
+P:0427 000000         2 2306  995     nop
+P:0428 20CC00         2 2308  998     move    y0,a1                   ; Restore old ISR level
+P:0429 0BF080 rrrrrr  6 2314  999     jsr     FSysUnMaskAllInterrupts
+P:042B 00000C         4 2318 1001     rts
+                             1004 ;///////////////////////////////////////////////////////////////////////////////
+                             1005 ;       dQHUnpackSetupEndPoint_\NUM
+                             1006 ;       
+                             1007 ; On Entry: 
+                             1008 ;   a0 : EndPoint Direction
+                             1009 ; On Exit:
+                             1010 ;   none
+                             1011 ; Modified:
+                             1012 ;   Address Regs:  m0, r0, n0, m1, r1, n1 
+                             1013 ;   Accumulators:  a
+                             1014 ;   Data Regs: x0           
+                             1015 ;
+                             1016 ; This functions is called by the dQHUnpackSetup() (see comments for more details)
+                             1017 ;
+                             1018 ; One function is generated per endpoint.
+                             1019 ;///////////////////////////////////////////////////////////////////////////////
+                             1020     DUPF    NUM,0,(MAX_NUM_EP-1)
+                             1021 dQHUnpackSetupEndPoint\NUM
+                             1022     move    #>$ffff,m1
+                             1023     move    m1,m0
+                             1024     move    #>FdQH_Scratch_Setup_Buf,r1
+                             1025     move    a0,a1
+                             1026     move    #>USB_OUT,x0
+                             1027     cmp     x0,a
+                             1028     jeq     _EP_\NUM\_DirOut
+                             1030     ; Get Setup Byte  
+                             1031     move    #>dQH_SETUP_BYTE0_W\NUM\1,r0
+                             1032     move    #>dQH_SETUP_BYTE0_BO\NUM\1,x0
+                             1033     jsr     GetNextByte
+                             1034     move    a1,x:(r1)+
+                             1036     move    #>dQH_SETUP_BYTE1_W\NUM\1,r0
+                             1037     move    #>dQH_SETUP_BYTE1_BO\NUM\1,x0
+                             1038     jsr     GetNextByte
+                             1039     move    a1,x:(r1)+
+                             1041     move    #>dQH_SETUP_BYTE2_W\NUM\1,r0
+                             1042     move    #>dQH_SETUP_BYTE2_BO\NUM\1,x0
+                             1043     jsr     GetNextByte
+                             1044     move    a1,x:(r1)+
+                             1046     move    #>dQH_SETUP_BYTE3_W\NUM\1,r0
+                             1047     move    #>dQH_SETUP_BYTE3_BO\NUM\1,x0
+                             1048     jsr     GetNextByte
+                             1049     move    a1,x:(r1)+
+                             1051     move    #>dQH_SETUP_BYTE4_W\NUM\1,r0
+                             1052     move    #>dQH_SETUP_BYTE4_BO\NUM\1,x0
+                             1053     jsr     GetNextByte
+                             1054     move    a1,x:(r1)+
+                             1056     move    #>dQH_SETUP_BYTE5_W\NUM\1,r0
+                             1057     move    #>dQH_SETUP_BYTE5_BO\NUM\1,x0
+                             1058     jsr     GetNextByte
+                             1059     move    a1,x:(r1)+
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1061     move    #>dQH_SETUP_BYTE6_W\NUM\1,r0
+                             1062     move    #>dQH_SETUP_BYTE6_BO\NUM\1,x0
+                             1063     jsr     GetNextByte
+                             1064     move    a1,x:(r1)+
+                             1066     move    #>dQH_SETUP_BYTE7_W\NUM\1,r0
+                             1067     move    #>dQH_SETUP_BYTE7_BO\NUM\1,x0
+                             1068     jsr     GetNextByte
+                             1069     move    a1,x:(r1)+
+                             1071     rts
+                             1073 _EP_\NUM\_DirOut
+                             1074     move    #>dQH_SETUP_BYTE0_W\NUM\0,r0
+                             1075     move    #>dQH_SETUP_BYTE0_BO\NUM\0,x0
+                             1076     jsr     GetNextByte
+                             1077     move    a1,x:(r1)+
+                             1079     move    #>dQH_SETUP_BYTE1_W\NUM\0,r0
+                             1080     move    #>dQH_SETUP_BYTE1_BO\NUM\0,x0
+                             1081     jsr     GetNextByte
+                             1082     move    a1,x:(r1)+
+                             1084     move    #>dQH_SETUP_BYTE2_W\NUM\0,r0
+                             1085     move    #>dQH_SETUP_BYTE2_BO\NUM\0,x0
+                             1086     jsr     GetNextByte
+                             1087     move    a1,x:(r1)+
+                             1089     move    #>dQH_SETUP_BYTE3_W\NUM\0,r0
+                             1090     move    #>dQH_SETUP_BYTE3_BO\NUM\0,x0
+                             1091     jsr     GetNextByte
+                             1092     move    a1,x:(r1)+
+                             1094     move    #>dQH_SETUP_BYTE4_W\NUM\0,r0
+                             1095     move    #>dQH_SETUP_BYTE4_BO\NUM\0,x0
+                             1096     jsr     GetNextByte
+                             1097     move    a1,x:(r1)+
+                             1099     move    #>dQH_SETUP_BYTE5_W\NUM\0,r0
+                             1100     move    #>dQH_SETUP_BYTE5_BO\NUM\0,x0
+                             1101     jsr     GetNextByte
+                             1102     move    a1,x:(r1)+
+                             1104     move    #>dQH_SETUP_BYTE6_W\NUM\0,r0
+                             1105     move    #>dQH_SETUP_BYTE6_BO\NUM\0,x0
+                             1106     jsr     GetNextByte
+                             1107     move    a1,x:(r1)+
+                             1109     move    #>dQH_SETUP_BYTE7_W\NUM\0,r0
+                             1110     move    #>dQH_SETUP_BYTE7_BO\NUM\0,x0
+                             1111     jsr     GetNextByte
+                             1112     move    a1,x:(r1)+
+                             1114     rts
+                             1116     ENDM
+                             1116 dQHUnpackSetupEndPoint0
+P:042C 05F421 00FFFF  4 2322 1116     movec   #>$ffff,m1
+P:042E 0460A1         2 2324 1116     movec   m1,m0
+P:042F 61F400 rrrrrr  3 2327 1116     move    #>FdQH_Scratch_Setup_Buf,r1
+P:0431 210C00         2 2329 1116     move    a0,a1
+P:0432 44F400 000000  3 2332 1116     move    #>USB_OUT,x0
+P:0434 200045         2 2334 1116     cmp     x0,a
+P:0435 0AF0AA rrrrrr  6 2340 1116     jeq     EP___M_L0000860DirOut__M_L000086
+                             1116     ; Get Setup Byte  
+P:0437 60F400 rrrrrr  3 2343 1116     move    #>dQH_SETUP_BYTE0_W01,r0
+P:0439 44F400 rrrrrr  3 2346 1116     move    #>dQH_SETUP_BYTE0_BO01,x0
+P:043B 0BF080 rrrrrr  6 2352 1116     jsr     GetNextByte
+P:043D 545900         2 2354 1116     move    a1,x:(r1)+
+P:043E 60F400 rrrrrr  3 2357 1116     move    #>dQH_SETUP_BYTE1_W01,r0
+P:0440 44F400 rrrrrr  3 2360 1116     move    #>dQH_SETUP_BYTE1_BO01,x0
+P:0442 0BF080 rrrrrr  6 2366 1116     jsr     GetNextByte
+P:0444 545900         2 2368 1116     move    a1,x:(r1)+
+P:0445 60F400 rrrrrr  3 2371 1116     move    #>dQH_SETUP_BYTE2_W01,r0
+P:0447 44F400 rrrrrr  3 2374 1116     move    #>dQH_SETUP_BYTE2_BO01,x0
+P:0449 0BF080 rrrrrr  6 2380 1116     jsr     GetNextByte
+P:044B 545900         2 2382 1116     move    a1,x:(r1)+
+P:044C 60F400 rrrrrr  3 2385 1116     move    #>dQH_SETUP_BYTE3_W01,r0
+P:044E 44F400 rrrrrr  3 2388 1116     move    #>dQH_SETUP_BYTE3_BO01,x0
+P:0450 0BF080 rrrrrr  6 2394 1116     jsr     GetNextByte
+P:0452 545900         2 2396 1116     move    a1,x:(r1)+
+P:0453 60F400 rrrrrr  3 2399 1116     move    #>dQH_SETUP_BYTE4_W01,r0
+P:0455 44F400 rrrrrr  3 2402 1116     move    #>dQH_SETUP_BYTE4_BO01,x0
+P:0457 0BF080 rrrrrr  6 2408 1116     jsr     GetNextByte
+P:0459 545900         2 2410 1116     move    a1,x:(r1)+
+P:045A 60F400 rrrrrr  3 2413 1116     move    #>dQH_SETUP_BYTE5_W01,r0
+P:045C 44F400 rrrrrr  3 2416 1116     move    #>dQH_SETUP_BYTE5_BO01,x0
+P:045E 0BF080 rrrrrr  6 2422 1116     jsr     GetNextByte
+P:0460 545900         2 2424 1116     move    a1,x:(r1)+
+P:0461 60F400 rrrrrr  3 2427 1116     move    #>dQH_SETUP_BYTE6_W01,r0
+P:0463 44F400 rrrrrr  3 2430 1116     move    #>dQH_SETUP_BYTE6_BO01,x0
+P:0465 0BF080 rrrrrr  6 2436 1116     jsr     GetNextByte
+P:0467 545900         2 2438 1116     move    a1,x:(r1)+
+P:0468 60F400 rrrrrr  3 2441 1116     move    #>dQH_SETUP_BYTE7_W01,r0
+P:046A 44F400 rrrrrr  3 2444 1116     move    #>dQH_SETUP_BYTE7_BO01,x0
+P:046C 0BF080 rrrrrr  6 2450 1116     jsr     GetNextByte
+P:046E 545900         2 2452 1116     move    a1,x:(r1)+
+P:046F 00000C         4 2456 1116     rts
+                             1116 EP___M_L0000860DirOut__M_L000086
+P:0470 60F400 rrrrrr  3 2459 1116     move    #>dQH_SETUP_BYTE0_W00,r0
+P:0472 44F400 rrrrrr  3 2462 1116     move    #>dQH_SETUP_BYTE0_BO00,x0
+P:0474 0BF080 rrrrrr  6 2468 1116     jsr     GetNextByte
+P:0476 545900         2 2470 1116     move    a1,x:(r1)+
+P:0477 60F400 rrrrrr  3 2473 1116     move    #>dQH_SETUP_BYTE1_W00,r0
+P:0479 44F400 rrrrrr  3 2476 1116     move    #>dQH_SETUP_BYTE1_BO00,x0
+P:047B 0BF080 rrrrrr  6 2482 1116     jsr     GetNextByte
+P:047D 545900         2 2484 1116     move    a1,x:(r1)+
+P:047E 60F400 rrrrrr  3 2487 1116     move    #>dQH_SETUP_BYTE2_W00,r0
+P:0480 44F400 rrrrrr  3 2490 1116     move    #>dQH_SETUP_BYTE2_BO00,x0
+P:0482 0BF080 rrrrrr  6 2496 1116     jsr     GetNextByte
+P:0484 545900         2 2498 1116     move    a1,x:(r1)+
+P:0485 60F400 rrrrrr  3 2501 1116     move    #>dQH_SETUP_BYTE3_W00,r0
+P:0487 44F400 rrrrrr  3 2504 1116     move    #>dQH_SETUP_BYTE3_BO00,x0
+P:0489 0BF080 rrrrrr  6 2510 1116     jsr     GetNextByte
+P:048B 545900         2 2512 1116     move    a1,x:(r1)+
+P:048C 60F400 rrrrrr  3 2515 1116     move    #>dQH_SETUP_BYTE4_W00,r0
+P:048E 44F400 rrrrrr  3 2518 1116     move    #>dQH_SETUP_BYTE4_BO00,x0
+P:0490 0BF080 rrrrrr  6 2524 1116     jsr     GetNextByte
+P:0492 545900         2 2526 1116     move    a1,x:(r1)+
+P:0493 60F400 rrrrrr  3 2529 1116     move    #>dQH_SETUP_BYTE5_W00,r0
+P:0495 44F400 rrrrrr  3 2532 1116     move    #>dQH_SETUP_BYTE5_BO00,x0
+P:0497 0BF080 rrrrrr  6 2538 1116     jsr     GetNextByte
+P:0499 545900         2 2540 1116     move    a1,x:(r1)+
+P:049A 60F400 rrrrrr  3 2543 1116     move    #>dQH_SETUP_BYTE6_W00,r0
+P:049C 44F400 rrrrrr  3 2546 1116     move    #>dQH_SETUP_BYTE6_BO00,x0
+P:049E 0BF080 rrrrrr  6 2552 1116     jsr     GetNextByte
+P:04A0 545900         2 2554 1116     move    a1,x:(r1)+
+P:04A1 60F400 rrrrrr  3 2557 1116     move    #>dQH_SETUP_BYTE7_W00,r0
+P:04A3 44F400 rrrrrr  3 2560 1116     move    #>dQH_SETUP_BYTE7_BO00,x0
+P:04A5 0BF080 rrrrrr  6 2566 1116     jsr     GetNextByte
+P:04A7 545900         2 2568 1116     move    a1,x:(r1)+
+P:04A8 00000C         4 2572 1116     rts
+                             1116 dQHUnpackSetupEndPoint1
+P:04A9 05F421 00FFFF  4 2576 1116     movec   #>$ffff,m1
+P:04AB 0460A1         2 2578 1116     movec   m1,m0
+P:04AC 61F400 rrrrrr  3 2581 1116     move    #>FdQH_Scratch_Setup_Buf,r1
+P:04AE 210C00         2 2583 1116     move    a0,a1
+P:04AF 44F400 000000  3 2586 1116     move    #>USB_OUT,x0
+P:04B1 200045         2 2588 1116     cmp     x0,a
+P:04B2 0AF0AA rrrrrr  6 2594 1116     jeq     EP___M_L0000871DirOut__M_L000087
+                             1116     ; Get Setup Byte  
+P:04B4 60F400 rrrrrr  3 2597 1116     move    #>dQH_SETUP_BYTE0_W11,r0
+P:04B6 44F400 rrrrrr  3 2600 1116     move    #>dQH_SETUP_BYTE0_BO11,x0
+P:04B8 0BF080 rrrrrr  6 2606 1116     jsr     GetNextByte
+P:04BA 545900         2 2608 1116     move    a1,x:(r1)+
+P:04BB 60F400 rrrrrr  3 2611 1116     move    #>dQH_SETUP_BYTE1_W11,r0
+P:04BD 44F400 rrrrrr  3 2614 1116     move    #>dQH_SETUP_BYTE1_BO11,x0
+P:04BF 0BF080 rrrrrr  6 2620 1116     jsr     GetNextByte
+P:04C1 545900         2 2622 1116     move    a1,x:(r1)+
+P:04C2 60F400 rrrrrr  3 2625 1116     move    #>dQH_SETUP_BYTE2_W11,r0
+P:04C4 44F400 rrrrrr  3 2628 1116     move    #>dQH_SETUP_BYTE2_BO11,x0
+P:04C6 0BF080 rrrrrr  6 2634 1116     jsr     GetNextByte
+P:04C8 545900         2 2636 1116     move    a1,x:(r1)+
+P:04C9 60F400 rrrrrr  3 2639 1116     move    #>dQH_SETUP_BYTE3_W11,r0
+P:04CB 44F400 rrrrrr  3 2642 1116     move    #>dQH_SETUP_BYTE3_BO11,x0
+P:04CD 0BF080 rrrrrr  6 2648 1116     jsr     GetNextByte
+P:04CF 545900         2 2650 1116     move    a1,x:(r1)+
+P:04D0 60F400 rrrrrr  3 2653 1116     move    #>dQH_SETUP_BYTE4_W11,r0
+P:04D2 44F400 rrrrrr  3 2656 1116     move    #>dQH_SETUP_BYTE4_BO11,x0
+P:04D4 0BF080 rrrrrr  6 2662 1116     jsr     GetNextByte
+P:04D6 545900         2 2664 1116     move    a1,x:(r1)+
+P:04D7 60F400 rrrrrr  3 2667 1116     move    #>dQH_SETUP_BYTE5_W11,r0
+P:04D9 44F400 rrrrrr  3 2670 1116     move    #>dQH_SETUP_BYTE5_BO11,x0
+P:04DB 0BF080 rrrrrr  6 2676 1116     jsr     GetNextByte
+P:04DD 545900         2 2678 1116     move    a1,x:(r1)+
+P:04DE 60F400 rrrrrr  3 2681 1116     move    #>dQH_SETUP_BYTE6_W11,r0
+P:04E0 44F400 rrrrrr  3 2684 1116     move    #>dQH_SETUP_BYTE6_BO11,x0
+P:04E2 0BF080 rrrrrr  6 2690 1116     jsr     GetNextByte
+P:04E4 545900         2 2692 1116     move    a1,x:(r1)+
+P:04E5 60F400 rrrrrr  3 2695 1116     move    #>dQH_SETUP_BYTE7_W11,r0
+P:04E7 44F400 rrrrrr  3 2698 1116     move    #>dQH_SETUP_BYTE7_BO11,x0
+P:04E9 0BF080 rrrrrr  6 2704 1116     jsr     GetNextByte
+P:04EB 545900         2 2706 1116     move    a1,x:(r1)+
+P:04EC 00000C         4 2710 1116     rts
+                             1116 EP___M_L0000871DirOut__M_L000087
+P:04ED 60F400 rrrrrr  3 2713 1116     move    #>dQH_SETUP_BYTE0_W10,r0
+P:04EF 44F400 rrrrrr  3 2716 1116     move    #>dQH_SETUP_BYTE0_BO10,x0
+P:04F1 0BF080 rrrrrr  6 2722 1116     jsr     GetNextByte
+P:04F3 545900         2 2724 1116     move    a1,x:(r1)+
+P:04F4 60F400 rrrrrr  3 2727 1116     move    #>dQH_SETUP_BYTE1_W10,r0
+P:04F6 44F400 rrrrrr  3 2730 1116     move    #>dQH_SETUP_BYTE1_BO10,x0
+P:04F8 0BF080 rrrrrr  6 2736 1116     jsr     GetNextByte
+P:04FA 545900         2 2738 1116     move    a1,x:(r1)+
+P:04FB 60F400 rrrrrr  3 2741 1116     move    #>dQH_SETUP_BYTE2_W10,r0
+P:04FD 44F400 rrrrrr  3 2744 1116     move    #>dQH_SETUP_BYTE2_BO10,x0
+P:04FF 0BF080 rrrrrr  6 2750 1116     jsr     GetNextByte
+P:0501 545900         2 2752 1116     move    a1,x:(r1)+
+P:0502 60F400 rrrrrr  3 2755 1116     move    #>dQH_SETUP_BYTE3_W10,r0
+P:0504 44F400 rrrrrr  3 2758 1116     move    #>dQH_SETUP_BYTE3_BO10,x0
+P:0506 0BF080 rrrrrr  6 2764 1116     jsr     GetNextByte
+P:0508 545900         2 2766 1116     move    a1,x:(r1)+
+P:0509 60F400 rrrrrr  3 2769 1116     move    #>dQH_SETUP_BYTE4_W10,r0
+P:050B 44F400 rrrrrr  3 2772 1116     move    #>dQH_SETUP_BYTE4_BO10,x0
+P:050D 0BF080 rrrrrr  6 2778 1116     jsr     GetNextByte
+P:050F 545900         2 2780 1116     move    a1,x:(r1)+
+P:0510 60F400 rrrrrr  3 2783 1116     move    #>dQH_SETUP_BYTE5_W10,r0
+P:0512 44F400 rrrrrr  3 2786 1116     move    #>dQH_SETUP_BYTE5_BO10,x0
+P:0514 0BF080 rrrrrr  6 2792 1116     jsr     GetNextByte
+P:0516 545900         2 2794 1116     move    a1,x:(r1)+
+P:0517 60F400 rrrrrr  3 2797 1116     move    #>dQH_SETUP_BYTE6_W10,r0
+P:0519 44F400 rrrrrr  3 2800 1116     move    #>dQH_SETUP_BYTE6_BO10,x0
+P:051B 0BF080 rrrrrr  6 2806 1116     jsr     GetNextByte
+P:051D 545900         2 2808 1116     move    a1,x:(r1)+
+P:051E 60F400 rrrrrr  3 2811 1116     move    #>dQH_SETUP_BYTE7_W10,r0
+P:0520 44F400 rrrrrr  3 2814 1116     move    #>dQH_SETUP_BYTE7_BO10,x0
+P:0522 0BF080 rrrrrr  6 2820 1116     jsr     GetNextByte
+P:0524 545900         2 2822 1116     move    a1,x:(r1)+
+P:0525 00000C         4 2826 1116     rts
+                             1116 dQHUnpackSetupEndPoint2
+P:0526 05F421 00FFFF  4 2830 1116     movec   #>$ffff,m1
+P:0528 0460A1         2 2832 1116     movec   m1,m0
+P:0529 61F400 rrrrrr  3 2835 1116     move    #>FdQH_Scratch_Setup_Buf,r1
+P:052B 210C00         2 2837 1116     move    a0,a1
+P:052C 44F400 000000  3 2840 1116     move    #>USB_OUT,x0
+P:052E 200045         2 2842 1116     cmp     x0,a
+P:052F 0AF0AA rrrrrr  6 2848 1116     jeq     EP___M_L0000882DirOut__M_L000088
+                             1116     ; Get Setup Byte  
+P:0531 60F400 rrrrrr  3 2851 1116     move    #>dQH_SETUP_BYTE0_W21,r0
+P:0533 44F400 rrrrrr  3 2854 1116     move    #>dQH_SETUP_BYTE0_BO21,x0
+P:0535 0BF080 rrrrrr  6 2860 1116     jsr     GetNextByte
+P:0537 545900         2 2862 1116     move    a1,x:(r1)+
+P:0538 60F400 rrrrrr  3 2865 1116     move    #>dQH_SETUP_BYTE1_W21,r0
+P:053A 44F400 rrrrrr  3 2868 1116     move    #>dQH_SETUP_BYTE1_BO21,x0
+P:053C 0BF080 rrrrrr  6 2874 1116     jsr     GetNextByte
+P:053E 545900         2 2876 1116     move    a1,x:(r1)+
+P:053F 60F400 rrrrrr  3 2879 1116     move    #>dQH_SETUP_BYTE2_W21,r0
+P:0541 44F400 rrrrrr  3 2882 1116     move    #>dQH_SETUP_BYTE2_BO21,x0
+P:0543 0BF080 rrrrrr  6 2888 1116     jsr     GetNextByte
+P:0545 545900         2 2890 1116     move    a1,x:(r1)+
+P:0546 60F400 rrrrrr  3 2893 1116     move    #>dQH_SETUP_BYTE3_W21,r0
+P:0548 44F400 rrrrrr  3 2896 1116     move    #>dQH_SETUP_BYTE3_BO21,x0
+P:054A 0BF080 rrrrrr  6 2902 1116     jsr     GetNextByte
+P:054C 545900         2 2904 1116     move    a1,x:(r1)+
+P:054D 60F400 rrrrrr  3 2907 1116     move    #>dQH_SETUP_BYTE4_W21,r0
+P:054F 44F400 rrrrrr  3 2910 1116     move    #>dQH_SETUP_BYTE4_BO21,x0
+P:0551 0BF080 rrrrrr  6 2916 1116     jsr     GetNextByte
+P:0553 545900         2 2918 1116     move    a1,x:(r1)+
+P:0554 60F400 rrrrrr  3 2921 1116     move    #>dQH_SETUP_BYTE5_W21,r0
+P:0556 44F400 rrrrrr  3 2924 1116     move    #>dQH_SETUP_BYTE5_BO21,x0
+P:0558 0BF080 rrrrrr  6 2930 1116     jsr     GetNextByte
+P:055A 545900         2 2932 1116     move    a1,x:(r1)+
+P:055B 60F400 rrrrrr  3 2935 1116     move    #>dQH_SETUP_BYTE6_W21,r0
+P:055D 44F400 rrrrrr  3 2938 1116     move    #>dQH_SETUP_BYTE6_BO21,x0
+P:055F 0BF080 rrrrrr  6 2944 1116     jsr     GetNextByte
+P:0561 545900         2 2946 1116     move    a1,x:(r1)+
+P:0562 60F400 rrrrrr  3 2949 1116     move    #>dQH_SETUP_BYTE7_W21,r0
+P:0564 44F400 rrrrrr  3 2952 1116     move    #>dQH_SETUP_BYTE7_BO21,x0
+P:0566 0BF080 rrrrrr  6 2958 1116     jsr     GetNextByte
+P:0568 545900         2 2960 1116     move    a1,x:(r1)+
+P:0569 00000C         4 2964 1116     rts
+                             1116 EP___M_L0000882DirOut__M_L000088
+P:056A 60F400 rrrrrr  3 2967 1116     move    #>dQH_SETUP_BYTE0_W20,r0
+P:056C 44F400 rrrrrr  3 2970 1116     move    #>dQH_SETUP_BYTE0_BO20,x0
+P:056E 0BF080 rrrrrr  6 2976 1116     jsr     GetNextByte
+P:0570 545900         2 2978 1116     move    a1,x:(r1)+
+P:0571 60F400 rrrrrr  3 2981 1116     move    #>dQH_SETUP_BYTE1_W20,r0
+P:0573 44F400 rrrrrr  3 2984 1116     move    #>dQH_SETUP_BYTE1_BO20,x0
+P:0575 0BF080 rrrrrr  6 2990 1116     jsr     GetNextByte
+P:0577 545900         2 2992 1116     move    a1,x:(r1)+
+P:0578 60F400 rrrrrr  3 2995 1116     move    #>dQH_SETUP_BYTE2_W20,r0
+P:057A 44F400 rrrrrr  3 2998 1116     move    #>dQH_SETUP_BYTE2_BO20,x0
+P:057C 0BF080 rrrrrr  6 3004 1116     jsr     GetNextByte
+P:057E 545900         2 3006 1116     move    a1,x:(r1)+
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:057F 60F400 rrrrrr  3 3009 1116     move    #>dQH_SETUP_BYTE3_W20,r0
+P:0581 44F400 rrrrrr  3 3012 1116     move    #>dQH_SETUP_BYTE3_BO20,x0
+P:0583 0BF080 rrrrrr  6 3018 1116     jsr     GetNextByte
+P:0585 545900         2 3020 1116     move    a1,x:(r1)+
+P:0586 60F400 rrrrrr  3 3023 1116     move    #>dQH_SETUP_BYTE4_W20,r0
+P:0588 44F400 rrrrrr  3 3026 1116     move    #>dQH_SETUP_BYTE4_BO20,x0
+P:058A 0BF080 rrrrrr  6 3032 1116     jsr     GetNextByte
+P:058C 545900         2 3034 1116     move    a1,x:(r1)+
+P:058D 60F400 rrrrrr  3 3037 1116     move    #>dQH_SETUP_BYTE5_W20,r0
+P:058F 44F400 rrrrrr  3 3040 1116     move    #>dQH_SETUP_BYTE5_BO20,x0
+P:0591 0BF080 rrrrrr  6 3046 1116     jsr     GetNextByte
+P:0593 545900         2 3048 1116     move    a1,x:(r1)+
+P:0594 60F400 rrrrrr  3 3051 1116     move    #>dQH_SETUP_BYTE6_W20,r0
+P:0596 44F400 rrrrrr  3 3054 1116     move    #>dQH_SETUP_BYTE6_BO20,x0
+P:0598 0BF080 rrrrrr  6 3060 1116     jsr     GetNextByte
+P:059A 545900         2 3062 1116     move    a1,x:(r1)+
+P:059B 60F400 rrrrrr  3 3065 1116     move    #>dQH_SETUP_BYTE7_W20,r0
+P:059D 44F400 rrrrrr  3 3068 1116     move    #>dQH_SETUP_BYTE7_BO20,x0
+P:059F 0BF080 rrrrrr  6 3074 1116     jsr     GetNextByte
+P:05A1 545900         2 3076 1116     move    a1,x:(r1)+
+P:05A2 00000C         4 3080 1116     rts
+                             1116 dQHUnpackSetupEndPoint3
+P:05A3 05F421 00FFFF  4 3084 1116     movec   #>$ffff,m1
+P:05A5 0460A1         2 3086 1116     movec   m1,m0
+P:05A6 61F400 rrrrrr  3 3089 1116     move    #>FdQH_Scratch_Setup_Buf,r1
+P:05A8 210C00         2 3091 1116     move    a0,a1
+P:05A9 44F400 000000  3 3094 1116     move    #>USB_OUT,x0
+P:05AB 200045         2 3096 1116     cmp     x0,a
+P:05AC 0AF0AA rrrrrr  6 3102 1116     jeq     EP___M_L0000893DirOut__M_L000089
+                             1116     ; Get Setup Byte  
+P:05AE 60F400 rrrrrr  3 3105 1116     move    #>dQH_SETUP_BYTE0_W31,r0
+P:05B0 44F400 rrrrrr  3 3108 1116     move    #>dQH_SETUP_BYTE0_BO31,x0
+P:05B2 0BF080 rrrrrr  6 3114 1116     jsr     GetNextByte
+P:05B4 545900         2 3116 1116     move    a1,x:(r1)+
+P:05B5 60F400 rrrrrr  3 3119 1116     move    #>dQH_SETUP_BYTE1_W31,r0
+P:05B7 44F400 rrrrrr  3 3122 1116     move    #>dQH_SETUP_BYTE1_BO31,x0
+P:05B9 0BF080 rrrrrr  6 3128 1116     jsr     GetNextByte
+P:05BB 545900         2 3130 1116     move    a1,x:(r1)+
+P:05BC 60F400 rrrrrr  3 3133 1116     move    #>dQH_SETUP_BYTE2_W31,r0
+P:05BE 44F400 rrrrrr  3 3136 1116     move    #>dQH_SETUP_BYTE2_BO31,x0
+P:05C0 0BF080 rrrrrr  6 3142 1116     jsr     GetNextByte
+P:05C2 545900         2 3144 1116     move    a1,x:(r1)+
+P:05C3 60F400 rrrrrr  3 3147 1116     move    #>dQH_SETUP_BYTE3_W31,r0
+P:05C5 44F400 rrrrrr  3 3150 1116     move    #>dQH_SETUP_BYTE3_BO31,x0
+P:05C7 0BF080 rrrrrr  6 3156 1116     jsr     GetNextByte
+P:05C9 545900         2 3158 1116     move    a1,x:(r1)+
+P:05CA 60F400 rrrrrr  3 3161 1116     move    #>dQH_SETUP_BYTE4_W31,r0
+P:05CC 44F400 rrrrrr  3 3164 1116     move    #>dQH_SETUP_BYTE4_BO31,x0
+P:05CE 0BF080 rrrrrr  6 3170 1116     jsr     GetNextByte
+P:05D0 545900         2 3172 1116     move    a1,x:(r1)+
+P:05D1 60F400 rrrrrr  3 3175 1116     move    #>dQH_SETUP_BYTE5_W31,r0
+P:05D3 44F400 rrrrrr  3 3178 1116     move    #>dQH_SETUP_BYTE5_BO31,x0
+P:05D5 0BF080 rrrrrr  6 3184 1116     jsr     GetNextByte
+P:05D7 545900         2 3186 1116     move    a1,x:(r1)+
+P:05D8 60F400 rrrrrr  3 3189 1116     move    #>dQH_SETUP_BYTE6_W31,r0
+P:05DA 44F400 rrrrrr  3 3192 1116     move    #>dQH_SETUP_BYTE6_BO31,x0
+P:05DC 0BF080 rrrrrr  6 3198 1116     jsr     GetNextByte
+P:05DE 545900         2 3200 1116     move    a1,x:(r1)+
+P:05DF 60F400 rrrrrr  3 3203 1116     move    #>dQH_SETUP_BYTE7_W31,r0
+P:05E1 44F400 rrrrrr  3 3206 1116     move    #>dQH_SETUP_BYTE7_BO31,x0
+P:05E3 0BF080 rrrrrr  6 3212 1116     jsr     GetNextByte
+P:05E5 545900         2 3214 1116     move    a1,x:(r1)+
+P:05E6 00000C         4 3218 1116     rts
+                             1116 EP___M_L0000893DirOut__M_L000089
+P:05E7 60F400 rrrrrr  3 3221 1116     move    #>dQH_SETUP_BYTE0_W30,r0
+P:05E9 44F400 rrrrrr  3 3224 1116     move    #>dQH_SETUP_BYTE0_BO30,x0
+P:05EB 0BF080 rrrrrr  6 3230 1116     jsr     GetNextByte
+P:05ED 545900         2 3232 1116     move    a1,x:(r1)+
+P:05EE 60F400 rrrrrr  3 3235 1116     move    #>dQH_SETUP_BYTE1_W30,r0
+P:05F0 44F400 rrrrrr  3 3238 1116     move    #>dQH_SETUP_BYTE1_BO30,x0
+P:05F2 0BF080 rrrrrr  6 3244 1116     jsr     GetNextByte
+P:05F4 545900         2 3246 1116     move    a1,x:(r1)+
+P:05F5 60F400 rrrrrr  3 3249 1116     move    #>dQH_SETUP_BYTE2_W30,r0
+P:05F7 44F400 rrrrrr  3 3252 1116     move    #>dQH_SETUP_BYTE2_BO30,x0
+P:05F9 0BF080 rrrrrr  6 3258 1116     jsr     GetNextByte
+P:05FB 545900         2 3260 1116     move    a1,x:(r1)+
+P:05FC 60F400 rrrrrr  3 3263 1116     move    #>dQH_SETUP_BYTE3_W30,r0
+P:05FE 44F400 rrrrrr  3 3266 1116     move    #>dQH_SETUP_BYTE3_BO30,x0
+P:0600 0BF080 rrrrrr  6 3272 1116     jsr     GetNextByte
+P:0602 545900         2 3274 1116     move    a1,x:(r1)+
+P:0603 60F400 rrrrrr  3 3277 1116     move    #>dQH_SETUP_BYTE4_W30,r0
+P:0605 44F400 rrrrrr  3 3280 1116     move    #>dQH_SETUP_BYTE4_BO30,x0
+P:0607 0BF080 rrrrrr  6 3286 1116     jsr     GetNextByte
+P:0609 545900         2 3288 1116     move    a1,x:(r1)+
+P:060A 60F400 rrrrrr  3 3291 1116     move    #>dQH_SETUP_BYTE5_W30,r0
+P:060C 44F400 rrrrrr  3 3294 1116     move    #>dQH_SETUP_BYTE5_BO30,x0
+P:060E 0BF080 rrrrrr  6 3300 1116     jsr     GetNextByte
+P:0610 545900         2 3302 1116     move    a1,x:(r1)+
+P:0611 60F400 rrrrrr  3 3305 1116     move    #>dQH_SETUP_BYTE6_W30,r0
+P:0613 44F400 rrrrrr  3 3308 1116     move    #>dQH_SETUP_BYTE6_BO30,x0
+P:0615 0BF080 rrrrrr  6 3314 1116     jsr     GetNextByte
+P:0617 545900         2 3316 1116     move    a1,x:(r1)+
+P:0618 60F400 rrrrrr  3 3319 1116     move    #>dQH_SETUP_BYTE7_W30,r0
+P:061A 44F400 rrrrrr  3 3322 1116     move    #>dQH_SETUP_BYTE7_BO30,x0
+P:061C 0BF080 rrrrrr  6 3328 1116     jsr     GetNextByte
+P:061E 545900         2 3330 1116     move    a1,x:(r1)+
+P:061F 00000C         4 3334 1116     rts
+                             1119     ; Address table for dQHUnpackCapEndPoint_\NUM functions 
+                             1120 BaseAdddQHUnpackCapEndPoint
+                             1121     DUPF    NUM,0,(MAX_NUM_EP-1)
+                             1122         dc      dQHUnpackCapEndPoint\NUM
+                             1123     ENDM
+P:0620 rrrrrr                1123         dc      dQHUnpackCapEndPoint0
+P:0621 rrrrrr                1123         dc      dQHUnpackCapEndPoint1
+P:0622 rrrrrr                1123         dc      dQHUnpackCapEndPoint2
+P:0623 rrrrrr                1123         dc      dQHUnpackCapEndPoint3
+                             1125     ; Address table for dQHUnpackSetupEndPoint_\NUM functions 
+                             1126 BaseAdddQHUnpackSetupEndPoint
+                             1127     DUPF    NUM,0,(MAX_NUM_EP-1)
+                             1128         dc      dQHUnpackSetupEndPoint\NUM
+                             1129     ENDM
+P:0624 rrrrrr                1129         dc      dQHUnpackSetupEndPoint0
+P:0625 rrrrrr                1129         dc      dQHUnpackSetupEndPoint1
+P:0626 rrrrrr                1129         dc      dQHUnpackSetupEndPoint2
+P:0627 rrrrrr                1129         dc      dQHUnpackSetupEndPoint3
+                             1131     ; Address table for dQHPackCapEndPoint_\NUM functions 
+                             1132 BaseAdddQHPackCapEndPoint
+                             1133     DUPF    NUM,0,(MAX_NUM_EP-1)
+                             1134         dc      dQHPackCapEndPoint\NUM
+                             1135     ENDM
+P:0628 rrrrrr                1135         dc      dQHPackCapEndPoint0
+P:0629 rrrrrr                1135         dc      dQHPackCapEndPoint1
+P:062A rrrrrr                1135         dc      dQHPackCapEndPoint2
+P:062B rrrrrr                1135         dc      dQHPackCapEndPoint3
+                             1138 ; Delete after test
+                             1139 USB_OUT    equ     0

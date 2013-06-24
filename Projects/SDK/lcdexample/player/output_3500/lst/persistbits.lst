@@ -1,0 +1,1728 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfcb61b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;  persistbits.c:
+                               96 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                               97 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                               98 ; 3    |// File        : PersistBits.c 
+                               99 ; 4    |// Description : Persistent Bits API
+                              100 ; 5    |///////////////////////////////////////////////////////////////////////////////
+                              101 ; 6    |// This file handles the Persistent Bits ("Sticky Bits") on the STMP35xx 
+                              102 ; 7    |// parts.
+                              103 ; 8    |///////////////////////////////////////////////////////////////////////////////
+                              104 ; 9    |#include "types.h"
+                              105 
+                              107 
+                              108 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              109 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              110 ; 3    |//
+                              111 ; 4    |// Filename: types.h
+                              112 ; 5    |// Description: Standard data types
+                              113 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              114 ; 7    |
+                              115 ; 8    |#ifndef _TYPES_H
+                              116 ; 9    |#define _TYPES_H
+                              117 ; 10   |
+                              118 ; 11   |// TODO:  move this outta here!
+                              119 ; 12   |#if !defined(NOERROR)
+                              120 ; 13   |#define NOERROR 0
+                              121 ; 14   |#define SUCCESS 0
+                              122 ; 15   |#endif 
+                              123 ; 16   |#if !defined(SUCCESS)
+                              124 ; 17   |#define SUCCESS  0
+                              125 ; 18   |#endif
+                              126 ; 19   |#if !defined(ERROR)
+                              127 ; 20   |#define ERROR   -1
+                              128 ; 21   |#endif
+                              129 ; 22   |#if !defined(FALSE)
+                              130 ; 23   |#define FALSE 0
+                              131 ; 24   |#endif
+                              132 ; 25   |#if !defined(TRUE)
+                              133 ; 26   |#define TRUE  1
+                              134 ; 27   |#endif
+                              135 ; 28   |
+                              136 ; 29   |#if !defined(NULL)
+                              137 ; 30   |#define NULL 0
+                              138 ; 31   |#endif
+                              139 ; 32   |
+                              140 ; 33   |#define MAX_INT     0x7FFFFF
+                              141 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              142 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              143 ; 36   |#define MAX_ULONG   (-1) 
+                              144 ; 37   |
+                              145 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              146 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              147 ; 40   |
+                              148 ; 41   |
+                              149 ; 42   |#define BYTE    unsigned char       // btVarName
+                              150 ; 43   |#define CHAR    signed char         // cVarName
+                              151 ; 44   |#define USHORT  unsigned short      // usVarName
+                              152 ; 45   |#define SHORT   unsigned short      // sVarName
+                              153 ; 46   |#define WORD    unsigned int        // wVarName
+                              154 ; 47   |#define INT     signed int          // iVarName
+                              155 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              156 ; 49   |#define LONG    signed long         // lVarName
+                              157 ; 50   |#define BOOL    unsigned int        // bVarName
+                              158 ; 51   |#define FRACT   _fract              // frVarName
+                              159 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              160 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              161 ; 54   |#define FLOAT   float               // fVarName
+                              162 ; 55   |#define DBL     double              // dVarName
+                              163 ; 56   |#define ENUM    enum                // eVarName
+                              164 ; 57   |#define CMX     _complex            // cmxVarName
+                              165 ; 58   |typedef WORD UCS3;                   // 
+                              166 ; 59   |
+                              167 ; 60   |#define UINT16  unsigned short
+                              168 ; 61   |#define UINT8   unsigned char   
+                              169 ; 62   |#define UINT32  unsigned long
+                              170 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              171 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              172 ; 65   |#define WCHAR   UINT16
+                              173 ; 66   |
+                              174 ; 67   |//UINT128 is 16 bytes or 6 words
+                              175 ; 68   |typedef struct UINT128_3500 {   
+                              176 ; 69   |    int val[6];     
+                              177 ; 70   |} UINT128_3500;
+                              178 ; 71   |
+                              179 ; 72   |#define UINT128   UINT128_3500
+                              180 ; 73   |
+                              181 ; 74   |// Little endian word packed byte strings:   
+                              182 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              183 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              184 ; 77   |// Little endian word packed byte strings:   
+                              185 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              186 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              187 ; 80   |
+                              188 ; 81   |// Declare Memory Spaces To Use When Coding
+                              189 ; 82   |// A. Sector Buffers
+                              190 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              191 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              192 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              193 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              194 
+                              196 
+                              197 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              198 ; 88   |// B. Media DDI Memory
+                              199 ; 89   |#define MEDIA_DDI_MEM _Y
+                              200 ; 90   |
+                              201 ; 91   |
+                              202 ; 92   |
+                              203 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              204 ; 94   |// Examples of circular pointers:
+                              205 ; 95   |//    INT CIRC cpiVarName
+                              206 ; 96   |//    DWORD CIRC cpdwVarName
+                              207 ; 97   |
+                              208 ; 98   |#define RETCODE INT                 // rcVarName
+                              209 ; 99   |
+                              210 ; 100  |// generic bitfield structure
+                              211 ; 101  |struct Bitfield {
+                              212 ; 102  |    unsigned int B0  :1;
+                              213 ; 103  |    unsigned int B1  :1;
+                              214 ; 104  |    unsigned int B2  :1;
+                              215 ; 105  |    unsigned int B3  :1;
+                              216 ; 106  |    unsigned int B4  :1;
+                              217 ; 107  |    unsigned int B5  :1;
+                              218 ; 108  |    unsigned int B6  :1;
+                              219 ; 109  |    unsigned int B7  :1;
+                              220 ; 110  |    unsigned int B8  :1;
+                              221 ; 111  |    unsigned int B9  :1;
+                              222 ; 112  |    unsigned int B10 :1;
+                              223 ; 113  |    unsigned int B11 :1;
+                              224 ; 114  |    unsigned int B12 :1;
+                              225 ; 115  |    unsigned int B13 :1;
+                              226 ; 116  |    unsigned int B14 :1;
+                              227 ; 117  |    unsigned int B15 :1;
+                              228 ; 118  |    unsigned int B16 :1;
+                              229 ; 119  |    unsigned int B17 :1;
+                              230 ; 120  |    unsigned int B18 :1;
+                              231 ; 121  |    unsigned int B19 :1;
+                              232 ; 122  |    unsigned int B20 :1;
+                              233 ; 123  |    unsigned int B21 :1;
+                              234 ; 124  |    unsigned int B22 :1;
+                              235 ; 125  |    unsigned int B23 :1;
+                              236 ; 126  |};
+                              237 ; 127  |
+                              238 ; 128  |union BitInt {
+                              239 ; 129  |        struct Bitfield B;
+                              240 ; 130  |        int        I;
+                              241 ; 131  |};
+                              242 ; 132  |
+                              243 ; 133  |#define MAX_MSG_LENGTH 10
+                              244 ; 134  |struct CMessage
+                              245 ; 135  |{
+                              246 ; 136  |        unsigned int m_uLength;
+                              247 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              248 ; 138  |};
+                              249 ; 139  |
+                              250 ; 140  |typedef struct {
+                              251 ; 141  |    WORD m_wLength;
+                              252 ; 142  |    WORD m_wMessage;
+                              253 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              254 ; 144  |} Message;
+                              255 ; 145  |
+                              256 ; 146  |struct MessageQueueDescriptor
+                              257 ; 147  |{
+                              258 ; 148  |        int *m_pBase;
+                              259 ; 149  |        int m_iModulo;
+                              260 ; 150  |        int m_iSize;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              261 ; 151  |        int *m_pHead;
+                              262 ; 152  |        int *m_pTail;
+                              263 ; 153  |};
+                              264 ; 154  |
+                              265 ; 155  |struct ModuleEntry
+                              266 ; 156  |{
+                              267 ; 157  |    int m_iSignaledEventMask;
+                              268 ; 158  |    int m_iWaitEventMask;
+                              269 ; 159  |    int m_iResourceOfCode;
+                              270 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              271 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              272 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              273 ; 163  |    int m_uTimeOutHigh;
+                              274 ; 164  |    int m_uTimeOutLow;
+                              275 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              276 ; 166  |};
+                              277 ; 167  |
+                              278 ; 168  |union WaitMask{
+                              279 ; 169  |    struct B{
+                              280 ; 170  |        unsigned int m_bNone     :1;
+                              281 ; 171  |        unsigned int m_bMessage  :1;
+                              282 ; 172  |        unsigned int m_bTimer    :1;
+                              283 ; 173  |        unsigned int m_bButton   :1;
+                              284 ; 174  |    } B;
+                              285 ; 175  |    int I;
+                              286 ; 176  |} ;
+                              287 ; 177  |
+                              288 ; 178  |
+                              289 ; 179  |struct Button {
+                              290 ; 180  |        WORD wButtonEvent;
+                              291 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              292 ; 182  |};
+                              293 ; 183  |
+                              294 ; 184  |struct Message {
+                              295 ; 185  |        WORD wMsgLength;
+                              296 ; 186  |        WORD wMsgCommand;
+                              297 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              298 ; 188  |};
+                              299 ; 189  |
+                              300 ; 190  |union EventTypes {
+                              301 ; 191  |        struct CMessage msg;
+                              302 ; 192  |        struct Button Button ;
+                              303 ; 193  |        struct Message Message;
+                              304 ; 194  |};
+                              305 ; 195  |
+                              306 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              307 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              308 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              309 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              310 ; 200  |
+                              311 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              312 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              313 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              314 ; 204  |
+                              315 ; 205  |#if DEBUG
+                              316 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              317 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              318 ; 208  |#else 
+                              319 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              320 ; 210  |#define DebugBuildAssert(x)    
+                              321 ; 211  |#endif
+                              322 ; 212  |
+                              323 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              324 ; 214  |//  #pragma asm
+                              325 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              326 ; 216  |//  #pragma endasm
+                              327 ; 217  |
+                              328 ; 218  |
+                              329 ; 219  |#ifdef COLOR_262K
+                              330 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              331 ; 221  |#elif defined(COLOR_65K)
+                              332 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              333 ; 223  |#else
+                              334 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              335 ; 225  |#endif
+                              336 ; 226  |    
+                              337 ; 227  |#endif // #ifndef _TYPES_H
+                              338 
+                              340 
+                              341 ; 10   |#include "regsrtc.h"
+                              342 
+                              344 
+                              345 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              346 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              347 ; 3    |// Filename: regsrtc.inc
+                              348 ; 4    |// Description: Register definitions for RTC interface
+                              349 ; 5    |/////////////////////////////////////////////////////////////////////////////////
+                              350 ; 6    |// The following naming conventions are followed in this file.
+                              351 ; 7    |// All registers are named using the format...
+                              352 ; 8    |//     HW_<module>_<regname>
+                              353 ; 9    |// where <module> is the module name which can be any of the following...
+                              354 ; 10   |//     USB20
+                              355 ; 11   |// (Note that when there is more than one copy of a particular module, the
+                              356 ; 12   |// module name includes a number starting from 0 for the first instance of
+                              357 ; 13   |// that module)
+                              358 ; 14   |// <regname> is the specific register within that module
+                              359 ; 15   |// We also define the following...
+                              360 ; 16   |//     HW_<module>_<regname>_BITPOS
+                              361 ; 17   |// which defines the starting bit (i.e. LSB) of a multi bit field
+                              362 ; 18   |//     HW_<module>_<regname>_SETMASK
+                              363 ; 19   |// which does something else, and
+                              364 ; 20   |//     HW_<module>_<regname>_CLRMASK
+                              365 ; 21   |// which does something else.
+                              366 ; 22   |// Other rules
+                              367 ; 23   |//     All caps
+                              368 ; 24   |//     Numeric identifiers start at 0
+                              369 ; 25   |#if !(defined(regsrtcinc))
+                              370 ; 26   |#define regsrtcinc 1
+                              371 ; 27   |
+                              372 ; 28   |#include "types.h"
+                              373 
+                              375 
+                              376 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              377 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              378 ; 3    |//
+                              379 ; 4    |// Filename: types.h
+                              380 ; 5    |// Description: Standard data types
+                              381 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              382 ; 7    |
+                              383 ; 8    |#ifndef _TYPES_H
+                              384 ; 9    |#define _TYPES_H
+                              385 ; 10   |
+                              386 ; 11   |// TODO:  move this outta here!
+                              387 ; 12   |#if !defined(NOERROR)
+                              388 ; 13   |#define NOERROR 0
+                              389 ; 14   |#define SUCCESS 0
+                              390 ; 15   |#endif 
+                              391 ; 16   |#if !defined(SUCCESS)
+                              392 ; 17   |#define SUCCESS  0
+                              393 ; 18   |#endif
+                              394 ; 19   |#if !defined(ERROR)
+                              395 ; 20   |#define ERROR   -1
+                              396 ; 21   |#endif
+                              397 ; 22   |#if !defined(FALSE)
+                              398 ; 23   |#define FALSE 0
+                              399 ; 24   |#endif
+                              400 ; 25   |#if !defined(TRUE)
+                              401 ; 26   |#define TRUE  1
+                              402 ; 27   |#endif
+                              403 ; 28   |
+                              404 ; 29   |#if !defined(NULL)
+                              405 ; 30   |#define NULL 0
+                              406 ; 31   |#endif
+                              407 ; 32   |
+                              408 ; 33   |#define MAX_INT     0x7FFFFF
+                              409 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              410 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              411 ; 36   |#define MAX_ULONG   (-1) 
+                              412 ; 37   |
+                              413 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              414 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              415 ; 40   |
+                              416 ; 41   |
+                              417 ; 42   |#define BYTE    unsigned char       // btVarName
+                              418 ; 43   |#define CHAR    signed char         // cVarName
+                              419 ; 44   |#define USHORT  unsigned short      // usVarName
+                              420 ; 45   |#define SHORT   unsigned short      // sVarName
+                              421 ; 46   |#define WORD    unsigned int        // wVarName
+                              422 ; 47   |#define INT     signed int          // iVarName
+                              423 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              424 ; 49   |#define LONG    signed long         // lVarName
+                              425 ; 50   |#define BOOL    unsigned int        // bVarName
+                              426 ; 51   |#define FRACT   _fract              // frVarName
+                              427 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              428 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              429 ; 54   |#define FLOAT   float               // fVarName
+                              430 ; 55   |#define DBL     double              // dVarName
+                              431 ; 56   |#define ENUM    enum                // eVarName
+                              432 ; 57   |#define CMX     _complex            // cmxVarName
+                              433 ; 58   |typedef WORD UCS3;                   // 
+                              434 ; 59   |
+                              435 ; 60   |#define UINT16  unsigned short
+                              436 ; 61   |#define UINT8   unsigned char   
+                              437 ; 62   |#define UINT32  unsigned long
+                              438 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              439 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              440 ; 65   |#define WCHAR   UINT16
+                              441 ; 66   |
+                              442 ; 67   |//UINT128 is 16 bytes or 6 words
+                              443 ; 68   |typedef struct UINT128_3500 {   
+                              444 ; 69   |    int val[6];     
+                              445 ; 70   |} UINT128_3500;
+                              446 ; 71   |
+                              447 ; 72   |#define UINT128   UINT128_3500
+                              448 ; 73   |
+                              449 ; 74   |// Little endian word packed byte strings:   
+                              450 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              451 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              452 ; 77   |// Little endian word packed byte strings:   
+                              453 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              454 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              455 ; 80   |
+                              456 ; 81   |// Declare Memory Spaces To Use When Coding
+                              457 ; 82   |// A. Sector Buffers
+                              458 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              459 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              460 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              461 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              462 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              463 ; 88   |// B. Media DDI Memory
+                              464 ; 89   |#define MEDIA_DDI_MEM _Y
+                              465 ; 90   |
+                              466 ; 91   |
+                              467 ; 92   |
+                              468 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              469 ; 94   |// Examples of circular pointers:
+                              470 ; 95   |//    INT CIRC cpiVarName
+                              471 ; 96   |//    DWORD CIRC cpdwVarName
+                              472 ; 97   |
+                              473 ; 98   |#define RETCODE INT                 // rcVarName
+                              474 ; 99   |
+                              475 ; 100  |// generic bitfield structure
+                              476 ; 101  |struct Bitfield {
+                              477 ; 102  |    unsigned int B0  :1;
+                              478 ; 103  |    unsigned int B1  :1;
+                              479 ; 104  |    unsigned int B2  :1;
+                              480 ; 105  |    unsigned int B3  :1;
+                              481 ; 106  |    unsigned int B4  :1;
+                              482 ; 107  |    unsigned int B5  :1;
+                              483 ; 108  |    unsigned int B6  :1;
+                              484 ; 109  |    unsigned int B7  :1;
+                              485 ; 110  |    unsigned int B8  :1;
+                              486 ; 111  |    unsigned int B9  :1;
+                              487 ; 112  |    unsigned int B10 :1;
+                              488 ; 113  |    unsigned int B11 :1;
+                              489 ; 114  |    unsigned int B12 :1;
+                              490 ; 115  |    unsigned int B13 :1;
+                              491 ; 116  |    unsigned int B14 :1;
+                              492 ; 117  |    unsigned int B15 :1;
+                              493 ; 118  |    unsigned int B16 :1;
+                              494 ; 119  |    unsigned int B17 :1;
+                              495 ; 120  |    unsigned int B18 :1;
+                              496 ; 121  |    unsigned int B19 :1;
+                              497 ; 122  |    unsigned int B20 :1;
+                              498 ; 123  |    unsigned int B21 :1;
+                              499 ; 124  |    unsigned int B22 :1;
+                              500 ; 125  |    unsigned int B23 :1;
+                              501 ; 126  |};
+                              502 ; 127  |
+                              503 ; 128  |union BitInt {
+                              504 ; 129  |        struct Bitfield B;
+                              505 ; 130  |        int        I;
+                              506 ; 131  |};
+                              507 ; 132  |
+                              508 ; 133  |#define MAX_MSG_LENGTH 10
+                              509 ; 134  |struct CMessage
+                              510 ; 135  |{
+                              511 ; 136  |        unsigned int m_uLength;
+                              512 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              513 ; 138  |};
+                              514 ; 139  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              515 ; 140  |typedef struct {
+                              516 ; 141  |    WORD m_wLength;
+                              517 ; 142  |    WORD m_wMessage;
+                              518 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              519 ; 144  |} Message;
+                              520 ; 145  |
+                              521 ; 146  |struct MessageQueueDescriptor
+                              522 ; 147  |{
+                              523 ; 148  |        int *m_pBase;
+                              524 ; 149  |        int m_iModulo;
+                              525 ; 150  |        int m_iSize;
+                              526 ; 151  |        int *m_pHead;
+                              527 ; 152  |        int *m_pTail;
+                              528 ; 153  |};
+                              529 ; 154  |
+                              530 ; 155  |struct ModuleEntry
+                              531 ; 156  |{
+                              532 ; 157  |    int m_iSignaledEventMask;
+                              533 ; 158  |    int m_iWaitEventMask;
+                              534 ; 159  |    int m_iResourceOfCode;
+                              535 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              536 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              537 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              538 ; 163  |    int m_uTimeOutHigh;
+                              539 ; 164  |    int m_uTimeOutLow;
+                              540 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              541 ; 166  |};
+                              542 ; 167  |
+                              543 ; 168  |union WaitMask{
+                              544 ; 169  |    struct B{
+                              545 ; 170  |        unsigned int m_bNone     :1;
+                              546 ; 171  |        unsigned int m_bMessage  :1;
+                              547 ; 172  |        unsigned int m_bTimer    :1;
+                              548 ; 173  |        unsigned int m_bButton   :1;
+                              549 ; 174  |    } B;
+                              550 ; 175  |    int I;
+                              551 ; 176  |} ;
+                              552 ; 177  |
+                              553 ; 178  |
+                              554 ; 179  |struct Button {
+                              555 ; 180  |        WORD wButtonEvent;
+                              556 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              557 ; 182  |};
+                              558 ; 183  |
+                              559 ; 184  |struct Message {
+                              560 ; 185  |        WORD wMsgLength;
+                              561 ; 186  |        WORD wMsgCommand;
+                              562 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              563 ; 188  |};
+                              564 ; 189  |
+                              565 ; 190  |union EventTypes {
+                              566 ; 191  |        struct CMessage msg;
+                              567 ; 192  |        struct Button Button ;
+                              568 ; 193  |        struct Message Message;
+                              569 ; 194  |};
+                              570 ; 195  |
+                              571 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              572 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              573 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              574 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              575 ; 200  |
+                              576 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              577 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              578 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              579 ; 204  |
+                              580 ; 205  |#if DEBUG
+                              581 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              582 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              583 ; 208  |#else 
+                              584 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              585 ; 210  |#define DebugBuildAssert(x)    
+                              586 ; 211  |#endif
+                              587 ; 212  |
+                              588 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              589 ; 214  |//  #pragma asm
+                              590 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              591 ; 216  |//  #pragma endasm
+                              592 ; 217  |
+                              593 ; 218  |
+                              594 ; 219  |#ifdef COLOR_262K
+                              595 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              596 ; 221  |#elif defined(COLOR_65K)
+                              597 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              598 ; 223  |#else
+                              599 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              600 ; 225  |#endif
+                              601 ; 226  |    
+                              602 ; 227  |#endif // #ifndef _TYPES_H
+                              603 
+                              605 
+                              606 ; 29   |
+                              607 ; 30   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              608 ; 31   |
+                              609 ; 32   |//   RTC STMP Registers 
+                              610 ; 33   |//   Edited 2/26/2002 J. Ferrara
+                              611 ; 34   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              612 ; 35   |
+                              613 ; 36   |#define HW_RTC_BASEADDR (0xF500)
+                              614 ; 37   |
+                              615 ; 38   |
+                              616 ; 39   |
+                              617 ; 40   |
+                              618 ; 41   |
+                              619 ; 42   |/////////////////////////////////////////////////////////////////////////////////
+                              620 ; 43   |
+                              621 ; 44   |////  RTC Control Status Register (HW_RTC_CSR) Bit Definitions
+                              622 ; 45   |
+                              623 ; 46   |#define HW_RTC_CSR_ALARMINTEN_BITPOS (0)
+                              624 ; 47   |#define HW_RTC_CSR_ALARMINT_BITPOS (1)
+                              625 ; 48   |#define HW_RTC_CSR_WATCHDOGEN_BITPOS (2)
+                              626 ; 49   |#define HW_RTC_CSR_RSVD0_BITPOS (3)
+                              627 ; 50   |#define HW_RTC_CSR_STALEREGS_BITPOS (4)
+                              628 ; 51   |#define HW_RTC_CSR_RSVD1_BITPOS (9)
+                              629 ; 52   |#define HW_RTC_CSR_NEWREGS_BITPOS (12)
+                              630 ; 53   |#define HW_RTC_CSR_NEWREGS_XTALDIV_BITPOS (12)
+                              631 ; 54   |#define HW_RTC_CSR_NEWREGS_MSCOUNT_BITPOS (13)
+                              632 ; 55   |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_BITPOS (14)
+                              633 ; 56   |#define HW_RTC_CSR_NEWREGS_PERSIST0_BITPOS (15)
+                              634 ; 57   |#define HW_RTC_CSR_NEWREGS_PERSIST1_BITPOS (16)
+                              635 ; 58   |#define HW_RTC_CSR_RSVD2_BITPOS (17)
+                              636 ; 59   |#define HW_RTC_CSR_FORCE_BITPOS (20)
+                              637 ; 60   |#define HW_RTC_CSR_RSVD3_BITPOS (21)
+                              638 ; 61   |#define HW_RTC_CSR_SFTRST_BITPOS (23)                                                                           
+                              639 ; 62   |#define HW_RTC_CSR_ALARMINTEN_WIDTH (1)
+                              640 ; 63   |#define HW_RTC_CSR_ALARMINT_WIDTH (1)
+                              641 ; 64   |#define HW_RTC_CSR_WATCHDOGEN_WIDTH (1)
+                              642 ; 65   |#define HW_RTC_CSR_RSVD0_WIDTH (1)
+                              643 ; 66   |#define HW_RTC_CSR_STALEREGS_WIDTH (5)
+                              644 ; 67   |#define HW_RTC_CSR_RSVD1_WIDTH (3)
+                              645 ; 68   |#define HW_RTC_CSR_NEWREGS_WIDTH (5)
+                              646 ; 69   |#define HW_RTC_CSR_NEWREGS_XTALDIV_WIDTH (1)
+                              647 ; 70   |#define HW_RTC_CSR_NEWREGS_MSCOUNT_WIDTH (1)
+                              648 ; 71   |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_WIDTH (1)
+                              649 ; 72   |#define HW_RTC_CSR_NEWREGS_PERSIST0_WIDTH (1)
+                              650 ; 73   |#define HW_RTC_CSR_NEWREGS_PERSIST1_WIDTH (1)
+                              651 ; 74   |#define HW_RTC_CSR_RSVD2_WIDTH (3)
+                              652 ; 75   |#define HW_RTC_CSR_FORCE_WIDTH (1)
+                              653 ; 76   |#define HW_RTC_CSR_RSVD3_WIDTH (2)
+                              654 ; 77   |#define HW_RTC_CSR_SFTRST_WIDTH (1)
+                              655 ; 78   |
+                              656 ; 79   |#define HW_RTC_CSR_ALARMINT_SETMASK (((1<<HW_RTC_CSR_ALARMINT_WIDTH)-1)<<HW_RTC_CSR_ALARMINT_BITPOS) 
+                              657 ; 80   |#define HW_RTC_CSR_ALARMINTEN_SETMASK (((1<<HW_RTC_CSR_ALARMINTEN_WIDTH)-1)<<HW_RTC_CSR_ALARMINTEN_BITPOS) 
+                              658 ; 81   |#define HW_RTC_CSR_WATCHDOGEN_SETMASK (((1<<HW_RTC_CSR_WATCHDOGEN_WIDTH)-1)<<HW_RTC_CSR_WATCHDOGEN_BITPOS) 
+                              659 ; 82   |#define HW_RTC_CSR_RSVD0_SETMASK (((1<<HW_RTC_CSR_RSVD0_WIDTH)-1)<<HW_RTC_CSR_RSVD0_BITPOS) 
+                              660 ; 83   |#define HW_RTC_CSR_STALEREGS_SETMASK (((1<<HW_RTC_CSR_STALEREGS_WIDTH)-1)<<HW_RTC_CSR_STALEREGS_BITPOS) 
+                              661 ; 84   |#define HW_RTC_CSR_RSVD1_SETMASK (((1<<HW_RTC_CSR_RSVD1_WIDTH)-1)<<HW_RTC_CSR_RSVD1_BITPOS) 
+                              662 ; 85   |#define HW_RTC_CSR_NEWREGS_SETMASK (((1<<HW_RTC_CSR_NEWREGS_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_BITPOS) 
+                              663 ; 86   |#define HW_RTC_CSR_NEWREGS_XTALDIV_SETMASK (((1<<HW_RTC_CSR_NEWREGS_XTALDIV_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_XTALDIV_BITPOS)   
+                              664 ; 87   |#define HW_RTC_CSR_NEWREGS_MSCOUNT_SETMASK (((1<<HW_RTC_CSR_NEWREGS_MSCOUNT_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_MSCOUNT_BITPOS)
+                              665 ; 88   |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_SETMASK (((1<<HW_RTC_CSR_NEWREGS_ALRMCOUNT_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_ALRMCOUNT_BITPOS)
+                              666 ; 89   |#define HW_RTC_CSR_NEWREGS_PERSIST0_SETMASK (((1<<HW_RTC_CSR_NEWREGS_PERSIST0_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_PERSIST0_BITPOS)
+                              667 ; 90   |#define HW_RTC_CSR_NEWREGS_PERSIST1_SETMASK (((1<<HW_RTC_CSR_NEWREGS_PERSIST1_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_PERSIST1_BITPOS)
+                              668 ; 91   |#define HW_RTC_CSR_RSVD2_SETMASK (((1<<HW_RTC_CSR_RSVD2_WIDTH)-1)<<HW_RTC_CSR_RSVD2_BITPOS) 
+                              669 ; 92   |#define HW_RTC_CSR_FORCE_SETMASK (((1<<HW_RTC_CSR_FORCE_WIDTH)-1)<<HW_RTC_CSR_FORCE_BITPOS) 
+                              670 ; 93   |#define HW_RTC_CSR_RSVD3_SETMASK (((1<<HW_RTC_CSR_RSVD3_WIDTH)-1)<<HW_RTC_CSR_RSVD3_BITPOS) 
+                              671 ; 94   |#define HW_RTC_CSR_SFTRST_SETMASK (((1<<HW_RTC_CSR_SFTRST_WIDTH)-1)<<HW_RTC_CSR_SFTRST_BITPOS) 
+                              672 ; 95   |
+                              673 ; 96   |#define HW_RTC_CSR_ALARMINTEN_CLRMASK (~(WORD)HW_RTC_CSR_ALARMINTEN_SETMASK)
+                              674 ; 97   |#define HW_RTC_CSR_ALARMINT_CLRMASK (~(WORD)HW_RTC_CSR_ALARMINT_SETMASK)
+                              675 ; 98   |#define HW_RTC_CSR_WATCHDOGEN_CLRMASK (~(WORD)HW_RTC_CSR_WATCHDOGEN_SETMASK)
+                              676 ; 99   |#define HW_RTC_CSR_RSVD0_CLRMASK (~(WORD)HW_RTC_CSR_RSVD0_SETMASK)
+                              677 ; 100  |#define HW_RTC_CSR_STALEREGS_CLRMASK (~(WORD)HW_RTC_CSR_STALEREGS_SETMASK)
+                              678 ; 101  |#define HW_RTC_CSR_RSVD1_CLRMASK (~(WORD)HW_RTC_CSR_RSVD1_SETMASK)
+                              679 ; 102  |#define HW_RTC_CSR_NEWREGS_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_SETMASK)
+                              680 ; 103  |#define HW_RTC_CSR_NEWREGS_XTALDIV_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_XTALDIV_SETMASK)   
+                              681 ; 104  |#define HW_RTC_CSR_NEWREGS_MSCOUNT_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_MSCOUNT_SETMASK)
+                              682 ; 105  |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_ALRMCOUNT_SETMASK)
+                              683 ; 106  |#define HW_RTC_CSR_NEWREGS_PERSIST0_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_PERSIST0_SETMASK)
+                              684 ; 107  |#define HW_RTC_CSR_NEWREGS_PERSIST1_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_PERSIST1_SETMASK)
+                              685 ; 108  |
+                              686 ; 109  |#define HW_RTC_CSR_RSVD2_CLRMASK (~(WORD)HW_RTC_CSR_RSVD2_SETMASK)
+                              687 ; 110  |#define HW_RTC_CSR_FORCE_CLRMASK (~(WORD)HW_RTC_CSR_FORCE_SETMASK)
+                              688 ; 111  |#define HW_RTC_CSR_RSVD3_CLRMASK (~(WORD)HW_RTC_CSR_RSVD3_SETMASK)
+                              689 ; 112  |#define HW_RTC_CSR_SFTRST_CLRMASK (~(WORD)HW_RTC_CSR_SFTRST_SETMASK)
+                              690 ; 113  |
+                              691 ; 114  |
+                              692 ; 115  |typedef union               
+                              693 ; 116  |{
+                              694 ; 117  |    struct {
+                              695 ; 118  |         int ALARMINTEN         : HW_RTC_CSR_ALARMINTEN_WIDTH;
+                              696 ; 119  |         int ALARMINT           : HW_RTC_CSR_ALARMINT_WIDTH;
+                              697 ; 120  |         int WATCHDOGEN         : HW_RTC_CSR_WATCHDOGEN_WIDTH;
+                              698 ; 121  |         int RSVD0              : HW_RTC_CSR_RSVD0_WIDTH;
+                              699 ; 122  |         unsigned int STALEREGS : HW_RTC_CSR_STALEREGS_WIDTH;
+                              700 ; 123  |         int RSVD1              : HW_RTC_CSR_RSVD1_WIDTH;
+                              701 ; 124  |         unsigned int NEWREGS   : HW_RTC_CSR_NEWREGS_WIDTH;
+                              702 ; 125  |         int RSVD2              : HW_RTC_CSR_RSVD2_WIDTH;
+                              703 ; 126  |         int FORCE             : HW_RTC_CSR_FORCE_WIDTH;
+                              704 ; 127  |         int RSVD3              : HW_RTC_CSR_RSVD3_WIDTH;
+                              705 ; 128  |         unsigned int SFTRST    : HW_RTC_CSR_SFTRST_WIDTH;
+                              706 ; 129  |    } B;
+                              707 ; 130  |    int I;
+                              708 ; 131  |    unsigned int U;
+                              709 ; 132  |} rtc_csr_type;
+                              710 ; 133  |#define HW_RTC_CSR      (*(volatile rtc_csr_type _X*) (HW_RTC_BASEADDR+0))    /* RTC Control / Status Register */
+                              711 ; 134  |
+                              712 ; 135  |/////////////////////////////////////////////////////////////////////////////////
+                              713 ; 136  |
+                              714 ; 137  |//  RTC Milliseconds Register0 (HW_RTC_MSECONDS0) Bit Definitions
+                              715 ; 138  |
+                              716 ; 139  |#define HW_RTC_MSECONDS0_MSECONDSLOW_BITPOS (0)
+                              717 ; 140  |
+                              718 ; 141  |#define HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH (24)
+                              719 ; 142  |
+                              720 ; 143  |#define HW_RTC_MSECONDS0_MSECONDSLOW_SETMASK (((1<<HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH)-1)<<HW_RTC_MSECONDS0_MSECONDSLOW_BITPOS) 
+                              721 ; 144  |
+                              722 ; 145  |#define HW_RTC_MSECONDS0_MSECONDSLOW_CLRMASK (~(WORD)HW_RTC_MSECONDS0_MSECONDSLOW_SETMASK)
+                              723 ; 146  |
+                              724 ; 147  |typedef union               
+                              725 ; 148  |{
+                              726 ; 149  |    struct {
+                              727 ; 150  |         int MSECONDSLOW        : HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH;
+                              728 ; 151  |    } B;
+                              729 ; 152  |    int I;
+                              730 ; 153  |    unsigned int U;
+                              731 ; 154  |} rtc_mseconds0_type;
+                              732 ; 155  |#define HW_RTC_MSECONDS0      (*(volatile rtc_mseconds0_type _X*) (HW_RTC_BASEADDR+1))    /* RTC MSECONDS Lower Word Register */
+                              733 ; 156  |#define HW_RTCLOWR            HW_RTC_MSECONDS0
+                              734 ; 157  |/////////////////////////////////////////////////////////////////////////////////
+                              735 ; 158  |
+                              736 ; 159  |//  RTC Milliseconds Register1 (HW_RTC_MSECONDS1) Bit Definitions
+                              737 ; 160  |
+                              738 ; 161  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_BITPOS (0)
+                              739 ; 162  |
+                              740 ; 163  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH (24)
+                              741 ; 164  |
+                              742 ; 165  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_SETMASK (((1<<HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH)-1)<<HW_RTC_MSECONDS1_MSECONDSHIGH_BITPOS) 
+                              743 ; 166  |
+                              744 ; 167  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_CLRMASK (~(WORD)HW_RTC_MSECONDS1_MSECONDSHIGH_SETMASK)
+                              745 ; 168  |
+                              746 ; 169  |typedef union               
+                              747 ; 170  |{
+                              748 ; 171  |    struct {
+                              749 ; 172  |         int MSECONDSHIGH       : HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH;
+                              750 ; 173  |    } B;
+                              751 ; 174  |    int I;
+                              752 ; 175  |    unsigned int U;
+                              753 ; 176  |} rtc_mseconds1_type;
+                              754 ; 177  |#define HW_RTC_MSECONDS1      (*(volatile rtc_mseconds1_type _X*) (HW_RTC_BASEADDR+2))    /* RTC MSECONDS Upper Word Register */
+                              755 ; 178  |#define HW_RTCUPR             HW_RTC_MSECONDS1
+                              756 ; 179  |
+                              757 ; 180  |#define HW_RTC_LOWER_OFFSET 1
+                              758 ; 181  |#define HW_RTC_UP_OFFSET 2
+                              759 ; 182  |
+                              760 ; 183  |
+                              761 ; 184  |/////////////////////////////////////////////////////////////////////////////////
+                              762 ; 185  |
+                              763 ; 186  |//  RTC Watchdog Count (HW_RTC_WATCHDOG) Bit Definitions
+                              764 ; 187  |
+                              765 ; 188  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_BITPOS (0)
+                              766 ; 189  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              767 ; 190  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH (24)
+                              768 ; 191  |
+                              769 ; 192  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_SETMASK (((1<<HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH)-1)<<HW_RTC_WATCHDOG_TIMEOUTCNT_BITPOS) 
+                              770 ; 193  |
+                              771 ; 194  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_CLRMASK (~(WORD)HW_RTC_WATCHDOG_TIMEOUTCNT_SETMASK)
+                              772 ; 195  |
+                              773 ; 196  |typedef union               
+                              774 ; 197  |{
+                              775 ; 198  |    struct {
+                              776 ; 199  |         int TIMEOUTCNT         : HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH;
+                              777 ; 200  |    } B;
+                              778 ; 201  |    int I;
+                              779 ; 202  |    unsigned int U;
+                              780 ; 203  |} rtc_watchdog_type;
+                              781 ; 204  |#define HW_RTC_WATCHDOG     (*(volatile rtc_watchdog_type _X*) (HW_RTC_BASEADDR+3))    /* RTC Watchdog Timeout Register */
+                              782 ; 205  |/////////////////////////////////////////////////////////////////////////////////
+                              783 ; 206  |
+                              784 ; 207  |//  RTC Alarm Register0 (HW_RTC_ALARM0) Bit Definitions
+                              785 ; 208  |
+                              786 ; 209  |#define HW_RTC_ALARM0_ALARMLOW_BITPOS (0)
+                              787 ; 210  |
+                              788 ; 211  |#define HW_RTC_ALARM0_ALARMLOW_WIDTH (24)
+                              789 ; 212  |
+                              790 ; 213  |#define HW_RTC_ALARM0_ALARMLOW_SETMASK (((1<<HW_RTC_ALARM0_ALARMLOW_WIDTH)-1)<<HW_RTC_ALARM0_ALARMLOW_BITPOS) 
+                              791 ; 214  |
+                              792 ; 215  |#define HW_RTC_ALARM0_ALARMLOW_CLRMASK (~(WORD)HW_RTC_ALARM0_ALARMLOW_SETMASK)
+                              793 ; 216  |
+                              794 ; 217  |typedef union               
+                              795 ; 218  |{
+                              796 ; 219  |    struct {
+                              797 ; 220  |         int ALARMLOW   : HW_RTC_ALARM0_ALARMLOW_WIDTH;
+                              798 ; 221  |    } B;
+                              799 ; 222  |    int I;
+                              800 ; 223  |    unsigned int U;
+                              801 ; 224  |} rtc_alarm0_type;
+                              802 ; 225  |#define HW_RTC_ALARM0      (*(volatile rtc_alarm0_type _X*) (HW_RTC_BASEADDR+4))    /* RTC ALARM Lower Word Register */
+                              803 ; 226  |/////////////////////////////////////////////////////////////////////////////////
+                              804 ; 227  |
+                              805 ; 228  |//  RTC Alarm Register1 (HW_RTC_ALARM1) Bit Definitions
+                              806 ; 229  |
+                              807 ; 230  |#define HW_RTC_ALARM1_ALARMHIGH_BITPOS (0)
+                              808 ; 231  |
+                              809 ; 232  |#define HW_RTC_ALARM1_ALARMHIGH_WIDTH (24)
+                              810 ; 233  |
+                              811 ; 234  |#define HW_RTC_ALARM1_ALARMHIGH_SETMASK (((1<<HW_RTC_ALARM1_ALARMHIGH_WIDTH)-1)<<HW_RTC_ALARM1_ALARMHIGH_BITPOS) 
+                              812 ; 235  |
+                              813 ; 236  |#define HW_RTC_ALARM1_ALARMHIGH_CLRMASK (~(WORD)HW_RTC_ALARM1_ALARMHIGH_SETMASK)
+                              814 ; 237  |
+                              815 ; 238  |typedef union               
+                              816 ; 239  |{
+                              817 ; 240  |    struct {
+                              818 ; 241  |         int ALARMHIGH  : HW_RTC_ALARM1_ALARMHIGH_WIDTH;
+                              819 ; 242  |    } B;
+                              820 ; 243  |    int I;
+                              821 ; 244  |    unsigned int U;
+                              822 ; 245  |} rtc_alarm1_type;
+                              823 ; 246  |#define HW_RTC_ALARM1      (*(volatile rtc_alarm1_type _X*) (HW_RTC_BASEADDR+5))    /* RTC ALARM Upper Word Register */
+                              824 ; 247  |/////////////////////////////////////////////////////////////////////////////////
+                              825 ; 248  |
+                              826 ; 249  |//  RTC Xtal-Clock Divide Register (HW_RTC_XTALDIVIDE) Bit Definitions
+                              827 ; 250  |
+                              828 ; 251  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_BITPOS (0)
+                              829 ; 252  |#define HW_RTC_XTALDIVIDE_RSVD0_BITPOS (16)
+                              830 ; 253  |
+                              831 ; 254  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH (16)
+                              832 ; 255  |#define HW_RTC_XTALDIVIDE_RSVD0_WIDTH (8)
+                              833 ; 256  |
+                              834 ; 257  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_SETMASK (((1<<HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH)-1)<<HW_RTC_XTALDIVIDE_DIVCOUNT_BITPOS) 
+                              835 ; 258  |#define HW_RTC_XTALDIVIDE_RSVD0_SETMASK (((1<<HW_RTC_XTALDIVIDE_RSVD0_BITPOS)-1)<<HW_RTC_XTALDIVIDE_RSVD0_BITPOS) 
+                              836 ; 259  |
+                              837 ; 260  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_CLRMASK (~(WORD)HW_RTC_XTALDIVIDE_DIVCOUNT_SETMASK)
+                              838 ; 261  |#define HW_RTC_XTALDIVIDE_RSVD0_CLRMASK (~(WORD)HW_RTC_XTALDIVIDE_RSVD0_SETMASK)
+                              839 ; 262  |
+                              840 ; 263  |typedef union               
+                              841 ; 264  |{
+                              842 ; 265  |    struct {
+                              843 ; 266  |         int DIVCOUNT   : HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH;
+                              844 ; 267  |         int RSVD0      : HW_RTC_XTALDIVIDE_RSVD0_WIDTH;
+                              845 ; 268  |    } B;
+                              846 ; 269  |    int I;
+                              847 ; 270  |    unsigned int U;
+                              848 ; 271  |} rtc_xtaldivide_type;
+                              849 ; 272  |#define HW_RTC_XTALDIVIDE   (*(volatile rtc_xtaldivide_type _X*) (HW_RTC_BASEADDR+6))  /* RTC Xtal-clock Pre-Divider Word Register */
+                              850 ; 273  |/////////////////////////////////////////////////////////////////////////////////
+                              851 ; 274  |
+                              852 ; 275  |//  RTC PERSISTENT Register0 (HW_RTC_PERSISTENT0) Bit Definitions
+                              853 ; 276  |
+                              854 ; 277  |#define HW_RTC_PERSISTENT0_ALARMEN_BITPOS (0)
+                              855 ; 278  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_BITPOS (1)
+                              856 ; 279  |#define HW_RTC_PERSISTENT0_ALARMWAKE_BITPOS (2)
+                              857 ; 280  |#define HW_RTC_PERSISTENT0_XTALPDOWN_BITPOS (3)
+                              858 ; 281  |#define HW_RTC_PERSISTENT0_RSVD0_BITPOS (4)
+                              859 ; 282  |
+                              860 ; 283  |#define HW_RTC_PERSISTENT0_ALARMEN_WIDTH (1)
+                              861 ; 284  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH (1)
+                              862 ; 285  |#define HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH (1)
+                              863 ; 286  |#define HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH (1)
+                              864 ; 287  |#define HW_RTC_PERSISTENT0_RSVD0_WIDTH (21)
+                              865 ; 288  |
+                              866 ; 289  |#define HW_RTC_PERSISTENT0_ALARMEN_SETMASK (((1<<HW_RTC_PERSISTENT0_ALARMEN_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMEN_BITPOS) 
+                              867 ; 290  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_SETMASK (((1<<HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMWAKE_EN_BITPOS)
+                              868 ; 291  |#define HW_RTC_PERSISTENT0_ALARMWAKE_SETMASK (((1<<HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMWAKE_BITPOS) 
+                              869 ; 292  |#define HW_RTC_PERSISTENT0_XTALPDOWN_SETMASK (((1<<HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH)-1)<<HW_RTC_PERSISTENT0_XTALPDOWN_BITPOS) 
+                              870 ; 293  |#define HW_RTC_PERSISTENT0_RSVD0_SETMASK (((1<<HW_RTC_PERSISTENT0_RSVD0_WIDTH)-1)<<HW_RTC_PERSISTENT0_RSVD0_BITPOS) 
+                              871 ; 294  |
+                              872 ; 295  |#define HW_RTC_PERSISTENT0_ALARMEN_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_ALARMEN_SETMASK)
+                              873 ; 296  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_ALARMWAKE_EN_SETMASK)
+                              874 ; 297  |#define HW_RTC_PERSISTENT0_ALARMWAKE_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_ALARMWAKE_SETMASK)
+                              875 ; 298  |#define HW_RTC_PERSISTENT0_XTALPDOWN_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_XTALPDOWN_SETMASK)
+                              876 ; 299  |#define HW_RTC_PERSISTENT0_RSVD0_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_RSVD0_SETMASK)
+                              877 ; 300  |
+                              878 ; 301  |typedef union               
+                              879 ; 302  |{
+                              880 ; 303  |   struct {
+                              881 ; 304  |      int ALARMEN   : HW_RTC_PERSISTENT0_ALARMEN_WIDTH;
+                              882 ; 305  |           int ALARMWAKE_EN  :  HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH;
+                              883 ; 306  |      int ALARMWAKE : HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH;
+                              884 ; 307  |      int XTALPDOWN : HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH;
+                              885 ; 308  |      int RSVD0     : HW_RTC_PERSISTENT0_RSVD0_WIDTH;
+                              886 ; 309  |   } B;
+                              887 ; 310  |    int I;
+                              888 ; 311  |    unsigned int U;
+                              889 ; 312  |} rtc_PERSISTENT0_type;
+                              890 ; 313  |#define HW_RTC_PERSISTENT0   (*(volatile rtc_PERSISTENT0_type _X*) (HW_RTC_BASEADDR+7))  /* RTC PERSISTENT Register0 */
+                              891 ; 314  |
+                              892 ; 315  |/////////////////////////////////////////////////////////////////////////////////
+                              893 ; 316  |
+                              894 ; 317  |//  RTC PERSISTENT Register1 (HW_RTC_PERSISTENT1) Bit Definitions
+                              895 ; 318  |
+                              896 ; 319  |#define HW_RTC_PERSISTENT1_RSVD0_BITPOS (0)
+                              897 ; 320  |
+                              898 ; 321  |#define HW_RTC_PERSISTENT1_RSVD0_WIDTH (24)
+                              899 ; 322  |
+                              900 ; 323  |#define HW_RTC_PERSISTENT1_RSVD0_SETMASK (((1<<HW_RTC_PERSISTENT1_RSVD0_WIDTH)-1)<<HW_RTC_PERSISTENT1_RSVD0_BITPOS) 
+                              901 ; 324  |
+                              902 ; 325  |#define HW_RTC_PERSISTENT1_RSVD0_CLRMASK (~(WORD)HW_RTC_PERSISTENT1_RSVD0_SETMASK)
+                              903 ; 326  |
+                              904 ; 327  |
+                              905 ; 328  |typedef union               
+                              906 ; 329  |{
+                              907 ; 330  |    struct {
+                              908 ; 331  |         int RSVD0      : HW_RTC_PERSISTENT1_RSVD0_WIDTH;
+                              909 ; 332  |    } B;
+                              910 ; 333  |    int I;
+                              911 ; 334  |    unsigned int U;
+                              912 ; 335  |} rtc_PERSISTENT1_type;
+                              913 ; 336  |#define HW_RTC_PERSISTENT1   (*(volatile rtc_PERSISTENT1_type _X*) (HW_RTC_BASEADDR+8))  /* RTC PERSISTENT Register1 */
+                              914 ; 337  |
+                              915 ; 338  |
+                              916 ; 339  |#endif
+                              917 ; 340  |
+                              918 ; 341  |
+                              919 ; 342  |
+                              920 ; 343  |
+                              921 ; 344  |
+                              922 ; 345  |
+                              923 ; 346  |
+                              924 ; 347  |
+                              925 ; 348  |
+                              926 ; 349  |
+                              927 ; 350  |
+                              928 ; 351  |
+                              929 ; 352  |
+                              930 ; 353  |
+                              931 
+                              933 
+                              934 ; 11   |#include "persist_bits.h"
+                              935 
+                              937 
+                              938 ; 1    |//;///////////////////////////////////////////////////////////////////////////////
+                              939 ; 2    |//; Copyright(C) SigmaTel, Inc. 2000-2005
+                              940 ; 3    |//;
+                              941 ; 4    |//; Filename:    persist_bits.h
+                              942 ; 5    |//; Description: General purpose interface to Persistent Bits
+                              943 ; 6    |//;              Persistent bits are mapped to more generic bits in regsrtc.inc.
+                              944 ; 7    |//;///////////////////////////////////////////////////////////////////////////////
+                              945 ; 8    |
+                              946 ; 9    |#ifndef _PERSIST_BITS_H
+                              947 ; 10   |#define _PERSIST_BITS_H
+                              948 ; 11   |
+                              949 ; 12   |#include "regsrtc.h"
+                              950 
+                              952 
+                              953 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              954 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              955 ; 3    |// Filename: regsrtc.inc
+                              956 ; 4    |// Description: Register definitions for RTC interface
+                              957 ; 5    |/////////////////////////////////////////////////////////////////////////////////
+                              958 ; 6    |// The following naming conventions are followed in this file.
+                              959 ; 7    |// All registers are named using the format...
+                              960 ; 8    |//     HW_<module>_<regname>
+                              961 ; 9    |// where <module> is the module name which can be any of the following...
+                              962 ; 10   |//     USB20
+                              963 ; 11   |// (Note that when there is more than one copy of a particular module, the
+                              964 ; 12   |// module name includes a number starting from 0 for the first instance of
+                              965 ; 13   |// that module)
+                              966 ; 14   |// <regname> is the specific register within that module
+                              967 ; 15   |// We also define the following...
+                              968 ; 16   |//     HW_<module>_<regname>_BITPOS
+                              969 ; 17   |// which defines the starting bit (i.e. LSB) of a multi bit field
+                              970 ; 18   |//     HW_<module>_<regname>_SETMASK
+                              971 ; 19   |// which does something else, and
+                              972 ; 20   |//     HW_<module>_<regname>_CLRMASK
+                              973 ; 21   |// which does something else.
+                              974 ; 22   |// Other rules
+                              975 ; 23   |//     All caps
+                              976 ; 24   |//     Numeric identifiers start at 0
+                              977 ; 25   |#if !(defined(regsrtcinc))
+                              978 ; 26   |#define regsrtcinc 1
+                              979 ; 27   |
+                              980 ; 28   |#include "types.h"
+                              981 ; 29   |
+                              982 ; 30   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              983 ; 31   |
+                              984 ; 32   |//   RTC STMP Registers 
+                              985 ; 33   |//   Edited 2/26/2002 J. Ferrara
+                              986 ; 34   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              987 ; 35   |
+                              988 ; 36   |#define HW_RTC_BASEADDR (0xF500)
+                              989 ; 37   |
+                              990 ; 38   |
+                              991 ; 39   |
+                              992 ; 40   |
+                              993 ; 41   |
+                              994 ; 42   |/////////////////////////////////////////////////////////////////////////////////
+                              995 ; 43   |
+                              996 ; 44   |////  RTC Control Status Register (HW_RTC_CSR) Bit Definitions
+                              997 ; 45   |
+                              998 ; 46   |#define HW_RTC_CSR_ALARMINTEN_BITPOS (0)
+                              999 ; 47   |#define HW_RTC_CSR_ALARMINT_BITPOS (1)
+                             1000 ; 48   |#define HW_RTC_CSR_WATCHDOGEN_BITPOS (2)
+                             1001 ; 49   |#define HW_RTC_CSR_RSVD0_BITPOS (3)
+                             1002 ; 50   |#define HW_RTC_CSR_STALEREGS_BITPOS (4)
+                             1003 ; 51   |#define HW_RTC_CSR_RSVD1_BITPOS (9)
+                             1004 ; 52   |#define HW_RTC_CSR_NEWREGS_BITPOS (12)
+                             1005 ; 53   |#define HW_RTC_CSR_NEWREGS_XTALDIV_BITPOS (12)
+                             1006 ; 54   |#define HW_RTC_CSR_NEWREGS_MSCOUNT_BITPOS (13)
+                             1007 ; 55   |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_BITPOS (14)
+                             1008 ; 56   |#define HW_RTC_CSR_NEWREGS_PERSIST0_BITPOS (15)
+                             1009 ; 57   |#define HW_RTC_CSR_NEWREGS_PERSIST1_BITPOS (16)
+                             1010 ; 58   |#define HW_RTC_CSR_RSVD2_BITPOS (17)
+                             1011 ; 59   |#define HW_RTC_CSR_FORCE_BITPOS (20)
+                             1012 ; 60   |#define HW_RTC_CSR_RSVD3_BITPOS (21)
+                             1013 ; 61   |#define HW_RTC_CSR_SFTRST_BITPOS (23)                                                                           
+                             1014 ; 62   |#define HW_RTC_CSR_ALARMINTEN_WIDTH (1)
+                             1015 ; 63   |#define HW_RTC_CSR_ALARMINT_WIDTH (1)
+                             1016 ; 64   |#define HW_RTC_CSR_WATCHDOGEN_WIDTH (1)
+                             1017 ; 65   |#define HW_RTC_CSR_RSVD0_WIDTH (1)
+                             1018 ; 66   |#define HW_RTC_CSR_STALEREGS_WIDTH (5)
+                             1019 ; 67   |#define HW_RTC_CSR_RSVD1_WIDTH (3)
+                             1020 ; 68   |#define HW_RTC_CSR_NEWREGS_WIDTH (5)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1021 ; 69   |#define HW_RTC_CSR_NEWREGS_XTALDIV_WIDTH (1)
+                             1022 ; 70   |#define HW_RTC_CSR_NEWREGS_MSCOUNT_WIDTH (1)
+                             1023 ; 71   |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_WIDTH (1)
+                             1024 ; 72   |#define HW_RTC_CSR_NEWREGS_PERSIST0_WIDTH (1)
+                             1025 ; 73   |#define HW_RTC_CSR_NEWREGS_PERSIST1_WIDTH (1)
+                             1026 ; 74   |#define HW_RTC_CSR_RSVD2_WIDTH (3)
+                             1027 ; 75   |#define HW_RTC_CSR_FORCE_WIDTH (1)
+                             1028 ; 76   |#define HW_RTC_CSR_RSVD3_WIDTH (2)
+                             1029 ; 77   |#define HW_RTC_CSR_SFTRST_WIDTH (1)
+                             1030 ; 78   |
+                             1031 ; 79   |#define HW_RTC_CSR_ALARMINT_SETMASK (((1<<HW_RTC_CSR_ALARMINT_WIDTH)-1)<<HW_RTC_CSR_ALARMINT_BITPOS) 
+                             1032 ; 80   |#define HW_RTC_CSR_ALARMINTEN_SETMASK (((1<<HW_RTC_CSR_ALARMINTEN_WIDTH)-1)<<HW_RTC_CSR_ALARMINTEN_BITPOS) 
+                             1033 ; 81   |#define HW_RTC_CSR_WATCHDOGEN_SETMASK (((1<<HW_RTC_CSR_WATCHDOGEN_WIDTH)-1)<<HW_RTC_CSR_WATCHDOGEN_BITPOS) 
+                             1034 ; 82   |#define HW_RTC_CSR_RSVD0_SETMASK (((1<<HW_RTC_CSR_RSVD0_WIDTH)-1)<<HW_RTC_CSR_RSVD0_BITPOS) 
+                             1035 ; 83   |#define HW_RTC_CSR_STALEREGS_SETMASK (((1<<HW_RTC_CSR_STALEREGS_WIDTH)-1)<<HW_RTC_CSR_STALEREGS_BITPOS) 
+                             1036 ; 84   |#define HW_RTC_CSR_RSVD1_SETMASK (((1<<HW_RTC_CSR_RSVD1_WIDTH)-1)<<HW_RTC_CSR_RSVD1_BITPOS) 
+                             1037 ; 85   |#define HW_RTC_CSR_NEWREGS_SETMASK (((1<<HW_RTC_CSR_NEWREGS_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_BITPOS) 
+                             1038 ; 86   |#define HW_RTC_CSR_NEWREGS_XTALDIV_SETMASK (((1<<HW_RTC_CSR_NEWREGS_XTALDIV_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_XTALDIV_BITPOS)   
+                             1039 ; 87   |#define HW_RTC_CSR_NEWREGS_MSCOUNT_SETMASK (((1<<HW_RTC_CSR_NEWREGS_MSCOUNT_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_MSCOUNT_BITPOS)
+                             1040 ; 88   |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_SETMASK (((1<<HW_RTC_CSR_NEWREGS_ALRMCOUNT_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_ALRMCOUNT_BITPOS)
+                             1041 ; 89   |#define HW_RTC_CSR_NEWREGS_PERSIST0_SETMASK (((1<<HW_RTC_CSR_NEWREGS_PERSIST0_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_PERSIST0_BITPOS)
+                             1042 ; 90   |#define HW_RTC_CSR_NEWREGS_PERSIST1_SETMASK (((1<<HW_RTC_CSR_NEWREGS_PERSIST1_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_PERSIST1_BITPOS)
+                             1043 ; 91   |#define HW_RTC_CSR_RSVD2_SETMASK (((1<<HW_RTC_CSR_RSVD2_WIDTH)-1)<<HW_RTC_CSR_RSVD2_BITPOS) 
+                             1044 ; 92   |#define HW_RTC_CSR_FORCE_SETMASK (((1<<HW_RTC_CSR_FORCE_WIDTH)-1)<<HW_RTC_CSR_FORCE_BITPOS) 
+                             1045 ; 93   |#define HW_RTC_CSR_RSVD3_SETMASK (((1<<HW_RTC_CSR_RSVD3_WIDTH)-1)<<HW_RTC_CSR_RSVD3_BITPOS) 
+                             1046 ; 94   |#define HW_RTC_CSR_SFTRST_SETMASK (((1<<HW_RTC_CSR_SFTRST_WIDTH)-1)<<HW_RTC_CSR_SFTRST_BITPOS) 
+                             1047 ; 95   |
+                             1048 ; 96   |#define HW_RTC_CSR_ALARMINTEN_CLRMASK (~(WORD)HW_RTC_CSR_ALARMINTEN_SETMASK)
+                             1049 ; 97   |#define HW_RTC_CSR_ALARMINT_CLRMASK (~(WORD)HW_RTC_CSR_ALARMINT_SETMASK)
+                             1050 ; 98   |#define HW_RTC_CSR_WATCHDOGEN_CLRMASK (~(WORD)HW_RTC_CSR_WATCHDOGEN_SETMASK)
+                             1051 ; 99   |#define HW_RTC_CSR_RSVD0_CLRMASK (~(WORD)HW_RTC_CSR_RSVD0_SETMASK)
+                             1052 ; 100  |#define HW_RTC_CSR_STALEREGS_CLRMASK (~(WORD)HW_RTC_CSR_STALEREGS_SETMASK)
+                             1053 ; 101  |#define HW_RTC_CSR_RSVD1_CLRMASK (~(WORD)HW_RTC_CSR_RSVD1_SETMASK)
+                             1054 ; 102  |#define HW_RTC_CSR_NEWREGS_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_SETMASK)
+                             1055 ; 103  |#define HW_RTC_CSR_NEWREGS_XTALDIV_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_XTALDIV_SETMASK)   
+                             1056 ; 104  |#define HW_RTC_CSR_NEWREGS_MSCOUNT_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_MSCOUNT_SETMASK)
+                             1057 ; 105  |#define HW_RTC_CSR_NEWREGS_ALRMCOUNT_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_ALRMCOUNT_SETMASK)
+                             1058 ; 106  |#define HW_RTC_CSR_NEWREGS_PERSIST0_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_PERSIST0_SETMASK)
+                             1059 ; 107  |#define HW_RTC_CSR_NEWREGS_PERSIST1_CLRMASK (~(WORD)HW_RTC_CSR_NEWREGS_PERSIST1_SETMASK)
+                             1060 ; 108  |
+                             1061 ; 109  |#define HW_RTC_CSR_RSVD2_CLRMASK (~(WORD)HW_RTC_CSR_RSVD2_SETMASK)
+                             1062 ; 110  |#define HW_RTC_CSR_FORCE_CLRMASK (~(WORD)HW_RTC_CSR_FORCE_SETMASK)
+                             1063 ; 111  |#define HW_RTC_CSR_RSVD3_CLRMASK (~(WORD)HW_RTC_CSR_RSVD3_SETMASK)
+                             1064 ; 112  |#define HW_RTC_CSR_SFTRST_CLRMASK (~(WORD)HW_RTC_CSR_SFTRST_SETMASK)
+                             1065 ; 113  |
+                             1066 ; 114  |
+                             1067 ; 115  |typedef union               
+                             1068 ; 116  |{
+                             1069 ; 117  |    struct {
+                             1070 ; 118  |         int ALARMINTEN         : HW_RTC_CSR_ALARMINTEN_WIDTH;
+                             1071 ; 119  |         int ALARMINT           : HW_RTC_CSR_ALARMINT_WIDTH;
+                             1072 ; 120  |         int WATCHDOGEN         : HW_RTC_CSR_WATCHDOGEN_WIDTH;
+                             1073 ; 121  |         int RSVD0              : HW_RTC_CSR_RSVD0_WIDTH;
+                             1074 ; 122  |         unsigned int STALEREGS : HW_RTC_CSR_STALEREGS_WIDTH;
+                             1075 ; 123  |         int RSVD1              : HW_RTC_CSR_RSVD1_WIDTH;
+                             1076 ; 124  |         unsigned int NEWREGS   : HW_RTC_CSR_NEWREGS_WIDTH;
+                             1077 ; 125  |         int RSVD2              : HW_RTC_CSR_RSVD2_WIDTH;
+                             1078 ; 126  |         int FORCE             : HW_RTC_CSR_FORCE_WIDTH;
+                             1079 ; 127  |         int RSVD3              : HW_RTC_CSR_RSVD3_WIDTH;
+                             1080 ; 128  |         unsigned int SFTRST    : HW_RTC_CSR_SFTRST_WIDTH;
+                             1081 ; 129  |    } B;
+                             1082 ; 130  |    int I;
+                             1083 ; 131  |    unsigned int U;
+                             1084 ; 132  |} rtc_csr_type;
+                             1085 ; 133  |#define HW_RTC_CSR      (*(volatile rtc_csr_type _X*) (HW_RTC_BASEADDR+0))    /* RTC Control / Status Register */
+                             1086 ; 134  |
+                             1087 ; 135  |/////////////////////////////////////////////////////////////////////////////////
+                             1088 ; 136  |
+                             1089 ; 137  |//  RTC Milliseconds Register0 (HW_RTC_MSECONDS0) Bit Definitions
+                             1090 ; 138  |
+                             1091 ; 139  |#define HW_RTC_MSECONDS0_MSECONDSLOW_BITPOS (0)
+                             1092 ; 140  |
+                             1093 ; 141  |#define HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH (24)
+                             1094 ; 142  |
+                             1095 ; 143  |#define HW_RTC_MSECONDS0_MSECONDSLOW_SETMASK (((1<<HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH)-1)<<HW_RTC_MSECONDS0_MSECONDSLOW_BITPOS) 
+                             1096 ; 144  |
+                             1097 ; 145  |#define HW_RTC_MSECONDS0_MSECONDSLOW_CLRMASK (~(WORD)HW_RTC_MSECONDS0_MSECONDSLOW_SETMASK)
+                             1098 ; 146  |
+                             1099 ; 147  |typedef union               
+                             1100 ; 148  |{
+                             1101 ; 149  |    struct {
+                             1102 ; 150  |         int MSECONDSLOW        : HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH;
+                             1103 ; 151  |    } B;
+                             1104 ; 152  |    int I;
+                             1105 ; 153  |    unsigned int U;
+                             1106 ; 154  |} rtc_mseconds0_type;
+                             1107 ; 155  |#define HW_RTC_MSECONDS0      (*(volatile rtc_mseconds0_type _X*) (HW_RTC_BASEADDR+1))    /* RTC MSECONDS Lower Word Register */
+                             1108 ; 156  |#define HW_RTCLOWR            HW_RTC_MSECONDS0
+                             1109 ; 157  |/////////////////////////////////////////////////////////////////////////////////
+                             1110 ; 158  |
+                             1111 ; 159  |//  RTC Milliseconds Register1 (HW_RTC_MSECONDS1) Bit Definitions
+                             1112 ; 160  |
+                             1113 ; 161  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_BITPOS (0)
+                             1114 ; 162  |
+                             1115 ; 163  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH (24)
+                             1116 ; 164  |
+                             1117 ; 165  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_SETMASK (((1<<HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH)-1)<<HW_RTC_MSECONDS1_MSECONDSHIGH_BITPOS) 
+                             1118 ; 166  |
+                             1119 ; 167  |#define HW_RTC_MSECONDS1_MSECONDSHIGH_CLRMASK (~(WORD)HW_RTC_MSECONDS1_MSECONDSHIGH_SETMASK)
+                             1120 ; 168  |
+                             1121 ; 169  |typedef union               
+                             1122 ; 170  |{
+                             1123 ; 171  |    struct {
+                             1124 ; 172  |         int MSECONDSHIGH       : HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH;
+                             1125 ; 173  |    } B;
+                             1126 ; 174  |    int I;
+                             1127 ; 175  |    unsigned int U;
+                             1128 ; 176  |} rtc_mseconds1_type;
+                             1129 ; 177  |#define HW_RTC_MSECONDS1      (*(volatile rtc_mseconds1_type _X*) (HW_RTC_BASEADDR+2))    /* RTC MSECONDS Upper Word Register */
+                             1130 ; 178  |#define HW_RTCUPR             HW_RTC_MSECONDS1
+                             1131 ; 179  |
+                             1132 ; 180  |#define HW_RTC_LOWER_OFFSET 1
+                             1133 ; 181  |#define HW_RTC_UP_OFFSET 2
+                             1134 ; 182  |
+                             1135 ; 183  |
+                             1136 ; 184  |/////////////////////////////////////////////////////////////////////////////////
+                             1137 ; 185  |
+                             1138 ; 186  |//  RTC Watchdog Count (HW_RTC_WATCHDOG) Bit Definitions
+                             1139 ; 187  |
+                             1140 ; 188  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_BITPOS (0)
+                             1141 ; 189  |
+                             1142 ; 190  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH (24)
+                             1143 ; 191  |
+                             1144 ; 192  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_SETMASK (((1<<HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH)-1)<<HW_RTC_WATCHDOG_TIMEOUTCNT_BITPOS) 
+                             1145 ; 193  |
+                             1146 ; 194  |#define HW_RTC_WATCHDOG_TIMEOUTCNT_CLRMASK (~(WORD)HW_RTC_WATCHDOG_TIMEOUTCNT_SETMASK)
+                             1147 ; 195  |
+                             1148 ; 196  |typedef union               
+                             1149 ; 197  |{
+                             1150 ; 198  |    struct {
+                             1151 ; 199  |         int TIMEOUTCNT         : HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH;
+                             1152 ; 200  |    } B;
+                             1153 ; 201  |    int I;
+                             1154 ; 202  |    unsigned int U;
+                             1155 ; 203  |} rtc_watchdog_type;
+                             1156 ; 204  |#define HW_RTC_WATCHDOG     (*(volatile rtc_watchdog_type _X*) (HW_RTC_BASEADDR+3))    /* RTC Watchdog Timeout Register */
+                             1157 ; 205  |/////////////////////////////////////////////////////////////////////////////////
+                             1158 ; 206  |
+                             1159 ; 207  |//  RTC Alarm Register0 (HW_RTC_ALARM0) Bit Definitions
+                             1160 ; 208  |
+                             1161 ; 209  |#define HW_RTC_ALARM0_ALARMLOW_BITPOS (0)
+                             1162 ; 210  |
+                             1163 ; 211  |#define HW_RTC_ALARM0_ALARMLOW_WIDTH (24)
+                             1164 ; 212  |
+                             1165 ; 213  |#define HW_RTC_ALARM0_ALARMLOW_SETMASK (((1<<HW_RTC_ALARM0_ALARMLOW_WIDTH)-1)<<HW_RTC_ALARM0_ALARMLOW_BITPOS) 
+                             1166 ; 214  |
+                             1167 ; 215  |#define HW_RTC_ALARM0_ALARMLOW_CLRMASK (~(WORD)HW_RTC_ALARM0_ALARMLOW_SETMASK)
+                             1168 ; 216  |
+                             1169 ; 217  |typedef union               
+                             1170 ; 218  |{
+                             1171 ; 219  |    struct {
+                             1172 ; 220  |         int ALARMLOW   : HW_RTC_ALARM0_ALARMLOW_WIDTH;
+                             1173 ; 221  |    } B;
+                             1174 ; 222  |    int I;
+                             1175 ; 223  |    unsigned int U;
+                             1176 ; 224  |} rtc_alarm0_type;
+                             1177 ; 225  |#define HW_RTC_ALARM0      (*(volatile rtc_alarm0_type _X*) (HW_RTC_BASEADDR+4))    /* RTC ALARM Lower Word Register */
+                             1178 ; 226  |/////////////////////////////////////////////////////////////////////////////////
+                             1179 ; 227  |
+                             1180 ; 228  |//  RTC Alarm Register1 (HW_RTC_ALARM1) Bit Definitions
+                             1181 ; 229  |
+                             1182 ; 230  |#define HW_RTC_ALARM1_ALARMHIGH_BITPOS (0)
+                             1183 ; 231  |
+                             1184 ; 232  |#define HW_RTC_ALARM1_ALARMHIGH_WIDTH (24)
+                             1185 ; 233  |
+                             1186 ; 234  |#define HW_RTC_ALARM1_ALARMHIGH_SETMASK (((1<<HW_RTC_ALARM1_ALARMHIGH_WIDTH)-1)<<HW_RTC_ALARM1_ALARMHIGH_BITPOS) 
+                             1187 ; 235  |
+                             1188 ; 236  |#define HW_RTC_ALARM1_ALARMHIGH_CLRMASK (~(WORD)HW_RTC_ALARM1_ALARMHIGH_SETMASK)
+                             1189 ; 237  |
+                             1190 ; 238  |typedef union               
+                             1191 ; 239  |{
+                             1192 ; 240  |    struct {
+                             1193 ; 241  |         int ALARMHIGH  : HW_RTC_ALARM1_ALARMHIGH_WIDTH;
+                             1194 ; 242  |    } B;
+                             1195 ; 243  |    int I;
+                             1196 ; 244  |    unsigned int U;
+                             1197 ; 245  |} rtc_alarm1_type;
+                             1198 ; 246  |#define HW_RTC_ALARM1      (*(volatile rtc_alarm1_type _X*) (HW_RTC_BASEADDR+5))    /* RTC ALARM Upper Word Register */
+                             1199 ; 247  |/////////////////////////////////////////////////////////////////////////////////
+                             1200 ; 248  |
+                             1201 ; 249  |//  RTC Xtal-Clock Divide Register (HW_RTC_XTALDIVIDE) Bit Definitions
+                             1202 ; 250  |
+                             1203 ; 251  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_BITPOS (0)
+                             1204 ; 252  |#define HW_RTC_XTALDIVIDE_RSVD0_BITPOS (16)
+                             1205 ; 253  |
+                             1206 ; 254  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH (16)
+                             1207 ; 255  |#define HW_RTC_XTALDIVIDE_RSVD0_WIDTH (8)
+                             1208 ; 256  |
+                             1209 ; 257  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_SETMASK (((1<<HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH)-1)<<HW_RTC_XTALDIVIDE_DIVCOUNT_BITPOS) 
+                             1210 ; 258  |#define HW_RTC_XTALDIVIDE_RSVD0_SETMASK (((1<<HW_RTC_XTALDIVIDE_RSVD0_BITPOS)-1)<<HW_RTC_XTALDIVIDE_RSVD0_BITPOS) 
+                             1211 ; 259  |
+                             1212 ; 260  |#define HW_RTC_XTALDIVIDE_DIVCOUNT_CLRMASK (~(WORD)HW_RTC_XTALDIVIDE_DIVCOUNT_SETMASK)
+                             1213 ; 261  |#define HW_RTC_XTALDIVIDE_RSVD0_CLRMASK (~(WORD)HW_RTC_XTALDIVIDE_RSVD0_SETMASK)
+                             1214 ; 262  |
+                             1215 ; 263  |typedef union               
+                             1216 ; 264  |{
+                             1217 ; 265  |    struct {
+                             1218 ; 266  |         int DIVCOUNT   : HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH;
+                             1219 ; 267  |         int RSVD0      : HW_RTC_XTALDIVIDE_RSVD0_WIDTH;
+                             1220 ; 268  |    } B;
+                             1221 ; 269  |    int I;
+                             1222 ; 270  |    unsigned int U;
+                             1223 ; 271  |} rtc_xtaldivide_type;
+                             1224 ; 272  |#define HW_RTC_XTALDIVIDE   (*(volatile rtc_xtaldivide_type _X*) (HW_RTC_BASEADDR+6))  /* RTC Xtal-clock Pre-Divider Word Register */
+                             1225 ; 273  |/////////////////////////////////////////////////////////////////////////////////
+                             1226 ; 274  |
+                             1227 ; 275  |//  RTC PERSISTENT Register0 (HW_RTC_PERSISTENT0) Bit Definitions
+                             1228 ; 276  |
+                             1229 ; 277  |#define HW_RTC_PERSISTENT0_ALARMEN_BITPOS (0)
+                             1230 ; 278  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_BITPOS (1)
+                             1231 ; 279  |#define HW_RTC_PERSISTENT0_ALARMWAKE_BITPOS (2)
+                             1232 ; 280  |#define HW_RTC_PERSISTENT0_XTALPDOWN_BITPOS (3)
+                             1233 ; 281  |#define HW_RTC_PERSISTENT0_RSVD0_BITPOS (4)
+                             1234 ; 282  |
+                             1235 ; 283  |#define HW_RTC_PERSISTENT0_ALARMEN_WIDTH (1)
+                             1236 ; 284  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH (1)
+                             1237 ; 285  |#define HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH (1)
+                             1238 ; 286  |#define HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH (1)
+                             1239 ; 287  |#define HW_RTC_PERSISTENT0_RSVD0_WIDTH (21)
+                             1240 ; 288  |
+                             1241 ; 289  |#define HW_RTC_PERSISTENT0_ALARMEN_SETMASK (((1<<HW_RTC_PERSISTENT0_ALARMEN_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMEN_BITPOS) 
+                             1242 ; 290  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_SETMASK (((1<<HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMWAKE_EN_BITPOS)
+                             1243 ; 291  |#define HW_RTC_PERSISTENT0_ALARMWAKE_SETMASK (((1<<HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMWAKE_BITPOS) 
+                             1244 ; 292  |#define HW_RTC_PERSISTENT0_XTALPDOWN_SETMASK (((1<<HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH)-1)<<HW_RTC_PERSISTENT0_XTALPDOWN_BITPOS) 
+                             1245 ; 293  |#define HW_RTC_PERSISTENT0_RSVD0_SETMASK (((1<<HW_RTC_PERSISTENT0_RSVD0_WIDTH)-1)<<HW_RTC_PERSISTENT0_RSVD0_BITPOS) 
+                             1246 ; 294  |
+                             1247 ; 295  |#define HW_RTC_PERSISTENT0_ALARMEN_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_ALARMEN_SETMASK)
+                             1248 ; 296  |#define HW_RTC_PERSISTENT0_ALARMWAKE_EN_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_ALARMWAKE_EN_SETMASK)
+                             1249 ; 297  |#define HW_RTC_PERSISTENT0_ALARMWAKE_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_ALARMWAKE_SETMASK)
+                             1250 ; 298  |#define HW_RTC_PERSISTENT0_XTALPDOWN_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_XTALPDOWN_SETMASK)
+                             1251 ; 299  |#define HW_RTC_PERSISTENT0_RSVD0_CLRMASK (~(WORD)HW_RTC_PERSISTENT0_RSVD0_SETMASK)
+                             1252 ; 300  |
+                             1253 ; 301  |typedef union               
+                             1254 ; 302  |{
+                             1255 ; 303  |   struct {
+                             1256 ; 304  |      int ALARMEN   : HW_RTC_PERSISTENT0_ALARMEN_WIDTH;
+                             1257 ; 305  |           int ALARMWAKE_EN  :  HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH;
+                             1258 ; 306  |      int ALARMWAKE : HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH;
+                             1259 ; 307  |      int XTALPDOWN : HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH;
+                             1260 ; 308  |      int RSVD0     : HW_RTC_PERSISTENT0_RSVD0_WIDTH;
+                             1261 ; 309  |   } B;
+                             1262 ; 310  |    int I;
+                             1263 ; 311  |    unsigned int U;
+                             1264 ; 312  |} rtc_PERSISTENT0_type;
+                             1265 ; 313  |#define HW_RTC_PERSISTENT0   (*(volatile rtc_PERSISTENT0_type _X*) (HW_RTC_BASEADDR+7))  /* RTC PERSISTENT Register0 */
+                             1266 ; 314  |
+                             1267 ; 315  |/////////////////////////////////////////////////////////////////////////////////
+                             1268 ; 316  |
+                             1269 ; 317  |//  RTC PERSISTENT Register1 (HW_RTC_PERSISTENT1) Bit Definitions
+                             1270 ; 318  |
+                             1271 ; 319  |#define HW_RTC_PERSISTENT1_RSVD0_BITPOS (0)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1272 ; 320  |
+                             1273 ; 321  |#define HW_RTC_PERSISTENT1_RSVD0_WIDTH (24)
+                             1274 ; 322  |
+                             1275 ; 323  |#define HW_RTC_PERSISTENT1_RSVD0_SETMASK (((1<<HW_RTC_PERSISTENT1_RSVD0_WIDTH)-1)<<HW_RTC_PERSISTENT1_RSVD0_BITPOS) 
+                             1276 ; 324  |
+                             1277 ; 325  |#define HW_RTC_PERSISTENT1_RSVD0_CLRMASK (~(WORD)HW_RTC_PERSISTENT1_RSVD0_SETMASK)
+                             1278 ; 326  |
+                             1279 ; 327  |
+                             1280 ; 328  |typedef union               
+                             1281 ; 329  |{
+                             1282 ; 330  |    struct {
+                             1283 ; 331  |         int RSVD0      : HW_RTC_PERSISTENT1_RSVD0_WIDTH;
+                             1284 ; 332  |    } B;
+                             1285 ; 333  |    int I;
+                             1286 ; 334  |    unsigned int U;
+                             1287 ; 335  |} rtc_PERSISTENT1_type;
+                             1288 ; 336  |#define HW_RTC_PERSISTENT1   (*(volatile rtc_PERSISTENT1_type _X*) (HW_RTC_BASEADDR+8))  /* RTC PERSISTENT Register1 */
+                             1289 ; 337  |
+                             1290 ; 338  |
+                             1291 ; 339  |#endif
+                             1292 ; 340  |
+                             1293 ; 341  |
+                             1294 ; 342  |
+                             1295 ; 343  |
+                             1296 ; 344  |
+                             1297 ; 345  |
+                             1298 ; 346  |
+                             1299 ; 347  |
+                             1300 ; 348  |
+                             1301 ; 349  |
+                             1302 ; 350  |
+                             1303 ; 351  |
+                             1304 ; 352  |
+                             1305 ; 353  |
+                             1306 
+                             1308 
+                             1309 ; 13   |
+                             1310 ; 14   |// Reserve bit 0 for Low Power USB, if hub can't supply 500mA, need to reboot with 100mA
+                             1311 ; 15   |#define HW_RTC_LOW_POWER_USB_REG                     (HW_RTC_PERSISTENT1)
+                             1312 ; 16   |#define HW_RTC_PERSISTANT1_LOW_POWER_USB_BITPOS      (0)
+                             1313 ; 17   |#define HW_RTC_PERSISTANT1_LOW_POWER_USB_WIDTH       (1)
+                             1314 ; 18   |#define HW_RTC_PERSISTANT1_LOW_POWER_USB_SETMASK     (((1<<HW_RTC_PERSISTANT1_LOW_POWER_USB_WIDTH)-1)<<HW_RTC_PERSISTANT1_LOW_POWER_USB_BITPOS) 
+                             1315 ; 19   |#define HW_RTC_PERSISTANT1_LOW_POWER_USB_CLRMASK     (~(WORD)HW_RTC_PERSISTANT1_LOW_POWER_USB_SETMASK)
+                             1316 ; 20   |
+                             1317 ; 21   |// Reserve bit 1 for Skip Checkdisk.  If disk hasn't changed, don't run checkdisk.
+                             1318 ; 22   |#define HW_RTC_SKIP_CHECKDISK_REG                    (HW_RTC_PERSISTENT1)
+                             1319 ; 23   |#define HW_RTC_PERSISTENT1_SKIP_CHECKDISK_BITPOS     (1)
+                             1320 ; 24   |#define HW_RTC_PERSISTENT1_SKIP_CHECKDISK_WIDTH      (1)
+                             1321 ; 25   |#define HW_RTC_PERSISTENT1_SKIP_CHECKDISK_SETMASK    (((1<<HW_RTC_PERSISTANT1_SKIP_CHECKDISK_WIDTH)-1)<<HW_RTC_PERSISTANT1_SKIP_CHECKDISK_BITPOS) 
+                             1322 ; 26   |#define HW_RTC_PERSISTANT1_SKIP_CHECKDISK_CLRMASK    (~(WORD)HW_RTC_PERSISTANT1_SKIP_CHECKDISK_SETMASK)
+                             1323 ; 27   |
+                             1324 ; 28   |// Reserve bit 2 for Skip building music library internal flash.  If disk hasn't changed, don't run building.
+                             1325 ; 29   |#define HW_RTC_SKIP_REBUILD_REG                  (HW_RTC_PERSISTENT1)
+                             1326 ; 30   |#define HW_RTC_PERSISTENT1_SKIP_REBUILD_BITPOS   (2)
+                             1327 ; 31   |#define HW_RTC_PERSISTENT1_SKIP_REBUILD_WIDTH    (1)
+                             1328 ; 32   |#define HW_RTC_PERSISTENT1_SKIP_REBUILD_SETMASK  (((1<<HW_RTC_PERSISTENT1_SKIP_REBUILD_WIDTH)-1)<<HW_RTC_PERSISTENT1_SKIP_REBUILD_BITPOS) 
+                             1329 ; 33   |#define HW_RTC_PERSISTENT1_SKIP_REBUILD_CLRMASK  (~(WORD)HW_RTC_PERSISTENT1_SKIP_REBUILD_SETMASK)
+                             1330 ; 34   |
+                             1331 ; 35   |// Reserve bit 3 for 2nd try Low Power USB, if hub can't supply 500mA (try 2 times)
+                             1332 ; 36   |// need to reboot with 100mA
+                             1333 ; 37   |#define HW_RTC_PERSISTANT1_LOW_POWER2_USB_BITPOS     (3)
+                             1334 ; 38   |#define HW_RTC_PERSISTANT1_LOW_POWER2_USB_WIDTH      (1)
+                             1335 ; 39   |#define HW_RTC_PERSISTANT1_LOW_POWER2_USB_SETMASK    (((1<<HW_RTC_PERSISTANT1_LOW_POWER2_USB_WIDTH)-1)<<HW_RTC_PERSISTANT1_LOW_POWER2_USB_BITPOS) 
+                             1336 ; 40   |#define HW_RTC_PERSISTANT1_LOW_POWER2_USB_CLRMASK    (~(WORD)HW_RTC_PERSISTANT1_LOW_POWER2_USB_SETMASK)
+                             1337 ; 41   |
+                             1338 ; 42   |// Reserve bit 5 for MTP database clean flag. 1 => database "clean", 0 => database "dirty"
+                             1339 ; 43   |#define HW_RTC_MTP_DB_CLEAN_FLAG_REG                 (HW_RTC_PERSISTENT1)
+                             1340 ; 44   |#define HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_BITPOS  (5)
+                             1341 ; 45   |#define HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_WIDTH   (1)
+                             1342 ; 46   |#define HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_SETMASK (((1<<HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_WIDTH)-1)<<HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_BITPOS) 
+                             1343 ; 47   |#define HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_CLRMASK (~(WORD)HW_RTC_PERSISTANT1_MTP_DB_CLEAN_FLAG_SETMASK)
+                             1344 ; 48   |
+                             1345 ; 49   |// Reserve bit 6 for when to use backup resource.bin.  1 => require resource.bat refresh, 0 => no refresh reqd.
+                             1346 ; 50   |#define HW_RTC_RESOURCE_BIN_REFRESH_FLAG_REG              (HW_RTC_PERSISTENT1)
+                             1347 ; 51   |#define HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_FLAG_BITPOS  (6)
+                             1348 ; 52   |#define HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_FLAG_WIDTH   (1)
+                             1349 ; 53   |#define HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_FLAG_SETMASK (((1<<HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_FLAG_WIDTH)-1)<<HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_FLAG_BITPOS) 
+                             1350 ; 54   |#define HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_CLRMASK (~(WORD)HW_RTC_PERSISTANT1_RESOURCE_BIN_REFRESH_FLAG_SETMASK)
+                             1351 ; 55   |
+                             1352 ; 56   |// Reserve bit 7 for when to use backup resource.bin.  1 => require resource.bat refresh, 0 => no refresh reqd.
+                             1353 ; 57   |#define HW_RTC_HOST_RESOURCE_BIN_REFRESH_FLAG_REG              (HW_RTC_PERSISTENT1)
+                             1354 ; 58   |#define HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_FLAG_BITPOS  (7)
+                             1355 ; 59   |#define HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_FLAG_WIDTH   (1)
+                             1356 ; 60   |#define HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_FLAG_SETMASK (((1<<HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_FLAG_WIDTH)-1)<<HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_FLAG_BITPOS) 
+                             1357 ; 61   |#define HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_CLRMASK (~(WORD)HW_RTC_PERSISTANT1_HOST_RESOURCE_BIN_REFRESH_FLAG_SETMASK)
+                             1358 ; 62   |
+                             1359 ; 63   |// Want to wait 2000 clocks before failing.
+                             1360 ; 64   |#define PERSIST_WAIT_TIME                            2000
+                             1361 ; 65   |
+                             1362 ; 66   |void _reentrant StickyBitInit(void);
+                             1363 ; 67   |RETCODE _reentrant ReadStickyBit(volatile _X WORD * pSBPointer, WORD BitPosition, BOOL * bResult);
+                             1364 ; 68   |RETCODE _reentrant SetStickyBit(volatile _X WORD * pSBPointer, WORD BitPosition);
+                             1365 ; 69   |RETCODE _reentrant ClearStickyBit(volatile _X WORD * pSBPointer, WORD BitPosition);
+                             1366 ; 70   |void _reentrant SetBitResourceRefresh(INT bBitValue); // should this line be commented out? I think the func def was commented out since unused.
+                             1367 ; 71   |INT _reentrant GetBitResourceRefresh(void);           // "
+                             1368 ; 72   |void _reentrant StickyBitForceUpdate(void);
+                             1369 ; 73   |
+                             1370 ; 74   |#endif // _PERSIST_BITS_H
+                             1371 
+                             1373 
+                             1374 ; 12   |
+                             1375 ; 13   |
+                             1376 ; 14   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1377 ; 15   |//
+                             1378 ; 16   |//>  Name:          StickyBitInit
+                             1379 ; 17   |//
+                             1380 ; 18   |//   Type:          Function 
+                             1381 ; 19   |//
+                             1382 ; 20   |//   Description:   Initialize the Persistent Bit functionality. 
+                             1383 ; 21   |//
+                             1384 ; 22   |//   Inputs:        none
+                             1385 ; 23   |//
+                             1386 ; 24   |//   Outputs:       return code.
+                             1387 ; 25   |//
+                             1388 ; 26   |//   Notes:         
+                             1389 ; 27   |//<
+                             1390 ; 28   |//////////////////////////////////////////////////////////////////////////////////////////
+                             1391 ; 29   |void _reentrant StickyBitInit(void)
+                             1392 ; 30   |{    
+                             1393 
+P:0000                       1394         org     p,".ptextpersistbits":
+                             1427 FStickyBitInit:
+                             1428 
+                             1429 ; 31   |    
+                             1430 ; 32   |    // Remove SoftReset so copy controller can run
+                             1431 ; 33   |    HW_RTC_CSR.B.SFTRST = 0;
+                             1432 
+P:0000 0A7017 00F500  6    6 1434         bclr    #23,x:$F500
+                             1435 
+                             1436 ; 34   |    // Force an update
+                             1437 ; 35   |//    HW_RTC_CSR.B.FORCE = 1;  //REVIEW: why was this commented out? Is it needed? JLN
+                             1438 ; 36   |}
+                             1439 
+P:0002 00000C         4   10 1441         rts
+                             1443 
+                             1444 ; 37   |
+                             1445 ; 38   |// Inputs none
+                             1446 ; 39   |// Description: force the sync between analog and digital domains. 
+                             1447 ; 40   |void _reentrant StickyBitForceUpdate(void)
+                             1448 ; 41   |{    
+                             1449 
+                             1454 FStickyBitForceUpdate:
+                             1455 
+                             1456 ; 42   |    HW_RTC_CSR.B.FORCE = 1; // Force an update
+                             1457 
+P:0003 0A7034 00F500  6   16 1459         bset    #20,x:$F500
+                             1460 
+                             1461 ; 43   |}
+                             1462 
+P:0005 00000C         4   20 1464         rts
+                             1466 
+                             1467 ; 44   |
+                             1468 ; 45   |
+                             1469 ; 46   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1470 ; 47   |//>  Name:          ReadStickyBit
+                             1471 ; 48   |//
+                             1472 ; 49   |//   Type:          Function 
+                             1473 ; 50   |//
+                             1474 ; 51   |//   Description:   Reads the present value of the given Persistent bit and returns 
+                             1475 ; 52   |//                  the result.
+                             1476 ; 53   |//
+                             1477 ; 54   |//   Inputs:        WORD * pSBPointer
+                             1478 ; 55   |//                  WORD BitPosition
+                             1479 ; 56   |//                  BOOL bResult
+                             1480 ; 57   |//
+                             1481 ; 58   |//   Outputs:       return code.
+                             1482 ; 59   |//
+                             1483 ; 60   |//   Notes:         
+                             1484 ; 61   |//<
+                             1485 ; 62   |//////////////////////////////////////////////////////////////////////////////////////////
+                             1486 ; 63   |RETCODE _reentrant ReadStickyBit(volatile _X WORD * pSBPointer, WORD BitPosition, 
+                             1487 ; 64   |                                 BOOL * bResult)
+                             1488 ; 65   |{    
+                             1489 
+                             1498 FReadStickyBit:
+                             1507 
+                             1508 ; 66   |    WORD wStickyBitMask = 1 << BitPosition;
+                             1509 
+P:0006 2D0100         2   22 1511         move    #1,b1
+P:0007 21A600         2   24 1512         move    b1,y0
+P:0008 2A0000         2   26 1513         move    #0,a2
+P:0009 200003         2   28 1514         tst     a
+P:000A 0AF0AA rrrrrr  6   34 1515         jeq     L9
+P:000C 06CC00 rrrrrr  6   40 1516         do      a1,L9
+P:000E 20003B         2   42 1518         lsl     b
+P:000F 000000         2   44 1519         nop
+                         (4) 1520 L9:
+P:0010 21A500         2   46 1522         move    b1,x1
+                             1524 
+                             1525 ; 67   |    WORD wRetValue = !SUCCESS;
+                             1526 
+P:0011 200051         2   48 1528         tfr     y0,a
+                             1535 
+                             1536 ; 68   |    WORD i;
+                             1537 ; 69   |
+                             1538 ; 70   |    if (HW_RTC_CSR.B.SFTRST)
+                             1539 
+P:0012 51F000 00F500  3   51 1541         move    x:$F500,b0
+P:0014 0AC917 rrrrrr  6   57 1542         jclr    #23,b0,L3
+                             1543 
+                             1544 ; 71   |    {
+                             1545 ; 72   |       // Copy Controller Disabled - Soft Reset
+                             1546 ; 73   |       SystemHalt();
+                             1547 
+                             1549 
+                             1550 ; Start __asm() call number 1
+                             1552  error
+P:0016 000200         4   61 1552     debug
+                             1553 ; End   __asm() call number 1
+                             1554 
+                             1555 ; 74   |       HW_RTC_CSR.B.SFTRST = 0;
+                             1556 
+P:0017 0A7017 00F500  6   67 1558         bclr    #23,x:$F500
+                             1559 
+                             1560 ; 75   |    }
+                             1561 ; 76   |    for (i=0;i<PERSIST_WAIT_TIME;i++)
+                             1562 
+P:0019 240000         2   69 1564 L3:     move    #0,x0
+P:001A 06D087 rrrrrr  6   75 1566         do      #2000,L8
+                             1568 
+                             1569 ; 77   |    {
+                             1570 ; 78   |      if (!HW_RTC_CSR.B.STALEREGS)
+                             1571 
+P:001C 57F000 00F500  3   78 1573         move    x:$F500,b
+P:001E 47F400 0001F0  3   81 1574         move    #$1F0,y1
+P:0020 20007E         2   83 1575         and     y1,b
+P:0021 0AF0A2 rrrrrr  6   89 1576         jne     L6
+                             1577 
+                             1578 ; 79   |      {
+                             1579 ; 80   |          // Set the new value of the Sticky Bit.
+                             1580 ; 81   |          *bResult = (*pSBPointer & wStickyBitMask);
+                             1581 
+P:0023 57E000         2   91 1583         move    x:(r0),b
+P:0024 20006E         2   93 1584         and     x1,b
+P:0025 5D6400         2   95 1585         move    b1,y:(r4)
+                             1586 
+                             1587 ; 82   |          // shift result bit to lsb to convert to BOOL. Note that TRUE is lsb set.    
+                             1588 ; 83   |          if( *bResult != 0 )
+                             1589 
+P:0026 2B0000         2   97 1591         move    #0,b2
+P:0027 20000B         2   99 1592         tst     b
+P:0028 0AF0AA rrrrrr  6  105 1593         jeq     L5
+                             1594 
+                             1595 ; 84   |            *bResult = TRUE;
+                             1596 
+P:002A 4E6400         2  107 1598         move    y0,y:(r4)
+                             1599 
+                             1600 ; 85   |          // else *bResult is 0 which is FALSE.
+                             1601 ; 86   |          wRetValue = SUCCESS; 
+                             1602 
+P:002B 200013         2  109 1604 L5:     clr     a   
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1605 
+                             1606 ; 87   |          break;
+                             1607 
+P:002C 00008C         2  111 1609         enddo
+P:002D 00000C         4  115 1611         rts
+                             1612 
+                             1613 ; 88   |      }
+                             1614 
+                             1616 L6:
+P:002E 200049         2  117 1618         tfr     x0,b
+P:002F 200058         2  119 1619         add     y0,b
+P:0030 21A400         2  121 1622         move    b1,x0
+                        (46) 1625 L8:
+                             1627 
+                             1628 ; 89   |    }
+                             1629 ; 90   |        return wRetValue;
+                             1630 
+P:0031 218E00         2  123 1632         move    a1,a
+                             1633 
+                             1634 ; 91   |}
+                             1635 
+P:0032 00000C         4  127 1637         rts
+                             1644 
+                             1645 ; 92   |
+                             1646 ; 93   |          
+                             1647 ; 94   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1648 ; 95   |//
+                             1649 ; 96   |//>  Name:          SetStickyBit
+                             1650 ; 97   |//
+                             1651 ; 98   |//   Type:          Function 
+                             1652 ; 99   |//
+                             1653 ; 100  |//   Description:   Set the given Persistent bit.
+                             1654 ; 101  |//   Inputs:        WORD * pSBPointer
+                             1655 ; 102  |//                  WORD BitPosition
+                             1656 ; 103  |//
+                             1657 ; 104  |//   Outputs:       return code.
+                             1658 ; 105  |//
+                             1659 ; 106  |//   Notes:         Warning, we found that this function required a SysDelay after 
+                             1660 ; 107  |//                  it before system was intentionally reset, in order for bit to 
+                             1661 ; 108  |//                  persist to the next player boot. 
+                             1662 ; 109  |//<
+                             1663 ; 110  |//////////////////////////////////////////////////////////////////////////////////////////
+                             1664 ; 111  |RETCODE _reentrant SetStickyBit(volatile _X WORD * pSBPointer, WORD BitPosition)
+                             1665 ; 112  |{
+                             1666 
+                             1671 FSetStickyBit:
+                             1678 
+                             1679 ; 113  |    WORD wStickyBitMask = 1 << BitPosition;
+                             1680 
+P:0033 2D0100         2  129 1682         move    #1,b1
+P:0034 2A0000         2  131 1683         move    #0,a2
+P:0035 200003         2  133 1684         tst     a
+P:0036 0AF0AA rrrrrr  6  139 1685         jeq     L13
+P:0038 06CC00 rrrrrr  6  145 1686         do      a1,L13
+P:003A 20003B         2  147 1688         lsl     b
+P:003B 000000         2  149 1689         nop
+                         (4) 1690 L13:
+P:003C 21A700         2  151 1692         move    b1,y1
+                             1696 
+                             1697 ; 114  |    WORD wRetValue = !SUCCESS;
+                             1698 
+P:003D 56F400 000001  3  154 1700         move    #>1,a
+                             1705 
+                             1706 ; 115  |    WORD i;
+                             1707 ; 116  |
+                             1708 ; 117  |    for (i=0;i<PERSIST_WAIT_TIME;i++)
+                             1709 
+P:003F 06D087 rrrrrr  6  160 1711         do      #2000,L12
+                             1713 
+                             1714 ; 118  |    {
+                             1715 ; 119  |      if (!HW_RTC_CSR.B.NEWREGS)
+                             1716 
+P:0041 57F000 00F500  3  163 1718         move    x:$F500,b
+P:0043 46F400 01F000  3  166 1719         move    #$1F000,y0
+P:0045 20005E         2  168 1720         and     y0,b
+P:0046 0AF0A2 rrrrrr  6  174 1721         jne     L11
+                             1722 
+                             1723 ; 120  |      {
+                             1724 ; 121  |          // Set the new value of the Sticky Bit.
+                             1725 ; 122  |          *pSBPointer |= wStickyBitMask;
+                             1726 
+P:0048 57E000         2  176 1728         move    x:(r0),b
+P:0049 20007A         2  178 1729         or      y1,b
+P:004A 556000         2  180 1730         move    b1,x:(r0)
+                             1731 
+                             1732 ; 123  |          wRetValue = SUCCESS;
+                             1733 
+P:004B 200013         2  182 1735         clr     a   
+                             1736 
+                             1737 ; 124  |      }
+                             1738 
+                             1740 L11:
+P:004C 000000         2  184 1742         nop
+P:004D 000000         2  186 1743         nop
+                        (26) 1744 L12:
+                             1746 
+                             1747 ; 125  |    }
+                             1748 ; 126  |        return wRetValue;
+                             1749 
+P:004E 218E00         2  188 1751         move    a1,a
+                             1752 
+                             1753 ; 127  |}
+                             1754 
+P:004F 00000C         4  192 1756         rts
+                             1761 
+                             1762 ; 128  |
+                             1763 ; 129  |
+                             1764 ; 130  |/////////////////////////////////////////////////////////////////////////////////////////
+                             1765 ; 131  |//
+                             1766 ; 132  |//>  Name:          ClearStickyBit
+                             1767 ; 133  |//
+                             1768 ; 134  |//   Type:          Function 
+                             1769 ; 135  |//
+                             1770 ; 136  |//   Description:   Clear the given Persistent bit.
+                             1771 ; 137  |//
+                             1772 ; 138  |//   Inputs:        WORD * pSBPointer
+                             1773 ; 139  |//                  WORD BitPosition
+                             1774 ; 140  |//
+                             1775 ; 141  |//   Outputs:       return code.
+                             1776 ; 142  |//
+                             1777 ; 143  |//   Notes:         
+                             1778 ; 144  |//<
+                             1779 ; 145  |//////////////////////////////////////////////////////////////////////////////////////////
+                             1780 ; 146  |RETCODE _reentrant ClearStickyBit(volatile _X WORD * pSBPointer, WORD BitPosition)
+                             1781 ; 147  |{
+                             1782 
+                             1787 FClearStickyBit:
+                             1794 
+                             1795 ; 148  |    WORD wStickyBitMask = 1 << BitPosition;
+                             1796 
+P:0050 2D0100         2  194 1798         move    #1,b1
+P:0051 2A0000         2  196 1799         move    #0,a2
+P:0052 200003         2  198 1800         tst     a
+P:0053 0AF0AA rrrrrr  6  204 1801         jeq     L17
+P:0055 06CC00 rrrrrr  6  210 1802         do      a1,L17
+P:0057 20003B         2  212 1804         lsl     b
+P:0058 000000         2  214 1805         nop
+                         (4) 1806 L17:
+P:0059 21A500         2  216 1808         move    b1,x1
+                             1812 
+                             1813 ; 149  |    WORD wRetValue = !SUCCESS;
+                             1814 
+P:005A 56F400 000001  3  219 1816         move    #>1,a
+                             1821 
+                             1822 ; 150  |    WORD i;
+                             1823 ; 151  |
+                             1824 ; 152  |    for (i=0;i<PERSIST_WAIT_TIME;i++)
+                             1825 
+P:005C 06D087 rrrrrr  6  225 1827         do      #2000,L16
+                             1829 
+                             1830 ; 153  |    {
+                             1831 ; 154  |      if (!HW_RTC_CSR.B.NEWREGS)
+                             1832 
+P:005E 57F000 00F500  3  228 1834         move    x:$F500,b
+P:0060 46F400 01F000  3  231 1835         move    #$1F000,y0
+P:0062 20005E         2  233 1836         and     y0,b
+P:0063 0AF0A2 rrrrrr  6  239 1837         jne     L15
+                             1838 
+                             1839 ; 155  |      {
+                             1840 ; 156  |          // Set the new value of the Sticky Bit.
+                             1841 ; 157  |          *pSBPointer &= ~wStickyBitMask;
+                             1842 
+P:0065 57E000         2  241 1844         move    x:(r0),b
+P:0066 20AC00         2  243 1845         move    x1,a1
+P:0067 200017         2  245 1846         not     a
+P:0068 218700         2  247 1848         move    a1,y1
+P:0069 20007E         2  249 1849         and     y1,b
+P:006A 556000         2  251 1850         move    b1,x:(r0)
+                             1851 
+                             1852 ; 158  |          wRetValue = SUCCESS;
+                             1853 
+P:006B 200013         2  253 1855         clr     a   
+                             1857 
+                             1858 ; 159  |      }
+                             1859 
+                             1861 L15:
+P:006C 000000         2  255 1863         nop
+P:006D 000000         2  257 1864         nop
+                        (32) 1865 L16:
+                             1867 
+                             1868 ; 160  |    }
+                             1869 ; 161  |        return wRetValue;
+                             1870 
+P:006E 218E00         2  259 1872         move    a1,a
+                             1873 
+                             1874 ; 162  |}
+                             1875 
+P:006F 00000C         4  263 1877         rts
+                             1883 
+                             1884         global  FClearStickyBit, FReadStickyBit, FSetStickyBit
+                             1885         global  FStickyBitForceUpdate, FStickyBitInit
+                             1886 
+                             1887         local   L3, L5, L6, L8, L9, L11, L12, L13, L15, L16, L17
+                             1888 

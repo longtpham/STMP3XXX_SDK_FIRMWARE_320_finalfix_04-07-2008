@@ -1,0 +1,104 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\fgndmodules\daccoefs.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2001
+                                3 ;
+                                4 ; STMP DAC Filter Coefficients
+                                5 ;
+                                6 ;   These were generated using Matlab script:
+                                7 ;    x=fir_tap_finder_fs(1.5,.4,.62,-50,44.1)
+                                8 ;
+                                9 ;    Which gives:   pb_ripple < 1.5  (ans. 1.47290)
+                               10 ;                   pb_edge at .417*48/44.1 = 0.454
+                               11 ;                   sb_edge at .6*44.1/48 = 0.55125 desired --> had to use .62*44.1/48 = 0.569 to get 35 taps
+                               12 ;                   db_attenuation in stopband >= -50 dB (ans. -55.80662 dB)
+                               13 ;                   35 TAPS  (this value is stored in dacequ.inc --> DacCoef1Taps = 35)
+                               14 ;
+                               15 ;******************************************************************************
+                               16         
+                               17 ;*******************************************************************************
+                               18 ;  Include files
+                               19 ;*******************************************************************************
+                               20                 include "dacequ.inc"
+                                2 dacequ equ 1
+                                4         page 255,255
+                                7 FlashBufSize          equ     441             ; The size of the Flash buffer 
+                                8 FlashBufModulo        equ     FlashBufSize-1  ; The modulo of the MP3 decode buffer
+                               11 DacBlockSize          equ     $40             ; The size of the block we process at each interrupt
+                               13 DacBufSize            equ     $200            ; Use $41 for Sim only : Temporary : The buffer size dedicated to the DAC port
+                               17 DacBufModulo          equ     DacBufSize-1    ; The modulo of the DAC buffer 
+                               19 SimOutL               equ     $8000
+                               20 SimOutR               equ     $8001
+                               22 DacCoef1Taps          equ     35
+                               23 DacData1Size          equ     DacCoef1Taps/2+1
+                               24 ;DacOutputBufferSize  equ     DacData1Size*8
+                               27 ;; DAC 
+                               28 ;; Source frq -> Target 
+                               29 ;; 48.000 kHz -> 48kHz = (((8*48/48    ) - 1) * $010000) =   =>  DACSRR = $070000 
+                               30 ;; 44.100 kHz -> 48kHz = (((8*48/44.1  ) - 1) * $010000) =   =>  DACSRR = $07b51e 
+                               31 ;; 32.000 kHz -> 48kHz = (((8*48/32    ) - 1) * $010000) =   =>  DACSRR = $0b0000 
+                               32 ;; 24.000 kHz -> 48kHz = (((8*48/24    ) - 1) * $010000) =   =>  DACSRR = $0f0000 
+                               33 ;; 22.050 kHz -> 48kHz = (((8*48/22.05 ) - 1) * $010000) =   =>  DACSRR = $106a3b 
+                               34 ;; 16.000 kHz -> 48kHz = (((8*48/16    ) - 1) * $010000) =   =>  DACSRR = $170000 
+                               35 ;; 12.000 kHz -> 48kHz = (((8*48/12    ) - 1) * $010000) =   =>  DACSRR = $1f0000 
+                               36 ;; 11.025 kHz -> 48kHz = (((8*48/11.025) - 1) * $010000) =   =>  DACSRR = $21d476 
+                               37 ;;  8.000 kHz -> 48kHz = (((8*48/8     ) - 1) * $010000) =   =>  DACSRR = $2f0000 
+                               40 ; setting for 24MHz crystal, xtal/4=6MHz
+                               41 DAC48kHz              equ     $06d000         ; load into DACSRR
+                               42 DAC44_1kHz            equ     $0780df
+                               43 DAC32kHz              equ     $0ab800
+                               44 DAC24kHz              equ     $0ea000
+                               45 DAC22_05kHz           equ     $1001be
+                               46 DAC16kHz              equ     $167000
+                               47 DAC12kHz              equ     $1e4000
+                               48 DAC11_025kHz          equ     $21037c
+                               49 DAC8kHz               equ     $2de000
+                               22 ;*******************************************************************************
+                               23 ;  Global Definitions
+                               24 ;*******************************************************************************
+                               28 ;*******************************************************************************
+                               29 ;  X memory
+                               30 ;*******************************************************************************
+X:0000                         31         org     x,"DACcoef_X":
+                               33 ; NOTE: New filters to improve ripple in entire bandwidth
+                               35         buffer  M,DacCoef1Taps
+                               36 DacCoef1
+X:0000 000038                  37     dc    0.000016/2.4
+X:0001 FFACE1                  38     dc    -0.0025366667
+X:0002 FFB086                  39     dc    -0.0024254167
+X:0003 00680A                  40     dc    0.007620/2.4
+X:0004 00A2AE                  41     dc    0.011915/2.4
+X:0005 FF6450                  42     dc    -0.0047512500
+X:0006 FEC6FC                  43     dc    -0.0095525000
+X:0007 00C90F                  44     dc    0.014726/2.4
+X:0008 022348                  45     dc    0.040084/2.4
+X:0009 FF1F4B                  46     dc    -0.0068575000
+X:000A FC6F1C                  47     dc    -0.0278591667
+X:000B 00B6B5                  48     dc    0.013382/2.4
+X:000C 05E084                  49     dc    0.110194/2.4
+X:000D 002C2B                  50     dc    0.003235/2.4
+X:000E F5DC22                  51     dc    -0.0792195833
+X:000F FBEE7F                  52     dc    -0.0317841667
+X:0010 13CE5F                  53     dc    0.371365/2.4
+X:0011 21E723                  54     dc    0.635679/2.4
+X:0012 13CE5F                  55     dc    0.371365/2.4
+X:0013 FBEE7F                  56     dc    -0.0317841667
+X:0014 F5DC22                  57     dc    -0.0792195833
+X:0015 002C2B                  58     dc    0.003235/2.4
+X:0016 05E084                  59     dc    0.110194/2.4
+X:0017 00B6B5                  60     dc    0.013382/2.4
+X:0018 FC6F1C                  61     dc    -0.0278591667
+X:0019 FF1F4B                  62     dc    -0.0068575000
+X:001A 022348                  63     dc    0.040084/2.4
+X:001B 00C90F                  64     dc    0.014726/2.4
+X:001C FEC6FC                  65     dc    -0.0095525000
+X:001D FF6450                  66     dc    -0.0047512500
+X:001E 00A2AE                  67     dc    0.011915/2.4
+X:001F 00680A                  68     dc    0.007620/2.4
+X:0020 FFB086                  69     dc    -0.0024254167
+X:0021 FFACE1                  70     dc    -0.0025366667
+X:0022 000038                  71     dc    0.000016/2.4
+                               72     
+                               74         endbuf

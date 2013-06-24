@@ -1,0 +1,182 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\3500\sysheadphoneshort.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        :  sysheadphoneshort.asm
+                                5 ;  Description :  ?
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     page    255,255,0
+                               10     section SYSFUN_HeadPhoneShort
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Macros
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   Includes
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19     
+                               25     list
+                               26         
+                               27 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;   External Definitions
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               30     
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ;   External References
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               38         
+                               39 ;///////////////////////////////////////////////////////////////////////////////
+                               40 ;   Equates
+                               41 ;///////////////////////////////////////////////////////////////////////////////
+                               43 HEADPHONE_SHORT_STATUS_BIT   equ 0
+                               44 HEADPHONE_SHORT_TIMEOUT_BIT  equ 1
+                               46 ;///////////////////////////////////////////////////////////////////////////////
+                               47 ;   X Memory
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49         
+X:0000                         50     org     x,"SYSFUN_HeadPhoneShort_X":
+                               52 ;///////////////////////////////////////////////////////////////////////////////
+                               53 ;   Y Memory
+                               54 ;///////////////////////////////////////////////////////////////////////////////
+                               55         
+Y:0000                         56     org     y,"SYSFUN_HeadPhoneShort_Y":
+Y:0000 000000                  58 HeadPhoneShortStatus    dc  0           ;Bit 0 -> 0 : HeadPhone OK
+                               59                                         ;         1 : HeadPhone Short
+                               60                                         ;Bit 1 -> 1 : Timing out before turning back on
+Y:0001 000000                  61 HeadphoneShortTimestampA1 dc  0
+Y:0002 000000                  62 HeadphoneShortTimestampA0 dc  0
+                               64     
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               66 ;   P Memory
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         69     org     p,"SYSFUN_HeadPhoneShort_P":
+                               71 ;///////////////////////////////////////////////////////////////////////////////
+                               72 ;
+                               73 ;>  Name:           SysHeadPhoneShortIsr
+                               74 ;
+                               75 ;   Type:           Interrupt Service Routine
+                               76 ;
+                               77 ;   Description:    Checks if IRQA (headphone short) triggered and if so 
+                               78 ;                   sets a global flag to indicate the short to the main loop.
+                               79 ;
+                               80 ;                   Code ASSUMES mode 01 (hw powers down the amp) initialized
+                               81 ;                   in PowerUpHeadPhones()
+                               82 ;                   Otherwise, put amp into classA mode here
+                               83 ;
+                               84 ;   Inputs:         none 
+                               85 ;
+                               86 ;   Outputs:        ISR sets global flag y:HeadPhoneShortStatus
+                               87 ;                   
+                               88 ;   Notes:          This global flag is polled by the main routine's loop for 
+                               89 ;                   short circuit event handling to save power.
+                               90 ;<
+                               91 ;///////////////////////////////////////////////////////////////////////////////
+                               92 SysHeadPhoneShortIsr
+                               93     ;=============================================================================
+                               94     ; NOTE: THIS CODE IS TO PROTECT ACCUMULATOR BIT CHECKS (i.e. jset, etc.) and 
+                               95     ; OTHER ACC FUNCTIONS. UNCOMMENT IF CODE IS ADDED THAT UTILIZES THE ACCUMULATOR.
+                               96     ;
+                               97     ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                               98     ; This will be returned to its previous state when the RTI occurs (since the SR
+                               99     ; will be popped back off System Stack Low (SSL).
+                              100     ; Accumulator behavior is unpredictable when the DM bit is set.
+                              101     ; Next cycle after clearing it should NOT be an ALU instruction.
+                              102     ;andi #$BF,mr
+                              103     ; UNCOMMENT ABOVE LINE IF NECESSARY.
+                              104     ;============================================================================
+P:0000 0A7060 rrrrrr  6    6  106     bset #HEADPHONE_SHORT_STATUS_BIT,y:HeadPhoneShortStatus
+                              107     ; small signal levels are still output when headphone is powered down
+                              108     ; also short circuit detection is independent for each channel 
+                              109     ; this silences the output until the headphone short has recovered 
+P:0002 0A702F 00FA04  6   12  110     bset     #HW_MIXVOLUMER_MUTE_BITPOS,x:HW_MIXMASTERVR
+                              111         
+                              112 ;;;;;;;  if using manual mode (11) then uncomment this line
+                              113 ;    bclr    #HW_HPCTRL_HPCLASSAB_BITPOS,x:HW_HPCTRL
+                              115 _Done
+P:0004 000004         4   16  116     rti
+                              119 ;///////////////////////////////////////////////////////////////////////////////
+                              120 ;
+                              121 ;>  Name:           CheckHeadPhoneShort
+                              122 ;
+                              123 ;   Type:           System Exec Function
+                              124 ;
+                              125 ;   Description:    This function checks a headphone short global flag set in  
+                              126 ;                   irqa isr. 
+                              127 ;
+                              128 ;                   Code ASSUMES mode 01 (hw powers down the amp) initialized
+                              129 ;                   in PowerUpHeadPhones()
+                              130 ;
+                              131 ;                   If irqa occurred start the following sequence:
+                              132 ;                       - put amp into class A mode drawing large current (pop bits cleared)
+                              133 ;                       - reset latch (00  HPHSHORT1:0) which repowers amp
+                              134 ;                       - re-enable hw pwrdown  (01  HPHSHORT1:0)
+                              135 ;                       - wait 400mS for amp to settle at vag 
+                              136 ;                       *** IMPT to wait at least 400mS or false detects can trigger
+                              137 ;                       ***    causing the amp to never recover
+                              138 ;                       - put amp into class AB mode
+                              139 ;
+                              140 ;                   Otherwise, if using mode 11 -- IRQA isr should put amp into class A mode
+                              141 ;                       and the code should be changed to skip changing (HPHSHORT1:0) 
+                              142 ;                       -- see block of code to remove
+                              143 ;
+                              144 ;
+                              145 ;   Inputs:         y:HeadPhoneShortStatus global set by ISR, cleared here.
+                              146 ;                       HEADPHONE_SHORT_STATUS_BIT
+                              147 ;                   y:HeadPhoneShortStatus global set here to start timeout, cleared here.
+                              148 ;                       HEADPHONE_SHORT_TIMEOUT_BIT
+                              149 ;
+                              150 ;   Outputs:        y:HeadPhoneShortStatus global set here to start timeout, cleared here.
+                              151 ;                       HEADPHONE_SHORT_TIMEOUT_BIT
+                              152 ;
+                              153 ;   Notes:          none
+                              154 ;<
+                              155 ;///////////////////////////////////////////////////////////////////////////////
+                              156 CheckHeadPhoneShort
+                              157     ; First check if headphone short circuit handling is needed. 
+                              158     ; IRQA ISR sets this HeadPhoneShortStatus flag.
+                              159     ; Check if headphone short occurred
+P:0005 0B7060 rrrrrr  6   22  160     btst    #HEADPHONE_SHORT_STATUS_BIT,y:HeadPhoneShortStatus
+P:0007 0AF0A0 rrrrrr  6   28  161     jcc     _CheckForTimeOut
+                              163     ; Headphone short circuit IRQA has arrived. Re-clear the flag.
+P:0009 0A7040 rrrrrr  6   34  164     bclr    #HEADPHONE_SHORT_STATUS_BIT,y:HeadPhoneShortStatus
+                              166 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              167 ;;;;;;;;;;;;;;;;;;;; this section assumes mode 01 -- hw auto power down ;;;;;;;;
+                              168 ;;; if mode 11 - then skip this part and just wait 400mS before returning to class AB
+                              170     ;;;;;; put headphone into class A before power up
+P:000B 0A7009 00FA15  6   40  171     bclr    #HW_HPCTRL_HPCLASSAB_BITPOS,x:HW_HPCTRL
+                              172         ;reset proper short control mode based on heaphone set-up
+                              173         ;Reset Common HP Amp (SHORTMODE_CM) here if needed 
+P:000D 0A700C 00FA15  6   46  174     bclr    #HW_HPCTRL_SHORTMODE_LR_BITPOS,x:HW_HPCTRL  ; reset latch -- repowers amp
+P:000F 0A702C 00FA15  6   52  175     bset    #HW_HPCTRL_SHORTMODE_LR_BITPOS,x:HW_HPCTRL  ; re-enable hw powerdown
+                              176 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              178     ;;;;;; must wait 400mS before reenabling AB mode 
+P:0011 0A7061 rrrrrr  6   58  179     bset    #HEADPHONE_SHORT_TIMEOUT_BIT,y:HeadPhoneShortStatus    
+                              180     ; stamp the time with future time to reenable headphones via AB mode
+P:0013 0BF080 rrrrrr  6   64  181     jsr     SysGetCurrentTime
+P:0015 4D8000r        2   66  182     move    y:<Const_000000,x1
+P:0016 44F400 000190  3   69  183     move        #>400,x0
+P:0018 200020         2   71  184     add         x,a    
+P:0019 5C7000 rrrrrr  3   74  185     move        a1,y:HeadphoneShortTimestampA1
+P:001B 587000 rrrrrr  3   77  186     move        a0,y:HeadphoneShortTimestampA0
+P:001D 00000C         4   81  187     rts
+                              189 _CheckForTimeOut
+P:001E 0B7061 rrrrrr  6   87  190     btst    #HEADPHONE_SHORT_TIMEOUT_BIT,y:HeadPhoneShortStatus
+P:0020 0AF0A0 rrrrrr  6   93  191     jcc     _ShortHandlerDone
+                              192         
+P:0022 5FF000 rrrrrr  3   96  193     move        y:HeadphoneShortTimestampA1,b
+P:0024 59F000 rrrrrr  3   99  194     move        y:HeadphoneShortTimestampA0,b0
+P:0026 0BF080 rrrrrr  6  105  196     jsr         SysGetCurrentTime       ; returns current time in a
+P:0028 20000D         2  107  197     cmp         a,b                     ; if timeout value > current time
+P:0029 0AF0A7 rrrrrr  6  113  198     jgt         _ShortHandlerDone       ; exit
+                              199                                 ; else -- timed out so class AB will reenable headphones
+P:002B 0A7041 rrrrrr  6  119  200     bclr    #HEADPHONE_SHORT_TIMEOUT_BIT,y:HeadPhoneShortStatus
+                              202     ; unmute MASTERVR ** dependent upon ISR muting it.
+P:002D 0A700F 00FA04  6  125  203     bclr    #HW_MIXVOLUMER_MUTE_BITPOS,x:HW_MIXMASTERVR
+                              205     ;;;;;; put headphone into class AB
+P:002F 0A7029 00FA15  6  131  206     bset        #HW_HPCTRL_HPCLASSAB_BITPOS,x:HW_HPCTRL
+                              208 _ShortHandlerDone
+P:0031 00000C         4  135  209     rts
+                              211     endsec
+                              212         

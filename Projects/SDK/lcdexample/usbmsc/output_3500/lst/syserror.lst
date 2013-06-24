@@ -1,0 +1,174 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\syserror.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2005
+                                3 ;
+                                4 ;  File        : syserror.asm
+                                5 ;  Description : System Error Handler
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_Error
+                               10     opt     mex
+                               12     page    255,255,0
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               15 ;   Macros
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19 ;   Includes
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               25     list
+                               27 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;   External Definitions
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ;   External References
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               40     list
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   Equates
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               52 LCD_CS_BitPos               equ  8      ; LCD Chip Select
+                               53 LCD_RW_BitPos               equ  9      ; LCD Write/Read
+                               54 LCD_DS_BitPos               equ  10     ; LCD Data Sync ('E') signal
+                               55 LCD_RS_BitPos               equ  11     ; LCD RS bit
+                               57 LCD_GPIO_DATA_INPUT_MASK    equ  $ffff00
+                               58 LCD_GPIO_DATA_OUTPUT_MASK   equ  $0000ff
+                               59 LCD_GPIO_ALL_ENABLE_MASK    equ  $000fff
+                               61 ;///////////////////////////////////////////////////////////////////////////////
+                               62 ;   X Memory
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         65     org x,"SYSFUN_Error_X":
+                               97 ;///////////////////////////////////////////////////////////////////////////////
+                               98 ;   Y Memory
+                               99 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        101     org y,"SYSFUN_Error_Y":
+                              103 ;///////////////////////////////////////////////////////////////////////////////
+                              104 ;   P Memory
+                              105 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        107     org p,"SYSFUN_Error_P":
+                              145  ;     STMP_BUILD_PLAYER
+                              288       ; (@DEF('STMP_BUILD_PLAYER'))    
+                              290 ;///////////////////////////////////////////////////////////////////////////////
+                              326         
+                              328 ;///////////////////////////////////////////////////////////////////////////////
+                              329 ;>  Name:           HardwareResetIsr
+                              330 ;   Type:           Interrupt Vector
+                              331 ;   Description:    Interrupt vector for hardware reset
+                              332 ;   Inputs:         none
+                              333 ;   Outputs:        none
+                              334 ;   Notes:          none
+                              335 ;<
+                              336 ;///////////////////////////////////////////////////////////////////////////////
+                              356 ;///////////////////////////////////////////////////////////////////////////////
+                              357 ;>  Name:           StackErrorIsr
+                              358 ;   Type:           Interrupt Vector
+                              359 ;   Description:    Hardware vector for stack error
+                              360 ;   Inputs:         none
+                              361 ;   Outputs:        none
+                              362 ;   Notes:          none
+                              363 ;<
+                              364 ;///////////////////////////////////////////////////////////////////////////////
+                              381 ;///////////////////////////////////////////////////////////////////////////////
+                              382 ;>  Name:           TraceIsr
+                              383 ;   Type:           Interrupt Vector
+                              384 ;   Description:    Hardware vector for trace
+                              385 ;   Inputs:         none
+                              386 ;   Outputs:        none
+                              387 ;   Notes:          none
+                              388 ;<
+                              389 ;///////////////////////////////////////////////////////////////////////////////
+                              406 ;///////////////////////////////////////////////////////////////////////////////
+                              407 ;>  Name:           SoftwareInterruptIsr
+                              408 ;   Type:           Interrupt Vector
+                              409 ;   Description:    Hardware vector for software interrupt
+                              410 ;   Inputs:         none
+                              411 ;   Outputs:        none
+                              412 ;   Notes:          none
+                              413 ;<
+                              414 ;///////////////////////////////////////////////////////////////////////////////
+                              432 ;///////////////////////////////////////////////////////////////////////////////
+                              433 ;>  Name:           IllegalInstructionIsr
+                              434 ;   Type:           Interrupt Vector
+                              435 ;   Description:    Hardware vector for illegal instruction interrupt
+                              436 ;   Inputs:         none
+                              437 ;   Outputs:        none
+                              438 ;   Notes:          none
+                              439 ;<
+                              440 ;///////////////////////////////////////////////////////////////////////////////
+                              457 ;///////////////////////////////////////////////////////////////////////////////
+                              458 ;>  Name:           ErrorIsr
+                              459 ;   Type:           Interrupt Vector
+                              460 ;   Description:    Hardware vector for error
+                              461 ;   Inputs:         none
+                              462 ;   Outputs:        none
+                              463 ;   Notes:          none
+                              464 ;<
+                              465 ;///////////////////////////////////////////////////////////////////////////////
+                              486 ;///////////////////////////////////////////////////////////////////////////////
+                              487 ;>  Name:           FatalError
+                              488 ;   Type:           Interrupt Service Routine
+                              489 ;   Description:    Reset the SOC iff this is a RETAIL or BETA build. Clear sp.
+                              490 ;   Inputs:         b0 = 16-bit error code used in BETA build only
+                              491 ;   Outputs:        
+                              492 ;   Notes:          DEBUG build version does nothing and returns. 
+                              493 ;<
+                              494 ;///////////////////////////////////////////////////////////////////////////////
+                              495 FatalError
+                              501 ;///////////////////////////////////////////////////////////////////////////////
+                              502 ;>  Name:           FatalError_nospclear
+                              503 ;   Type:           Interrupt Service Routine
+                              504 ;   Description:    Reset the SOC iff this is a RETAIL or BETA build. sp unchanged.
+                              505 ;   Inputs:         b0 = 16-bit error code used in BETA build only
+                              506 ;   Outputs:        
+                              507 ;   Notes:          DEBUG build version does nothing and returns.
+                              508 ;<
+                              509 ;///////////////////////////////////////////////////////////////////////////////
+                              510 FatalError_nospclear
+P:0000 00000C         4    4  642     rts                 ; only reached in DEBUG case if this were called in a DEBUG build (should not be). 
+                              646 ;///////////////////////////////////////////////////////////////////////////////
+                              647 ;>  Name:           DisplayHexValue
+                              648 ;   Type:           Function
+                              649 ;   Description:    ???
+                              650 ;   Inputs:         b0 = 16-bit value
+                              651 ;   Outputs:        ???
+                              652 ;   Notes:          ???
+                              653 ;<
+                              654 ;///////////////////////////////////////////////////////////////////////////////
+                              735 ;///////////////////////////////////////////////////////////////////////////////
+                              736 ;>  Name:           SysErrLcdInit
+                              737 ;   Type:           Function
+                              738 ;   Description:    Sets up an LCD Write Command, LCD Write Data, and LCD Read Data
+                              739 ;                   using the GPIO block and manually forcing pins for data signals
+                              740 ;                   including the CS,RS,RW & 'E' (LCD Data Sync) signals.
+                              741 ;   Inputs:         ???
+                              742 ;   Outputs:        ???
+                              743 ;   NOtes:          This routine accomplishes the following:
+                              744 ;                   1. Enables GPIO pins to be GPIO functions with GPIO0 Enable Reg
+                              745 ;                   2. Sets the initial value of the 'E' data sync to be 0
+                              746 ;                   3. Sets up signal pins (DS,CS,RS,RW) to be outputs
+                              747 ;                   4. Sends an LCD initialization string
+                              748 ;                   5. Sends an LCD Write data command to display an ASCII character
+                              749 ;                   6. Sets up an LCD Read Data transaction manually
+                              750 ;                   7. Loops back to step 4 continuously
+                              751 ;<
+                              752 ;///////////////////////////////////////////////////////////////////////////////
+                              788 ;///////////////////////////////////////////////////////////////////////////////
+                              789 ;>  Name:           SysErrSendCmd
+                              790 ;   Type:           Function
+                              791 ;   Description:    Sends a command byte to the LCD
+                              792 ;   Inputs:         x0 = hex byte command value to send to LCD
+                              793 ;   Outputs:        none
+                              794 ;   Notes:          none
+                              795 ;<
+                              796 ;///////////////////////////////////////////////////////////////////////////////
+                              847 ;///////////////////////////////////////////////////////////////////////////////
+                              848 ;>  Name:           SysErrSendData
+                              849 ;   Type:           Function
+                              850 ;   Description:    Sends a data byte to the LCD
+                              851 ;   Inputs:         x0 = hex byte data value to send to LCD
+                              852 ;   Outputs:        none
+                              853 ;   Notes:          none
+                              854 ;<
+                              855 ;///////////////////////////////////////////////////////////////////////////////
+                              913         endsec

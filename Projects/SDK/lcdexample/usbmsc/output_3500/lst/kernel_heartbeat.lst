@@ -1,0 +1,929 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\usbmsc\Make\cc87395b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -w68 -w66 -I..\output_3500\include
+                                3 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\usbmsc -I -I..\..
+                                4 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                                5 ;          -I..\..\..\..\..\System\Common\symbols -I
+                                6 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                                7 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                                8 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                                9 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               10 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               11 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               12 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               13 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               14 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               15 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive\include
+                               16 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               17 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               18 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive
+                               19 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               20 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive\include
+                               21 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               22 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               23 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media
+                               29 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               30 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               31 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               32 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               33 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               34 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               37 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include -I
+                               38 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               39 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               40 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               41 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               50 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               52 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               56 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               57 ;          -I..\..\..\..\..\devicedriver\media\include
+                               58 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               59 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               60 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               61 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               62 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               64 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               65 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               66 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               67 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               68 ;          -I..\..\..\..\..\DeviceDriver\Media\usb\Ch9
+                               69 ;          -I..\..\..\..\..\DeviceDriver\Media\scsi
+                               70 ;          -I..\..\..\..\..\DeviceDriver\Media\usbmsc
+                               71 ;          -I..\..\..\..\..\DeviceDriver\Media\mtp
+                               72 ;          -I..\..\..\..\..\System\Common\updater
+                               73 ;          -I..\..\..\..\..\libsource\sysserialnumber -DALL -DD3500 -DMMC
+                               74 ;          -DLIION -DTUNER_STFM1000 -DSTFM1000_LCD=TRUE -DDCDC_POWER_TRANSFER
+                               75 ;          -DBACKLIGHT -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DFAT16
+                               76 ;          -DDEVICE_3500 -DENGR_BD -DUSBMSC_BUILD -DBATTERY_TYPE_LI_ION
+                               77 ;          -DBATTERY_CHARGE -DUSE_PLAYLIST3_HOST -DASCII_ONLY -DRETAIL
+                               78 ;          -DDEVICE_3500 -DMMC -Dk_opt_performance_enhancement
+                               79 ;          -I..\..\..\..\..\devicedriver\display
+                               80 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -g -O2 -R -Cs
+                               81 ;          -MmyL
+                               82 
+                               90 
+                               91 ;kernel_heartbea:
+                               92 ; 1    |
+                               93 ; 2    |#include "kernel.h"
+                               94 
+                               96 
+                               97 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                               98 ; 2    |///
+                               99 ; 3    |/// Filename: kernel.h
+                              100 ; 4    |/// Description: 
+                              101 ; 5    |///
+                              102 ; 6    |///
+                              103 ; 7    |/// Copyright (c) SigmaTel, Inc. Unpublished
+                              104 ; 8    |///
+                              105 ; 9    |/// SigmaTel, Inc.
+                              106 ; 10   |/// Proprietary  Confidential
+                              107 ; 11   |///
+                              108 ; 12   |/// This source code and the algorithms implemented therein constitute
+                              109 ; 13   |/// confidential information and may comprise trade secrets of SigmaTel, Inc.
+                              110 ; 14   |/// or its associates, and any use thereof is subject to the terms and
+                              111 ; 15   |/// conditions of the Confidential Disclosure Agreement pursuant to which this
+                              112 ; 16   |/// source code was originally received.
+                              113 ; 17   |///
+                              114 ; 18   |///////////////////////////////////////////////////////////////////////////////
+                              115 ; 19   |#ifndef __KERNEL_H
+                              116 ; 20   |#define __KERNEL_H
+                              117 ; 21   |
+                              118 ; 22   |
+                              119 ; 23   |#include "types.h"
+                              120 
+                              122 
+                              123 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              124 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              125 ; 3    |//
+                              126 ; 4    |// Filename: types.h
+                              127 ; 5    |// Description: Standard data types
+                              128 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              129 ; 7    |
+                              130 ; 8    |#ifndef _TYPES_H
+                              131 ; 9    |#define _TYPES_H
+                              132 ; 10   |
+                              133 ; 11   |// TODO:  move this outta here!
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              134 ; 12   |#if !defined(NOERROR)
+                              135 ; 13   |#define NOERROR 0
+                              136 ; 14   |#define SUCCESS 0
+                              137 ; 15   |#endif 
+                              138 ; 16   |#if !defined(SUCCESS)
+                              139 ; 17   |#define SUCCESS  0
+                              140 ; 18   |#endif
+                              141 ; 19   |#if !defined(ERROR)
+                              142 ; 20   |#define ERROR   -1
+                              143 ; 21   |#endif
+                              144 ; 22   |#if !defined(FALSE)
+                              145 ; 23   |#define FALSE 0
+                              146 ; 24   |#endif
+                              147 ; 25   |#if !defined(TRUE)
+                              148 ; 26   |#define TRUE  1
+                              149 ; 27   |#endif
+                              150 ; 28   |
+                              151 ; 29   |#if !defined(NULL)
+                              152 ; 30   |#define NULL 0
+                              153 ; 31   |#endif
+                              154 ; 32   |
+                              155 ; 33   |#define MAX_INT     0x7FFFFF
+                              156 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              157 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              158 ; 36   |#define MAX_ULONG   (-1) 
+                              159 ; 37   |
+                              160 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              161 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              162 ; 40   |
+                              163 ; 41   |
+                              164 ; 42   |#define BYTE    unsigned char       // btVarName
+                              165 ; 43   |#define CHAR    signed char         // cVarName
+                              166 ; 44   |#define USHORT  unsigned short      // usVarName
+                              167 ; 45   |#define SHORT   unsigned short      // sVarName
+                              168 ; 46   |#define WORD    unsigned int        // wVarName
+                              169 ; 47   |#define INT     signed int          // iVarName
+                              170 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              171 ; 49   |#define LONG    signed long         // lVarName
+                              172 ; 50   |#define BOOL    unsigned int        // bVarName
+                              173 ; 51   |#define FRACT   _fract              // frVarName
+                              174 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              175 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              176 ; 54   |#define FLOAT   float               // fVarName
+                              177 ; 55   |#define DBL     double              // dVarName
+                              178 ; 56   |#define ENUM    enum                // eVarName
+                              179 ; 57   |#define CMX     _complex            // cmxVarName
+                              180 ; 58   |typedef WORD UCS3;                   // 
+                              181 ; 59   |
+                              182 ; 60   |#define UINT16  unsigned short
+                              183 ; 61   |#define UINT8   unsigned char   
+                              184 ; 62   |#define UINT32  unsigned long
+                              185 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              186 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              187 ; 65   |#define WCHAR   UINT16
+                              188 ; 66   |
+                              189 ; 67   |//UINT128 is 16 bytes or 6 words
+                              190 ; 68   |typedef struct UINT128_3500 {   
+                              191 ; 69   |    int val[6];     
+                              192 ; 70   |} UINT128_3500;
+                              193 ; 71   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              194 ; 72   |#define UINT128   UINT128_3500
+                              195 ; 73   |
+                              196 ; 74   |// Little endian word packed byte strings:   
+                              197 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              198 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              199 ; 77   |// Little endian word packed byte strings:   
+                              200 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              201 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              202 ; 80   |
+                              203 ; 81   |// Declare Memory Spaces To Use When Coding
+                              204 ; 82   |// A. Sector Buffers
+                              205 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              206 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              207 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              208 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              209 
+                              211 
+                              212 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              213 ; 88   |// B. Media DDI Memory
+                              214 ; 89   |#define MEDIA_DDI_MEM _Y
+                              215 ; 90   |
+                              216 ; 91   |
+                              217 ; 92   |
+                              218 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              219 ; 94   |// Examples of circular pointers:
+                              220 ; 95   |//    INT CIRC cpiVarName
+                              221 ; 96   |//    DWORD CIRC cpdwVarName
+                              222 ; 97   |
+                              223 ; 98   |#define RETCODE INT                 // rcVarName
+                              224 ; 99   |
+                              225 ; 100  |// generic bitfield structure
+                              226 ; 101  |struct Bitfield {
+                              227 ; 102  |    unsigned int B0  :1;
+                              228 ; 103  |    unsigned int B1  :1;
+                              229 ; 104  |    unsigned int B2  :1;
+                              230 ; 105  |    unsigned int B3  :1;
+                              231 ; 106  |    unsigned int B4  :1;
+                              232 ; 107  |    unsigned int B5  :1;
+                              233 ; 108  |    unsigned int B6  :1;
+                              234 ; 109  |    unsigned int B7  :1;
+                              235 ; 110  |    unsigned int B8  :1;
+                              236 ; 111  |    unsigned int B9  :1;
+                              237 ; 112  |    unsigned int B10 :1;
+                              238 ; 113  |    unsigned int B11 :1;
+                              239 ; 114  |    unsigned int B12 :1;
+                              240 ; 115  |    unsigned int B13 :1;
+                              241 ; 116  |    unsigned int B14 :1;
+                              242 ; 117  |    unsigned int B15 :1;
+                              243 ; 118  |    unsigned int B16 :1;
+                              244 ; 119  |    unsigned int B17 :1;
+                              245 ; 120  |    unsigned int B18 :1;
+                              246 ; 121  |    unsigned int B19 :1;
+                              247 ; 122  |    unsigned int B20 :1;
+                              248 ; 123  |    unsigned int B21 :1;
+                              249 ; 124  |    unsigned int B22 :1;
+                              250 ; 125  |    unsigned int B23 :1;
+                              251 ; 126  |};
+                              252 ; 127  |
+                              253 ; 128  |union BitInt {
+                              254 ; 129  |        struct Bitfield B;
+                              255 ; 130  |        int        I;
+                              256 ; 131  |};
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              257 ; 132  |
+                              258 ; 133  |#define MAX_MSG_LENGTH 10
+                              259 ; 134  |struct CMessage
+                              260 ; 135  |{
+                              261 ; 136  |        unsigned int m_uLength;
+                              262 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              263 ; 138  |};
+                              264 ; 139  |
+                              265 ; 140  |typedef struct {
+                              266 ; 141  |    WORD m_wLength;
+                              267 ; 142  |    WORD m_wMessage;
+                              268 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              269 ; 144  |} Message;
+                              270 ; 145  |
+                              271 ; 146  |struct MessageQueueDescriptor
+                              272 ; 147  |{
+                              273 ; 148  |        int *m_pBase;
+                              274 ; 149  |        int m_iModulo;
+                              275 ; 150  |        int m_iSize;
+                              276 ; 151  |        int *m_pHead;
+                              277 ; 152  |        int *m_pTail;
+                              278 ; 153  |};
+                              279 ; 154  |
+                              280 ; 155  |struct ModuleEntry
+                              281 ; 156  |{
+                              282 ; 157  |    int m_iSignaledEventMask;
+                              283 ; 158  |    int m_iWaitEventMask;
+                              284 ; 159  |    int m_iResourceOfCode;
+                              285 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              286 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              287 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              288 ; 163  |    int m_uTimeOutHigh;
+                              289 ; 164  |    int m_uTimeOutLow;
+                              290 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              291 ; 166  |};
+                              292 ; 167  |
+                              293 ; 168  |union WaitMask{
+                              294 ; 169  |    struct B{
+                              295 ; 170  |        unsigned int m_bNone     :1;
+                              296 ; 171  |        unsigned int m_bMessage  :1;
+                              297 ; 172  |        unsigned int m_bTimer    :1;
+                              298 ; 173  |        unsigned int m_bButton   :1;
+                              299 ; 174  |    } B;
+                              300 ; 175  |    int I;
+                              301 ; 176  |} ;
+                              302 ; 177  |
+                              303 ; 178  |
+                              304 ; 179  |struct Button {
+                              305 ; 180  |        WORD wButtonEvent;
+                              306 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              307 ; 182  |};
+                              308 ; 183  |
+                              309 ; 184  |struct Message {
+                              310 ; 185  |        WORD wMsgLength;
+                              311 ; 186  |        WORD wMsgCommand;
+                              312 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              313 ; 188  |};
+                              314 ; 189  |
+                              315 ; 190  |union EventTypes {
+                              316 ; 191  |        struct CMessage msg;
+                              317 ; 192  |        struct Button Button ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              318 ; 193  |        struct Message Message;
+                              319 ; 194  |};
+                              320 ; 195  |
+                              321 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              322 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              323 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              324 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              325 ; 200  |
+                              326 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              327 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              328 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              329 ; 204  |
+                              330 ; 205  |#if DEBUG
+                              331 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              332 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              333 ; 208  |#else 
+                              334 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              335 ; 210  |#define DebugBuildAssert(x)    
+                              336 ; 211  |#endif
+                              337 ; 212  |
+                              338 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              339 ; 214  |//  #pragma asm
+                              340 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              341 ; 216  |//  #pragma endasm
+                              342 ; 217  |
+                              343 ; 218  |
+                              344 ; 219  |#ifdef COLOR_262K
+                              345 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              346 ; 221  |#elif defined(COLOR_65K)
+                              347 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              348 ; 223  |#else
+                              349 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              350 ; 225  |#endif
+                              351 ; 226  |    
+                              352 ; 227  |#endif // #ifndef _TYPES_H
+                              353 
+                              355 
+                              356 ; 24   |#include "gettime.h"
+                              357 
+                              359 
+                              360 ; 1    |#ifndef __TIME_H
+                              361 ; 2    |#define __TIME_H
+                              362 ; 3    |
+                              363 ; 4    |_callee_save LONG GetTime(void);
+                              364 ; 5    |
+                              365 ; 6    |#endif
+                              366 
+                              368 
+                              369 ; 25   |#include "sysirq.h"
+                              370 
+                              372 
+                              373 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              374 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                              375 ; 3    |//
+                              376 ; 4    |// Filename: sysirq.h
+                              377 ; 5    |// Description: 
+                              378 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              379 ; 7    |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              380 ; 8    |#ifndef _SYSIRQ_H
+                              381 ; 9    |#define _SYSIRQ_H
+                              382 ; 10   |
+                              383 ; 11   |///////////////////////////////////////////////////////////////////////////////
+                              384 ; 12   |// Defs
+                              385 ; 13   |///////////////////////////////////////////////////////////////////////////////
+                              386 ; 14   |
+                              387 ; 15   |#define     INTERRUPTS_UNMASK_ALL   0x000000
+                              388 ; 16   |
+                              389 ; 17   |///////////////////////////////////////////////////////////////////////////////
+                              390 ; 18   |// Structure definitions
+                              391 ; 19   |///////////////////////////////////////////////////////////////////////////////
+                              392 ; 20   |
+                              393 ; 21   |///////////////////////////////////////////////////////////////////////////////
+                              394 ; 22   |// Prototypes
+                              395 ; 23   |///////////////////////////////////////////////////////////////////////////////
+                              396 ; 24   |
+                              397 ; 25   |WORD _reentrant SysMaskAllInterrupts(void);
+                              398 ; 26   |void _reentrant SysUnMaskAllInterrupts(WORD wLevel);
+                              399 ; 27   |WORD _reentrant SysGetIrqLevel(void);
+                              400 ; 28   |RETCODE _reentrant SysSetIrqLevel(WORD wIrqLevel);
+                              401 ; 29   |
+                              402 ; 30   |#endif // #ifndef _SYSIRQ_H
+                              403 
+                              405 
+                              406 ; 26   |#include "icoll.h"
+                              407 
+                              409 
+                              410 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              411 ; 2    |// Copyright(C) SigmaTel, Inc. 2002
+                              412 ; 3    |//
+                              413 ; 4    |// Filename: icoll.h
+                              414 ; 5    |// Description: 
+                              415 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              416 ; 7    |
+                              417 ; 8    |#ifndef _ICOLL_H
+                              418 ; 9    |#define _ICOLL_H
+                              419 ; 10   |
+                              420 ; 11   |///////////////////////////////////////////////////////////////////////////////
+                              421 ; 12   |// Defs
+                              422 ; 13   |///////////////////////////////////////////////////////////////////////////////
+                              423 ; 14   |                                                                                          
+                                  
+                              424 ; 15   |#define ICOLL_SOURCE_DAC_REFILL                                 (DWORD)0             
+                              425 ; 16   |#define ICOLL_SOURCE_DAC_UNDERFLOW                              (DWORD)1             
+                              426 ; 17   |#define ICOLL_SOURCE_ADC_REFILL                                 (DWORD)2             
+                              427 ; 18   |#define ICOLL_SOURCE_ADC_OVERFLOW                               (DWORD)3             
+                              428 ; 19   |#define ICOLL_SOURCE_FLASH_DONE                                 (DWORD)4              
+                              429 ; 20   |#define ICOLL_SOURCE_COMPACTFLASH_CARD_IRQ                      (DWORD)5              
+                              430 ; 21   |#define ICOLL_SOURCE_SMARTMEDIA_TIMEOUT                         (DWORD)6              
+                              431 ; 22   |#define ICOLL_SOURCE_SMARTMEDIA_INTERFACE_INVALID_PROGRAMMING   (DWORD)7              
+                              432 ; 23   |#define ICOLL_SOURCE_COMPACTFLASH_NO_CARD                       (DWORD)8               
+                              433 ; 24   |#define ICOLL_SOURCE_COMPACTFLASH_STATUS_CHANGE                 (DWORD)9               
+                              434 ; 25   |#define ICOLL_SOURCE_GPIO_0                                     (DWORD)10               
+                              435 ; 26   |#define ICOLL_SOURCE_GPIO_1                                     (DWORD)11               
+                              436 ; 27   |#define ICOLL_SOURCE_GPIO_2                                     (DWORD)12                
+                              437 ; 28   |#define ICOLL_SOURCE_TIMER_0                                    (DWORD)13                
+                              438 ; 29   |#define ICOLL_SOURCE_TIMER_1                                    (DWORD)14                
+                              439 ; 30   |#define ICOLL_SOURCE_TIMER_2                                    (DWORD)15                
+                              440 ; 31   |#define ICOLL_SOURCE_TIMER_3                                    (DWORD)16                 
+                                  
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              441 ; 32   |#define ICOLL_SOURCE_GPIO_3                                     (DWORD)17                 
+                                  
+                              442 ; 33   |#define ICOLL_SOURCE_SDRAM                                      (DWORD)18                 
+                                  
+                              443 ; 34   |#define ICOLL_SOURCE_CDI                                        (DWORD)19                 
+                                  
+                              444 ; 35   |
+                              445 ; 36   |#if (defined(DEVICE_3410) || defined(DEVICE_3310))
+                              446 ; 37   |
+                              447 ; 38   |#define ICOLL_SOURCE_USB_SOF                                    (DWORD)20                 
+                                   
+                              448 ; 39   |#define ICOLL_SOURCE_USB_SET_INTERFACE_REQUEST                  (DWORD)21                 
+                                   
+                              449 ; 40   |#define ICOLL_SOURCE_USB_HOST_RESET                             (DWORD)22                 
+                                   
+                              450 ; 41   |#define ICOLL_SOURCE_USB_ENDPOINT_START                         (DWORD)23
+                              451 ; 42   |#define ICOLL_SOURCE_USB_ENDPOINT_0                             (DWORD)23                 
+                                   
+                              452 ; 43   |#define ICOLL_SOURCE_USB_ENDPOINT_1                             (DWORD)24                 
+                                   
+                              453 ; 44   |#define ICOLL_SOURCE_USB_ENDPOINT_2                             (DWORD)25                 
+                                   
+                              454 ; 45   |#define ICOLL_SOURCE_USB_ENDPOINT_3                             (DWORD)26                 
+                                   
+                              455 ; 46   |#define ICOLL_SOURCE_USB_ENDPOINT_4                             (DWORD)27                 
+                                   
+                              456 ; 47   |#define ICOLL_SOURCE_USB_ENDPOINT_5                             (DWORD)28                 
+                                     
+                              457 ; 48   |#define ICOLL_SOURCE_USB_ENDPOINT_6                             (DWORD)29                 
+                                     
+                              458 ; 49   |#define ICOLL_SOURCE_USB_ENDPOINT_7                             (DWORD)30                 
+                                     
+                              459 ; 50   |
+                              460 ; 51   |#else
+                              461 ; 52   |
+                              462 ; 53   |#define ICOLL_SOURCE_VDD_5V_CONNECTED                           (DWORD)20                 
+                                   
+                              463 ; 54   |#define ICOLL_SOURCE_USB_CONTROLLER                             (DWORD)21                 
+                                   
+                              464 ; 55   |#define ICOLL_SOURCE_USB_WAKEUP                                 (DWORD)22                 
+                                   
+                              465 ; 56   |#define ICOLL_SOURCE_VDD_5V_DISCONNECTED                        (DWORD)23
+                              466 ; 57   |#define ICOLL_SOURCE_ESPI                                       (DWORD)24                 
+                                   
+                              467 ; 58   |#define ICOLL_SOURCE_FILCO                                      (DWORD)25                 
+                                   
+                              468 ; 59   |#define ICOLL_SOURCE_LRADC1                                     (DWORD)26                 
+                                   
+                              469 ; 60   |#define ICOLL_SOURCE_RTC_ALARM                                  (DWORD)27                 
+                                   
+                              470 ; 61   |#define ICOLL_SOURCE_LRADC2                                     (DWORD)28                 
+                                   
+                              471 ; 62   |#define ICOLL_SOURCE_FLASH_ECC                                  (DWORD)29                 
+                                     
+                              472 ; 63   |
+                              473 ; 64   |#endif
+                              474 ; 65   |
+                              475 ; 66   |#define ICOLL_SOURCE_CDSYNC                                     (DWORD)31                 
+                                     
+                              476 ; 67   |#define ICOLL_SOURCE_CDSYNC_EXCEPTION                           (DWORD)32                 
+                                      
+                              477 ; 68   |#define ICOLL_SOURCE_REED_SOLOMON                               (DWORD)33
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              478 ; 69   |#define ICOLL_END_OF_TRUE_SOURCES                                ICOLL_SOURCE_REED_SOLOMON
+                                  
+                              479 ; 70   |// The rest of these "sources" are not really ICOLL sources.  They are not
+                              480 ; 71   |//  routed through the ICOLL but are included here to make interrupt abstraction
+                              481 ; 72   |//  as simple as possible.  The ICOLL functions special-case these.
+                              482 ; 73   |#define ICOLL_SOURCE_I2C_RX_READY                               (DWORD)34
+                              483 ; 74   |#define ICOLL_SOURCE_I2C_RX_OVERFLOW                            (DWORD)35
+                              484 ; 75   |#define ICOLL_SOURCE_I2C_TX_EMPTY                               (DWORD)36
+                              485 ; 76   |#define ICOLL_SOURCE_I2C_TX_UNDERFLOW                           (DWORD)37
+                              486 ; 77   |#define ICOLL_SOURCE_SPI_COMPLETE                               (DWORD)38
+                              487 ; 78   |#define ICOLL_SOURCE_I2S_RX_OVERFLOW                            (DWORD)39
+                              488 ; 79   |#define ICOLL_SOURCE_I2S_TX_UNDERFLOW                           (DWORD)40
+                              489 ; 80   |#define ICOLL_SOURCE_I2S_RX_READY                               (DWORD)41
+                              490 ; 81   |#define ICOLL_SOURCE_I2S_TX_EMPTY                               (DWORD)42
+                              491 ; 82   |#define ICOLL_SOURCE_HARDWARE_RESET                             (DWORD)43
+                              492 ; 83   |#define ICOLL_SOURCE_STACK_ERROR                                (DWORD)44
+                              493 ; 84   |#define ICOLL_SOURCE_TRACE                                      (DWORD)45
+                              494 ; 85   |#define ICOLL_SOURCE_SWI                                        (DWORD)46
+                              495 ; 86   |#define ICOLL_SOURCE_IRQA                                       (DWORD)47
+                              496 ; 87   |#define ICOLL_SOURCE_BROWNOUT                                   (DWORD)48
+                              497 ; 88   |#define ICOLL_SOURCE_ILLEGAL_INSTRUCTION                        (DWORD)49
+                              498 ; 89   |#define ICOLL_SOURCE_END                                        ICOLL_SOURCE_ILLEGAL_INSTR
+                                  UCTION
+                              499 ; 90   |#define ICOLL_NUM_SOURCES                                       ICOLL_SOURCE_END+1
+                              500 ; 91   |
+                              501 ; 92   |#define ICOLL_ICLENABLE_REG_0_LAST_SRC                          (DWORD)23
+                              502 ; 93   |
+                              503 ; 94   |#define ICOLL_PRIORITY_000              0x000000
+                              504 ; 95   |#define ICOLL_PRIORITY_001              0x000001
+                              505 ; 96   |#define ICOLL_PRIORITY_010              0x000002
+                              506 ; 97   |#define ICOLL_PRIORITY_011              0x000003
+                              507 ; 98   |#define ICOLL_PRIORITY_100              0x000004
+                              508 ; 99   |#define ICOLL_PRIORITY_101              0x000005
+                              509 ; 100  |#define ICOLL_PRIORITY_110              0x000006
+                              510 ; 101  |#define ICOLL_PRIORITY_111              0x000007
+                              511 ; 102  |
+                              512 ; 103  |#define ICOLL_STEERING_IVL1             0x000000
+                              513 ; 104  |#define ICOLL_STEERING_IVL2             0x000001
+                              514 ; 105  |#define ICOLL_STEERING_IVL3             0x000002
+                              515 ; 106  |#define ICOLL_STEERING_IVL6             0x000003
+                              516 ; 107  |
+                              517 ; 108  |///////////////////////////////////////////////////////////////////////////////
+                              518 ; 109  |// ERRORS
+                              519 ; 110  |///////////////////////////////////////////////////////////////////////////////
+                              520 ; 111  |                                                                                          
+                                  
+                              521 ; 112  |#define ICOLL_ERROR_INVALID_SOURCE              (RETCODE)0x000001
+                              522 ; 113  |
+                              523 ; 114  |///////////////////////////////////////////////////////////////////////////////
+                              524 ; 115  |// Structure definitions
+                              525 ; 116  |///////////////////////////////////////////////////////////////////////////////
+                              526 ; 117  |
+                              527 ; 118  |typedef void (*ISR_VECTOR)(void);
+                              528 ; 119  |
+                              529 ; 120  |typedef struct
+                              530 ; 121  |{
+                              531 ; 122  |    WORD wSource;
+                              532 ; 123  |    WORD wPriority;
+                              533 ; 124  |    WORD wSteering;
+                              534 ; 125  |} ICOLL_ELEMENT;
+                              535 ; 126  |
+                              536 ; 127  |///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              537 ; 128  |// Prototypes
+                              538 ; 129  |///////////////////////////////////////////////////////////////////////////////
+                              539 ; 130  |
+                              540 ; 131  |void _reentrant IcollShutDown(void);
+                              541 ; 132  |RETCODE _reentrant IcollEnable(DWORD dwSource);
+                              542 ; 133  |RETCODE _reentrant IcollDisable(DWORD dwSource);
+                              543 ; 134  |BOOL _reentrant IcollGetStatus(DWORD dwSource);
+                              544 ; 135  |RETCODE _reentrant IcollSetPriority(DWORD dwSource, WORD wPriority);
+                              545 ; 136  |RETCODE _reentrant IcollSetSteering(DWORD dwSource, WORD wSteering);
+                              546 
+                              551 
+                              552 ; 137  |RETCODE _reentrant IcollInstallIsrVector(ISR_VECTOR pISR, WORD wSource);
+                              553 ; 138  |void _asmfunc IcollResetVectorTable(void);
+                              554 ; 139  |#endif // #ifndef _ICOLL_H
+                              555 
+                              557 
+                              558 ; 27   |
+                              559 ; 28   |#ifndef SYS_MAX_MSG_PARAMS
+                              560 ; 29   |#define SYS_MAX_MSG_PARAMS 10
+                              561 ; 30   |#endif
+                              562 ; 31   |
+                              563 ; 32   |#ifndef MAX_REGIONS
+                              564 ; 33   |#define MAX_REGIONS 5
+                              565 ; 34   |#endif 
+                              566 ; 35   |
+                              567 ; 36   |#define TIMEOUT_IMMEDIATE 0
+                              568 ; 37   |
+                              569 ; 38   |struct TaskEntryStruct;
+                              570 ; 39   |
+                              571 ; 40   |union SyncObjectStruct;
+                              572 ; 41   |
+                              573 ; 42   |
+                              574 ; 43   |// JCP - Already defined in types.h
+                              575 ; 44   |
+                              576 ; 45   |//typedef struct {
+                              577 ; 46   |//    WORD m_wLength;
+                              578 ; 47   |//    WORD m_wMessage;
+                              579 ; 48   |//    WORD m_wParams[SYS_MAX_MSG_PARAMS];
+                              580 ; 49   |//} Message;
+                              581 ; 50   |
+                              582 ; 51   |typedef struct {
+                              583 ; 52   |    _circ WORD    *m_pHead;
+                              584 ; 53   |    _circ WORD    *m_pTail;
+                              585 ; 54   |} CircularBufferDescriptor;
+                              586 ; 55   |
+                              587 ; 56   |typedef struct MemoryRegionStruct {
+                              588 ; 57   |    WORD m_wResourceLoaded;
+                              589 ; 58   |    _P INT *m_StartAddress;
+                              590 ; 59   |    _P INT *m_EndAddress;
+                              591 ; 60   |} MemoryRegion;
+                              592 
+                              599 
+                              600 ; 61   |
+                              601 ; 62   |
+                              602 ; 63   |typedef struct TaskEntryStruct{
+                              603 ; 64   |    CircularBufferDescriptor *m_pMessageQueue;
+                              604 ; 65   |    void   *m_pWaitingOnPtr;                                //points to either an object o
+                                  r a queue we're waiting on.
+                              605 ; 66   |    WORD    m_wWaitingOnWord;
+                              606 ; 67   |    WORD    m_wState;                                       //The state is used to indicat
+                                  e what the task is waiting on.
+                              607 ; 68   |    WORD   *m_pStackPointer;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              608 ; 69   |    WORD    m_wTaskID;                                      //The kernel does not use this
+                                   for any purpose.   This is set by the developer
+                              609 ; 70   |                                                            //  and returned by SysGetTask
+                                  ID() for use by functions that are required to 
+                              610 ; 71   |                                                            //  be task aware.
+                              611 ; 72   |    long    m_lTimeout;                                     //This is in absolute time (ca
+                                  n compare directly to the current system time
+                              612 ; 73   |    WORD    m_wRegionResources[MAX_REGIONS];                //a snapshot of the requiremen
+                                  ts of the task in terms of which resources are loaded
+                              613 ; 74   |    WORD    m_wPriority;                                    
+                              614 ; 75   |    WORD   *m_pInitialStackPointer;                         //only used at init time
+                              615 ; 76   |    WORD    m_wStackSize;
+                              616 ; 77   |    _reentrant void   (*m_pEntryPoint)(void);               //only used at init time
+                              617 ; 78   |} TaskEntry;
+                              618 
+                              643 
+                              644 ; 79   |
+                              645 ; 80   |typedef union SyncObjectStruct {
+                              646 ; 81   |    TaskEntry   *m_pOwner;
+                              647 ; 82   |    struct
+                              648 ; 83   |    {
+                              649 ; 84   |    int          m_iOwner :16;
+                              650 ; 85   |    int          m_iCount : 8;
+                              651 ; 86   |    } counter;
+                              652 ; 87   |} SyncObject;
+                              653 ; 88   |
+                              654 ; 89   |typedef WORD SignalGroup;
+                              655 ; 90   |
+                              656 ; 91   |
+                              657 ; 92   |typedef struct {
+                              658 ; 93   |    WORD    m_wMessageType;
+                              659 ; 94   |    CircularBufferDescriptor    *m_pDestination;
+                              660 ; 95   |}  RoutingEntry;
+                              661 
+                              666 
+                              667 ; 96   |
+                              668 ; 97   |extern RoutingEntry g_RoutingTable[];
+                              669 ; 98   |extern TaskEntry *g_TaskList[];
+                              670 
+                              678 
+                              679 ; 99   |extern MemoryRegion *g_RegionTable[];
+                              680 ; 100  |
+                              681 ; 101  |//Time Releated Functions
+                              682 ; 102  |_reentrant WORD SysWait(INT wTimeout);
+                              683 ; 103  |
+                              684 ; 104  |//Task Related Functions
+                              685 ; 105  |_reentrant WORD SysGetTaskID(void);
+                              686 ; 106  |
+                              687 ; 107  |//Message related functions
+                              688 ; 108  |_asmfunc WORD SysWaitOnMessage(INT wTimeout, Message *pMsg);
+                              689 
+                              696 
+                              697 ; 109  |_asmfunc WORD SysPeekMessage(CircularBufferDescriptor *pQueue, Message *pMsg);
+                              698 ; 110  |_reentrant WORD SysPostMessage(WORD wLength, ...);
+                              699 ; 111  |_reentrant WORD SysPostMessageWait(INT wTimeout, WORD wLength, ...);
+                              700 ; 112  |
+                              701 ; 113  |//maybe this is too much functionality?
+                              702 ; 114  |_asmfunc WORD SysWaitOnBoth(WORD wTimeout, SyncObject *pObject, Message *pMsg);
+                              703 
+                              715 
+                              716 ; 115  |
+                              717 ; 116  |//SyncObject Related functions
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              718 ; 117  |_asmfunc WORD SysWaitOnObject(INT wTimeout, SyncObject *pObject);
+                              719 ; 118  |_asmfunc WORD SysAssignObject(SyncObject *pObject, TaskEntry *pTaskID);
+                              720 ; 119  |_reentrant void SysReleaseObject(SyncObject *pObject);
+                              721 ; 120  |_reentrant void ISRReleaseObject(SyncObject *pObject);
+                              722 ; 121  |
+                              723 ; 122  |//Queue Related Functions
+                              724 ; 123  |_asmfunc WORD SysWaitOnQueue(INT wTimeout,CircularBufferDescriptor *pQueue, INT wSizeToBeF
+                                  ree);
+                              725 ; 124  |
+                              726 ; 125  |//Event Related Functions
+                              727 ; 126  |_asmfunc WORD SysWaitOnSignal(INT wTimeout, void * pSignalGroup, int iSignal);
+                              728 
+                              730 
+                              731 ; 127  |_asmfunc void SysSignal(SignalGroup *pSignalGroup, int iSignal);
+                              732 ; 128  |
+                              733 ; 129  |//ISR function
+                              734 ; 130  |
+                              735 ; 131  |//SysCallFunctions
+                              736 ; 132  |int _asmfunc exSysCallFunction_v(void);
+                              737 ; 133  |int _asmfunc exSysCallFunction_i(int);
+                              738 ; 134  |int _asmfunc exSysCallFunction_ii(int, int);
+                              739 ; 135  |int _asmfunc exSysCallFunction_iii(int, int, int);
+                              740 ; 136  |int _asmfunc SysCallFunction(WORD * RESOURCE,int _reentrant (int,int,int*),  int, int, int
+                                   *);
+                              741 ; 137  |#define SysCallFunction(rsrc,func,a,b,p) SysCallFunction((void*)rsrc,(func),(a),(b),(p))
+                              742 ; 138  |
+                              743 ; 139  |void _asmfunc v_SysCallFunction_v(WORD * RESOURCE,void _reentrant (void));
+                              744 ; 140  |#define v_SysCallFunction_v(rsrc,func) v_SysCallFunction_v((void*)rsrc,(func))
+                              745 ; 141  |
+                              746 ; 142  |void _asmfunc SysCallFunction_i(WORD * RESOURCE,void _reentrant (int),int);
+                              747 ; 143  |#define SysCallFunction_i(rsrc,func,a,b,p) SysCallFunction_i((void*)rsrc,(func),(a),(b),(p
+                                  ))
+                              748 ; 144  |
+                              749 ; 145  |int _asmfunc SysCallFunction_L(void* RESOURCE,int _reentrant (long,long,int*),  long, long
+                                  , int *);
+                              750 ; 146  |
+                              751 ; 147  |int _asmfunc i_SysCallFunction_i(WORD * RESOURCE,int _reentrant (int), int);
+                              752 ; 148  |
+                              753 ; 149  |int _asmfunc i_SysCallFunction_iipp(WORD * RESOURCE,int _reentrant (int,int,int*,int*),  i
+                                  nt, int, int *, int *);
+                              754 ; 150  |
+                              755 ; 151  |int _asmfunc i_SysCallFunction_iiip(WORD * RESOURCE,int _reentrant (int,int,int,int*),  in
+                                  t, int, int, int *);
+                              756 ; 152  |
+                              757 ; 153  |int _asmfunc fSysCallFunction(WORD * RESOURCE,int _reentrant (int,int,int*),  int, int, in
+                                  t *);
+                              758 ; 154  |
+                              759 ; 155  |
+                              760 ; 156  |//These values are return values, and also values that are set in the TaskEntry.m_wState t
+                                  o indicate what the task
+                              761 ; 157  |//is waiting on.
+                              762 ; 158  |#define EVENT_TIMEOUT   0
+                              763 ; 159  |#define EVENT_MESSAGE   1
+                              764 ; 160  |#define EVENT_OBJECT    2
+                              765 ; 161  |#define EVENT_QUEUE     4
+                              766 ; 162  |#define EVENT_SIGNAL    5
+                              767 ; 163  |#define EVENT_RELEASING_OBJECT2 6
+                              768 ; 164  |#define EVENT_RELEASING_OBJECT1 7
+                              769 ; 165  |
+                              770 ; 166  |
+                              771 ; 167  |//this is the owner that a SyncObject should be assigned to if a task it going to wait on 
+                                  a completion of the interrupt. 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              772 ; 168  |#define ISR_OWNER  ((TaskEntry*)(0xffff))
+                              773 ; 169  |#define KERNEL_OWNER  ((TaskEntry*)(0))
+                              774 ; 170  |
+                              775 ; 171  |
+                              776 ; 172  |#ifdef INSTRUMENT_ENABLE
+                              777 ; 173  |#include <regsgpio.h>
+                              778 ; 174  |
+                              779 ; 175  |//
+                              780 ; 176  |// Define the bit positions in the GPIO registers used for signalling.
+                              781 ; 177  |//
+                              782 ; 178  |#define GPIO_24     B0
+                              783 ; 179  |#define GPIO_36     B12
+                              784 ; 180  |#define GPIO_37     B13
+                              785 ; 181  |#define GPIO_38     B14
+                              786 ; 182  |#define GPIO_39     B15
+                              787 ; 183  |#define GPIO_42     B18
+                              788 ; 184  |#define GPIO_46     B22
+                              789 ; 185  |#define GPIO_47     B23
+                              790 ; 186  |
+                              791 ; 187  |//=============================================================================
+                              792 ; 188  |// SysSignalEvent
+                              793 ; 189  |//-----------------------------------------------------------------------------
+                              794 ; 190  |//! This macro allows code to set a gpio event that can be measured outside the
+                              795 ; 191  |//! part.
+                              796 ; 192  |//! \param wGPIONumber 
+                              797 ; 193  |//!     This should be one of the Macros defined above, and indicates which 
+                              798 ; 194  |//!     GPIO will be set.
+                              799 ; 195  |//!
+                              800 ; 196  |//! \return
+                              801 ; 197  |//!     None. 
+                              802 ; 198  |//!
+                              803 ; 199  |//=============================================================================
+                              804 ; 200  |#define SysSignalEvent(wGPIONumber)         \ 
+                              805 ; 201  |{                                           \ 
+                              806 ; 202  |    HW_GP1DOR.B.##wGPIONumber = 1;          \ 
+                              807 ; 203  |}
+                              808 ; 204  |
+                              809 ; 205  |//=============================================================================
+                              810 ; 206  |// SysClearEvent
+                              811 ; 207  |//-----------------------------------------------------------------------------
+                              812 ; 208  |//! This macro allows code to clear a gpio event that can be measured outside 
+                              813 ; 209  |//! the part.
+                              814 ; 210  |//! \param wGPIONumber 
+                              815 ; 211  |//!     This should be one of the Macros defined above, and indicates which 
+                              816 ; 212  |//!     GPIO will be set.
+                              817 ; 213  |//!
+                              818 ; 214  |//! \return
+                              819 ; 215  |//!     None. 
+                              820 ; 216  |//!
+                              821 ; 217  |//=============================================================================
+                              822 ; 218  |#define SysClearEvent(wGPIONumber)          \ 
+                              823 ; 219  |{                                           \ 
+                              824 ; 220  |    HW_GP1DOR.B.##wGPIONumber = 0;          \ 
+                              825 ; 221  |}
+                              826 ; 222  |
+                              827 ; 223  |//=============================================================================
+                              828 ; 224  |// SysEnableEvent
+                              829 ; 225  |//-----------------------------------------------------------------------------
+                              830 ; 226  |//! This macro must be called by code before using the SysSetEvent or 
+                              831 ; 227  |//! SysClearEvent so that the GPIOs are set up correctly.
+                              832 ; 228  |//!
+                              833 ; 229  |//! \param wGPIONumber 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              834 ; 230  |//!     This should be one of the Macros defined above, and indicates which 
+                              835 ; 231  |//!     GPIO will be set.
+                              836 ; 232  |//!
+                              837 ; 233  |//! \return
+                              838 ; 234  |//!     None. 
+                              839 ; 235  |//!
+                              840 ; 236  |//=============================================================================
+                              841 ; 237  |#define SysEnableEvent(wGPIONumber)         \ 
+                              842 ; 238  |{                                           \ 
+                              843 ; 239  |    HW_GP1DOER.B.##wGPIONumber=1;           \ 
+                              844 ; 240  |    HW_GP1DOR.B.##wGPIONumber=0;            \ 
+                              845 ; 241  |    HW_GP1ENR.B.##wGPIONumber=1;            \ 
+                              846 ; 242  |    HW_GP1PWR.B.##wGPIONumber=1;            \ 
+                              847 ; 243  |}
+                              848 ; 244  |#else // INSTRUMENT_ENABLE
+                              849 ; 245  |#define SysSignalEvent(wGPIONumber)
+                              850 ; 246  |#define SysClearEvent(wGPIONumber)
+                              851 ; 247  |#define SysEnableEvent(wGPIONumber)
+                              852 ; 248  |#endif // INSTRUMENT_ENABLE
+                              853 ; 249  |    
+                              854 ; 250  |#endif
+                              855 
+                              857 
+                              858 ; 3    |#include "kernel_internal.h"
+                              859 
+                              861 
+                              862 ; 1    |#ifndef _KERNEL_INTERNAL
+                              863 ; 2    |#define _KERNEL_INTERNAL
+                              864 ; 3    |
+                              865 ; 4    |extern WORD g_KernelStack[];
+                              866 ; 5    |extern TaskEntry *g_pCurrentTask;
+                              867 ; 6    |extern WORD *Kernel_pTempStack;
+                              868 ; 7    |extern _L LONG g_lTimerTick;
+                              869 ; 8    |
+                              870 ; 9    |_reentrant TaskEntry * Kernel_GetNextTask(void);
+                              871 ; 10   |_reentrant void Kernel_SwitchToTask(TaskEntry*);
+                              872 ; 11   |_asmfunc void Kernel_ContextSwitch(void );
+                              873 ; 12   |_reentrant void Kernel_SetTimeout(INT wTimeout);
+                              874 ; 13   |_reentrant void Kernel_IncrementTick(void);
+                              875 ; 14   |_asmfunc WORD Kernel_AddMessageToQueue(CircularBufferDescriptor*, Message*);
+                              876 ; 15   |_reentrant WORD Kernel_IsTaskReady(TaskEntry *);
+                              877 ; 16   |_asmfunc INT Kernel_IsMessageAvailable(TaskEntry *);
+                              878 ; 17   |_reentrant WORD Kernel_IsSystemAlive(void);
+                              879 ; 18   |_reentrant void Kernel_TickleWatchdog(void);
+                              880 ; 19   |_reentrant void Kernel_Heartbeat(void);
+                              881 ; 20   |
+                              882 ; 21   |
+                              883 ; 22   |#endif
+                              884 
+                              886 
+                              887 ; 4    |
+                              888 ; 5    |
+                              889 ; 6    |_reentrant void Kernel_Heartbeat(void)
+                              890 ; 7    |{
+                              891 
+P:0000                        892         org     p,".ptextkernel_heartbeat":
+                              897 FKernel_Heartbeat:
+                              898 
+                              899 ; 8    |}
+                              900 
+P:0000 00000C         4    4  902         rts
+                              905 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              906         global  FKernel_Heartbeat
+                              907 

@@ -1,0 +1,430 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\main.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2006
+                                3 ;
+                                4 ;  File        : main.asm
+                                5 ;  Description : LCD based reference design (Doesn't support MMC/SD. Supports DRM9 & DRM10)
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section     EXEC_main
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;  Macros
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               16     list
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19 ;   Includes
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               34     list
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37 ;   External Definitions
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               43     ; The constants below in resource.inc, are reference as extern by other modules.
+                               44     ; Therefore, they are made global here to allow the locater to resolve the references
+                               46     ; The constants below in systimers.inc, are referenced as extern by systimers.xref.
+                               47     ; Therefore, they are made global here to allow the locater to resolve the references
+                               51     
+                               55     ; required for syscoder to link
+                               64 ;///////////////////////////////////////////////////////////////////////////////
+                               65 ;   External References
+                               66 ;///////////////////////////////////////////////////////////////////////////////
+                               75     list
+                               80     ; These are in SysSpeed.asm
+                               85     ; These are in SysExecSpeedClient.asm
+                               96     ; these are moved to syshwinit.asm
+                              102     ; these are moved to sysusb.asm
+                              108     ; moved to sysirq.asm
+                              110         
+                              111     ; moved to sysvoice.asm
+                              112 ;    extern    InitVoiceNumber          
+                              113     
+                              119     
+                              124 ;    extern    FInitRemovableMedia
+                              162     
+                              166   
+                              175 ;///////////////////////////////////////////////////////////////////////////////
+                              176 ;   Equates
+                              177 ;///////////////////////////////////////////////////////////////////////////////
+                              178    
+                              179 ;///////////////////////////////////////////////////////////////////////////////
+                              180 ;   X Memory
+                              181 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        183     org     x,"EXEC_main_X":
+                              185 ;///////////////////////////////////////////////////////////////////////////////
+                              186 ;   Y Memory
+                              187 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        189     org     y,"EXEC_main_Y":
+Y:0000 000000                 192 SmartMediaInserted      dc  0       ;Bit 0 -> 0 : Smart Media Not Present
+                              193                                         ;      -> 1 : Smart Media Present  
+                              194                                         ;Bit 1 -> 0 : No Debounce In Progress
+                              195                                         ;         1 : Debounce In Progress
+Y:0001 000000                 196 PreviousTimeHigh        dc  0       ;Starting time for smart media sense debounce process
+Y:0002 000000                 197 PreviousTimeLow         dc  0
+Y:0003 000000                 199 Fg_iMediaErrorFlag  dc  0
+                              201 Fg_wFileSystemMode                 ;For C usage
+                              202 FglbwFileSystemMode                ;Fattest uses
+Y:0004 000000                 203 FileSystemMode      dc  0
+Y:0005 RESERVED               204 DeviceNum           ds 1
+Y:0005
+                              206 ;///////////////////////////////////////////////////////////////////////////////
+                              207 ;   P Memory
+                              208 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        209     org     p,"EXEC_Vectors_P":
+P:0000 0AF080 rrrrrr  6    6  211     jmp     Exec
+P:0000                        213     org    p,"EXEC_main_P":
+                              215 ;///////////////////////////////////////////////////////////////////////////////
+                              216 ;
+                              217 ;>  Name:           Exec
+                              218 ;   Type:           Function
+                              219 ;   Description:    Static entry point for the player code (LCD ver). This is also
+                              220 ;                   the player main loop
+                              221 ;   Inputs:         none
+                              222 ;   Outputs:        none
+                              223 ;   Notes:          
+                              224 ;<
+                              225 ;///////////////////////////////////////////////////////////////////////////////
+                              226 Exec
+                              227     
+                              228  comment ~    
+                              229 ; used for timing regs
+                              230       bset #HW_GP_B16_BITPOS,x:HW_GP0PWR    ; pwrpads
+                              231       bset #HW_GP_B16_BITPOS,x:HW_GP0ENR    ; enable
+                              232       bset #HW_GP_B16_BITPOS,x:HW_GP0DOER   ; output
+                              233       bset #HW_GP_B16_BITPOS,x:HW_GP0DOR    ; make it high 
+                              236       bset #HW_GP_B17_BITPOS,x:HW_GP0PWR    ; pwrpads
+                              237       bset #HW_GP_B17_BITPOS,x:HW_GP0ENR    ; enable
+                              238       bset #HW_GP_B17_BITPOS,x:HW_GP0DOER   ; output
+                              239       bclr #HW_GP_B17_BITPOS,x:HW_GP0DOR    ; make it low 
+                              240  
+                              241  ;STMP 9222/9223 use B15 as CPLD related to STFM1000 development is no longer needed
+                              242       ; STFM CPLD enable/disable.  This should be setup as a GPIO input ASAP after bootup
+                              243       bclr #HW_GP_B15_BITPOS,x:HW_GP1DOER    ; make it an input/tri-state
+                              244       bset #HW_GP_B15_BITPOS,x:HW_GP1ENR    ; enable as GPIO
+                              245       bclr #HW_GP_B15_BITPOS,x:HW_GP1DOR    ; default to low when enabled
+                              246 ~
+                              248 ; DEBUG ONLY - HW_GPIO_036 36-24 = 12 => HW_GP_B12_BITPOS on HW_GP1*
+                              249 ;       bset #HW_GP_B12_BITPOS,x:HW_GP1PWR    ; pwrpads
+                              250 ;       bset #HW_GP_B12_BITPOS,x:HW_GP1ENR    ; enable
+                              251 ;       bset #HW_GP_B12_BITPOS,x:HW_GP1DOER   ; output
+                              252 ;       bclr #HW_GP_B12_BITPOS,x:HW_GP1DOR    ; make it low  
+                              255    ; ReEnable ONCE for 3410/35xx debug build. Allows improved debugging 
+                              256    ; of 3410/35xx. In debugger, type reset and go instead of reloading abs repeatedly. 
+                              257    ;
+P:0000 44F400 FF8FFF  3    3  259     move    #>$ff8fff,x0                    
+P:0002 447000 00FFFE  3    6  260     move    x0,x:$fffe
+                              263     ; Init the Stack Pointer
+P:0004 05807Br        2    8  264     movec   y:<Const_000000,sp
+                              266     ; init the L1 data stack
+P:0005 67F400 rrrrrr  3   11  267     move    #L1DataStack,r7
+P:0007 058067r        2   13  268     movec   y:<Const_ffffff,m7
+                              269     
+                              271     ; Prefill the entire vector table with defaults per build type. 
+P:0008 0BF080 rrrrrr  6   19  272     jsr     SysDefaultAllVectors
+P:000A 0BF080 rrrrrr  6   25  273     jsr     SysErrorInit                     ; Init vectors for the fatal errors
+P:000C 0BF080 rrrrrr  6   31  275         jsr             FChipUpdateCapability                    ; ChipUpdateCapability Initializes chip hardware capabilities
+                              276         
+P:000E 0BF080 rrrrrr  6   37  277     jsr     PowerInit                        ; Must be called before SysSpeedSysStartUp
+P:0010 0BF080 rrrrrr  6   43  278     jsr     SysResetAllTimers                ; Must be called before SysSpeedSysStartUp
+P:0012 0BF080 rrrrrr  6   49  279     jsr     SysAllLinear
+                              280    
+                              281     ; Imported to be called here ealy so we can use persistant bits early.  may 19'06.
+P:0014 0BF080 rrrrrr  6   55  282     jsr     FStickyBitInit ; StickyBitInit removes SoftReset so copy controller can run. What else is needed to read sticky bit? 
+                              283   
+                              284   ;debug ; A good boxview starting point. Uncomment this to use boxview with player. 
+                              286     ; IF PERSISTANT BIT SAYS RUN FROM 2ND RESOURCE DRIVE, SET TAG NOW TO THE TAG FOR EMERGENCY VER OF RESOURCE DRIVE. 
+P:0016 0BF080 rrrrrr  6   61  287     jsr     FSysGetDesiredResourceTag ; SysGetDesiredResourceTag returns tag in A1 as required for input to SysSetResourceTag
+P:0018 0BF080 rrrrrr  6   67  288     jsr     FSysSetResourceTag ; SysSetResourceTag sets working resource tag, and clear resource drive number
+                              290     ; Init the Media
+P:001A 200013         2   69  291     clr     a
+P:001B 0BF080 rrrrrr  6   75  292     jsr     FMediaInit
+                              293        ;debugne  ; halt if non zero return 
+P:001D 200013         2   77  295     clr     a
+P:001E 0BF080 rrrrrr  6   83  296     jsr     FMediaDiscoverAllocation
+                              297        ;debugne  ; halt if on zero return
+                              299     ; Media Discover Allocation not required with MMC.
+                              300     
+                              301     ; init both resource.bin drives now. 2nd one used only for emergency if needed. 
+                              302     ;   See def in sysmacro.asm. Depends on ddiproject.c drive array!
+                              303     GetLogicalDriveNumForResourceBin 1
+P:0020 56F400 000006  3   86  303              move   #>6,a
+                              303     
+P:0022 0BF080 rrrrrr  6   92  304     jsr     FDriveInit  ; inits the redundant resource.bin drive specified in input register A1   
+P:0024 000302         4   96  306     debugne                ; halt on error return
+                              309     GetLogicalDriveNumForResourceBin 2
+                              309     
+P:0025 56F400 000007  3   99  309              move   #>7,a
+P:0027 0BF080 rrrrrr  6  105  310     jsr     FDriveInit  ; inits the redundant resource.bin drive specified in input register A1   
+P:0029 000302         4  109  312     debugne                ; halt on error return
+                              315     GetLogicalDriveNumForResourceBin 3
+                              315     
+P:002A 56F400 000008  3  112  315              move   #>8,a
+P:002C 0BF080 rrrrrr  6  118  316     jsr     FDriveInit  ; inits the master redundant resource.bin drive specified in input register A1   
+P:002E 000302         4  122  318     debugne                ; halt on error return
+                              321     ; Clear all interrupts and Initialize Timer (SysSpeed requires time api)
+P:002F 0BF080 rrrrrr  6  128  322     jsr     SysResetAllInterrupts  ; move these 2 jsr's here OUT of funclet overlay
+P:0031 0BF080 rrrrrr  6  134  323     jsr     SysTimeInit            ; "
+P:0033 0BF080 rrrrrr  6  140  326     jsr     StartProject    ; now a funclet and absorbed code from main
+                              328     ; --------------------  SUPER LOOP ----------------------------
+                              330 _again
+                              332     ; Check for external Media insertion/removal
+P:0035 0BF080 rrrrrr  6  146  334     jsr     FCheckRemovableMedia
+                              336     
+                              337     ;Check for headphone short -- if there was an irqa, service headphones
+P:0037 0BF080 rrrrrr  6  152  338     jsr     CheckHeadPhoneShort 
+                              339             
+                              340     ;~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              341     ; Prepare bitflags in ExecStateBits for call to ExecSpeedAndBtnCheck
+P:0039 0BF080 rrrrrr  6  158  342     jsr     SetExecState
+                              344     ; Conditionally Increase/free the clock and notify menus on btn event for Exec
+                              345     ; y:ExecStateBits ready: only IDLE_TIMER_ACTIVE bit is modified by this call
+P:003B 0BF080 rrrrrr  6  164  346     jsr     ExecSpeedAndBtnCheck 
+                              347     ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              349     ;ServiceDCDC should be called before DetectUSB
+P:003D 0BF080 rrrrrr  6  170  350     jsr     FServiceDCDC
+                              351     ; Check for USB insertion
+P:003F 0BF080 rrrrrr  6  176  352     jsr     DetectUsb
+                              354     ; Execute the modules
+P:0041 0BF080 rrrrrr  6  182  355     jsr     ExecuteModules
+                              356     ; If no module ran, the wait instruction below effectively reduces average DSP current
+                              357     ; extending continuous audio decode battery life by 5% (1 to 2.5 hrs). 
+P:0043 200003         2  184  358     tst     a               
+P:0044 0AF0A2 rrrrrr  6  190  359     jne     _again
+                              361     ; Suspend processor activity until next unmasked interrupt. Gates off DSP clock input.
+                              363 ;; Turn on the bit if the processor is idle - this can be used to determne if the clock speed can be reduced.   
+                              364 ;;;    bset #HW_GP_B12_BITPOS,x:HW_GP1DOR    ; Measure idle time - make it high - usual state with pullup resistor
+P:0046 000086                 365     wait ;Removal of this instruction improves the 0dB test's non-critical 20Log(NoiseFloor) 
+                              366 ;;;    bclr #HW_GP_B12_BITPOS,x:HW_GP1DOR    ; make it low   
+                              368     ; A-weighted by 5dB (test excludes harmonic noise) during 1kHz 0dB MP3 test. 
+                              369     ; With wait instruction, results stay within SigmaTel audio spec.  
+                              371     ; do it forever
+P:0047 0AF080 rrrrrr  6  196  372     jmp     _again
+                              375 ;///////////////////////////////////////////////////////////////////////////////
+                              376 ;
+                              377 ;>  Name:           StartProject
+                              378 ;
+                              379 ;   Type:           Function
+                              380 ;
+                              381 ;   Description:    Initialization procedures.
+                              382 ;
+                              383 ;   Inputs:         none
+                              384 ;
+                              385 ;   Outputs:        none
+                              386 ;                   
+                              387 ;   Notes:          none
+                              388 ;<
+                              389 ;///////////////////////////////////////////////////////////////////////////////
+                              390 StartProject    
+                              394     ;If using funclet, function will be executed via funclet kernel
+                              395     CallFunclet RSRC_FUNCLET_STARTPROJECT
+P:0049 0D0080         4  200  395     jsr       $80
+P:004A 000164                 395     DC       RSRC_FUNCLET_STARTPROJECT  ; 1 word
+P:0000                        397     org p,"SYSFUNCLET_StartProject_P":
+                              398     
+P:0000 000164                 399     dc      RSRC_FUNCLET_STARTPROJECT           ; Funclet Resource number
+                              402         
+                              404     ;// Call the miscellaneous project init routine. 
+                              405     ;// Initializes battery monitoring (Needed before SysSpeedBoot else slower boot)
+P:0001 0BF080 rrrrrr  6    6  406     jsr     FMiscProjectInit ; always returns SUCCESS 
+                              408         ; Initialize 5V to DCDC Power Transfer
+P:0003 0BF080 rrrrrr  6   12  409         jsr             FInit5VSense
+P:0005 0BF080 rrrrrr  6   18  411     jsr     SysSpeedResetAPI    ; Init Speed Client API data structures
+                              412     ; Initialize voltage and speed: Must select IDLE as first stage out of reset 
+                              413     ; so correct order is performed in sysspeed.
+                              414     ; Do not use SysSpeedIncrease() for this initial speed change.
+                              415     ; Note: All other speed changes except system shutdown should use  
+                              416     ; SysSpeedIncrease() and SysSpeedClockFree() to modify speed.
+P:0007 0BF080 rrrrrr  6   24  417     jsr     SysSpeedSysStartUp   
+                              419     ;SysSpeedBoot sets the speed to SPEED_MAX _MP3ENCODE or _PEAK (& does nothing else).
+                              420     ;We call this so that subsequent player startup calls are quicker.  
+P:0009 0BF080 rrrrrr  6   30  421     jsr     SysSpeedBoot ; Changes fDCLK & Vddd to one of highest 3 settings. 
+                              422   
+                              423    ; This routine calls ExecuteModules, so module init will run here also.
+                              424    ; Initial contrast is default in system_lcd_init_seq.src
+                              425    ; Saved contrast will be adjusted during menus
+P:000B 0BF080 rrrrrr  6   36  426    jsr     FDisplaySplashScreen
+                              429     ; Stmp00004363  Removed MediaInit(1) here
+                              430     ; Init hardware to detect presence of MMC Media
+P:000D 0BF080 rrrrrr  6   42  431     jsr     FMMCInitDetectionPins ; void return
+                              434     ;must call SysLoadFATWrite, because the data drive init stuff can call
+                              435     ;some items that require the write device driver to be loaded
+P:000F 0BF080 rrrrrr  6   48  436     jsr     SysLoadFATWrite
+                              437  ;debug ; testpoint for profiling RestoreDriveFromBackup
+                              438     ;--------------------------------------------------
+                              439     ; If we've booted from the 3rd resource.bin, then one of the primary resource.bins had a resource load error
+                              440     ; so DriveErase it to remove read disturbances and restore it from the backup resource.bin.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0011 5FF000 rrrrrr  3   51  441     move    y:Fg_wPlayerResourceTag,b
+                              442 asm_DRIVE_TAG_RESOURCE2_BIN equ $22 ; see ddi_ldldefs.h if you must change one, change this and that file. 
+P:0013 47F400 000022  3   54  443     move    #>asm_DRIVE_TAG_RESOURCE2_BIN,y1 ;check if this is the master emergency copy of resource.bin in use currently.
+P:0015 20007D         2   56  444     cmp     y1,b
+P:0016 0AF0A2 rrrrrr  6   62  445     jne     SkipSysDriveRestore ; skips if not running from master backup resource.bin
+                              446  ;debug
+                              447      
+P:0018 44F400 000437  3   65  448     move    #>RSRC_RESTORESYSDRIVE_P_CODE,x0   ; Resource number
+P:001A 45F400 000002  3   68  449     move    #>RSRC_TYPE_DATA,x1         ; Resource type is data
+P:001C 47F400 rrrrrr  3   71  450     move    #>(F_lc_u_eRestoreSysDrive_P-F_lc_u_ModuleRegion_b)*3,y1
+P:001E 46F400 rrrrrr  3   74  451     move    #>F_lc_u_ModuleRegion_b,y0    ; Address of the overlay area
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\main.asm: line 451 : inserted "extern F_lc_u_ModuleRegion_b"
+P:0020 54F400 100000  3   77  452     move    #TARGET_MEM_P,a1            ; Overlay area is in P memory
+P:0022 0BF080 rrrrrr  6   83  453     jsr     SysLoadResource
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\main.asm: line 453 : inserted "extern SysLoadResource"
+                              454     ;debug
+                              456     ; If persistant bit was set to force bootup from redundant resource drive, 
+                              457     ; we have done so. If that occurred, now erase the original resource drive 
+                              458     ; to remove read disturbance bit errors and rewrite it, clear persistant bit, 
+                              459     ; then run from original resource drive on next boot.    
+                              460     GetLogicalDriveNumForResourceBin 1
+P:0024 56F400 000006  3   86  460              move   #>6,a
+                              460     
+                              461     push    a1
+P:0026 5C5F00         2   88  461     move    a1,y:(r7)+
+                              462     GetLogicalDriveNumForResourceBin 3
+                              462     
+P:0027 56F400 000008  3   91  462              move   #>8,a
+P:0029 218F00         2   93  463     move    a1,b ; source drive in b1 as required by c compiler
+P:002A 200013         2   95  464     clr     a
+                              465     pop     a1   ; destination drive in a1 as required by c compiler
+P:002B 5CFF00         4   99  465     move    y:-(r7),a1
+P:002C 0BF080 rrrrrr  6  105  466     jsr     FRestoreDriveFromBackup    ; RestoreDriveFromBackup.c
+                              467     ; RESTOREDRIVEFROMBACKUP CAN RETURN QUICK DUE TO LOW BATTERY CONDITION.
+P:002E 0AF0A2 rrrrrr  6  111  468     jne    _RebootToRestoreMap           ; Don't reboot or try to restore other drive if restore returned err 
+                              469         ;----------- Now restore resource 2 drive from master resource 3 drive 
+                              470         GetLogicalDriveNumForResourceBin 2
+                              470     
+P:0030 56F400 000007  3  114  470              move   #>7,a
+                              471         push    a1
+P:0032 5C5F00         2  116  471     move    a1,y:(r7)+
+                              472         GetLogicalDriveNumForResourceBin 3
+                              472     
+P:0033 56F400 000008  3  119  472              move   #>8,a
+P:0035 218F00         2  121  473         move    a1,b ; source drive in b1 as required by c compiler
+P:0036 200013         2  123  474         clr     a
+                              475         pop     a1   ; destination drive in a1 as required by c compiler
+P:0037 5CFF00         4  127  475     move    y:-(r7),a1
+P:0038 0BF080 rrrrrr  6  133  476         jsr     FRestoreDriveFromBackup    ; RestoreDriveFromBackup.c
+P:003A 0AF0A2 rrrrrr  6  139  477         jne    _RebootToRestoreMap          ; 
+P:003C 0BF080 rrrrrr  6  145  478         jsr     FMarkSystemDriveClean     ; RestoreDriveFromBackup.c::IndicateDrivesRestored REBOOTS INTENTIONALLY
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\main.asm: line 478 : inserted "extern FMarkSystemDriveClean"
+                              479         ;// Reboot from original resource.bin now
+                              480 _RebootToRestoreMap
+P:003E 0AF080 rrrrrr  6  151  481         jmp FUnconditionalReboot ; to restore the mem map after loading RSRC_RESTORESYSDRIVE_P_CODE
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\main.asm: line 481 : inserted "extern FUnconditionalReboot"
+                              482 SkipSysDriveRestore:
+                              483     ; -------------------------------------------------------
+                              484     ; Only want to DriveInit the onboard NAND flash. 
+                              485     ; MMC datadrive DriveInit later after presence check in menus\playerstatemachine.c
+P:0040 200013         2  153  487     clr     A            ;initialize the DATA drive (logical Drive 0 as input param in A)
+P:0041 0BF080 rrrrrr  6  159  488     jsr     FDriveInit
+                              489     ; Only want to initialize NAND. MMC done in menus\playerstatemachine.c
+                              491     ; --------------------------
+                              492     ; File System Init: Only want to initialize NAND (Drive 0). MMC done in menus.
+                              493     ; In previous asm FSInit b=0 meant init both media. Now it inits up to maxdevices parm
+P:0043 20001B         2  161  494     clr     b                  
+P:0044 60F400 rrrrrr  3  164  495     move    #Fbufx,r0
+P:0046 64F400 rrrrrr  3  167  496     move    #Fbufy,r4
+                              497 ;; Feb 12 2007: always use the Fmaxdevices since FSInit only prepare buffers for file system
+                              498 ;  if @def('MMC')  ;
+                              499 ;       ; FSInit only the NAND data drive. MMC data drive is FSInit in menus\playerstatemachine.c
+                              500 ;    move    #>1,A      ; Num devices/datadrives for FSInit to consider
+                              501 ;  else 
+P:0048 5EF000 rrrrrr  3  170  502     move    y:Fmaxdevices,A
+                              503 ;  endif         
+P:004A 5FF000 rrrrrr  3  173  504     move    y:Fmaxhandles,B
+P:004C 4CF000 rrrrrr  3  176  505     move    y:Fmaxcaches,x0
+P:004E 0BF080 rrrrrr  6  182  506     jsr     FFSInit                                     ; Initialize file system buffers
+P:0050 200013         2  184  507     clr     A    
+P:0051 0BF080 rrrrrr  6  190  508     jsr     FFSDriveInit
+P:0053 0AF0A0 rrrrrr  6  196  509     jcc     _NoErrorOnMedia             ;If carry bit no set, will continue
+P:0055 0A7060 rrrrrr  6  202  510     bset    #0,Fg_iMediaErrorFlag       ;Set error flag
+                              511    ;debug ; error occurred during FSInit. Is there an err code in A?
+                              512 _NoErrorOnMedia
+                              513    ;----------------------------
+                              514 ;    ; Exported to be called ealier than here so we can use persist bits earlier.  may 19'06.
+                              515 ;    ; Initialize the Sticky Bit copy controller for NON 3410 builds.
+                              516 ;    if !@def('D3410')
+                              517 ;     jsr     FStickyBitInit
+                              518 ;    endif      
+                              519     ;----------------------------
+                              520     ; These next four lines were necessary for the MTP db sticky bit to transfer across applications
+P:0057 0A7003 00F507  6  208  521     bclr    #3,X:HW_RTC_PERSIST0   ; May 2006 warning: this operation is less robust than calling API ClearStickyBit
+                              522     ; For the 35xx...
+                              523     ; Enable XTAL on power down, to preserve RTC value and persistent bits
+P:0059 0A7025 00FA1B  6  214  524     bset    #5,X:HW_DCDC_PERSIST             ; Set the SLEEP_XTAL_ENABLE bit in the DCDC persistent shadow register
+P:005B 0A702A 00FA1B  6  220  525     bset    #10,X:HW_DCDC_PERSIST            ; Update the master DCDC persistent register in the clock domain
+P:005D 0A700A 00FA1B  6  226  526     bclr    #10,X:HW_DCDC_PERSIST
+                              527     ;-----------------------
+                              529 ; if !@def('SUPPORT_MARGINAL_XTALS')
+                              544     ;-----------------------
+                              545     ; Inserted may 10 2006 as patch for released SDK 2.611 and 2.610 to make clock signal from stfm1000 to 35xx more stable in liion case. 
+                              546     ; Any later  2.6xx sdk will include this solution. 
+                              547     ; This 3 line insertion is PCN25. An SDK3.110 patch was also done and this was integrated into SDK3.120 during its development. Any later SDK3.x>=3.111 will have this.
+P:005F 0A7024 00FA1B  6  232  550     bset    #4,X:HW_DCDC_PERSIST            ; Set XTAL_TRIM1 to Add 4pf cap to XTALo/XTALi
+P:0061 0A702A 00FA1B  6  238  551     bset    #10,X:HW_DCDC_PERSIST           ; For LIION build only with STFM1000 FM device
+P:0063 0A700A 00FA1B  6  244  552     bclr    #10,X:HW_DCDC_PERSIST           ; This fixes trap to Illegal Instruction when Recording FM
+                              555     
+P:0065 200013         2  246  556     clr     a                           ; 0 is nand flash
+P:0066 0BF080 rrrrrr  6  252  557     jsr     FTestSkipCheckDisk 
+P:0068 200013         2  254  559         clr A
+P:0069 0BF080 rrrrrr  6  260  560         jsr     FSetCWDHandle
+                              561         
+                              562     ; No MMC CheckDisk until MMC media init in playerstatemachine.
+                              563     ;----------------------------
+                              564     ; Compute free clusters only for device 0. Multinand also only needs 1 call.    
+P:006B 200013         2  262  566         clr A
+P:006C 0BF080 rrrrrr  6  268  567         jsr  FComputefreeluster
+                              568     ; in sdk 2.6xx, MMC Computefreeluster is called in playerstatemachine, not here in main.asm. 
+                              569     ;-----------------------------
+                              570     ;the follow has been commented to because it is now being saved in settings.dat
+P:006E 0BF080 rrrrrr  6  274  571         jsr     FLoadUserTime   ; Load User time may create file, if it is absent.
+                              573     ;unload the FATWrite (since we no longer need the datadrive write driver loaded
+                              574     ;FATWrite was needed for checkdisk since we may have had to write the FAT table / datadrive.
+                              575     ; Call SysUnLoadFATWrite before loading Janus (stmp6689)
+P:0070 0BF080 rrrrrr  6  280  576         jsr  SysUnLoadFATWrite
+                              577     ;-----------------------------
+                              578     ; debug ;testpoint
+                              590     ;-----------------------------    
+P:0072 0BF080 rrrrrr  6  286  591     jsr     SysLoadSettings ; loads static data values from hidden attribute file settings.dat on user data drive
+                              595 ;    bset #HW_GP_B16_BITPOS,x:HW_GP0DOR
+                              597     ;set the speed back to idle, so that analog init doesn't get screwed up
+P:0074 0BF080 rrrrrr  6  292  598     jsr     SysSpeedSysStartUp
+                              600     ; Init the buttons
+P:0076 0BF080 rrrrrr  6  298  601     jsr     ButtonInit
+                              602     
+                              603     ; turn on the buttons
+P:0078 0BF080 rrrrrr  6  304  604     jsr     ButtonsOn
+                              605         
+                              606     ; considered moving earlier may 19 2006 but had to stay here since its a funclet (needs resource.bin DriveInit 1st)
+                              607     ; Init the Real Time Clock  (has a 1msec counter of size 48 bits)
+P:007A 0BF080 rrrrrr  6  310  608     jsr     InitRTC
+                              609     
+                              610     ; Run some more inits
+                              611     ;jsr     AnalogInit  ;stmp7523 use funclet ver instead since semi-static locator may not have occurred.
+                              612     CallFunclet RSRC_FUNCLET_ANALOGINIT 
+P:007C 0D0080         4  314  612     jsr       $80
+P:007D 00015F                 612     DC       RSRC_FUNCLET_ANALOGINIT  ; 1 word
+                              613  
+P:007E 0BF080 rrrrrr  6  320  615     jsr     UsbDetectInit
+                              616     ;-----------------------------
+                              617     ; GP32 or CF_A0. This used as MMC_DETECT bit. STMP9220 Let pin float high to reduce USB suspend current
+P:0080 00000C         4  324  622     rts
+                              626  
+                              627     ;If using funclet, switch counter back to original here
+P:004B                        628     org    p,"EXEC_main_P":                             
+                              633 ;///////////////////////////////////////////////////////////////////////////////
+                              634 ;>  Name:           EmptyFunction
+                              635 ;   Type:           Function
+                              636 ;   Description:    This function does nothing
+                              637 ;   Inputs:         none
+                              638 ;   Outputs:        none
+                              639 ;   Notes:          If a module does not have a background processing
+                              640 ;                   routine, then the address of this function is put
+                              641 ;                   in the module table entry.
+                              642 ;<
+                              643 ;///////////////////////////////////////////////////////////////////////////////
+                              645 EmptyFunction
+P:004B 00000C         4  204  646     rts
+                              652     endsec

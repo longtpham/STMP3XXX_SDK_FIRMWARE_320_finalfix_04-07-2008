@@ -1,0 +1,5 @@
+@IF 1'NOPE'==%DSPENVSET%'NOPE' GOTO :END
+@IF 'CRUD'==%ROOTDIR%'CRUD' set ROOTDIR=c:
+@set path=%path%;%ROOTDIR%\c2410\bin
+@SET DSPENVSET=1
+:END

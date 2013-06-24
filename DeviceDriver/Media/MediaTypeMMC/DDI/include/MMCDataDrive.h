@@ -1,0 +1,76 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright(C) SigmaTel, Inc. 2003
+//
+// Filename: MMCDataDrive.h
+// Description: 
+////////////////////////////////////////////////////////////////////////////////
+
+#ifndef _MMCDATADRIVE_H
+#define _MMCDATADRIVE_H
+
+///////////////////////////////////////////////////////////////////////////////
+// Includes
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// Definitions
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// Error codes
+///////////////////////////////////////////////////////////////////////////////
+
+#include "errors.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Typedefs
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// Prototypes
+///////////////////////////////////////////////////////////////////////////////
+RETCODE _reentrant MMCDataDriveInit(P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor);
+
+RETCODE _reentrant MMCDataDriveGetInfo(
+    P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+    LOGICAL_DRIVE_INFO Type,
+    void * pInfo);
+
+RETCODE _reentrant MMCDataDriveSetInfo(
+    P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+    LOGICAL_DRIVE_INFO Type, void * pInfo);
+
+RETCODE _reentrant MMCDataDriveReadSector(P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+    DWORD dwSectorNumber, P_SECTOR_BUFFER pSectorData);
+
+RETCODE _reentrant MMCDataDriveWriteSector( P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+    DWORD dwSectorNumber, P_SECTOR_BUFFER pSectorData);
+
+RETCODE _reentrant MmcDataDriveMultiWriteSetup(
+    P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+    DWORD dwStartSectorNumber,
+    WORD wSectorCount,
+    MULTI_WRITE_CALLBACK_FUNCTION pCallBackFunction);
+
+RETCODE _reentrant MmcDataDriveMultiWriteSector(
+    P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+    P_SECTOR_BUFFER pSectorData,
+    LONG lCallBackPassThru);
+
+RETCODE _reentrant MMCDataDriveErase(P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor,
+                                     WORD wMagicNumber);
+
+RETCODE _reentrant MMCDataDriveFlush(P_LOGICAL_DRIVE_DESCRIPTOR pDescriptor );
+
+
+
+_reentrant BOOL MMCDataDriveAsyncEraseCallback(int iStatus, void *pObj);
+
+extern LOGICAL_DRIVE_API MMCDataDriveApi;
+
+///////////////////////////////////////////////////////////////////////////////
+// Global variables
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // #ifndef _MMCDATADRIVE_H

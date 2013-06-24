@@ -1,0 +1,1960 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc9f5b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;lowresolutionad:
+                               96 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                               97 ; 2    |//  Copyright(C) SigmaTel, Inc. 2000-2001
+                               98 ; 3    |//  File        : LowResoulutionAdcInit.c
+                               99 ; 4    |// Description : Low Resolution ADC Init Routine
+                              100 ; 5    |///////////////////////////////////////////////////////////////////////////////
+                              101 ; 6    |
+                              102 ; 7    |#include "types.h"
+                              103 
+                              105 
+                              106 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              107 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              108 ; 3    |//
+                              109 ; 4    |// Filename: types.h
+                              110 ; 5    |// Description: Standard data types
+                              111 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              112 ; 7    |
+                              113 ; 8    |#ifndef _TYPES_H
+                              114 ; 9    |#define _TYPES_H
+                              115 ; 10   |
+                              116 ; 11   |// TODO:  move this outta here!
+                              117 ; 12   |#if !defined(NOERROR)
+                              118 ; 13   |#define NOERROR 0
+                              119 ; 14   |#define SUCCESS 0
+                              120 ; 15   |#endif 
+                              121 ; 16   |#if !defined(SUCCESS)
+                              122 ; 17   |#define SUCCESS  0
+                              123 ; 18   |#endif
+                              124 ; 19   |#if !defined(ERROR)
+                              125 ; 20   |#define ERROR   -1
+                              126 ; 21   |#endif
+                              127 ; 22   |#if !defined(FALSE)
+                              128 ; 23   |#define FALSE 0
+                              129 ; 24   |#endif
+                              130 ; 25   |#if !defined(TRUE)
+                              131 ; 26   |#define TRUE  1
+                              132 ; 27   |#endif
+                              133 ; 28   |
+                              134 ; 29   |#if !defined(NULL)
+                              135 ; 30   |#define NULL 0
+                              136 ; 31   |#endif
+                              137 ; 32   |
+                              138 ; 33   |#define MAX_INT     0x7FFFFF
+                              139 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              140 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              141 ; 36   |#define MAX_ULONG   (-1) 
+                              142 ; 37   |
+                              143 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              144 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              145 ; 40   |
+                              146 ; 41   |
+                              147 ; 42   |#define BYTE    unsigned char       // btVarName
+                              148 ; 43   |#define CHAR    signed char         // cVarName
+                              149 ; 44   |#define USHORT  unsigned short      // usVarName
+                              150 ; 45   |#define SHORT   unsigned short      // sVarName
+                              151 ; 46   |#define WORD    unsigned int        // wVarName
+                              152 ; 47   |#define INT     signed int          // iVarName
+                              153 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              154 ; 49   |#define LONG    signed long         // lVarName
+                              155 ; 50   |#define BOOL    unsigned int        // bVarName
+                              156 ; 51   |#define FRACT   _fract              // frVarName
+                              157 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              158 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              159 ; 54   |#define FLOAT   float               // fVarName
+                              160 ; 55   |#define DBL     double              // dVarName
+                              161 ; 56   |#define ENUM    enum                // eVarName
+                              162 ; 57   |#define CMX     _complex            // cmxVarName
+                              163 ; 58   |typedef WORD UCS3;                   // 
+                              164 ; 59   |
+                              165 ; 60   |#define UINT16  unsigned short
+                              166 ; 61   |#define UINT8   unsigned char   
+                              167 ; 62   |#define UINT32  unsigned long
+                              168 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              169 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              170 ; 65   |#define WCHAR   UINT16
+                              171 ; 66   |
+                              172 ; 67   |//UINT128 is 16 bytes or 6 words
+                              173 ; 68   |typedef struct UINT128_3500 {   
+                              174 ; 69   |    int val[6];     
+                              175 ; 70   |} UINT128_3500;
+                              176 ; 71   |
+                              177 ; 72   |#define UINT128   UINT128_3500
+                              178 ; 73   |
+                              179 ; 74   |// Little endian word packed byte strings:   
+                              180 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              181 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              182 ; 77   |// Little endian word packed byte strings:   
+                              183 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              184 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              185 ; 80   |
+                              186 ; 81   |// Declare Memory Spaces To Use When Coding
+                              187 ; 82   |// A. Sector Buffers
+                              188 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              189 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              190 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              191 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              192 
+                              194 
+                              195 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              196 ; 88   |// B. Media DDI Memory
+                              197 ; 89   |#define MEDIA_DDI_MEM _Y
+                              198 ; 90   |
+                              199 ; 91   |
+                              200 ; 92   |
+                              201 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              202 ; 94   |// Examples of circular pointers:
+                              203 ; 95   |//    INT CIRC cpiVarName
+                              204 ; 96   |//    DWORD CIRC cpdwVarName
+                              205 ; 97   |
+                              206 ; 98   |#define RETCODE INT                 // rcVarName
+                              207 ; 99   |
+                              208 ; 100  |// generic bitfield structure
+                              209 ; 101  |struct Bitfield {
+                              210 ; 102  |    unsigned int B0  :1;
+                              211 ; 103  |    unsigned int B1  :1;
+                              212 ; 104  |    unsigned int B2  :1;
+                              213 ; 105  |    unsigned int B3  :1;
+                              214 ; 106  |    unsigned int B4  :1;
+                              215 ; 107  |    unsigned int B5  :1;
+                              216 ; 108  |    unsigned int B6  :1;
+                              217 ; 109  |    unsigned int B7  :1;
+                              218 ; 110  |    unsigned int B8  :1;
+                              219 ; 111  |    unsigned int B9  :1;
+                              220 ; 112  |    unsigned int B10 :1;
+                              221 ; 113  |    unsigned int B11 :1;
+                              222 ; 114  |    unsigned int B12 :1;
+                              223 ; 115  |    unsigned int B13 :1;
+                              224 ; 116  |    unsigned int B14 :1;
+                              225 ; 117  |    unsigned int B15 :1;
+                              226 ; 118  |    unsigned int B16 :1;
+                              227 ; 119  |    unsigned int B17 :1;
+                              228 ; 120  |    unsigned int B18 :1;
+                              229 ; 121  |    unsigned int B19 :1;
+                              230 ; 122  |    unsigned int B20 :1;
+                              231 ; 123  |    unsigned int B21 :1;
+                              232 ; 124  |    unsigned int B22 :1;
+                              233 ; 125  |    unsigned int B23 :1;
+                              234 ; 126  |};
+                              235 ; 127  |
+                              236 ; 128  |union BitInt {
+                              237 ; 129  |        struct Bitfield B;
+                              238 ; 130  |        int        I;
+                              239 ; 131  |};
+                              240 ; 132  |
+                              241 ; 133  |#define MAX_MSG_LENGTH 10
+                              242 ; 134  |struct CMessage
+                              243 ; 135  |{
+                              244 ; 136  |        unsigned int m_uLength;
+                              245 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              246 ; 138  |};
+                              247 ; 139  |
+                              248 ; 140  |typedef struct {
+                              249 ; 141  |    WORD m_wLength;
+                              250 ; 142  |    WORD m_wMessage;
+                              251 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              252 ; 144  |} Message;
+                              253 ; 145  |
+                              254 ; 146  |struct MessageQueueDescriptor
+                              255 ; 147  |{
+                              256 ; 148  |        int *m_pBase;
+                              257 ; 149  |        int m_iModulo;
+                              258 ; 150  |        int m_iSize;
+                              259 ; 151  |        int *m_pHead;
+                              260 ; 152  |        int *m_pTail;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              261 ; 153  |};
+                              262 ; 154  |
+                              263 ; 155  |struct ModuleEntry
+                              264 ; 156  |{
+                              265 ; 157  |    int m_iSignaledEventMask;
+                              266 ; 158  |    int m_iWaitEventMask;
+                              267 ; 159  |    int m_iResourceOfCode;
+                              268 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              269 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              270 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              271 ; 163  |    int m_uTimeOutHigh;
+                              272 ; 164  |    int m_uTimeOutLow;
+                              273 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              274 ; 166  |};
+                              275 ; 167  |
+                              276 ; 168  |union WaitMask{
+                              277 ; 169  |    struct B{
+                              278 ; 170  |        unsigned int m_bNone     :1;
+                              279 ; 171  |        unsigned int m_bMessage  :1;
+                              280 ; 172  |        unsigned int m_bTimer    :1;
+                              281 ; 173  |        unsigned int m_bButton   :1;
+                              282 ; 174  |    } B;
+                              283 ; 175  |    int I;
+                              284 ; 176  |} ;
+                              285 ; 177  |
+                              286 ; 178  |
+                              287 ; 179  |struct Button {
+                              288 ; 180  |        WORD wButtonEvent;
+                              289 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              290 ; 182  |};
+                              291 ; 183  |
+                              292 ; 184  |struct Message {
+                              293 ; 185  |        WORD wMsgLength;
+                              294 ; 186  |        WORD wMsgCommand;
+                              295 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              296 ; 188  |};
+                              297 ; 189  |
+                              298 ; 190  |union EventTypes {
+                              299 ; 191  |        struct CMessage msg;
+                              300 ; 192  |        struct Button Button ;
+                              301 ; 193  |        struct Message Message;
+                              302 ; 194  |};
+                              303 ; 195  |
+                              304 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              305 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              306 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              307 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              308 ; 200  |
+                              309 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              310 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              311 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              312 ; 204  |
+                              313 ; 205  |#if DEBUG
+                              314 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              315 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              316 ; 208  |#else 
+                              317 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              318 ; 210  |#define DebugBuildAssert(x)    
+                              319 ; 211  |#endif
+                              320 ; 212  |
+                              321 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              322 ; 214  |//  #pragma asm
+                              323 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              324 ; 216  |//  #pragma endasm
+                              325 ; 217  |
+                              326 ; 218  |
+                              327 ; 219  |#ifdef COLOR_262K
+                              328 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              329 ; 221  |#elif defined(COLOR_65K)
+                              330 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              331 ; 223  |#else
+                              332 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              333 ; 225  |#endif
+                              334 ; 226  |    
+                              335 ; 227  |#endif // #ifndef _TYPES_H
+                              336 
+                              338 
+                              339 ; 8    |#include "regslradc.h"
+                              340 
+                              342 
+                              343 ; 1    |#if !(defined(regslradcinc))
+                              344 ; 2    |
+                              345 ; 3    |#define regslradcinc 1
+                              346 ; 4    |
+                              347 ; 5    |#include "types.h"
+                              348 
+                              350 
+                              351 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              352 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              353 ; 3    |//
+                              354 ; 4    |// Filename: types.h
+                              355 ; 5    |// Description: Standard data types
+                              356 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              357 ; 7    |
+                              358 ; 8    |#ifndef _TYPES_H
+                              359 ; 9    |#define _TYPES_H
+                              360 ; 10   |
+                              361 ; 11   |// TODO:  move this outta here!
+                              362 ; 12   |#if !defined(NOERROR)
+                              363 ; 13   |#define NOERROR 0
+                              364 ; 14   |#define SUCCESS 0
+                              365 ; 15   |#endif 
+                              366 ; 16   |#if !defined(SUCCESS)
+                              367 ; 17   |#define SUCCESS  0
+                              368 ; 18   |#endif
+                              369 ; 19   |#if !defined(ERROR)
+                              370 ; 20   |#define ERROR   -1
+                              371 ; 21   |#endif
+                              372 ; 22   |#if !defined(FALSE)
+                              373 ; 23   |#define FALSE 0
+                              374 ; 24   |#endif
+                              375 ; 25   |#if !defined(TRUE)
+                              376 ; 26   |#define TRUE  1
+                              377 ; 27   |#endif
+                              378 ; 28   |
+                              379 ; 29   |#if !defined(NULL)
+                              380 ; 30   |#define NULL 0
+                              381 ; 31   |#endif
+                              382 ; 32   |
+                              383 ; 33   |#define MAX_INT     0x7FFFFF
+                              384 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              385 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              386 ; 36   |#define MAX_ULONG   (-1) 
+                              387 ; 37   |
+                              388 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              389 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              390 ; 40   |
+                              391 ; 41   |
+                              392 ; 42   |#define BYTE    unsigned char       // btVarName
+                              393 ; 43   |#define CHAR    signed char         // cVarName
+                              394 ; 44   |#define USHORT  unsigned short      // usVarName
+                              395 ; 45   |#define SHORT   unsigned short      // sVarName
+                              396 ; 46   |#define WORD    unsigned int        // wVarName
+                              397 ; 47   |#define INT     signed int          // iVarName
+                              398 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              399 ; 49   |#define LONG    signed long         // lVarName
+                              400 ; 50   |#define BOOL    unsigned int        // bVarName
+                              401 ; 51   |#define FRACT   _fract              // frVarName
+                              402 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              403 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              404 ; 54   |#define FLOAT   float               // fVarName
+                              405 ; 55   |#define DBL     double              // dVarName
+                              406 ; 56   |#define ENUM    enum                // eVarName
+                              407 ; 57   |#define CMX     _complex            // cmxVarName
+                              408 ; 58   |typedef WORD UCS3;                   // 
+                              409 ; 59   |
+                              410 ; 60   |#define UINT16  unsigned short
+                              411 ; 61   |#define UINT8   unsigned char   
+                              412 ; 62   |#define UINT32  unsigned long
+                              413 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              414 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              415 ; 65   |#define WCHAR   UINT16
+                              416 ; 66   |
+                              417 ; 67   |//UINT128 is 16 bytes or 6 words
+                              418 ; 68   |typedef struct UINT128_3500 {   
+                              419 ; 69   |    int val[6];     
+                              420 ; 70   |} UINT128_3500;
+                              421 ; 71   |
+                              422 ; 72   |#define UINT128   UINT128_3500
+                              423 ; 73   |
+                              424 ; 74   |// Little endian word packed byte strings:   
+                              425 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              426 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              427 ; 77   |// Little endian word packed byte strings:   
+                              428 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              429 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              430 ; 80   |
+                              431 ; 81   |// Declare Memory Spaces To Use When Coding
+                              432 ; 82   |// A. Sector Buffers
+                              433 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              434 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              435 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              436 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              437 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              438 ; 88   |// B. Media DDI Memory
+                              439 ; 89   |#define MEDIA_DDI_MEM _Y
+                              440 ; 90   |
+                              441 ; 91   |
+                              442 ; 92   |
+                              443 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              444 ; 94   |// Examples of circular pointers:
+                              445 ; 95   |//    INT CIRC cpiVarName
+                              446 ; 96   |//    DWORD CIRC cpdwVarName
+                              447 ; 97   |
+                              448 ; 98   |#define RETCODE INT                 // rcVarName
+                              449 ; 99   |
+                              450 ; 100  |// generic bitfield structure
+                              451 ; 101  |struct Bitfield {
+                              452 ; 102  |    unsigned int B0  :1;
+                              453 ; 103  |    unsigned int B1  :1;
+                              454 ; 104  |    unsigned int B2  :1;
+                              455 ; 105  |    unsigned int B3  :1;
+                              456 ; 106  |    unsigned int B4  :1;
+                              457 ; 107  |    unsigned int B5  :1;
+                              458 ; 108  |    unsigned int B6  :1;
+                              459 ; 109  |    unsigned int B7  :1;
+                              460 ; 110  |    unsigned int B8  :1;
+                              461 ; 111  |    unsigned int B9  :1;
+                              462 ; 112  |    unsigned int B10 :1;
+                              463 ; 113  |    unsigned int B11 :1;
+                              464 ; 114  |    unsigned int B12 :1;
+                              465 ; 115  |    unsigned int B13 :1;
+                              466 ; 116  |    unsigned int B14 :1;
+                              467 ; 117  |    unsigned int B15 :1;
+                              468 ; 118  |    unsigned int B16 :1;
+                              469 ; 119  |    unsigned int B17 :1;
+                              470 ; 120  |    unsigned int B18 :1;
+                              471 ; 121  |    unsigned int B19 :1;
+                              472 ; 122  |    unsigned int B20 :1;
+                              473 ; 123  |    unsigned int B21 :1;
+                              474 ; 124  |    unsigned int B22 :1;
+                              475 ; 125  |    unsigned int B23 :1;
+                              476 ; 126  |};
+                              477 ; 127  |
+                              478 ; 128  |union BitInt {
+                              479 ; 129  |        struct Bitfield B;
+                              480 ; 130  |        int        I;
+                              481 ; 131  |};
+                              482 ; 132  |
+                              483 ; 133  |#define MAX_MSG_LENGTH 10
+                              484 ; 134  |struct CMessage
+                              485 ; 135  |{
+                              486 ; 136  |        unsigned int m_uLength;
+                              487 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              488 ; 138  |};
+                              489 ; 139  |
+                              490 ; 140  |typedef struct {
+                              491 ; 141  |    WORD m_wLength;
+                              492 ; 142  |    WORD m_wMessage;
+                              493 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              494 ; 144  |} Message;
+                              495 ; 145  |
+                              496 ; 146  |struct MessageQueueDescriptor
+                              497 ; 147  |{
+                              498 ; 148  |        int *m_pBase;
+                              499 ; 149  |        int m_iModulo;
+                              500 ; 150  |        int m_iSize;
+                              501 ; 151  |        int *m_pHead;
+                              502 ; 152  |        int *m_pTail;
+                              503 ; 153  |};
+                              504 ; 154  |
+                              505 ; 155  |struct ModuleEntry
+                              506 ; 156  |{
+                              507 ; 157  |    int m_iSignaledEventMask;
+                              508 ; 158  |    int m_iWaitEventMask;
+                              509 ; 159  |    int m_iResourceOfCode;
+                              510 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              511 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              512 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              513 ; 163  |    int m_uTimeOutHigh;
+                              514 ; 164  |    int m_uTimeOutLow;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              515 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              516 ; 166  |};
+                              517 ; 167  |
+                              518 ; 168  |union WaitMask{
+                              519 ; 169  |    struct B{
+                              520 ; 170  |        unsigned int m_bNone     :1;
+                              521 ; 171  |        unsigned int m_bMessage  :1;
+                              522 ; 172  |        unsigned int m_bTimer    :1;
+                              523 ; 173  |        unsigned int m_bButton   :1;
+                              524 ; 174  |    } B;
+                              525 ; 175  |    int I;
+                              526 ; 176  |} ;
+                              527 ; 177  |
+                              528 ; 178  |
+                              529 ; 179  |struct Button {
+                              530 ; 180  |        WORD wButtonEvent;
+                              531 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              532 ; 182  |};
+                              533 ; 183  |
+                              534 ; 184  |struct Message {
+                              535 ; 185  |        WORD wMsgLength;
+                              536 ; 186  |        WORD wMsgCommand;
+                              537 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              538 ; 188  |};
+                              539 ; 189  |
+                              540 ; 190  |union EventTypes {
+                              541 ; 191  |        struct CMessage msg;
+                              542 ; 192  |        struct Button Button ;
+                              543 ; 193  |        struct Message Message;
+                              544 ; 194  |};
+                              545 ; 195  |
+                              546 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              547 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              548 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              549 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              550 ; 200  |
+                              551 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              552 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              553 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              554 ; 204  |
+                              555 ; 205  |#if DEBUG
+                              556 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              557 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              558 ; 208  |#else 
+                              559 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              560 ; 210  |#define DebugBuildAssert(x)    
+                              561 ; 211  |#endif
+                              562 ; 212  |
+                              563 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              564 ; 214  |//  #pragma asm
+                              565 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              566 ; 216  |//  #pragma endasm
+                              567 ; 217  |
+                              568 ; 218  |
+                              569 ; 219  |#ifdef COLOR_262K
+                              570 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              571 ; 221  |#elif defined(COLOR_65K)
+                              572 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              573 ; 223  |#else
+                              574 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              575 ; 225  |#endif
+                              576 ; 226  |    
+                              577 ; 227  |#endif // #ifndef _TYPES_H
+                              578 
+                              580 
+                              581 ; 6    |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              582 ; 7    |
+                              583 ; 8    |//   SYSTEM STMP Registers 
+                              584 ; 9    |//  Last Edited 6.26.2003 M. Henson
+                              585 ; 10   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              586 ; 11   |
+                              587 ; 12   |#define HW_LRADC_BASEADDR (0xFA20)
+                              588 ; 13   |
+                              589 ; 14   |
+                              590 ; 15   |
+                              591 ; 16   |/////////////////////////////////////////////////////////////////////////////////
+                              592 ; 17   |//  Battery LRADC Control Register (HW_BATT_CTRL) Bit Definitions
+                              593 ; 18   |#define HW_BATT_CTRL_INPUT_OFFSET_WIDTH (7)
+                              594 ; 19   |#define HW_BATT_CTRL_RSVD0_WIDTH (1)
+                              595 ; 20   |#define HW_BATT_CTRL_HALF_CMP_PWR_WIDTH (1)
+                              596 ; 21   |#define HW_BATT_CTRL_INPUT_DIV2_WIDTH (1)
+                              597 ; 22   |#define HW_BATT_CTRL_CLEAR_WIDTH (1)
+                              598 ; 23   |#define HW_BATT_CTRL_PWD_WIDTH (1)
+                              599 ; 24   |#define HW_BATT_CTRL_CLK_DIV_WIDTH (2)
+                              600 ; 25   |#define HW_BATT_CTRL_RSVD1_WIDTH (2)
+                              601 ; 26   |#define HW_BATT_CTRL_REF_VAL_WIDTH (2)
+                              602 ; 27   |#define HW_BATT_CTRL_RSVD2_WIDTH (2)
+                              603 ; 28   |#define HW_BATT_CTRL_IRQ_EN_EVENT0_WIDTH (1)
+                              604 ; 29   |#define HW_BATT_CTRL_IRQ_EN_EVENT1_WIDTH (1)
+                              605 ; 30   |#define HW_BATT_CTRL_POLARITY_EVENT0_WIDTH (1)
+                              606 ; 31   |#define HW_BATT_CTRL_POLARITY_EVENT1_WIDTH (1)
+                              607 ; 32   |
+                              608 ; 33   |#define HW_BATT_CTRL_INPUT_OFFSET_BITPOS (0)
+                              609 ; 34   |#define HW_BATT_CTRL_HALF_CMP_PWR_BITPOS (8)
+                              610 ; 35   |#define HW_BATT_CTRL_INPUT_DIV2_BITPOS (9)
+                              611 ; 36   |#define HW_BATT_CTRL_CLEAR_BITPOS (10)
+                              612 ; 37   |#define HW_BATT_CTRL_PWD_BITPOS (11)
+                              613 ; 38   |#define HW_BATT_CTRL_CLK_DIV_BITPOS (12)
+                              614 ; 39   |#define HW_BATT_CTRL_REF_VAL_BITPOS (16)
+                              615 ; 40   |
+                              616 ; 41   |#define HW_BATT_CTRL_INPUT_OFFSET_SETMASK (((1<<HW_BATT_CTRL_INPUT_OFFSET_WIDTH)-1)<<HW_BATT_CTRL_INPUT_OFFSET_BITPOS)        
+                              617 ; 42   |#define HW_BATT_CTRL_HALF_CMP_PWR_SETMASK (((1<<HW_BATT_CTRL_HALF_CMP_PWR_WIDTH)-1)<<HW_BATT_CTRL_HALF_CMP_PWR_BITPOS)        
+                              618 ; 43   |#define HW_BATT_CTRL_INPUT_DIV2_SETMASK (((1<<HW_BATT_CTRL_INPUT_DIV2_WIDTH)-1)<<HW_BATT_CTRL_INPUT_DIV2_BITPOS) 
+                              619 ; 44   |#define HW_BATT_CTRL_CLEAR_SETMASK (((1<<HW_BATT_CTRL_CLEAR_WIDTH)-1)<<HW_BATT_CTRL_CLEAR_BITPOS) 
+                              620 ; 45   |#define HW_BATT_CTRL_PWD_SETMASK (((1<<HW_BATT_CTRL_PWD_WIDTH)-1)<<HW_BATT_CTRL_PWD_BITPOS) 
+                              621 ; 46   |#define HW_BATT_CTRL_CLK_DIV_SETMASK (((1<<HW_BATT_CTRL_CLK_DIV_WIDTH)-1)<<HW_BATT_CTRL_CLK_DIV_BITPOS)        
+                              622 ; 47   |#define HW_BATT_CTRL_REF_VAL_SETMASK (((1<<HW_BATT_CTRL_REF_VAL_WIDTH)-1)<<HW_BATT_CTRL_REF_VAL_BITPOS)        
+                              623 ; 48   |
+                              624 ; 49   |#define HW_BATT_CTRL_INPUT_OFFSET_CLRMASK (~(WORD)HW_BATT_CTRL_INPUT_OFFSET_SETMASK)     
+                              625 ; 50   |#define HW_BATT_CTRL_HALF_CMP_PWR_CLRMASK (~(WORD)HW_BATT_CTRL_HALF_CMP_PWR_SETMASK)     
+                              626 ; 51   |#define HW_BATT_CTRL_INPUT_DIV2_CLRMASK (~(WORD)HW_BATT_CTRL_INPUT_DIV2_SETMASK) 
+                              627 ; 52   |#define HW_BATT_CTRL_CLEAR_CLRMASK (~(WORD)HW_BATT_CTRL_CLEAR_SETMASK) 
+                              628 ; 53   |#define HW_BATT_CTRL_PWD_CLRMASK (~(WORD)HW_BATT_CTRL_PWD_SETMASK) 
+                              629 ; 54   |#define HW_BATT_CTRL_CLK_DIV_CLRMASK (~(WORD)HW_BATT_CTRL_CLK_DIV_SETMASK)     
+                              630 ; 55   |#define HW_BATT_CTRL_REF_VAL_CLRMASK (~(WORD)HW_BATT_CTRL_REF_VAL_SETMASK)
+                              631 ; 56   |
+                              632 ; 57   |typedef union               
+                              633 ; 58   |{
+                              634 ; 59   |    struct {
+                              635 ; 60   |        unsigned int INPUT_OFFSET                 : HW_BATT_CTRL_INPUT_OFFSET_WIDTH;
+                              636 ; 61   |        unsigned int RSVD0                        : HW_BATT_CTRL_RSVD0_WIDTH;
+                              637 ; 62   |        unsigned int HALF_CMP_PWR                 : HW_BATT_CTRL_HALF_CMP_PWR_WIDTH;
+                              638 ; 63   |        unsigned int INPUT_DIV2                   : HW_BATT_CTRL_INPUT_DIV2_WIDTH;
+                              639 ; 64   |        unsigned int CLEAR                        : HW_BATT_CTRL_CLEAR_WIDTH;
+                              640 ; 65   |        unsigned int PWD                          : HW_BATT_CTRL_PWD_WIDTH;
+                              641 ; 66   |        unsigned int CLK_DIV                      : HW_BATT_CTRL_CLK_DIV_WIDTH;
+                              642 ; 67   |        unsigned int RSVD1                        : HW_BATT_CTRL_RSVD1_WIDTH;
+                              643 ; 68   |        unsigned int REF_VAL                      : HW_BATT_CTRL_REF_VAL_WIDTH;
+                              644 ; 69   |        unsigned int RSVD2                        : HW_BATT_CTRL_RSVD2_WIDTH;
+                              645 ; 70   |                 unsigned int IRQ_EN_EVENT0                               : HW_BATT_CTRL_IRQ_EN_EVENT0_WIDTH;
+                              646 ; 71   |                 unsigned int IRQ_EN_EVENT1                               : HW_BATT_CTRL_IRQ_EN_EVENT1_WIDTH;
+                              647 ; 72   |             unsigned int POLARITY_EVENT0              : HW_BATT_CTRL_POLARITY_EVENT0_WIDTH;
+                              648 ; 73   |                 unsigned int POLARITY_EVENT1              : HW_BATT_CTRL_POLARITY_EVENT1_WIDTH;
+                              649 ; 74   |    } B;
+                              650 ; 75   |   unsigned int I;
+                              651 ; 76   |        unsigned int U;
+                              652 ; 77   |} lradc_ctrl_type;
+                              653 ; 78   |#define HW_BATT_CTRL      (*(volatile lradc_ctrl_type _X*) (HW_LRADC_BASEADDR))    /* Battery LRADC Control Register */
+                              654 ; 79   |
+                              655 ; 80   |
+                              656 ; 81   |/////////////////////////////////////////////////////////////////////////////////
+                              657 ; 82   |//  Battery LRADC Threshold Register (HW_BATT_THRSH) Bit Definitions
+                              658 ; 83   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_WIDTH (9)
+                              659 ; 84   |#define HW_BATT_THRSH_RSVD0_WIDTH (3)
+                              660 ; 85   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_WIDTH (9)
+                              661 ; 86   |#define HW_BATT_THRSH_RSVD1_WIDTH (3)
+                              662 ; 87   |
+                              663 ; 88   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_BITPOS (0)
+                              664 ; 89   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_BITPOS (12)
+                              665 ; 90   |
+                              666 ; 91   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_SETMASK (((1<<HW_BATT_THRSH_THRESHOLD_EVENT0_WIDTH)-1)<<HW_BATT_THRSH_THRESHOLD_EVENT0_BITPOS)        
+                              667 ; 92   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_SETMASK (((1<<HW_BATT_THRSH_THRESHOLD_EVENT1_WIDTH)-1)<<HW_BATT_THRSH_THRESHOLD_EVENT1_BITPOS)        
+                              668 ; 93   |
+                              669 ; 94   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_CLRMASK (~(WORD)HW_BATT_THRSH_THRESHOLD_EVENT0_SETMASK)     
+                              670 ; 95   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_CLRMASK (~(WORD)HW_BATT_THRSH_THRESHOLD_EVENT1_SETMASK)     
+                              671 ; 96   |
+                              672 ; 97   |
+                              673 ; 98   |typedef union               
+                              674 ; 99   |{
+                              675 ; 100  |    struct {
+                              676 ; 101  |        unsigned int THRESHOLD_EVENT0   : HW_BATT_THRSH_THRESHOLD_EVENT0_WIDTH;
+                              677 ; 102  |        unsigned int RSVD0                  : HW_BATT_THRSH_RSVD0_WIDTH;
+                              678 ; 103  |        unsigned int THRESHOLD_EVENT1   : HW_BATT_THRSH_THRESHOLD_EVENT1_WIDTH;
+                              679 ; 104  |        unsigned int RSVD1              : HW_BATT_THRSH_RSVD1_WIDTH;
+                              680 ; 105  |    } B;
+                              681 ; 106  |    unsigned int I;
+                              682 ; 107  |} lradc_thrsh_type;
+                              683 ; 108  |#define HW_BATT_THRSH      (*(volatile lradc_thrsh_type _X*) (HW_LRADC_BASEADDR+1))    /* Battery LRADC Threshold Register */
+                              684 ; 109  |
+                              685 ; 110  |
+                              686 ; 111  |/////////////////////////////////////////////////////////////////////////////////
+                              687 ; 112  |//  Battery LRADC Result Register (HW_BATT_RESULT) Bit Definitions
+                              688 ; 113  |#define HW_BATT_RESULT_EQ_EVENT1_WIDTH (1)
+                              689 ; 114  |#define HW_BATT_RESULT_EQ_EVENT0_WIDTH (1)
+                              690 ; 115  |#define HW_BATT_RESULT_GT_EVENT1_WIDTH (1)
+                              691 ; 116  |#define HW_BATT_RESULT_GT_EVENT0_WIDTH (1)
+                              692 ; 117  |#define HW_BATT_RESULT_LT_EVENT1_WIDTH (1)
+                              693 ; 118  |#define HW_BATT_RESULT_LT_EVENT0_WIDTH (1)
+                              694 ; 119  |#define HW_BATT_RESULT_RSVD0_WIDTH (2)
+                              695 ; 120  |#define HW_BATT_RESULT_DATA_OUT_WIDTH (9)
+                              696 ; 121  |#define HW_BATT_RESULT_RSVD1_WIDTH (3)
+                              697 ; 122  |#define HW_BATT_RESULT_IRQ_EVENT0_WIDTH (1)
+                              698 ; 123  |#define HW_BATT_RESULT_IRQ_EVENT1_WIDTH (1)
+                              699 ; 124  |#define HW_BATT_RESULT_RSVD2_WIDTH (2)
+                              700 ; 125  |
+                              701 ; 126  |#define HW_BATT_RESULT_EQ_EVENT1_BITPOS (0)
+                              702 ; 127  |#define HW_BATT_RESULT_EQ_EVENT0_BITPOS (1)
+                              703 ; 128  |#define HW_BATT_RESULT_GT_EVENT1_BITPOS (2)
+                              704 ; 129  |#define HW_BATT_RESULT_GT_EVENT0_BITPOS (3)
+                              705 ; 130  |#define HW_BATT_RESULT_LT_EVENT1_BITPOS (4)
+                              706 ; 131  |#define HW_BATT_RESULT_LT_EVENT0_BITPOS (5)
+                              707 ; 132  |#define HW_BATT_RESULT_RSVD0_BITPOS (6)
+                              708 ; 133  |#define HW_BATT_RESULT_DATA_OUT_BITPOS (8)
+                              709 ; 134  |#define HW_BATT_RESULT_RSVD1_BITPOS (17)
+                              710 ; 135  |#define HW_BATT_RESULT_IRQ_EVENT0_BITPOS (20)
+                              711 ; 136  |#define HW_BATT_RESULT_IRQ_EVENT1_BITPOS (21)
+                              712 ; 137  |#define HW_BATT_RESULT_RSVD2_BITPOS (22)
+                              713 ; 138  |
+                              714 ; 139  |
+                              715 ; 140  |
+                              716 ; 141  |#define HW_BATT_RESULT_EQ_EVENT1_SETMASK (((1<<HW_BATT_RESULT_EQ_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_EQ_EVENT1_BITPOS)
+                              717 ; 142  |#define HW_BATT_RESULT_EQ_EVENT0_SETMASK (((1<<HW_BATT_RESULT_EQ_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_EQ_EVENT0_BITPOS)
+                              718 ; 143  |#define HW_BATT_RESULT_GT_EVENT1_SETMASK (((1<<HW_BATT_RESULT_GT_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_GT_EVENT1_BITPOS)
+                              719 ; 144  |#define HW_BATT_RESULT_GT_EVENT0_SETMASK (((1<<HW_BATT_RESULT_GT_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_GT_EVENT0_BITPOS)
+                              720 ; 145  |#define HW_BATT_RESULT_LT_EVENT1_SETMASK (((1<<HW_BATT_RESULT_LT_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_LT_EVENT1_BITPOS)
+                              721 ; 146  |#define HW_BATT_RESULT_LT_EVENT0_SETMASK (((1<<HW_BATT_RESULT_LT_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_LT_EVENT0_BITPOS)
+                              722 ; 147  |#define HW_BATT_RESULT_RSVD0_SETMASK (((1<<HW_BATT_RESULT_RSVD0_WIDTH)-1)<<HW_BATT_RESULT_RSVD0_BITPOS)
+                              723 ; 148  |#define HW_BATT_RESULT_DATA_OUT_SETMASK (((1<<HW_BATT_RESULT_DATA_OUT_WIDTH)-1)<<HW_BATT_RESULT_DATA_OUT_BITPOS)
+                              724 ; 149  |#define HW_BATT_RESULT_RSVD1_SETMASK (((1<<HW_BATT_RESULT_RSVD1_WIDTH)-1)<<HW_BATT_RESULT_RSVD1_BITPOS)
+                              725 ; 150  |#define HW_BATT_RESULT_IRQ_EVENT0_SETMASK (((1<<HW_BATT_RESULT_IRQ_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_IRQ_EVENT0_BITPOS)
+                              726 ; 151  |#define HW_BATT_RESULT_IRQ_EVENT1_SETMASK (((1<<HW_BATT_RESULT_IRQ_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_IRQ_EVENT1_BITPOS)
+                              727 ; 152  |#define HW_BATT_RESULT_RSVD2_SETMASK (((1<<HW_BATT_RESULT_RSVD2_WIDTH)-1)<<HW_BATT_RESULT_RSVD2_BITPOS)
+                              728 ; 153  |
+                              729 ; 154  |
+                              730 ; 155  |#define HW_BATT_RESULT_EQ_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_EQ_EVENT1_SETMASK)
+                              731 ; 156  |#define HW_BATT_RESULT_EQ_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_EQ_EVENT0_SETMASK)
+                              732 ; 157  |#define HW_BATT_RESULT_GT_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_GT_EVENT1_SETMASK)
+                              733 ; 158  |#define HW_BATT_RESULT_GT_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_GT_EVENT0_SETMASK)
+                              734 ; 159  |#define HW_BATT_RESULT_LT_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_LT_EVENT1_SETMASK)
+                              735 ; 160  |#define HW_BATT_RESULT_LT_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_LT_EVENT0_SETMASK)
+                              736 ; 161  |#define HW_BATT_RESULT_RSVD0_CLRMASK (~(WORD)HW_BATT_RESULT_RSVD0_SETMASK)
+                              737 ; 162  |#define HW_BATT_RESULT_DATA_OUT_CLRMASK (~(WORD)HW_BATT_RESULT_DATA_OUT_SETMASK)
+                              738 ; 163  |#define HW_BATT_RESULT_RSVD1_CLRMASK (~(WORD)HW_BATT_RESULT_RSVD1_SETMASK)
+                              739 ; 164  |#define HW_BATT_RESULT_IRQ_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_IRQ_EVENT0_SETMASK)
+                              740 ; 165  |#define HW_BATT_RESULT_IRQ_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_IRQ_EVENT1_SETMASK)
+                              741 ; 166  |#define HW_BATT_RESULT_RSVD2_CLRMASK (~(WORD)HW_BATT_RESULT_RSVD2_SETMASK)
+                              742 ; 167  |
+                              743 ; 168  |typedef union               
+                              744 ; 169  |{
+                              745 ; 170  |    struct {
+                              746 ; 171  |        unsigned int EQ_EVENT1                  : HW_BATT_RESULT_EQ_EVENT1_WIDTH;
+                              747 ; 172  |        unsigned int EQ_EVENT0                  : HW_BATT_RESULT_EQ_EVENT0_WIDTH;
+                              748 ; 173  |        unsigned int GT_EVENT1                  : HW_BATT_RESULT_GT_EVENT1_WIDTH;
+                              749 ; 174  |        unsigned int GT_EVENT0                  : HW_BATT_RESULT_GT_EVENT0_WIDTH;
+                              750 ; 175  |        unsigned int LT_EVENT1                  : HW_BATT_RESULT_LT_EVENT1_WIDTH;
+                              751 ; 176  |        unsigned int LT_EVENT0                  : HW_BATT_RESULT_LT_EVENT0_WIDTH;
+                              752 ; 177  |        unsigned int RSVD0                     : HW_BATT_RESULT_RSVD0_WIDTH;
+                              753 ; 178  |        unsigned int DATA_OUT                  : HW_BATT_RESULT_DATA_OUT_WIDTH;
+                              754 ; 179  |        unsigned int RSVD1                     : HW_BATT_RESULT_RSVD1_WIDTH;
+                              755 ; 180  |                 unsigned int IRQ_EVENT0                                : HW_BATT_RESULT_IRQ_EVENT0_WIDTH;
+                              756 ; 181  |                 unsigned int IRQ_EVENT1                                : HW_BATT_RESULT_IRQ_EVENT1_WIDTH;                      
+                              757 ; 182  |                 unsigned int RSVD2                                         : HW_BATT_RESULT_RSVD2_WIDTH;
+                              758 ; 183  |    } B;
+                              759 ; 184  |    unsigned int I;
+                              760 ; 185  |} lradc_result_type;
+                              761 ; 186  |#define HW_BATT_RESULT      (*(volatile lradc_result_type _X*) (HW_LRADC_BASEADDR+2))    /* Battery LRADC Result Register */
+                              762 ; 187  |
+                              763 ; 188  |
+                              764 ; 189  |
+                              765 ; 190  |/////////////////////////////////////////////////////////////////////////////////
+                              766 ; 191  |//  LRADC1 Control Register (HW_LRADC1_CTRL) Bit Definitions
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              767 ; 192  |#define HW_LRADC1_CTRL_INPUT_OFFSET_WIDTH (7)
+                              768 ; 193  |#define HW_LRADC1_CTRL_RSVD0_WIDTH (1)
+                              769 ; 194  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_WIDTH (1)
+                              770 ; 195  |#define HW_LRADC1_CTRL_INPUT_DIV2_WIDTH (1)
+                              771 ; 196  |#define HW_LRADC1_CTRL_CLEAR_WIDTH (1)
+                              772 ; 197  |#define HW_LRADC1_CTRL_PWD_WIDTH (1)
+                              773 ; 198  |#define HW_LRADC1_CTRL_CLK_DIV_WIDTH (2)
+                              774 ; 199  |#define HW_LRADC1_CTRL_RSVD1_WIDTH (2)
+                              775 ; 200  |#define HW_LRADC1_CTRL_REF_VAL_WIDTH (2)
+                              776 ; 201  |#define HW_LRADC1_CTRL_RSVD2_WIDTH (6)
+                              777 ; 202  |
+                              778 ; 203  |#define HW_LRADC1_CTRL_INPUT_OFFSET_BITPOS (0)
+                              779 ; 204  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_BITPOS (8)
+                              780 ; 205  |#define HW_LRADC1_CTRL_INPUT_DIV2_BITPOS (9)
+                              781 ; 206  |#define HW_LRADC1_CTRL_CLEAR_BITPOS (10)
+                              782 ; 207  |#define HW_LRADC1_CTRL_PWD_BITPOS (11)
+                              783 ; 208  |#define HW_LRADC1_CTRL_CLK_DIV_BITPOS (12)
+                              784 ; 209  |#define HW_LRADC1_CTRL_REF_VAL_BITPOS (16)
+                              785 ; 210  |
+                              786 ; 211  |#define HW_LRADC1_CTRL_INPUT_OFFSET_SETMASK (((1<<HW_LRADC1_CTRL_INPUT_OFFSET_WIDTH)-1)<<HW_LRADC1_CTRL_INPUT_OFFSET_BITPOS)        
+                              787 ; 212  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_SETMASK (((1<<HW_LRADC1_CTRL_HALF_CMP_PWR_WIDTH)-1)<<HW_LRADC1_CTRL_HALF_CMP_PWR_BITPOS)        
+                              788 ; 213  |#define HW_LRADC1_CTRL_INPUT_DIV2_SETMASK (((1<<HW_LRADC1_CTRL_INPUT_DIV2_WIDTH)-1)<<HW_LRADC1_CTRL_INPUT_DIV2_BITPOS) 
+                              789 ; 214  |#define HW_LRADC1_CTRL_CLEAR_SETMASK (((1<<HW_LRADC1_CTRL_CLEAR_WIDTH)-1)<<HW_LRADC1_CTRL_CLEAR_BITPOS) 
+                              790 ; 215  |#define HW_LRADC1_CTRL_PWD_SETMASK (((1<<HW_LRADC1_CTRL_PWD_WIDTH)-1)<<HW_LRADC1_CTRL_PWD_BITPOS) 
+                              791 ; 216  |#define HW_LRADC1_CTRL_CLK_DIV_SETMASK (((1<<HW_LRADC1_CTRL_CLK_DIV_WIDTH)-1)<<HW_LRADC1_CTRL_CLK_DIV_BITPOS)        
+                              792 ; 217  |#define HW_LRADC1_CTRL_REF_VAL_SETMASK (((1<<HW_LRADC1_CTRL_REF_VAL_WIDTH)-1)<<HW_LRADC1_CTRL_REF_VAL_BITPOS)        
+                              793 ; 218  |
+                              794 ; 219  |#define HW_LRADC1_CTRL_INPUT_OFFSET_CLRMASK (~(WORD)HW_LRADC1_CTRL_INPUT_OFFSET_SETMASK)     
+                              795 ; 220  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_CLRMASK (~(WORD)HW_LRADC1_CTRL_HALF_CMP_PWR_SETMASK)     
+                              796 ; 221  |#define HW_LRADC1_CTRL_INPUT_DIV2_CLRMASK (~(WORD)HW_LRADC1_CTRL_INPUT_DIV2_SETMASK) 
+                              797 ; 222  |#define HW_LRADC1_CTRL_CLEAR_CLRMASK (~(WORD)HW_LRADC1_CTRL_CLEAR_SETMASK) 
+                              798 ; 223  |#define HW_LRADC1_CTRL_PWD_CLRMASK (~(WORD)HW_LRADC1_CTRL_PWD_SETMASK) 
+                              799 ; 224  |#define HW_LRADC1_CTRL_CLK_DIV_CLRMASK (~(WORD)HW_LRADC1_CTRL_CLK_DIV_SETMASK)     
+                              800 ; 225  |#define HW_LRADC1_CTRL_REF_VAL_CLRMASK (~(WORD)HW_LRADC1_CTRL_REF_VAL_SETMASK)     
+                              801 ; 226  |
+                              802 ; 227  |#define HW_LRADC1_CTRL      (*(volatile lradc_ctrl_type _X*) (HW_LRADC_BASEADDR+3))    /* LRADC1 Control Register */
+                              803 ; 228  |
+                              804 ; 229  |
+                              805 ; 230  |
+                              806 ; 231  |/////////////////////////////////////////////////////////////////////////////////
+                              807 ; 232  |//  LRADC1 Threshold Register (HW_LRADC1_THRSH) Bit Definitions
+                              808 ; 233  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_WIDTH (9)
+                              809 ; 234  |#define HW_LRADC1_THRSH_RSVD0_WIDTH (3)
+                              810 ; 235  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_WIDTH (9)
+                              811 ; 236  |#define HW_LRADC1_THRSH_RSVD1_WIDTH (3)
+                              812 ; 237  |
+                              813 ; 238  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_BITPOS (0)
+                              814 ; 239  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_BITPOS (12)
+                              815 ; 240  |
+                              816 ; 241  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_SETMASK (((1<<HW_LRADC1_THRSH_MIN_THRESHOLD_WIDTH)-1)<<HW_LRADC1_THRSH_MIN_THRESHOLD_BITPOS)        
+                              817 ; 242  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_SETMASK (((1<<HW_LRADC1_THRSH_MAX_THRESHOLD_WIDTH)-1)<<HW_LRADC1_THRSH_MAX_THRESHOLD_BITPOS)        
+                              818 ; 243  |
+                              819 ; 244  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_CLRMASK (~(WORD)HW_LRADC1_THRSH_MIN_THRESHOLD_SETMASK)     
+                              820 ; 245  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_CLRMASK (~(WORD)HW_LRADC1_THRSH_MAX_THRESHOLD_SETMASK)     
+                              821 ; 246  |
+                              822 ; 247  |#define HW_LRADC1_THRSH      (*(volatile lradc_thrsh_type _X*) (HW_LRADC_BASEADDR+4))    /* LRADC1 Threshold Register */
+                              823 ; 248  |
+                              824 ; 249  |/////////////////////////////////////////////////////////////////////////////////
+                              825 ; 250  |//  LRADC1 Result Register (HW_LRADC1_RESULT) Bit Definitions
+                              826 ; 251  |#define HW_LRADC1_RESULT_EQ_EVENT1_WIDTH (1)
+                              827 ; 252  |#define HW_LRADC1_RESULT_EQ_EVENT0_WIDTH (1)
+                              828 ; 253  |#define HW_LRADC1_RESULT_GT_EVENT1_WIDTH (1)
+                              829 ; 254  |#define HW_LRADC1_RESULT_GT_EVENT0_WIDTH (1)
+                              830 ; 255  |#define HW_LRADC1_RESULT_LT_EVENT1_WIDTH (1)
+                              831 ; 256  |#define HW_LRADC1_RESULT_LT_EVENT0_WIDTH (1)
+                              832 ; 257  |#define HW_LRADC1_RESULT_RSVD0_WIDTH (2)
+                              833 ; 258  |#define HW_LRADC1_RESULT_DATA_OUT_WIDTH (9)
+                              834 ; 259  |#define HW_LRADC1_RESULT_RSVD1_WIDTH (3)
+                              835 ; 260  |#define HW_LRADC1_RESULT_IRQ_EVENT0_WIDTH (1)
+                              836 ; 261  |#define HW_LRADC1_RESULT_IRQ_EVENT1_WIDTH (1)
+                              837 ; 262  |#define HW_LRADC1_RESULT_RSVD2_WIDTH (2)
+                              838 ; 263  |
+                              839 ; 264  |#define HW_LRADC1_RESULT_EQ_EVENT1_BITPOS (0)
+                              840 ; 265  |#define HW_LRADC1_RESULT_EQ_EVENT0_BITPOS (1)
+                              841 ; 266  |#define HW_LRADC1_RESULT_GT_EVENT1_BITPOS (2)
+                              842 ; 267  |#define HW_LRADC1_RESULT_GT_EVENT0_BITPOS (3)
+                              843 ; 268  |#define HW_LRADC1_RESULT_LT_EVENT1_BITPOS (4)
+                              844 ; 269  |#define HW_LRADC1_RESULT_LT_EVENT0_BITPOS (5)
+                              845 ; 270  |#define HW_LRADC1_RESULT_RSVD0_BITPOS (6)
+                              846 ; 271  |#define HW_LRADC1_RESULT_DATA_OUT_BITPOS (8)
+                              847 ; 272  |#define HW_LRADC1_RESULT_RSVD1_BITPOS (17)
+                              848 ; 273  |#define HW_LRADC1_RESULT_IRQ_EVENT0_BITPOS (20)
+                              849 ; 274  |#define HW_LRADC1_RESULT_IRQ_EVENT1_BITPOS (21)
+                              850 ; 275  |#define HW_LRADC1_RESULT_RSVD2_BITPOS (22)
+                              851 ; 276  |
+                              852 ; 277  |#define HW_LRADC1_RESULT_EQ_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_EQ_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_EQ_EVENT1_BITPOS)
+                              853 ; 278  |#define HW_LRADC1_RESULT_EQ_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_EQ_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_EQ_EVENT0_BITPOS)
+                              854 ; 279  |#define HW_LRADC1_RESULT_GT_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_GT_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_GT_EVENT1_BITPOS)
+                              855 ; 280  |#define HW_LRADC1_RESULT_GT_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_GT_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_GT_EVENT0_BITPOS)
+                              856 ; 281  |#define HW_LRADC1_RESULT_LT_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_LT_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_LT_EVENT1_BITPOS)
+                              857 ; 282  |#define HW_LRADC1_RESULT_LT_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_LT_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_LT_EVENT0_BITPOS)
+                              858 ; 283  |#define HW_LRADC1_RESULT_RSVD0_SETMASK (((1<<HW_LRADC1_RESULT_RSVD0_WIDTH)-1)<<HW_LRADC1_RESULT_RSVD0_BITPOS)
+                              859 ; 284  |#define HW_LRADC1_RESULT_DATA_OUT_SETMASK (((1<<HW_LRADC1_RESULT_DATA_OUT_WIDTH)-1)<<HW_LRADC1_RESULT_DATA_OUT_BITPOS)
+                              860 ; 285  |#define HW_LRADC1_RESULT_RSVD1_SETMASK (((1<<HW_LRADC1_RESULT_RSVD1_WIDTH)-1)<<HW_LRADC1_RESULT_RSVD1_BITPOS)
+                              861 ; 286  |#define HW_LRADC1_RESULT_IRQ_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_IRQ_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_IRQ_EVENT0_BITPOS)
+                              862 ; 287  |#define HW_LRADC1_RESULT_IRQ_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_IRQ_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_IRQ_EVENT1_BITPOS)
+                              863 ; 288  |#define HW_LRADC1_RESULT_RSVD2_SETMASK (((1<<HW_LRADC1_RESULT_RSVD2_WIDTH)-1)<<HW_LRADC1_RESULT_RSVD2_BITPOS)
+                              864 ; 289  |
+                              865 ; 290  |
+                              866 ; 291  |#define HW_LRADC1_RESULT_EQ_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_EQ_EVENT1_SETMASK)
+                              867 ; 292  |#define HW_LRADC1_RESULT_EQ_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_EQ_EVENT0_SETMASK)
+                              868 ; 293  |#define HW_LRADC1_RESULT_GT_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_GT_EVENT1_SETMASK)
+                              869 ; 294  |#define HW_LRADC1_RESULT_GT_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_GT_EVENT0_SETMASK)
+                              870 ; 295  |#define HW_LRADC1_RESULT_LT_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_LT_EVENT1_SETMASK)
+                              871 ; 296  |#define HW_LRADC1_RESULT_LT_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_LT_EVENT0_SETMASK)
+                              872 ; 297  |#define HW_LRADC1_RESULT_RSVD0_CLRMASK (~(WORD)HW_LRADC1_RESULT_RSVD0_SETMASK)
+                              873 ; 298  |#define HW_LRADC1_RESULT_DATA_OUT_CLRMASK (~(WORD)HW_LRADC1_RESULT_DATA_OUT_SETMASK)
+                              874 ; 299  |#define HW_LRADC1_RESULT_RSVD1_CLRMASK (~(WORD)HW_LRADC1_RESULT_RSVD1_SETMASK)
+                              875 ; 300  |#define HW_LRADC1_RESULT_IRQ_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_IRQ_EVENT0_SETMASK)
+                              876 ; 301  |#define HW_LRADC1_RESULT_IRQ_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_IRQ_EVENT1_SETMASK)
+                              877 ; 302  |#define HW_LRADC1_RESULT_RSVD2_CLRMASK (~(WORD)HW_LRADC1_RESULT_RSVD2_SETMASK)
+                              878 ; 303  |
+                              879 ; 304  |#define HW_LRADC1_RESULT      (*(volatile lradc_result_type _X*) (HW_LRADC_BASEADDR+5))    /* LRADC1 Result Register */
+                              880 ; 305  |
+                              881 ; 306  |/////////////////////////////////////////////////////////////////////////////////
+                              882 ; 307  |//  LRADC2_CTRL Control Register (HW_LRADC2_CTRL_CTRL) Bit Definitions
+                              883 ; 308  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_WIDTH (7)
+                              884 ; 309  |#define HW_LRADC2_CTRL_CTRL_RSVD0_WIDTH (1)
+                              885 ; 310  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_WIDTH (1)
+                              886 ; 311  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_WIDTH (1)
+                              887 ; 312  |#define HW_LRADC2_CTRL_CTRL_CLEAR_WIDTH (1)
+                              888 ; 313  |#define HW_LRADC2_CTRL_CTRL_PWD_WIDTH (1)
+                              889 ; 314  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_WIDTH (2)
+                              890 ; 315  |#define HW_LRADC2_CTRL_CTRL_RSVD1_WIDTH (2)
+                              891 ; 316  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_WIDTH (2)
+                              892 ; 317  |#define HW_LRADC2_CTRL_CTRL_RSVD2_WIDTH (6)
+                              893 ; 318  |
+                              894 ; 319  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_BITPOS (0)
+                              895 ; 320  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_BITPOS (8)
+                              896 ; 321  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_BITPOS (9)
+                              897 ; 322  |#define HW_LRADC2_CTRL_CTRL_CLEAR_BITPOS (10)
+                              898 ; 323  |#define HW_LRADC2_CTRL_CTRL_PWD_BITPOS (11)
+                              899 ; 324  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_BITPOS (12)
+                              900 ; 325  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_BITPOS (16)
+                              901 ; 326  |
+                              902 ; 327  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_BITPOS)        
+                              903 ; 328  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_BITPOS)        
+                              904 ; 329  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_INPUT_DIV2_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_INPUT_DIV2_BITPOS) 
+                              905 ; 330  |#define HW_LRADC2_CTRL_CTRL_CLEAR_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_CLEAR_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_CLEAR_BITPOS) 
+                              906 ; 331  |#define HW_LRADC2_CTRL_CTRL_PWD_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_PWD_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_PWD_BITPOS) 
+                              907 ; 332  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_CLK_DIV_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_CLK_DIV_BITPOS)        
+                              908 ; 333  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_REF_VAL_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_REF_VAL_BITPOS)        
+                              909 ; 334  |
+                              910 ; 335  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_SETMASK)     
+                              911 ; 336  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_SETMASK)     
+                              912 ; 337  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_INPUT_DIV2_SETMASK) 
+                              913 ; 338  |#define HW_LRADC2_CTRL_CTRL_CLEAR_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_CLEAR_SETMASK) 
+                              914 ; 339  |#define HW_LRADC2_CTRL_CTRL_PWD_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_PWD_SETMASK) 
+                              915 ; 340  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_CLK_DIV_SETMASK)     
+                              916 ; 341  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_REF_VAL_SETMASK)     
+                              917 ; 342  |
+                              918 ; 343  |
+                              919 ; 344  |#define HW_LRADC2_CTRL      (*(volatile lradc_ctrl_type _X*) (HW_LRADC_BASEADDR+6))    /* LRADC2_CTRL Control Register */
+                              920 ; 345  |
+                              921 ; 346  |
+                              922 ; 347  |
+                              923 ; 348  |/////////////////////////////////////////////////////////////////////////////////
+                              924 ; 349  |//  LRADC2 Threshold Register (HW_LRADC2_THRSH) Bit Definitions
+                              925 ; 350  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_WIDTH (9)
+                              926 ; 351  |#define HW_LRADC2_THRSH_RSVD0_WIDTH (3)
+                              927 ; 352  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_WIDTH (9)
+                              928 ; 353  |#define HW_LRADC2_THRSH_RSVD1_WIDTH (3)
+                              929 ; 354  |
+                              930 ; 355  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_BITPOS (0)
+                              931 ; 356  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_BITPOS (12)
+                              932 ; 357  |
+                              933 ; 358  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_SETMASK (((1<<HW_LRADC2_THRSH_MIN_THRESHOLD_WIDTH)-1)<<HW_LRADC2_THRSH_MIN_THRESHOLD_BITPOS)        
+                              934 ; 359  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_SETMASK (((1<<HW_LRADC2_THRSH_MAX_THRESHOLD_WIDTH)-1)<<HW_LRADC2_THRSH_MAX_THRESHOLD_BITPOS)        
+                              935 ; 360  |
+                              936 ; 361  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_CLRMASK (~(WORD)HW_LRADC2_THRSH_MIN_THRESHOLD_SETMASK)     
+                              937 ; 362  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_CLRMASK (~(WORD)HW_LRADC2_THRSH_MAX_THRESHOLD_SETMASK)     
+                              938 ; 363  |
+                              939 ; 364  |#define HW_LRADC2_THRSH      (*(volatile lradc_thrsh_type _X*) (HW_LRADC_BASEADDR+7))    /* LRADC2 Threshold Register */
+                              940 ; 365  |
+                              941 ; 366  |
+                              942 ; 367  |
+                              943 ; 368  |/////////////////////////////////////////////////////////////////////////////////
+                              944 ; 369  |//  LRADC2 Result Register (HW_LRADC2_RESULT) Bit Definitions
+                              945 ; 370  |#define HW_LRADC2_RESULT_EQ_EVENT1_WIDTH (1)
+                              946 ; 371  |#define HW_LRADC2_RESULT_EQ_EVENT0_WIDTH (1)
+                              947 ; 372  |#define HW_LRADC2_RESULT_GT_EVENT1_WIDTH (1)
+                              948 ; 373  |#define HW_LRADC2_RESULT_GT_EVENT0_WIDTH (1)
+                              949 ; 374  |#define HW_LRADC2_RESULT_LT_EVENT1_WIDTH (1)
+                              950 ; 375  |#define HW_LRADC2_RESULT_LT_EVENT0_WIDTH (1)
+                              951 ; 376  |#define HW_LRADC2_RESULT_RSVD0_WIDTH (2)
+                              952 ; 377  |#define HW_LRADC2_RESULT_DATA_OUT_WIDTH (9)
+                              953 ; 378  |#define HW_LRADC2_RESULT_RSVD1_WIDTH (3)
+                              954 ; 379  |#define HW_LRADC2_RESULT_IRQ_EVENT0_WIDTH (1)
+                              955 ; 380  |#define HW_LRADC2_RESULT_IRQ_EVENT1_WIDTH (1)
+                              956 ; 381  |#define HW_LRADC2_RESULT_RSVD2_WIDTH (2)
+                              957 ; 382  |
+                              958 ; 383  |#define HW_LRADC2_RESULT_EQ_EVENT1_BITPOS (0)
+                              959 ; 384  |#define HW_LRADC2_RESULT_EQ_EVENT0_BITPOS (1)
+                              960 ; 385  |#define HW_LRADC2_RESULT_GT_EVENT1_BITPOS (2)
+                              961 ; 386  |#define HW_LRADC2_RESULT_GT_EVENT0_BITPOS (3)
+                              962 ; 387  |#define HW_LRADC2_RESULT_LT_EVENT1_BITPOS (4)
+                              963 ; 388  |#define HW_LRADC2_RESULT_LT_EVENT0_BITPOS (5)
+                              964 ; 389  |#define HW_LRADC2_RESULT_RSVD0_BITPOS (6)
+                              965 ; 390  |#define HW_LRADC2_RESULT_DATA_OUT_BITPOS (8)
+                              966 ; 391  |#define HW_LRADC2_RESULT_RSVD1_BITPOS (17)
+                              967 ; 392  |#define HW_LRADC2_RESULT_IRQ_EVENT0_BITPOS (20)
+                              968 ; 393  |#define HW_LRADC2_RESULT_IRQ_EVENT1_BITPOS (21)
+                              969 ; 394  |#define HW_LRADC2_RESULT_RSVD2_BITPOS (22)
+                              970 ; 395  |
+                              971 ; 396  |#define HW_LRADC2_RESULT_EQ_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_EQ_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_EQ_EVENT1_BITPOS)
+                              972 ; 397  |#define HW_LRADC2_RESULT_EQ_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_EQ_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_EQ_EVENT0_BITPOS)
+                              973 ; 398  |#define HW_LRADC2_RESULT_GT_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_GT_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_GT_EVENT1_BITPOS)
+                              974 ; 399  |#define HW_LRADC2_RESULT_GT_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_GT_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_GT_EVENT0_BITPOS)
+                              975 ; 400  |#define HW_LRADC2_RESULT_LT_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_LT_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_LT_EVENT1_BITPOS)
+                              976 ; 401  |#define HW_LRADC2_RESULT_LT_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_LT_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_LT_EVENT0_BITPOS)
+                              977 ; 402  |#define HW_LRADC2_RESULT_RSVD0_SETMASK (((1<<HW_LRADC2_RESULT_RSVD0_WIDTH)-1)<<HW_LRADC2_RESULT_RSVD0_BITPOS)
+                              978 ; 403  |#define HW_LRADC2_RESULT_DATA_OUT_SETMASK (((1<<HW_LRADC2_RESULT_DATA_OUT_WIDTH)-1)<<HW_LRADC2_RESULT_DATA_OUT_BITPOS)
+                              979 ; 404  |#define HW_LRADC2_RESULT_RSVD1_SETMASK (((1<<HW_LRADC2_RESULT_RSVD1_WIDTH)-1)<<HW_LRADC2_RESULT_RSVD1_BITPOS)
+                              980 ; 405  |#define HW_LRADC2_RESULT_IRQ_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_IRQ_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_IRQ_EVENT0_BITPOS)
+                              981 ; 406  |#define HW_LRADC2_RESULT_IRQ_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_IRQ_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_IRQ_EVENT1_BITPOS)
+                              982 ; 407  |#define HW_LRADC2_RESULT_RSVD2_SETMASK (((1<<HW_LRADC2_RESULT_RSVD2_WIDTH)-1)<<HW_LRADC2_RESULT_RSVD2_BITPOS)
+                              983 ; 408  |
+                              984 ; 409  |#define HW_LRADC2_RESULT_EQ_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_EQ_EVENT1_SETMASK)
+                              985 ; 410  |#define HW_LRADC2_RESULT_EQ_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_EQ_EVENT0_SETMASK)
+                              986 ; 411  |#define HW_LRADC2_RESULT_GT_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_GT_EVENT1_SETMASK)
+                              987 ; 412  |#define HW_LRADC2_RESULT_GT_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_GT_EVENT0_SETMASK)
+                              988 ; 413  |#define HW_LRADC2_RESULT_LT_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_LT_EVENT1_SETMASK)
+                              989 ; 414  |#define HW_LRADC2_RESULT_LT_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_LT_EVENT0_SETMASK)
+                              990 ; 415  |#define HW_LRADC2_RESULT_RSVD0_CLRMASK (~(WORD)HW_LRADC2_RESULT_RSVD0_SETMASK)
+                              991 ; 416  |#define HW_LRADC2_RESULT_DATA_OUT_CLRMASK (~(WORD)HW_LRADC2_RESULT_DATA_OUT_SETMASK)
+                              992 ; 417  |#define HW_LRADC2_RESULT_RSVD1_CLRMASK (~(WORD)HW_LRADC2_RESULT_RSVD1_SETMASK)
+                              993 ; 418  |#define HW_LRADC2_RESULT_IRQ_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_IRQ_EVENT0_SETMASK)
+                              994 ; 419  |#define HW_LRADC2_RESULT_IRQ_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_IRQ_EVENT1_SETMASK)
+                              995 ; 420  |#define HW_LRADC2_RESULT_RSVD2_CLRMASK (~(WORD)HW_LRADC2_RESULT_RSVD2_SETMASK)
+                              996 ; 421  |
+                              997 ; 422  |#define HW_LRADC2_RESULT      (*(volatile lradc_result_type _X*) (HW_LRADC_BASEADDR+8))    /* LRADC2 Result Register */
+                              998 ; 423  |#define HW_LRADC_REF_0_SETMASK                  0x0<<HW_BATT_CTRL_REF_VAL_BITPOS
+                              999 ; 424  |#define HW_LRADC_REF_1_SETMASK                  0x1<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1000 ; 425  |#define HW_LRADC_REF_2_SETMASK                  0x2<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1001 ; 426  |#define HW_LRADC_REF_3_SETMASK                  0x3<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1002 ; 427  |#define HW_LRADC_REF_4_SETMASK                  HW_LRADC_REF_0_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1003 ; 428  |#define HW_LRADC_REF_5_SETMASK                  HW_LRADC_REF_1_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1004 ; 429  |#define HW_LRADC_REF_6_SETMASK                  HW_LRADC_REF_2_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1005 ; 430  |#define HW_LRADC_REF_7_SETMASK                  HW_LRADC_REF_3_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1006 ; 431  |#define HW_LRADC_RES_REF_0                              80
+                             1007 ; 432  |#define HW_LRADC_RES_REF_1                              77
+                             1008 ; 433  |#define HW_LRADC_RES_REF_2                              100
+                             1009 ; 434  |#define HW_LRADC_RES_REF_3                              129
+                             1010 ; 435  |#define HW_LRADC_RES_REF_4                              160
+                             1011 ; 436  |#define HW_LRADC_RES_REF_5                              154
+                             1012 ; 437  |#define HW_LRADC_RES_REF_6                              200
+                             1013 ; 438  |#define HW_LRADC_RES_REF_7                              258
+                             1014 ; 439  |#define LRADC_HALF_POWER_SETMASK                HW_BATT_CTRL_HALF_CMP_PWR_SETMASK          
+                             1015 ; 440  |// Translate the generic API enumerations into more meaningful labels for the implementation
+                             1016 ; 441  |#define REF_2700MV                      HW_LRADC_REF_0_SETMASK
+                             1017 ; 442  |#define REF_2600MV              HW_LRADC_REF_1_SETMASK
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1018 ; 443  |#define REF_2560MV              HW_LRADC_REF_2_SETMASK
+                             1019 ; 444  |#define REF_VDDIO               HW_LRADC_REF_3_SETMASK
+                             1020 ; 445  |#define REF_5400MV              HW_LRADC_REF_4_SETMASK
+                             1021 ; 446  |#define REF_5200MV              HW_LRADC_REF_5_SETMASK
+                             1022 ; 447  |#define REF_5120MV              HW_LRADC_REF_6_SETMASK
+                             1023 ; 448  |#define REF_VDDIOx2             HW_LRADC_REF_7_SETMASK
+                             1024 ; 449  |#define RES_REF_2700MV  HW_LRADC_RES_REF_0
+                             1025 ; 450  |#define RES_REF_2600MV  HW_LRADC_RES_REF_1
+                             1026 ; 451  |#define RES_REF_2560MV  HW_LRADC_RES_REF_2
+                             1027 ; 452  |#define RES_REF_VDDIO   HW_LRADC_RES_REF_3
+                             1028 ; 453  |#define RES_REF_5400MV  HW_LRADC_RES_REF_4
+                             1029 ; 454  |#define RES_REF_5200MV  HW_LRADC_RES_REF_5
+                             1030 ; 455  |#define RES_REF_5120MV  HW_LRADC_RES_REF_6
+                             1031 ; 456  |#define RES_REF_VDDIOx2         HW_LRADC_RES_REF_7
+                             1032 ; 457  |
+                             1033 ; 458  |//Needed by button.asm
+                             1034 ; 459  |#define LOW_RES_ADC_BATT_READ_MASK 0x01FF00
+                             1035 ; 460  |#define LOW_RES_ADC_AUX_READ_MASK 0x01FF00
+                             1036 ; 461  |#define LOW_RES_ADC_AUX2_READ_MASK 0x01FF00
+                             1037 ; 462  |
+                             1038 ; 463  |#define HW_LRADC_CTRL_AUXADC_SETMASK 3<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1039 ; 464  |
+                             1040 ; 465  |#endif
+                             1041 ; 466  |
+                             1042 ; 467  |
+                             1043 
+                             1045 
+                             1046 ; 9    |#include "lowresolutionadc.h"
+                             1047 
+                             1049 
+                             1050 ; 1    |//;///////////////////////////////////////////////////////////////////////////////
+                             1051 ; 2    |//; Copyright(C) SigmaTel, Inc. 2000-2003
+                             1052 ; 3    |//;
+                             1053 ; 4    |//; Filename:    lowresolutionadc.h
+                             1054 ; 5    |//; Description: General purpose interface to LRADCs
+                             1055 ; 6    |//;              Generic symbols are mapped to more specific symbols in inc\34xx\regslradc.inc files
+                             1056 ; 7    |//;///////////////////////////////////////////////////////////////////////////////
+                             1057 ; 8    |
+                             1058 ; 9    |#ifndef _LOWRESOLUTIONADC_H
+                             1059 ; 10   |#define _LOWRESOLUTIONADC_H
+                             1060 ; 11   |
+                             1061 ; 12   |#include "regslradc.h"
+                             1062 
+                             1064 
+                             1065 ; 1    |#if !(defined(regslradcinc))
+                             1066 ; 2    |
+                             1067 ; 3    |#define regslradcinc 1
+                             1068 ; 4    |
+                             1069 ; 5    |#include "types.h"
+                             1070 ; 6    |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             1071 ; 7    |
+                             1072 ; 8    |//   SYSTEM STMP Registers 
+                             1073 ; 9    |//  Last Edited 6.26.2003 M. Henson
+                             1074 ; 10   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             1075 ; 11   |
+                             1076 ; 12   |#define HW_LRADC_BASEADDR (0xFA20)
+                             1077 ; 13   |
+                             1078 ; 14   |
+                             1079 ; 15   |
+                             1080 ; 16   |/////////////////////////////////////////////////////////////////////////////////
+                             1081 ; 17   |//  Battery LRADC Control Register (HW_BATT_CTRL) Bit Definitions
+                             1082 ; 18   |#define HW_BATT_CTRL_INPUT_OFFSET_WIDTH (7)
+                             1083 ; 19   |#define HW_BATT_CTRL_RSVD0_WIDTH (1)
+                             1084 ; 20   |#define HW_BATT_CTRL_HALF_CMP_PWR_WIDTH (1)
+                             1085 ; 21   |#define HW_BATT_CTRL_INPUT_DIV2_WIDTH (1)
+                             1086 ; 22   |#define HW_BATT_CTRL_CLEAR_WIDTH (1)
+                             1087 ; 23   |#define HW_BATT_CTRL_PWD_WIDTH (1)
+                             1088 ; 24   |#define HW_BATT_CTRL_CLK_DIV_WIDTH (2)
+                             1089 ; 25   |#define HW_BATT_CTRL_RSVD1_WIDTH (2)
+                             1090 ; 26   |#define HW_BATT_CTRL_REF_VAL_WIDTH (2)
+                             1091 ; 27   |#define HW_BATT_CTRL_RSVD2_WIDTH (2)
+                             1092 ; 28   |#define HW_BATT_CTRL_IRQ_EN_EVENT0_WIDTH (1)
+                             1093 ; 29   |#define HW_BATT_CTRL_IRQ_EN_EVENT1_WIDTH (1)
+                             1094 ; 30   |#define HW_BATT_CTRL_POLARITY_EVENT0_WIDTH (1)
+                             1095 ; 31   |#define HW_BATT_CTRL_POLARITY_EVENT1_WIDTH (1)
+                             1096 ; 32   |
+                             1097 ; 33   |#define HW_BATT_CTRL_INPUT_OFFSET_BITPOS (0)
+                             1098 ; 34   |#define HW_BATT_CTRL_HALF_CMP_PWR_BITPOS (8)
+                             1099 ; 35   |#define HW_BATT_CTRL_INPUT_DIV2_BITPOS (9)
+                             1100 ; 36   |#define HW_BATT_CTRL_CLEAR_BITPOS (10)
+                             1101 ; 37   |#define HW_BATT_CTRL_PWD_BITPOS (11)
+                             1102 ; 38   |#define HW_BATT_CTRL_CLK_DIV_BITPOS (12)
+                             1103 ; 39   |#define HW_BATT_CTRL_REF_VAL_BITPOS (16)
+                             1104 ; 40   |
+                             1105 ; 41   |#define HW_BATT_CTRL_INPUT_OFFSET_SETMASK (((1<<HW_BATT_CTRL_INPUT_OFFSET_WIDTH)-1)<<HW_BATT_CTRL_INPUT_OFFSET_BITPOS)        
+                             1106 ; 42   |#define HW_BATT_CTRL_HALF_CMP_PWR_SETMASK (((1<<HW_BATT_CTRL_HALF_CMP_PWR_WIDTH)-1)<<HW_BATT_CTRL_HALF_CMP_PWR_BITPOS)        
+                             1107 ; 43   |#define HW_BATT_CTRL_INPUT_DIV2_SETMASK (((1<<HW_BATT_CTRL_INPUT_DIV2_WIDTH)-1)<<HW_BATT_CTRL_INPUT_DIV2_BITPOS) 
+                             1108 ; 44   |#define HW_BATT_CTRL_CLEAR_SETMASK (((1<<HW_BATT_CTRL_CLEAR_WIDTH)-1)<<HW_BATT_CTRL_CLEAR_BITPOS) 
+                             1109 ; 45   |#define HW_BATT_CTRL_PWD_SETMASK (((1<<HW_BATT_CTRL_PWD_WIDTH)-1)<<HW_BATT_CTRL_PWD_BITPOS) 
+                             1110 ; 46   |#define HW_BATT_CTRL_CLK_DIV_SETMASK (((1<<HW_BATT_CTRL_CLK_DIV_WIDTH)-1)<<HW_BATT_CTRL_CLK_DIV_BITPOS)        
+                             1111 ; 47   |#define HW_BATT_CTRL_REF_VAL_SETMASK (((1<<HW_BATT_CTRL_REF_VAL_WIDTH)-1)<<HW_BATT_CTRL_REF_VAL_BITPOS)        
+                             1112 ; 48   |
+                             1113 ; 49   |#define HW_BATT_CTRL_INPUT_OFFSET_CLRMASK (~(WORD)HW_BATT_CTRL_INPUT_OFFSET_SETMASK)     
+                             1114 ; 50   |#define HW_BATT_CTRL_HALF_CMP_PWR_CLRMASK (~(WORD)HW_BATT_CTRL_HALF_CMP_PWR_SETMASK)     
+                             1115 ; 51   |#define HW_BATT_CTRL_INPUT_DIV2_CLRMASK (~(WORD)HW_BATT_CTRL_INPUT_DIV2_SETMASK) 
+                             1116 ; 52   |#define HW_BATT_CTRL_CLEAR_CLRMASK (~(WORD)HW_BATT_CTRL_CLEAR_SETMASK) 
+                             1117 ; 53   |#define HW_BATT_CTRL_PWD_CLRMASK (~(WORD)HW_BATT_CTRL_PWD_SETMASK) 
+                             1118 ; 54   |#define HW_BATT_CTRL_CLK_DIV_CLRMASK (~(WORD)HW_BATT_CTRL_CLK_DIV_SETMASK)     
+                             1119 ; 55   |#define HW_BATT_CTRL_REF_VAL_CLRMASK (~(WORD)HW_BATT_CTRL_REF_VAL_SETMASK)
+                             1120 ; 56   |
+                             1121 ; 57   |typedef union               
+                             1122 ; 58   |{
+                             1123 ; 59   |    struct {
+                             1124 ; 60   |        unsigned int INPUT_OFFSET                 : HW_BATT_CTRL_INPUT_OFFSET_WIDTH;
+                             1125 ; 61   |        unsigned int RSVD0                        : HW_BATT_CTRL_RSVD0_WIDTH;
+                             1126 ; 62   |        unsigned int HALF_CMP_PWR                 : HW_BATT_CTRL_HALF_CMP_PWR_WIDTH;
+                             1127 ; 63   |        unsigned int INPUT_DIV2                   : HW_BATT_CTRL_INPUT_DIV2_WIDTH;
+                             1128 ; 64   |        unsigned int CLEAR                        : HW_BATT_CTRL_CLEAR_WIDTH;
+                             1129 ; 65   |        unsigned int PWD                          : HW_BATT_CTRL_PWD_WIDTH;
+                             1130 ; 66   |        unsigned int CLK_DIV                      : HW_BATT_CTRL_CLK_DIV_WIDTH;
+                             1131 ; 67   |        unsigned int RSVD1                        : HW_BATT_CTRL_RSVD1_WIDTH;
+                             1132 ; 68   |        unsigned int REF_VAL                      : HW_BATT_CTRL_REF_VAL_WIDTH;
+                             1133 ; 69   |        unsigned int RSVD2                        : HW_BATT_CTRL_RSVD2_WIDTH;
+                             1134 ; 70   |                 unsigned int IRQ_EN_EVENT0                               : HW_BATT_CTRL_IRQ_EN_EVENT0_WIDTH;
+                             1135 ; 71   |                 unsigned int IRQ_EN_EVENT1                               : HW_BATT_CTRL_IRQ_EN_EVENT1_WIDTH;
+                             1136 ; 72   |             unsigned int POLARITY_EVENT0              : HW_BATT_CTRL_POLARITY_EVENT0_WIDTH;
+                             1137 ; 73   |                 unsigned int POLARITY_EVENT1              : HW_BATT_CTRL_POLARITY_EVENT1_WIDTH;
+                             1138 ; 74   |    } B;
+                             1139 ; 75   |   unsigned int I;
+                             1140 ; 76   |        unsigned int U;
+                             1141 ; 77   |} lradc_ctrl_type;
+                             1142 ; 78   |#define HW_BATT_CTRL      (*(volatile lradc_ctrl_type _X*) (HW_LRADC_BASEADDR))    /* Battery LRADC Control Register */
+                             1143 ; 79   |
+                             1144 ; 80   |
+                             1145 ; 81   |/////////////////////////////////////////////////////////////////////////////////
+                             1146 ; 82   |//  Battery LRADC Threshold Register (HW_BATT_THRSH) Bit Definitions
+                             1147 ; 83   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_WIDTH (9)
+                             1148 ; 84   |#define HW_BATT_THRSH_RSVD0_WIDTH (3)
+                             1149 ; 85   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_WIDTH (9)
+                             1150 ; 86   |#define HW_BATT_THRSH_RSVD1_WIDTH (3)
+                             1151 ; 87   |
+                             1152 ; 88   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_BITPOS (0)
+                             1153 ; 89   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_BITPOS (12)
+                             1154 ; 90   |
+                             1155 ; 91   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_SETMASK (((1<<HW_BATT_THRSH_THRESHOLD_EVENT0_WIDTH)-1)<<HW_BATT_THRSH_THRESHOLD_EVENT0_BITPOS)        
+                             1156 ; 92   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_SETMASK (((1<<HW_BATT_THRSH_THRESHOLD_EVENT1_WIDTH)-1)<<HW_BATT_THRSH_THRESHOLD_EVENT1_BITPOS)        
+                             1157 ; 93   |
+                             1158 ; 94   |#define HW_BATT_THRSH_THRESHOLD_EVENT0_CLRMASK (~(WORD)HW_BATT_THRSH_THRESHOLD_EVENT0_SETMASK)     
+                             1159 ; 95   |#define HW_BATT_THRSH_THRESHOLD_EVENT1_CLRMASK (~(WORD)HW_BATT_THRSH_THRESHOLD_EVENT1_SETMASK)     
+                             1160 ; 96   |
+                             1161 ; 97   |
+                             1162 ; 98   |typedef union               
+                             1163 ; 99   |{
+                             1164 ; 100  |    struct {
+                             1165 ; 101  |        unsigned int THRESHOLD_EVENT0   : HW_BATT_THRSH_THRESHOLD_EVENT0_WIDTH;
+                             1166 ; 102  |        unsigned int RSVD0                  : HW_BATT_THRSH_RSVD0_WIDTH;
+                             1167 ; 103  |        unsigned int THRESHOLD_EVENT1   : HW_BATT_THRSH_THRESHOLD_EVENT1_WIDTH;
+                             1168 ; 104  |        unsigned int RSVD1              : HW_BATT_THRSH_RSVD1_WIDTH;
+                             1169 ; 105  |    } B;
+                             1170 ; 106  |    unsigned int I;
+                             1171 ; 107  |} lradc_thrsh_type;
+                             1172 ; 108  |#define HW_BATT_THRSH      (*(volatile lradc_thrsh_type _X*) (HW_LRADC_BASEADDR+1))    /* Battery LRADC Threshold Register */
+                             1173 ; 109  |
+                             1174 ; 110  |
+                             1175 ; 111  |/////////////////////////////////////////////////////////////////////////////////
+                             1176 ; 112  |//  Battery LRADC Result Register (HW_BATT_RESULT) Bit Definitions
+                             1177 ; 113  |#define HW_BATT_RESULT_EQ_EVENT1_WIDTH (1)
+                             1178 ; 114  |#define HW_BATT_RESULT_EQ_EVENT0_WIDTH (1)
+                             1179 ; 115  |#define HW_BATT_RESULT_GT_EVENT1_WIDTH (1)
+                             1180 ; 116  |#define HW_BATT_RESULT_GT_EVENT0_WIDTH (1)
+                             1181 ; 117  |#define HW_BATT_RESULT_LT_EVENT1_WIDTH (1)
+                             1182 ; 118  |#define HW_BATT_RESULT_LT_EVENT0_WIDTH (1)
+                             1183 ; 119  |#define HW_BATT_RESULT_RSVD0_WIDTH (2)
+                             1184 ; 120  |#define HW_BATT_RESULT_DATA_OUT_WIDTH (9)
+                             1185 ; 121  |#define HW_BATT_RESULT_RSVD1_WIDTH (3)
+                             1186 ; 122  |#define HW_BATT_RESULT_IRQ_EVENT0_WIDTH (1)
+                             1187 ; 123  |#define HW_BATT_RESULT_IRQ_EVENT1_WIDTH (1)
+                             1188 ; 124  |#define HW_BATT_RESULT_RSVD2_WIDTH (2)
+                             1189 ; 125  |
+                             1190 ; 126  |#define HW_BATT_RESULT_EQ_EVENT1_BITPOS (0)
+                             1191 ; 127  |#define HW_BATT_RESULT_EQ_EVENT0_BITPOS (1)
+                             1192 ; 128  |#define HW_BATT_RESULT_GT_EVENT1_BITPOS (2)
+                             1193 ; 129  |#define HW_BATT_RESULT_GT_EVENT0_BITPOS (3)
+                             1194 ; 130  |#define HW_BATT_RESULT_LT_EVENT1_BITPOS (4)
+                             1195 ; 131  |#define HW_BATT_RESULT_LT_EVENT0_BITPOS (5)
+                             1196 ; 132  |#define HW_BATT_RESULT_RSVD0_BITPOS (6)
+                             1197 ; 133  |#define HW_BATT_RESULT_DATA_OUT_BITPOS (8)
+                             1198 ; 134  |#define HW_BATT_RESULT_RSVD1_BITPOS (17)
+                             1199 ; 135  |#define HW_BATT_RESULT_IRQ_EVENT0_BITPOS (20)
+                             1200 ; 136  |#define HW_BATT_RESULT_IRQ_EVENT1_BITPOS (21)
+                             1201 ; 137  |#define HW_BATT_RESULT_RSVD2_BITPOS (22)
+                             1202 ; 138  |
+                             1203 ; 139  |
+                             1204 ; 140  |
+                             1205 ; 141  |#define HW_BATT_RESULT_EQ_EVENT1_SETMASK (((1<<HW_BATT_RESULT_EQ_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_EQ_EVENT1_BITPOS)
+                             1206 ; 142  |#define HW_BATT_RESULT_EQ_EVENT0_SETMASK (((1<<HW_BATT_RESULT_EQ_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_EQ_EVENT0_BITPOS)
+                             1207 ; 143  |#define HW_BATT_RESULT_GT_EVENT1_SETMASK (((1<<HW_BATT_RESULT_GT_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_GT_EVENT1_BITPOS)
+                             1208 ; 144  |#define HW_BATT_RESULT_GT_EVENT0_SETMASK (((1<<HW_BATT_RESULT_GT_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_GT_EVENT0_BITPOS)
+                             1209 ; 145  |#define HW_BATT_RESULT_LT_EVENT1_SETMASK (((1<<HW_BATT_RESULT_LT_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_LT_EVENT1_BITPOS)
+                             1210 ; 146  |#define HW_BATT_RESULT_LT_EVENT0_SETMASK (((1<<HW_BATT_RESULT_LT_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_LT_EVENT0_BITPOS)
+                             1211 ; 147  |#define HW_BATT_RESULT_RSVD0_SETMASK (((1<<HW_BATT_RESULT_RSVD0_WIDTH)-1)<<HW_BATT_RESULT_RSVD0_BITPOS)
+                             1212 ; 148  |#define HW_BATT_RESULT_DATA_OUT_SETMASK (((1<<HW_BATT_RESULT_DATA_OUT_WIDTH)-1)<<HW_BATT_RESULT_DATA_OUT_BITPOS)
+                             1213 ; 149  |#define HW_BATT_RESULT_RSVD1_SETMASK (((1<<HW_BATT_RESULT_RSVD1_WIDTH)-1)<<HW_BATT_RESULT_RSVD1_BITPOS)
+                             1214 ; 150  |#define HW_BATT_RESULT_IRQ_EVENT0_SETMASK (((1<<HW_BATT_RESULT_IRQ_EVENT0_WIDTH)-1)<<HW_BATT_RESULT_IRQ_EVENT0_BITPOS)
+                             1215 ; 151  |#define HW_BATT_RESULT_IRQ_EVENT1_SETMASK (((1<<HW_BATT_RESULT_IRQ_EVENT1_WIDTH)-1)<<HW_BATT_RESULT_IRQ_EVENT1_BITPOS)
+                             1216 ; 152  |#define HW_BATT_RESULT_RSVD2_SETMASK (((1<<HW_BATT_RESULT_RSVD2_WIDTH)-1)<<HW_BATT_RESULT_RSVD2_BITPOS)
+                             1217 ; 153  |
+                             1218 ; 154  |
+                             1219 ; 155  |#define HW_BATT_RESULT_EQ_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_EQ_EVENT1_SETMASK)
+                             1220 ; 156  |#define HW_BATT_RESULT_EQ_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_EQ_EVENT0_SETMASK)
+                             1221 ; 157  |#define HW_BATT_RESULT_GT_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_GT_EVENT1_SETMASK)
+                             1222 ; 158  |#define HW_BATT_RESULT_GT_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_GT_EVENT0_SETMASK)
+                             1223 ; 159  |#define HW_BATT_RESULT_LT_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_LT_EVENT1_SETMASK)
+                             1224 ; 160  |#define HW_BATT_RESULT_LT_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_LT_EVENT0_SETMASK)
+                             1225 ; 161  |#define HW_BATT_RESULT_RSVD0_CLRMASK (~(WORD)HW_BATT_RESULT_RSVD0_SETMASK)
+                             1226 ; 162  |#define HW_BATT_RESULT_DATA_OUT_CLRMASK (~(WORD)HW_BATT_RESULT_DATA_OUT_SETMASK)
+                             1227 ; 163  |#define HW_BATT_RESULT_RSVD1_CLRMASK (~(WORD)HW_BATT_RESULT_RSVD1_SETMASK)
+                             1228 ; 164  |#define HW_BATT_RESULT_IRQ_EVENT0_CLRMASK (~(WORD)HW_BATT_RESULT_IRQ_EVENT0_SETMASK)
+                             1229 ; 165  |#define HW_BATT_RESULT_IRQ_EVENT1_CLRMASK (~(WORD)HW_BATT_RESULT_IRQ_EVENT1_SETMASK)
+                             1230 ; 166  |#define HW_BATT_RESULT_RSVD2_CLRMASK (~(WORD)HW_BATT_RESULT_RSVD2_SETMASK)
+                             1231 ; 167  |
+                             1232 ; 168  |typedef union               
+                             1233 ; 169  |{
+                             1234 ; 170  |    struct {
+                             1235 ; 171  |        unsigned int EQ_EVENT1                  : HW_BATT_RESULT_EQ_EVENT1_WIDTH;
+                             1236 ; 172  |        unsigned int EQ_EVENT0                  : HW_BATT_RESULT_EQ_EVENT0_WIDTH;
+                             1237 ; 173  |        unsigned int GT_EVENT1                  : HW_BATT_RESULT_GT_EVENT1_WIDTH;
+                             1238 ; 174  |        unsigned int GT_EVENT0                  : HW_BATT_RESULT_GT_EVENT0_WIDTH;
+                             1239 ; 175  |        unsigned int LT_EVENT1                  : HW_BATT_RESULT_LT_EVENT1_WIDTH;
+                             1240 ; 176  |        unsigned int LT_EVENT0                  : HW_BATT_RESULT_LT_EVENT0_WIDTH;
+                             1241 ; 177  |        unsigned int RSVD0                     : HW_BATT_RESULT_RSVD0_WIDTH;
+                             1242 ; 178  |        unsigned int DATA_OUT                  : HW_BATT_RESULT_DATA_OUT_WIDTH;
+                             1243 ; 179  |        unsigned int RSVD1                     : HW_BATT_RESULT_RSVD1_WIDTH;
+                             1244 ; 180  |                 unsigned int IRQ_EVENT0                                : HW_BATT_RESULT_IRQ_EVENT0_WIDTH;
+                             1245 ; 181  |                 unsigned int IRQ_EVENT1                                : HW_BATT_RESULT_IRQ_EVENT1_WIDTH;                      
+                             1246 ; 182  |                 unsigned int RSVD2                                         : HW_BATT_RESULT_RSVD2_WIDTH;
+                             1247 ; 183  |    } B;
+                             1248 ; 184  |    unsigned int I;
+                             1249 ; 185  |} lradc_result_type;
+                             1250 ; 186  |#define HW_BATT_RESULT      (*(volatile lradc_result_type _X*) (HW_LRADC_BASEADDR+2))    /* Battery LRADC Result Register */
+                             1251 ; 187  |
+                             1252 ; 188  |
+                             1253 ; 189  |
+                             1254 ; 190  |/////////////////////////////////////////////////////////////////////////////////
+                             1255 ; 191  |//  LRADC1 Control Register (HW_LRADC1_CTRL) Bit Definitions
+                             1256 ; 192  |#define HW_LRADC1_CTRL_INPUT_OFFSET_WIDTH (7)
+                             1257 ; 193  |#define HW_LRADC1_CTRL_RSVD0_WIDTH (1)
+                             1258 ; 194  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_WIDTH (1)
+                             1259 ; 195  |#define HW_LRADC1_CTRL_INPUT_DIV2_WIDTH (1)
+                             1260 ; 196  |#define HW_LRADC1_CTRL_CLEAR_WIDTH (1)
+                             1261 ; 197  |#define HW_LRADC1_CTRL_PWD_WIDTH (1)
+                             1262 ; 198  |#define HW_LRADC1_CTRL_CLK_DIV_WIDTH (2)
+                             1263 ; 199  |#define HW_LRADC1_CTRL_RSVD1_WIDTH (2)
+                             1264 ; 200  |#define HW_LRADC1_CTRL_REF_VAL_WIDTH (2)
+                             1265 ; 201  |#define HW_LRADC1_CTRL_RSVD2_WIDTH (6)
+                             1266 ; 202  |
+                             1267 ; 203  |#define HW_LRADC1_CTRL_INPUT_OFFSET_BITPOS (0)
+                             1268 ; 204  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_BITPOS (8)
+                             1269 ; 205  |#define HW_LRADC1_CTRL_INPUT_DIV2_BITPOS (9)
+                             1270 ; 206  |#define HW_LRADC1_CTRL_CLEAR_BITPOS (10)
+                             1271 ; 207  |#define HW_LRADC1_CTRL_PWD_BITPOS (11)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1272 ; 208  |#define HW_LRADC1_CTRL_CLK_DIV_BITPOS (12)
+                             1273 ; 209  |#define HW_LRADC1_CTRL_REF_VAL_BITPOS (16)
+                             1274 ; 210  |
+                             1275 ; 211  |#define HW_LRADC1_CTRL_INPUT_OFFSET_SETMASK (((1<<HW_LRADC1_CTRL_INPUT_OFFSET_WIDTH)-1)<<HW_LRADC1_CTRL_INPUT_OFFSET_BITPOS)        
+                             1276 ; 212  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_SETMASK (((1<<HW_LRADC1_CTRL_HALF_CMP_PWR_WIDTH)-1)<<HW_LRADC1_CTRL_HALF_CMP_PWR_BITPOS)        
+                             1277 ; 213  |#define HW_LRADC1_CTRL_INPUT_DIV2_SETMASK (((1<<HW_LRADC1_CTRL_INPUT_DIV2_WIDTH)-1)<<HW_LRADC1_CTRL_INPUT_DIV2_BITPOS) 
+                             1278 ; 214  |#define HW_LRADC1_CTRL_CLEAR_SETMASK (((1<<HW_LRADC1_CTRL_CLEAR_WIDTH)-1)<<HW_LRADC1_CTRL_CLEAR_BITPOS) 
+                             1279 ; 215  |#define HW_LRADC1_CTRL_PWD_SETMASK (((1<<HW_LRADC1_CTRL_PWD_WIDTH)-1)<<HW_LRADC1_CTRL_PWD_BITPOS) 
+                             1280 ; 216  |#define HW_LRADC1_CTRL_CLK_DIV_SETMASK (((1<<HW_LRADC1_CTRL_CLK_DIV_WIDTH)-1)<<HW_LRADC1_CTRL_CLK_DIV_BITPOS)        
+                             1281 ; 217  |#define HW_LRADC1_CTRL_REF_VAL_SETMASK (((1<<HW_LRADC1_CTRL_REF_VAL_WIDTH)-1)<<HW_LRADC1_CTRL_REF_VAL_BITPOS)        
+                             1282 ; 218  |
+                             1283 ; 219  |#define HW_LRADC1_CTRL_INPUT_OFFSET_CLRMASK (~(WORD)HW_LRADC1_CTRL_INPUT_OFFSET_SETMASK)     
+                             1284 ; 220  |#define HW_LRADC1_CTRL_HALF_CMP_PWR_CLRMASK (~(WORD)HW_LRADC1_CTRL_HALF_CMP_PWR_SETMASK)     
+                             1285 ; 221  |#define HW_LRADC1_CTRL_INPUT_DIV2_CLRMASK (~(WORD)HW_LRADC1_CTRL_INPUT_DIV2_SETMASK) 
+                             1286 ; 222  |#define HW_LRADC1_CTRL_CLEAR_CLRMASK (~(WORD)HW_LRADC1_CTRL_CLEAR_SETMASK) 
+                             1287 ; 223  |#define HW_LRADC1_CTRL_PWD_CLRMASK (~(WORD)HW_LRADC1_CTRL_PWD_SETMASK) 
+                             1288 ; 224  |#define HW_LRADC1_CTRL_CLK_DIV_CLRMASK (~(WORD)HW_LRADC1_CTRL_CLK_DIV_SETMASK)     
+                             1289 ; 225  |#define HW_LRADC1_CTRL_REF_VAL_CLRMASK (~(WORD)HW_LRADC1_CTRL_REF_VAL_SETMASK)     
+                             1290 ; 226  |
+                             1291 ; 227  |#define HW_LRADC1_CTRL      (*(volatile lradc_ctrl_type _X*) (HW_LRADC_BASEADDR+3))    /* LRADC1 Control Register */
+                             1292 ; 228  |
+                             1293 ; 229  |
+                             1294 ; 230  |
+                             1295 ; 231  |/////////////////////////////////////////////////////////////////////////////////
+                             1296 ; 232  |//  LRADC1 Threshold Register (HW_LRADC1_THRSH) Bit Definitions
+                             1297 ; 233  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_WIDTH (9)
+                             1298 ; 234  |#define HW_LRADC1_THRSH_RSVD0_WIDTH (3)
+                             1299 ; 235  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_WIDTH (9)
+                             1300 ; 236  |#define HW_LRADC1_THRSH_RSVD1_WIDTH (3)
+                             1301 ; 237  |
+                             1302 ; 238  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_BITPOS (0)
+                             1303 ; 239  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_BITPOS (12)
+                             1304 ; 240  |
+                             1305 ; 241  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_SETMASK (((1<<HW_LRADC1_THRSH_MIN_THRESHOLD_WIDTH)-1)<<HW_LRADC1_THRSH_MIN_THRESHOLD_BITPOS)        
+                             1306 ; 242  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_SETMASK (((1<<HW_LRADC1_THRSH_MAX_THRESHOLD_WIDTH)-1)<<HW_LRADC1_THRSH_MAX_THRESHOLD_BITPOS)        
+                             1307 ; 243  |
+                             1308 ; 244  |#define HW_LRADC1_THRSH_MIN_THRESHOLD_CLRMASK (~(WORD)HW_LRADC1_THRSH_MIN_THRESHOLD_SETMASK)     
+                             1309 ; 245  |#define HW_LRADC1_THRSH_MAX_THRESHOLD_CLRMASK (~(WORD)HW_LRADC1_THRSH_MAX_THRESHOLD_SETMASK)     
+                             1310 ; 246  |
+                             1311 ; 247  |#define HW_LRADC1_THRSH      (*(volatile lradc_thrsh_type _X*) (HW_LRADC_BASEADDR+4))    /* LRADC1 Threshold Register */
+                             1312 ; 248  |
+                             1313 ; 249  |/////////////////////////////////////////////////////////////////////////////////
+                             1314 ; 250  |//  LRADC1 Result Register (HW_LRADC1_RESULT) Bit Definitions
+                             1315 ; 251  |#define HW_LRADC1_RESULT_EQ_EVENT1_WIDTH (1)
+                             1316 ; 252  |#define HW_LRADC1_RESULT_EQ_EVENT0_WIDTH (1)
+                             1317 ; 253  |#define HW_LRADC1_RESULT_GT_EVENT1_WIDTH (1)
+                             1318 ; 254  |#define HW_LRADC1_RESULT_GT_EVENT0_WIDTH (1)
+                             1319 ; 255  |#define HW_LRADC1_RESULT_LT_EVENT1_WIDTH (1)
+                             1320 ; 256  |#define HW_LRADC1_RESULT_LT_EVENT0_WIDTH (1)
+                             1321 ; 257  |#define HW_LRADC1_RESULT_RSVD0_WIDTH (2)
+                             1322 ; 258  |#define HW_LRADC1_RESULT_DATA_OUT_WIDTH (9)
+                             1323 ; 259  |#define HW_LRADC1_RESULT_RSVD1_WIDTH (3)
+                             1324 ; 260  |#define HW_LRADC1_RESULT_IRQ_EVENT0_WIDTH (1)
+                             1325 ; 261  |#define HW_LRADC1_RESULT_IRQ_EVENT1_WIDTH (1)
+                             1326 ; 262  |#define HW_LRADC1_RESULT_RSVD2_WIDTH (2)
+                             1327 ; 263  |
+                             1328 ; 264  |#define HW_LRADC1_RESULT_EQ_EVENT1_BITPOS (0)
+                             1329 ; 265  |#define HW_LRADC1_RESULT_EQ_EVENT0_BITPOS (1)
+                             1330 ; 266  |#define HW_LRADC1_RESULT_GT_EVENT1_BITPOS (2)
+                             1331 ; 267  |#define HW_LRADC1_RESULT_GT_EVENT0_BITPOS (3)
+                             1332 ; 268  |#define HW_LRADC1_RESULT_LT_EVENT1_BITPOS (4)
+                             1333 ; 269  |#define HW_LRADC1_RESULT_LT_EVENT0_BITPOS (5)
+                             1334 ; 270  |#define HW_LRADC1_RESULT_RSVD0_BITPOS (6)
+                             1335 ; 271  |#define HW_LRADC1_RESULT_DATA_OUT_BITPOS (8)
+                             1336 ; 272  |#define HW_LRADC1_RESULT_RSVD1_BITPOS (17)
+                             1337 ; 273  |#define HW_LRADC1_RESULT_IRQ_EVENT0_BITPOS (20)
+                             1338 ; 274  |#define HW_LRADC1_RESULT_IRQ_EVENT1_BITPOS (21)
+                             1339 ; 275  |#define HW_LRADC1_RESULT_RSVD2_BITPOS (22)
+                             1340 ; 276  |
+                             1341 ; 277  |#define HW_LRADC1_RESULT_EQ_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_EQ_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_EQ_EVENT1_BITPOS)
+                             1342 ; 278  |#define HW_LRADC1_RESULT_EQ_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_EQ_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_EQ_EVENT0_BITPOS)
+                             1343 ; 279  |#define HW_LRADC1_RESULT_GT_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_GT_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_GT_EVENT1_BITPOS)
+                             1344 ; 280  |#define HW_LRADC1_RESULT_GT_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_GT_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_GT_EVENT0_BITPOS)
+                             1345 ; 281  |#define HW_LRADC1_RESULT_LT_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_LT_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_LT_EVENT1_BITPOS)
+                             1346 ; 282  |#define HW_LRADC1_RESULT_LT_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_LT_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_LT_EVENT0_BITPOS)
+                             1347 ; 283  |#define HW_LRADC1_RESULT_RSVD0_SETMASK (((1<<HW_LRADC1_RESULT_RSVD0_WIDTH)-1)<<HW_LRADC1_RESULT_RSVD0_BITPOS)
+                             1348 ; 284  |#define HW_LRADC1_RESULT_DATA_OUT_SETMASK (((1<<HW_LRADC1_RESULT_DATA_OUT_WIDTH)-1)<<HW_LRADC1_RESULT_DATA_OUT_BITPOS)
+                             1349 ; 285  |#define HW_LRADC1_RESULT_RSVD1_SETMASK (((1<<HW_LRADC1_RESULT_RSVD1_WIDTH)-1)<<HW_LRADC1_RESULT_RSVD1_BITPOS)
+                             1350 ; 286  |#define HW_LRADC1_RESULT_IRQ_EVENT0_SETMASK (((1<<HW_LRADC1_RESULT_IRQ_EVENT0_WIDTH)-1)<<HW_LRADC1_RESULT_IRQ_EVENT0_BITPOS)
+                             1351 ; 287  |#define HW_LRADC1_RESULT_IRQ_EVENT1_SETMASK (((1<<HW_LRADC1_RESULT_IRQ_EVENT1_WIDTH)-1)<<HW_LRADC1_RESULT_IRQ_EVENT1_BITPOS)
+                             1352 ; 288  |#define HW_LRADC1_RESULT_RSVD2_SETMASK (((1<<HW_LRADC1_RESULT_RSVD2_WIDTH)-1)<<HW_LRADC1_RESULT_RSVD2_BITPOS)
+                             1353 ; 289  |
+                             1354 ; 290  |
+                             1355 ; 291  |#define HW_LRADC1_RESULT_EQ_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_EQ_EVENT1_SETMASK)
+                             1356 ; 292  |#define HW_LRADC1_RESULT_EQ_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_EQ_EVENT0_SETMASK)
+                             1357 ; 293  |#define HW_LRADC1_RESULT_GT_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_GT_EVENT1_SETMASK)
+                             1358 ; 294  |#define HW_LRADC1_RESULT_GT_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_GT_EVENT0_SETMASK)
+                             1359 ; 295  |#define HW_LRADC1_RESULT_LT_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_LT_EVENT1_SETMASK)
+                             1360 ; 296  |#define HW_LRADC1_RESULT_LT_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_LT_EVENT0_SETMASK)
+                             1361 ; 297  |#define HW_LRADC1_RESULT_RSVD0_CLRMASK (~(WORD)HW_LRADC1_RESULT_RSVD0_SETMASK)
+                             1362 ; 298  |#define HW_LRADC1_RESULT_DATA_OUT_CLRMASK (~(WORD)HW_LRADC1_RESULT_DATA_OUT_SETMASK)
+                             1363 ; 299  |#define HW_LRADC1_RESULT_RSVD1_CLRMASK (~(WORD)HW_LRADC1_RESULT_RSVD1_SETMASK)
+                             1364 ; 300  |#define HW_LRADC1_RESULT_IRQ_EVENT0_CLRMASK (~(WORD)HW_LRADC1_RESULT_IRQ_EVENT0_SETMASK)
+                             1365 ; 301  |#define HW_LRADC1_RESULT_IRQ_EVENT1_CLRMASK (~(WORD)HW_LRADC1_RESULT_IRQ_EVENT1_SETMASK)
+                             1366 ; 302  |#define HW_LRADC1_RESULT_RSVD2_CLRMASK (~(WORD)HW_LRADC1_RESULT_RSVD2_SETMASK)
+                             1367 ; 303  |
+                             1368 ; 304  |#define HW_LRADC1_RESULT      (*(volatile lradc_result_type _X*) (HW_LRADC_BASEADDR+5))    /* LRADC1 Result Register */
+                             1369 ; 305  |
+                             1370 ; 306  |/////////////////////////////////////////////////////////////////////////////////
+                             1371 ; 307  |//  LRADC2_CTRL Control Register (HW_LRADC2_CTRL_CTRL) Bit Definitions
+                             1372 ; 308  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_WIDTH (7)
+                             1373 ; 309  |#define HW_LRADC2_CTRL_CTRL_RSVD0_WIDTH (1)
+                             1374 ; 310  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_WIDTH (1)
+                             1375 ; 311  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_WIDTH (1)
+                             1376 ; 312  |#define HW_LRADC2_CTRL_CTRL_CLEAR_WIDTH (1)
+                             1377 ; 313  |#define HW_LRADC2_CTRL_CTRL_PWD_WIDTH (1)
+                             1378 ; 314  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_WIDTH (2)
+                             1379 ; 315  |#define HW_LRADC2_CTRL_CTRL_RSVD1_WIDTH (2)
+                             1380 ; 316  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_WIDTH (2)
+                             1381 ; 317  |#define HW_LRADC2_CTRL_CTRL_RSVD2_WIDTH (6)
+                             1382 ; 318  |
+                             1383 ; 319  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_BITPOS (0)
+                             1384 ; 320  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_BITPOS (8)
+                             1385 ; 321  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_BITPOS (9)
+                             1386 ; 322  |#define HW_LRADC2_CTRL_CTRL_CLEAR_BITPOS (10)
+                             1387 ; 323  |#define HW_LRADC2_CTRL_CTRL_PWD_BITPOS (11)
+                             1388 ; 324  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_BITPOS (12)
+                             1389 ; 325  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_BITPOS (16)
+                             1390 ; 326  |
+                             1391 ; 327  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_BITPOS)        
+                             1392 ; 328  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_BITPOS)        
+                             1393 ; 329  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_INPUT_DIV2_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_INPUT_DIV2_BITPOS) 
+                             1394 ; 330  |#define HW_LRADC2_CTRL_CTRL_CLEAR_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_CLEAR_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_CLEAR_BITPOS) 
+                             1395 ; 331  |#define HW_LRADC2_CTRL_CTRL_PWD_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_PWD_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_PWD_BITPOS) 
+                             1396 ; 332  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_CLK_DIV_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_CLK_DIV_BITPOS)        
+                             1397 ; 333  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_SETMASK (((1<<HW_LRADC2_CTRL_CTRL_REF_VAL_WIDTH)-1)<<HW_LRADC2_CTRL_CTRL_REF_VAL_BITPOS)        
+                             1398 ; 334  |
+                             1399 ; 335  |#define HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_INPUT_OFFSET_SETMASK)     
+                             1400 ; 336  |#define HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_HALF_CMP_PWR_SETMASK)     
+                             1401 ; 337  |#define HW_LRADC2_CTRL_CTRL_INPUT_DIV2_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_INPUT_DIV2_SETMASK) 
+                             1402 ; 338  |#define HW_LRADC2_CTRL_CTRL_CLEAR_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_CLEAR_SETMASK) 
+                             1403 ; 339  |#define HW_LRADC2_CTRL_CTRL_PWD_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_PWD_SETMASK) 
+                             1404 ; 340  |#define HW_LRADC2_CTRL_CTRL_CLK_DIV_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_CLK_DIV_SETMASK)     
+                             1405 ; 341  |#define HW_LRADC2_CTRL_CTRL_REF_VAL_CLRMASK (~(WORD)HW_LRADC2_CTRL_CTRL_REF_VAL_SETMASK)     
+                             1406 ; 342  |
+                             1407 ; 343  |
+                             1408 ; 344  |#define HW_LRADC2_CTRL      (*(volatile lradc_ctrl_type _X*) (HW_LRADC_BASEADDR+6))    /* LRADC2_CTRL Control Register */
+                             1409 ; 345  |
+                             1410 ; 346  |
+                             1411 ; 347  |
+                             1412 ; 348  |/////////////////////////////////////////////////////////////////////////////////
+                             1413 ; 349  |//  LRADC2 Threshold Register (HW_LRADC2_THRSH) Bit Definitions
+                             1414 ; 350  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_WIDTH (9)
+                             1415 ; 351  |#define HW_LRADC2_THRSH_RSVD0_WIDTH (3)
+                             1416 ; 352  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_WIDTH (9)
+                             1417 ; 353  |#define HW_LRADC2_THRSH_RSVD1_WIDTH (3)
+                             1418 ; 354  |
+                             1419 ; 355  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_BITPOS (0)
+                             1420 ; 356  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_BITPOS (12)
+                             1421 ; 357  |
+                             1422 ; 358  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_SETMASK (((1<<HW_LRADC2_THRSH_MIN_THRESHOLD_WIDTH)-1)<<HW_LRADC2_THRSH_MIN_THRESHOLD_BITPOS)        
+                             1423 ; 359  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_SETMASK (((1<<HW_LRADC2_THRSH_MAX_THRESHOLD_WIDTH)-1)<<HW_LRADC2_THRSH_MAX_THRESHOLD_BITPOS)        
+                             1424 ; 360  |
+                             1425 ; 361  |#define HW_LRADC2_THRSH_MIN_THRESHOLD_CLRMASK (~(WORD)HW_LRADC2_THRSH_MIN_THRESHOLD_SETMASK)     
+                             1426 ; 362  |#define HW_LRADC2_THRSH_MAX_THRESHOLD_CLRMASK (~(WORD)HW_LRADC2_THRSH_MAX_THRESHOLD_SETMASK)     
+                             1427 ; 363  |
+                             1428 ; 364  |#define HW_LRADC2_THRSH      (*(volatile lradc_thrsh_type _X*) (HW_LRADC_BASEADDR+7))    /* LRADC2 Threshold Register */
+                             1429 ; 365  |
+                             1430 ; 366  |
+                             1431 ; 367  |
+                             1432 ; 368  |/////////////////////////////////////////////////////////////////////////////////
+                             1433 ; 369  |//  LRADC2 Result Register (HW_LRADC2_RESULT) Bit Definitions
+                             1434 ; 370  |#define HW_LRADC2_RESULT_EQ_EVENT1_WIDTH (1)
+                             1435 ; 371  |#define HW_LRADC2_RESULT_EQ_EVENT0_WIDTH (1)
+                             1436 ; 372  |#define HW_LRADC2_RESULT_GT_EVENT1_WIDTH (1)
+                             1437 ; 373  |#define HW_LRADC2_RESULT_GT_EVENT0_WIDTH (1)
+                             1438 ; 374  |#define HW_LRADC2_RESULT_LT_EVENT1_WIDTH (1)
+                             1439 ; 375  |#define HW_LRADC2_RESULT_LT_EVENT0_WIDTH (1)
+                             1440 ; 376  |#define HW_LRADC2_RESULT_RSVD0_WIDTH (2)
+                             1441 ; 377  |#define HW_LRADC2_RESULT_DATA_OUT_WIDTH (9)
+                             1442 ; 378  |#define HW_LRADC2_RESULT_RSVD1_WIDTH (3)
+                             1443 ; 379  |#define HW_LRADC2_RESULT_IRQ_EVENT0_WIDTH (1)
+                             1444 ; 380  |#define HW_LRADC2_RESULT_IRQ_EVENT1_WIDTH (1)
+                             1445 ; 381  |#define HW_LRADC2_RESULT_RSVD2_WIDTH (2)
+                             1446 ; 382  |
+                             1447 ; 383  |#define HW_LRADC2_RESULT_EQ_EVENT1_BITPOS (0)
+                             1448 ; 384  |#define HW_LRADC2_RESULT_EQ_EVENT0_BITPOS (1)
+                             1449 ; 385  |#define HW_LRADC2_RESULT_GT_EVENT1_BITPOS (2)
+                             1450 ; 386  |#define HW_LRADC2_RESULT_GT_EVENT0_BITPOS (3)
+                             1451 ; 387  |#define HW_LRADC2_RESULT_LT_EVENT1_BITPOS (4)
+                             1452 ; 388  |#define HW_LRADC2_RESULT_LT_EVENT0_BITPOS (5)
+                             1453 ; 389  |#define HW_LRADC2_RESULT_RSVD0_BITPOS (6)
+                             1454 ; 390  |#define HW_LRADC2_RESULT_DATA_OUT_BITPOS (8)
+                             1455 ; 391  |#define HW_LRADC2_RESULT_RSVD1_BITPOS (17)
+                             1456 ; 392  |#define HW_LRADC2_RESULT_IRQ_EVENT0_BITPOS (20)
+                             1457 ; 393  |#define HW_LRADC2_RESULT_IRQ_EVENT1_BITPOS (21)
+                             1458 ; 394  |#define HW_LRADC2_RESULT_RSVD2_BITPOS (22)
+                             1459 ; 395  |
+                             1460 ; 396  |#define HW_LRADC2_RESULT_EQ_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_EQ_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_EQ_EVENT1_BITPOS)
+                             1461 ; 397  |#define HW_LRADC2_RESULT_EQ_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_EQ_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_EQ_EVENT0_BITPOS)
+                             1462 ; 398  |#define HW_LRADC2_RESULT_GT_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_GT_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_GT_EVENT1_BITPOS)
+                             1463 ; 399  |#define HW_LRADC2_RESULT_GT_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_GT_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_GT_EVENT0_BITPOS)
+                             1464 ; 400  |#define HW_LRADC2_RESULT_LT_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_LT_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_LT_EVENT1_BITPOS)
+                             1465 ; 401  |#define HW_LRADC2_RESULT_LT_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_LT_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_LT_EVENT0_BITPOS)
+                             1466 ; 402  |#define HW_LRADC2_RESULT_RSVD0_SETMASK (((1<<HW_LRADC2_RESULT_RSVD0_WIDTH)-1)<<HW_LRADC2_RESULT_RSVD0_BITPOS)
+                             1467 ; 403  |#define HW_LRADC2_RESULT_DATA_OUT_SETMASK (((1<<HW_LRADC2_RESULT_DATA_OUT_WIDTH)-1)<<HW_LRADC2_RESULT_DATA_OUT_BITPOS)
+                             1468 ; 404  |#define HW_LRADC2_RESULT_RSVD1_SETMASK (((1<<HW_LRADC2_RESULT_RSVD1_WIDTH)-1)<<HW_LRADC2_RESULT_RSVD1_BITPOS)
+                             1469 ; 405  |#define HW_LRADC2_RESULT_IRQ_EVENT0_SETMASK (((1<<HW_LRADC2_RESULT_IRQ_EVENT0_WIDTH)-1)<<HW_LRADC2_RESULT_IRQ_EVENT0_BITPOS)
+                             1470 ; 406  |#define HW_LRADC2_RESULT_IRQ_EVENT1_SETMASK (((1<<HW_LRADC2_RESULT_IRQ_EVENT1_WIDTH)-1)<<HW_LRADC2_RESULT_IRQ_EVENT1_BITPOS)
+                             1471 ; 407  |#define HW_LRADC2_RESULT_RSVD2_SETMASK (((1<<HW_LRADC2_RESULT_RSVD2_WIDTH)-1)<<HW_LRADC2_RESULT_RSVD2_BITPOS)
+                             1472 ; 408  |
+                             1473 ; 409  |#define HW_LRADC2_RESULT_EQ_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_EQ_EVENT1_SETMASK)
+                             1474 ; 410  |#define HW_LRADC2_RESULT_EQ_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_EQ_EVENT0_SETMASK)
+                             1475 ; 411  |#define HW_LRADC2_RESULT_GT_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_GT_EVENT1_SETMASK)
+                             1476 ; 412  |#define HW_LRADC2_RESULT_GT_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_GT_EVENT0_SETMASK)
+                             1477 ; 413  |#define HW_LRADC2_RESULT_LT_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_LT_EVENT1_SETMASK)
+                             1478 ; 414  |#define HW_LRADC2_RESULT_LT_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_LT_EVENT0_SETMASK)
+                             1479 ; 415  |#define HW_LRADC2_RESULT_RSVD0_CLRMASK (~(WORD)HW_LRADC2_RESULT_RSVD0_SETMASK)
+                             1480 ; 416  |#define HW_LRADC2_RESULT_DATA_OUT_CLRMASK (~(WORD)HW_LRADC2_RESULT_DATA_OUT_SETMASK)
+                             1481 ; 417  |#define HW_LRADC2_RESULT_RSVD1_CLRMASK (~(WORD)HW_LRADC2_RESULT_RSVD1_SETMASK)
+                             1482 ; 418  |#define HW_LRADC2_RESULT_IRQ_EVENT0_CLRMASK (~(WORD)HW_LRADC2_RESULT_IRQ_EVENT0_SETMASK)
+                             1483 ; 419  |#define HW_LRADC2_RESULT_IRQ_EVENT1_CLRMASK (~(WORD)HW_LRADC2_RESULT_IRQ_EVENT1_SETMASK)
+                             1484 ; 420  |#define HW_LRADC2_RESULT_RSVD2_CLRMASK (~(WORD)HW_LRADC2_RESULT_RSVD2_SETMASK)
+                             1485 ; 421  |
+                             1486 ; 422  |#define HW_LRADC2_RESULT      (*(volatile lradc_result_type _X*) (HW_LRADC_BASEADDR+8))    /* LRADC2 Result Register */
+                             1487 ; 423  |#define HW_LRADC_REF_0_SETMASK                  0x0<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1488 ; 424  |#define HW_LRADC_REF_1_SETMASK                  0x1<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1489 ; 425  |#define HW_LRADC_REF_2_SETMASK                  0x2<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1490 ; 426  |#define HW_LRADC_REF_3_SETMASK                  0x3<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1491 ; 427  |#define HW_LRADC_REF_4_SETMASK                  HW_LRADC_REF_0_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1492 ; 428  |#define HW_LRADC_REF_5_SETMASK                  HW_LRADC_REF_1_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1493 ; 429  |#define HW_LRADC_REF_6_SETMASK                  HW_LRADC_REF_2_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1494 ; 430  |#define HW_LRADC_REF_7_SETMASK                  HW_LRADC_REF_3_SETMASK|HW_BATT_CTRL_INPUT_DIV2_SETMASK
+                             1495 ; 431  |#define HW_LRADC_RES_REF_0                              80
+                             1496 ; 432  |#define HW_LRADC_RES_REF_1                              77
+                             1497 ; 433  |#define HW_LRADC_RES_REF_2                              100
+                             1498 ; 434  |#define HW_LRADC_RES_REF_3                              129
+                             1499 ; 435  |#define HW_LRADC_RES_REF_4                              160
+                             1500 ; 436  |#define HW_LRADC_RES_REF_5                              154
+                             1501 ; 437  |#define HW_LRADC_RES_REF_6                              200
+                             1502 ; 438  |#define HW_LRADC_RES_REF_7                              258
+                             1503 ; 439  |#define LRADC_HALF_POWER_SETMASK                HW_BATT_CTRL_HALF_CMP_PWR_SETMASK          
+                             1504 ; 440  |// Translate the generic API enumerations into more meaningful labels for the implementation
+                             1505 ; 441  |#define REF_2700MV                      HW_LRADC_REF_0_SETMASK
+                             1506 ; 442  |#define REF_2600MV              HW_LRADC_REF_1_SETMASK
+                             1507 ; 443  |#define REF_2560MV              HW_LRADC_REF_2_SETMASK
+                             1508 ; 444  |#define REF_VDDIO               HW_LRADC_REF_3_SETMASK
+                             1509 ; 445  |#define REF_5400MV              HW_LRADC_REF_4_SETMASK
+                             1510 ; 446  |#define REF_5200MV              HW_LRADC_REF_5_SETMASK
+                             1511 ; 447  |#define REF_5120MV              HW_LRADC_REF_6_SETMASK
+                             1512 ; 448  |#define REF_VDDIOx2             HW_LRADC_REF_7_SETMASK
+                             1513 ; 449  |#define RES_REF_2700MV  HW_LRADC_RES_REF_0
+                             1514 ; 450  |#define RES_REF_2600MV  HW_LRADC_RES_REF_1
+                             1515 ; 451  |#define RES_REF_2560MV  HW_LRADC_RES_REF_2
+                             1516 ; 452  |#define RES_REF_VDDIO   HW_LRADC_RES_REF_3
+                             1517 ; 453  |#define RES_REF_5400MV  HW_LRADC_RES_REF_4
+                             1518 ; 454  |#define RES_REF_5200MV  HW_LRADC_RES_REF_5
+                             1519 ; 455  |#define RES_REF_5120MV  HW_LRADC_RES_REF_6
+                             1520 ; 456  |#define RES_REF_VDDIOx2         HW_LRADC_RES_REF_7
+                             1521 ; 457  |
+                             1522 ; 458  |//Needed by button.asm
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1523 ; 459  |#define LOW_RES_ADC_BATT_READ_MASK 0x01FF00
+                             1524 ; 460  |#define LOW_RES_ADC_AUX_READ_MASK 0x01FF00
+                             1525 ; 461  |#define LOW_RES_ADC_AUX2_READ_MASK 0x01FF00
+                             1526 ; 462  |
+                             1527 ; 463  |#define HW_LRADC_CTRL_AUXADC_SETMASK 3<<HW_BATT_CTRL_REF_VAL_BITPOS
+                             1528 ; 464  |
+                             1529 ; 465  |#endif
+                             1530 ; 466  |
+                             1531 ; 467  |
+                             1532 
+                             1534 
+                             1535 ; 13   |
+                             1536 ; 14   |// Variables
+                             1537 ; 15   |extern WORD LowResAdcStatus;
+                             1538 ; 16   |extern WORD LowResAdcBattResult, LowResAdcBattAvg;                                      // Results and Averages come from buttons.asm
+                             1539 ; 17   |extern WORD LowResAdcAuxResult,  LowResAdcAuxAvg;
+                             1540 ; 18   |extern WORD LowResAdcAux2Result, LowResAdcAux2Avg;                                      // Aux2 result and average valid for 3500
+                             1541 ; 19   |
+                             1542 ; 20   |
+                             1543 ; 21   |// Types
+                             1544 ; 22   |enum LowResADCChannel {BATT, AUX, AUX2};                                                    // AUX2 valid for 3500
+                             1545 ; 23   |enum LowResADCHalfPwr {OFF = 0, ON = LRADC_HALF_POWER_SETMASK};
+                             1546 ; 24   |enum LowResADCRef     {REF_0 = HW_LRADC_REF_0_SETMASK,
+                             1547 ; 25   |                       REF_1 = HW_LRADC_REF_1_SETMASK,
+                             1548 ; 26   |                                           REF_2 = HW_LRADC_REF_2_SETMASK,
+                             1549 ; 27   |                                           REF_3 = HW_LRADC_REF_3_SETMASK,
+                             1550 ; 28   |                                           REF_4 = HW_LRADC_REF_4_SETMASK,
+                             1551 ; 29   |                                           REF_5 = HW_LRADC_REF_5_SETMASK,
+                             1552 ; 30   |                                           REF_6 = HW_LRADC_REF_6_SETMASK,
+                             1553 ; 31   |                                           REF_7 = HW_LRADC_REF_7_SETMASK
+                             1554 ; 32   |                      };
+                             1555 ; 33   |
+                             1556 ; 34   |
+                             1557 ; 35   |// ADC Reference resolutions in mV*10
+                             1558 ; 36   |// 1 ADC count = Vref(mV)/([2^N] - 1) where N = # bits in result, and Vref based on selected LRADC reference.
+                             1559 ; 37   |#define RES_REF_0      HW_LRADC_RES_REF_0
+                             1560 ; 38   |#define RES_REF_1      HW_LRADC_RES_REF_1
+                             1561 ; 39   |#define RES_REF_2      HW_LRADC_RES_REF_2
+                             1562 ; 40   |#define RES_REF_3      HW_LRADC_RES_REF_3
+                             1563 ; 41   |#define RES_REF_4      HW_LRADC_RES_REF_4
+                             1564 ; 42   |#define RES_REF_5      HW_LRADC_RES_REF_5
+                             1565 ; 43   |#define RES_REF_6      HW_LRADC_RES_REF_6
+                             1566 ; 44   |#define RES_REF_7      HW_LRADC_RES_REF_7
+                             1567 ; 45   |
+                             1568 ; 46   |
+                             1569 ; 47   |// These bits are used against LowResAdcStatus, to signal which channels to read in buttons routine
+                             1570 ; 48   |#define LOW_RES_ADC_BATT_EN_MASK    1 
+                             1571 ; 49   |#define LOW_RES_ADC_AUX_EN_MASK         2 
+                             1572 ; 50   |#define LOW_RES_ADC_AUX2_EN_MASK        4
+                             1573 ; 51   |
+                             1574 ; 52   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1575 ; 53   |//
+                             1576 ; 54   |//>  Name:          SysLowResolutionAdcReadBin
+                             1577 ; 55   |//
+                             1578 ; 56   |//   Type:          Function 
+                             1579 ; 57   |//
+                             1580 ; 58   |//   Description:   Returns the instantaneous Result of the Low Resolution ADC Channel specified
+                             1581 ; 59   |//
+                             1582 ; 60   |//   Inputs:        Constant specifying the Low Resolution ADC Channel
+                             1583 ; 61   |//                  BATT for Battery channel
+                             1584 ; 62   |//                  AUX for Auxiliary channel 1
+                             1585 ; 63   |//                  AUX2 for Auxiliary channel 2
+                             1586 ; 64   |//
+                             1587 ; 65   |//   Outputs:       Average in binary format (0->127 for 3410, 0->255 for 3500)
+                             1588 ; 66   |//
+                             1589 ; 67   |//   Notes:         none
+                             1590 ; 68   |//<
+                             1591 ; 69   |//////////////////////////////////////////////////////////////////////////////////////////
+                             1592 ; 70   |#ifdef DEVICE_3500
+                             1593 ; 71   |#define SysLowResolutionAdcReadBin(n)    (n==BATT ? HW_BATT_RESULT.B.DATA_OUT : (n == AUX ? HW_LRADC1_RESULT.B.DATA_OUT: HW_LRADC2_RESULT.B.DATA_OUT))
+                             1594 ; 72   |#else
+                             1595 ; 73   |//3410 does not support AUX2
+                             1596 ; 74   |#define SysLowResolutionAdcReadBin(n)    (n==BATT ? HW_LRADC_RES.B.BATLRR : (n == AUX ? HW_LRADC_RES.B.AUXLRR: 0))
+                             1597 ; 75   |#endif
+                             1598 ; 76   |
+                             1599 ; 77   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1600 ; 78   |//
+                             1601 ; 79   |//>  Name:          SysLowResolutionAdcReadAvg
+                             1602 ; 80   |//
+                             1603 ; 81   |//   Type:          Function 
+                             1604 ; 82   |//
+                             1605 ; 83   |//   Description:   Reads the Averaged Result of the Low Resolution ADC Channel specified
+                             1606 ; 84   |//
+                             1607 ; 85   |//   Inputs:        Constant specifying the Low Resolution ADC Channel
+                             1608 ; 86   |//                  BATT for Battery channel
+                             1609 ; 87   |//                  AUX for Auxiliary channel 1
+                             1610 ; 88   |//                  AUX2 for Auxiliary channel 2
+                             1611 ; 89   |//
+                             1612 ; 90   |//   Outputs:       Average in binary format (0->127 for 3410, 0->255 for 3500)
+                             1613 ; 91   |//
+                             1614 ; 92   |//   Notes:         The average is done using 256 samples
+                             1615 ; 93   |//<
+                             1616 ; 94   |//////////////////////////////////////////////////////////////////////////////////////////
+                             1617 ; 95   |#define SysLowResolutionAdcReadAvg(n)    (n==BATT ? LowResAdcBattAvg : (n == AUX ? LowResAdcAuxAvg : LowResAdcAux2Avg))
+                             1618 ; 96   |
+                             1619 ; 97   |// Functions  
+                             1620 ; 98   |void _reentrant SysLowResolutionADCInit(enum LowResADCChannel Adc, enum LowResADCHalfPwr Power, enum LowResADCRef Ref);
+                             1621 ; 99   |INT SysLowResolutionAdcReadVolt(BYTE bAdcChannel,BOOL bAverage);
+                             1622 ; 100  |
+                             1623 ; 101  |// Equates
+                             1624 ; 102  |#define AVERAGE_RESULT  TRUE
+                             1625 ; 103  |#define INSTANT_RESULT  FALSE
+                             1626 ; 104  |
+                             1627 ; 105  |#endif // _LOWRESOLUTIONADC_H
+                             1628 
+                             1630 
+                             1631 ; 10   |
+                             1632 ; 11   |#ifndef BATT_OFFSET
+                             1633 ; 12   |#define BATT_OFFSET 0x56
+                             1634 ; 13   |#endif
+                             1635 ; 14   |
+                             1636 ; 15   |extern WORD wAdcBattResolution;
+                             1637 ; 16   |extern WORD wAdcAuxResolution;
+                             1638 ; 17   |extern WORD wAdcAux2Resolution;
+                             1639 ; 18   |
+                             1640 ; 19   |#pragma optimize 1
+                             1642 ; 20   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1643 ; 21   |//
+                             1644 ; 22   |//>  Name:          SysLowResolutionADCInit
+                             1645 ; 23   |//
+                             1646 ; 24   |//   Type:          Function 
+                             1647 ; 25   |//
+                             1648 ; 26   |//   Description:   Initializes specified low resolution ADC
+                             1649 ; 27   |//
+                             1650 ; 28   |//   Inputs:        ADC Channel, the 2 channels supported are BATT and AUX
+                             1651 ; 29   |//                  Half Power mode, 2 values supported are OFF and ON
+                             1652 ; 30   |//                  ADC Channel Reference (see LowResADCRef enum for the list
+                             1653 ; 31   |//                    of supported values
+                             1654 ; 32   |//
+                             1655 ; 33   |//   Outputs:       none
+                             1656 ; 34   |//
+                             1657 ; 35   |//   Notes:         Half Power Mode, reduces the ADC power consumption at the expense 
+                             1658 ; 36   |//                  of precision. In this mode the LSBit is insignificant.
+                             1659 ; 37   |//<
+                             1660 ; 38   |//////////////////////////////////////////////////////////////////////////////////////////
+                             1661 ; 39   |#ifdef FUNCLET
+                             1662 ; 40   |void _reentrant SysLowResolutionADCInitFunclet(enum LowResADCChannel Adc, enum LowResADCHalfPwr Power, enum LowResADCRef Ref)
+                             1663 ; 41   |#else
+                             1664 ; 42   |void _reentrant SysLowResolutionADCInit(enum LowResADCChannel Adc, enum LowResADCHalfPwr Power, enum LowResADCRef Ref)
+                             1665 ; 43   |#endif
+                             1666 ; 44   |{
+                             1667 
+P:0000                       1668         org     p,".ptextlowresolutionadcinit":
+                             1723 FSysLowResolutionADCInitFunclet:
+                             1736 
+                             1737 ; 45   |    WORD    wRegister = 0, wResolution, wOffset;
+                             1738 ; 46   |    
+                             1739 ; 47   |    wRegister = wRegister + Power + Ref;          // This is the new control value 
+                             1740 
+                             1745 
+                             1746 ; 48   |
+                             1747 ; 49   |    // Determine ADC resolution 
+                             1748 ; 50   |    switch(Ref)
+                             1749 
+P:0000 260148         2    2 1742         add     x0,b	                #<1,y0
+P:0001 21A749         2    4 1751         tfr     x0,b	                b1,y1
+P:0002 26025D         2    6 1754         cmp     y0,b    #<2,y0
+P:0003 0AF0AA rrrrrr  6   12 1755         jeq     L50
+P:0005 26035D         2   14 1756         cmp     y0,b    #<3,y0
+P:0006 0AF0AA rrrrrr  6   20 1757         jeq     L51
+P:0008 46F45D 000200  3   23 1758         cmp     y0,b    #512,y0
+P:000A 0AF0AA rrrrrr  6   29 1759         jeq     L52
+P:000C 46F45D 010200  3   32 1760         cmp     y0,b    #66048,y0
+P:000E 0AF0AA rrrrrr  6   38 1761         jeq     L53
+P:0010 46F45D 020200  3   41 1762         cmp     y0,b    #131584,y0
+P:0012 0AF0AA rrrrrr  6   47 1763         jeq     L54
+P:0014 46F45D 030200  3   50 1764         cmp     y0,b    #197120,y0
+P:0016 0AF0AA rrrrrr  6   56 1765         jeq     L58
+P:0018 20005D         2   58 1766         cmp     y0,b
+P:0019 0AF0AA rrrrrr  6   64 1767         jeq     L59
+P:001B 20000B         2   66 1768         tst     b
+P:001C 0AF0A2 rrrrrr  6   72 1769         jne     L60
+                             1770 
+                             1771 ; 51   |        {
+                             1772 ; 52   |            case REF_2700MV:
+                             1773 ; 53   |                wResolution = RES_REF_2700MV;
+                             1774 
+                             1778 
+                             1779 ; 54   |                wOffset = BATT_OFFSET;
+                             1780 
+P:001E 46F400 000050  3   75 1776         move    #>80,y0
+P:0020 0AF080 rrrrrr  6   81 1782         jmp     L57
+                             1783 
+                             1784 ; 55   |                break;
+                             1785 ; 56   |            case REF_2600MV:
+                             1786 ; 57   |                wResolution = RES_REF_2600MV;
+                             1787 
+                             1789 L50:
+                             1790 
+                             1791 ; 58   |                wOffset = BATT_OFFSET;
+                             1792 
+P:0022 46F400 00004D  3   84 1789         move    #>77,y0
+P:0024 0AF080 rrrrrr  6   90 1794         jmp     L57
+                             1795 
+                             1796 ; 59   |                break;
+                             1797 ; 60   |            case REF_2560MV:
+                             1798 ; 61   |                wResolution = RES_REF_2560MV;
+                             1799 
+                             1801 L51:
+                             1802 
+                             1803 ; 62   |                wOffset = 0;
+                             1804 
+P:0026 46F400 000064  3   93 1801         move    #>100,y0
+P:0028 0AF080 rrrrrr  6   99 1806         jmp     L64
+                             1807 
+                             1808 ; 63   |                break;
+                             1809 ; 64   |            case REF_VDDIO:
+                             1810 ; 65   |                wResolution = RES_REF_VDDIO;
+                             1811 
+                             1813 L52:
+                             1814 
+                             1815 ; 66   |                wOffset = 0;
+                             1816 
+P:002A 46F400 000081  3  102 1813         move    #>$81,y0
+P:002C 0AF080 rrrrrr  6  108 1818         jmp     L64
+                             1819 
+                             1820 ; 67   |                break;
+                             1821 ; 68   |            case REF_5400MV:
+                             1822 ; 69   |                wResolution = RES_REF_5400MV;
+                             1823 
+                             1825 L53:
+                             1826 
+                             1827 ; 70   |                wOffset = BATT_OFFSET;
+                             1828 
+P:002E 46F400 0000A0  3  111 1825         move    #>160,y0
+P:0030 0AF080 rrrrrr  6  117 1830         jmp     L57
+                             1831 
+                             1832 ; 71   |                break;
+                             1833 ; 72   |            case REF_5200MV:
+                             1834 ; 73   |                wResolution = RES_REF_5200MV;
+                             1835 
+                             1837 L54:
+                             1838 
+                             1839 ; 74   |                wOffset = BATT_OFFSET;
+                             1840 
+P:0032 46F400 00009A  3  120 1837         move    #>154,y0
+                             1842 L57:
+                             1845 
+                             1846 ; 75   |                break;
+                             1847 
+P:0034 57F400 000056  3  123 1842         move    #>86,b
+P:0036 0AF080 rrrrrr  6  129 1849         jmp     L65
+                             1850 
+                             1851 ; 76   |            case REF_5120MV:
+                             1852 ; 77   |                wResolution = RES_REF_5120MV;
+                             1853 
+                             1855 L58:
+                             1856 
+                             1857 ; 78   |                wOffset = 0;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1858 
+P:0038 46F400 0000C8  3  132 1855         move    #>200,y0
+P:003A 0AF080 rrrrrr  6  138 1860         jmp     L64
+                             1861 
+                             1862 ; 79   |                break;
+                             1863 ; 80   |            case REF_VDDIOx2:
+                             1864 ; 81   |                wResolution = RES_REF_VDDIOx2;
+                             1865 
+                             1867 L59:
+                             1868 
+                             1869 ; 82   |                wOffset = 0;
+                             1870 
+P:003C 46F400 000102  3  141 1867         move    #258,y0
+P:003E 0AF080 rrrrrr  6  147 1872         jmp     L64
+                             1873 
+                             1874 ; 83   |                break;
+                             1875 ; 84   |                
+                             1876 ; 85   |            default:
+                             1877 ; 86   |                wResolution = 0;
+                             1878 
+                             1880 L60:
+                             1881 
+                             1882 ; 87   |                wOffset = 0;
+                             1883 
+P:0040 260000         2  149 1880         move    #0,y0
+                             1885 L64:
+                             1886 
+                             1887 ; 88   |                break;                
+                             1888 ; 89   |        }
+                             1889 ; 90   |        
+                             1890 ; 91   |    // Initialize ADC parameters
+                             1891 ; 92   |    switch(Adc)
+                             1892 
+P:0041 2F0000         2  151 1885         move    #0,b
+P:0042 44F400 000001  3  154 1894 L65:    move    #>1,x0
+P:0044 44F445 000002  3  157 1895         cmp     x0,a    #>2,x0
+P:0046 0AF0AA rrrrrr  6  163 1896         jeq     L66
+P:0048 200045         2  165 1897         cmp     x0,a
+P:0049 0AF0AA rrrrrr  6  171 1898         jeq     L67
+P:004B 200003         2  173 1899         tst     a
+P:004C 0AF0AA rrrrrr  6  179 1900         jeq     L68
+P:004E 00000C         4  183 1901         rts
+                             1902 
+                             1903 ; 93   |    {
+                             1904 ; 94   |        case BATT:
+                             1905 ; 95   |            wAdcBattResolution = wResolution;                               // Resolution
+                             1906 ; 96   |            LowResAdcStatus = LowResAdcStatus | LOW_RES_ADC_BATT_EN_MASK;   // Enable for button ISR
+                             1907 ; 97   |            HW_BATT_CTRL.I = HW_BATT_CTRL.I & 0xF0307F;
+                             1908 ; 98   |            HW_BATT_CTRL.I = HW_BATT_CTRL.I | wRegister;                    // Setup control register
+                             1909 ; 99   |            HW_BATT_CTRL.B.INPUT_OFFSET = wOffset;
+                             1910 ; 100  |            break;
+                             1911 ; 101  |
+                             1912 ; 102  |        case AUX:
+                             1913 ; 103  |            wAdcAuxResolution = wResolution;                                // Resolution
+                             1914 
+                             1916 L66:
+                             1917 
+                             1918 ; 104  |            LowResAdcStatus = LowResAdcStatus | LOW_RES_ADC_AUX_EN_MASK;    // Enable for button ISR
+                             1919 
+                             1922 
+                             1923 ; 105  |            HW_LRADC1_CTRL.I = HW_LRADC1_CTRL.I & 0xF0307F;
+                             1924 
+                             1932 
+                             1933 ; 106  |            HW_LRADC1_CTRL.I = HW_LRADC1_CTRL.I | wRegister;                // Setup control register
+                             1934 
+                             1939 
+                             1940 ; 107  |            HW_LRADC1_CTRL.B.INPUT_OFFSET = wOffset;
+                             1941 
+                             1951 
+                             1952 ; 108  |            break;
+                             1953 
+P:004F 4E7000 rrrrrr  3  186 1916         move    y0,y:FwAdcAuxResolution
+P:0051 56F000 00FA23  3  189 1926         move    x:$FA23,a
+P:0053 0A7061 rrrrrr  6  195 1921         bset    #1,y:FLowResAdcStatus
+P:0055 46F400 F0307F  3  198 1928         move    #15741055,y0
+P:0057 44F456 FFFF80  3  201 1929         and     y0,a	                #$FFFF80,x0
+P:0059 547000 00FA23  3  204 1931         move    a1,x:$FA23
+P:005B 54F000 00FA23  3  207 1936         move    x:$FA23,a1
+P:005D 200072         2  209 1937         or      y1,a
+P:005E 547000 00FA23  3  212 1938         move    a1,x:$FA23
+P:0060 56F000 00FA23  3  215 1943         move    x:$FA23,a
+P:0062 44F446 00007F  3  218 1945         and     x0,a	                #>$7F,x0
+P:0064 20004E         2  220 1947         and     x0,b
+P:0065 21A400         2  222 1948         move    b1,x0
+P:0066 200042         2  224 1949         or      x0,a
+P:0067 547000 00FA23  3  227 1950         move    a1,x:$FA23
+P:0069 00000C         4  231 1955         rts
+                             1956 
+                             1957 ; 109  |
+                             1958 ; 110  |        case AUX2:
+                             1959 ; 111  |            wAdcAux2Resolution = wResolution;                               // Resolution
+                             1960 
+                             1962 L67:
+                             1966 
+                             1967 ; 112  |            LowResAdcStatus = LowResAdcStatus | LOW_RES_ADC_AUX2_EN_MASK;   // Enable for button ISR
+                             1968 
+                             1971 
+                             1972 ; 113  |            HW_LRADC2_CTRL.I = HW_LRADC2_CTRL.I & 0xF0307F;
+                             1973 
+                             1980 
+                             1981 ; 114  |            HW_LRADC2_CTRL.I = HW_LRADC2_CTRL.I | wRegister;                // Setup control register
+                             1982 
+                             1987 
+                             1988 ; 115  |            HW_LRADC2_CTRL.B.INPUT_OFFSET = wOffset;
+                             1989 
+                             1999 
+                             2000 ; 116  |            break;
+                             2001 
+P:006A 4E7000 rrrrrr  3  234 1965         move    y0,y:FwAdcAux2Resolution
+P:006C 56F000 00FA26  3  237 1975         move    x:$FA26,a
+P:006E 0A7062 rrrrrr  6  243 1970         bset    #2,y:FLowResAdcStatus
+P:0070 46F400 F0307F  3  246 1976         move    #15741055,y0
+P:0072 44F456 FFFF80  3  249 1977         and     y0,a	                #$FFFF80,x0
+P:0074 547000 00FA26  3  252 1979         move    a1,x:$FA26
+P:0076 54F000 00FA26  3  255 1984         move    x:$FA26,a1
+P:0078 200072         2  257 1985         or      y1,a
+P:0079 547000 00FA26  3  260 1986         move    a1,x:$FA26
+P:007B 56F000 00FA26  3  263 1991         move    x:$FA26,a
+P:007D 44F446 00007F  3  266 1993         and     x0,a	                #>$7F,x0
+P:007F 20004E         2  268 1995         and     x0,b
+P:0080 21A400         2  270 1996         move    b1,x0
+P:0081 200042         2  272 1997         or      x0,a
+P:0082 547000 00FA26  3  275 1998         move    a1,x:$FA26
+P:0084 00000C         4  279 2003         rts
+                             2005 L68:
+                             2029 
+                             2030 ; 117  |               
+                             2031 ; 118  |        default:
+                             2032 ; 119  |            break;
+                             2033 ; 120  |    }                                
+                             2034 ; 121  |
+                             2035 ; 122  |}
+                             2036 
+P:0085 4E7000 rrrrrr  3  282 2007         move    y0,y:FwAdcBattResolution
+P:0087 56F000 00FA20  3  285 2011         move    x:$FA20,a
+P:0089 0A7060 rrrrrr  6  291 2009         bset    #0,y:FLowResAdcStatus
+P:008B 46F400 F0307F  3  294 2012         move    #15741055,y0
+P:008D 44F456 FFFF80  3  297 2013         and     y0,a	                #$FFFF80,x0
+P:008F 547000 00FA20  3  300 2015         move    a1,x:$FA20
+P:0091 54F000 00FA20  3  303 2017         move    x:$FA20,a1
+P:0093 200072         2  305 2018         or      y1,a
+P:0094 547000 00FA20  3  308 2019         move    a1,x:$FA20
+P:0096 56F000 00FA20  3  311 2021         move    x:$FA20,a
+P:0098 44F446 00007F  3  314 2023         and     x0,a	                #>$7F,x0
+P:009A 20004E         2  316 2025         and     x0,b
+P:009B 21A400         2  318 2026         move    b1,x0
+P:009C 200042         2  320 2027         or      x0,a
+P:009D 547000 00FA20  3  323 2028         move    a1,x:$FA20
+P:009F 00000C         4  327 2038         rts
+                             2041 
+                             2042 ; 123  |
+                             2043 ; 124  |#ifdef FUNCLET
+                             2044 ; 125  |#pragma asm
+                             2045   extern    SysCallFunclet
+                             2046 
+                             2047   global FSysLowResolutionADCInit
+P:0000                       2048   org p,".ptextlowresolutionadcinitprologue":
+                             2049 FSysLowResolutionADCInit
+                             2054   CallFunclet RSRC_FUNCLET_LOWRESOLUTIONADCINIT
+P:0000 0D0080         4    4 2054     jsr       $80
+P:0001 0001A6                2054     DC       RSRC_FUNCLET_LOWRESOLUTIONADCINIT  ; 1 word
+                             2055 ; 136  |#pragma endasm
+                             2056 ; 137  |#endif
+                             2057 
+                             2063 
+                             2064         extern  y:FLowResAdcStatus, y:FwAdcAux2Resolution
+                             2065         extern  y:FwAdcAuxResolution, y:FwAdcBattResolution
+                             2066 
+                             2067         global  FSysLowResolutionADCInitFunclet
+                             2068 
+                             2069         local   L50, L51, L52, L53, L54, L57, L58, L59, L60, L64, L65, L66
+                             2070         local   L67, L68
+                             2071 

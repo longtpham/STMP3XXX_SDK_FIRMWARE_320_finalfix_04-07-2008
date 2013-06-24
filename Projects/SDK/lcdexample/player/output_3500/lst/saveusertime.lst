@@ -1,0 +1,2469 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc5eab.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ; saveusertime.c:
+                               96 ; 1    |#include "fstypes.h"
+                               97 
+                               99 
+                              100 ; 1    |#ifndef _FS_TYPE_H_
+                              101 ; 2    |#define _FS_TYPE_H_
+                              102 ; 3    |
+                              103 ; 4    |#include   "types.h"
+                              104 
+                              106 
+                              107 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              108 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              109 ; 3    |//
+                              110 ; 4    |// Filename: types.h
+                              111 ; 5    |// Description: Standard data types
+                              112 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              113 ; 7    |
+                              114 ; 8    |#ifndef _TYPES_H
+                              115 ; 9    |#define _TYPES_H
+                              116 ; 10   |
+                              117 ; 11   |// TODO:  move this outta here!
+                              118 ; 12   |#if !defined(NOERROR)
+                              119 ; 13   |#define NOERROR 0
+                              120 ; 14   |#define SUCCESS 0
+                              121 ; 15   |#endif 
+                              122 ; 16   |#if !defined(SUCCESS)
+                              123 ; 17   |#define SUCCESS  0
+                              124 ; 18   |#endif
+                              125 ; 19   |#if !defined(ERROR)
+                              126 ; 20   |#define ERROR   -1
+                              127 ; 21   |#endif
+                              128 ; 22   |#if !defined(FALSE)
+                              129 ; 23   |#define FALSE 0
+                              130 ; 24   |#endif
+                              131 ; 25   |#if !defined(TRUE)
+                              132 ; 26   |#define TRUE  1
+                              133 ; 27   |#endif
+                              134 ; 28   |
+                              135 ; 29   |#if !defined(NULL)
+                              136 ; 30   |#define NULL 0
+                              137 ; 31   |#endif
+                              138 ; 32   |
+                              139 ; 33   |#define MAX_INT     0x7FFFFF
+                              140 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              141 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              142 ; 36   |#define MAX_ULONG   (-1) 
+                              143 ; 37   |
+                              144 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              145 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              146 ; 40   |
+                              147 ; 41   |
+                              148 ; 42   |#define BYTE    unsigned char       // btVarName
+                              149 ; 43   |#define CHAR    signed char         // cVarName
+                              150 ; 44   |#define USHORT  unsigned short      // usVarName
+                              151 ; 45   |#define SHORT   unsigned short      // sVarName
+                              152 ; 46   |#define WORD    unsigned int        // wVarName
+                              153 ; 47   |#define INT     signed int          // iVarName
+                              154 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              155 ; 49   |#define LONG    signed long         // lVarName
+                              156 ; 50   |#define BOOL    unsigned int        // bVarName
+                              157 ; 51   |#define FRACT   _fract              // frVarName
+                              158 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              159 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              160 ; 54   |#define FLOAT   float               // fVarName
+                              161 ; 55   |#define DBL     double              // dVarName
+                              162 ; 56   |#define ENUM    enum                // eVarName
+                              163 ; 57   |#define CMX     _complex            // cmxVarName
+                              164 ; 58   |typedef WORD UCS3;                   // 
+                              165 ; 59   |
+                              166 ; 60   |#define UINT16  unsigned short
+                              167 ; 61   |#define UINT8   unsigned char   
+                              168 ; 62   |#define UINT32  unsigned long
+                              169 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              170 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              171 ; 65   |#define WCHAR   UINT16
+                              172 ; 66   |
+                              173 ; 67   |//UINT128 is 16 bytes or 6 words
+                              174 ; 68   |typedef struct UINT128_3500 {   
+                              175 ; 69   |    int val[6];     
+                              176 ; 70   |} UINT128_3500;
+                              177 ; 71   |
+                              178 ; 72   |#define UINT128   UINT128_3500
+                              179 ; 73   |
+                              180 ; 74   |// Little endian word packed byte strings:   
+                              181 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              182 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              183 ; 77   |// Little endian word packed byte strings:   
+                              184 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              185 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              186 ; 80   |
+                              187 ; 81   |// Declare Memory Spaces To Use When Coding
+                              188 ; 82   |// A. Sector Buffers
+                              189 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              190 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              191 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              192 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              193 
+                              195 
+                              196 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              197 ; 88   |// B. Media DDI Memory
+                              198 ; 89   |#define MEDIA_DDI_MEM _Y
+                              199 ; 90   |
+                              200 ; 91   |
+                              201 ; 92   |
+                              202 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              203 ; 94   |// Examples of circular pointers:
+                              204 ; 95   |//    INT CIRC cpiVarName
+                              205 ; 96   |//    DWORD CIRC cpdwVarName
+                              206 ; 97   |
+                              207 ; 98   |#define RETCODE INT                 // rcVarName
+                              208 ; 99   |
+                              209 ; 100  |// generic bitfield structure
+                              210 ; 101  |struct Bitfield {
+                              211 ; 102  |    unsigned int B0  :1;
+                              212 ; 103  |    unsigned int B1  :1;
+                              213 ; 104  |    unsigned int B2  :1;
+                              214 ; 105  |    unsigned int B3  :1;
+                              215 ; 106  |    unsigned int B4  :1;
+                              216 ; 107  |    unsigned int B5  :1;
+                              217 ; 108  |    unsigned int B6  :1;
+                              218 ; 109  |    unsigned int B7  :1;
+                              219 ; 110  |    unsigned int B8  :1;
+                              220 ; 111  |    unsigned int B9  :1;
+                              221 ; 112  |    unsigned int B10 :1;
+                              222 ; 113  |    unsigned int B11 :1;
+                              223 ; 114  |    unsigned int B12 :1;
+                              224 ; 115  |    unsigned int B13 :1;
+                              225 ; 116  |    unsigned int B14 :1;
+                              226 ; 117  |    unsigned int B15 :1;
+                              227 ; 118  |    unsigned int B16 :1;
+                              228 ; 119  |    unsigned int B17 :1;
+                              229 ; 120  |    unsigned int B18 :1;
+                              230 ; 121  |    unsigned int B19 :1;
+                              231 ; 122  |    unsigned int B20 :1;
+                              232 ; 123  |    unsigned int B21 :1;
+                              233 ; 124  |    unsigned int B22 :1;
+                              234 ; 125  |    unsigned int B23 :1;
+                              235 ; 126  |};
+                              236 ; 127  |
+                              237 ; 128  |union BitInt {
+                              238 ; 129  |        struct Bitfield B;
+                              239 ; 130  |        int        I;
+                              240 ; 131  |};
+                              241 ; 132  |
+                              242 ; 133  |#define MAX_MSG_LENGTH 10
+                              243 ; 134  |struct CMessage
+                              244 ; 135  |{
+                              245 ; 136  |        unsigned int m_uLength;
+                              246 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              247 ; 138  |};
+                              248 ; 139  |
+                              249 ; 140  |typedef struct {
+                              250 ; 141  |    WORD m_wLength;
+                              251 ; 142  |    WORD m_wMessage;
+                              252 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              253 ; 144  |} Message;
+                              254 ; 145  |
+                              255 ; 146  |struct MessageQueueDescriptor
+                              256 ; 147  |{
+                              257 ; 148  |        int *m_pBase;
+                              258 ; 149  |        int m_iModulo;
+                              259 ; 150  |        int m_iSize;
+                              260 ; 151  |        int *m_pHead;
+                              261 ; 152  |        int *m_pTail;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              262 ; 153  |};
+                              263 ; 154  |
+                              264 ; 155  |struct ModuleEntry
+                              265 ; 156  |{
+                              266 ; 157  |    int m_iSignaledEventMask;
+                              267 ; 158  |    int m_iWaitEventMask;
+                              268 ; 159  |    int m_iResourceOfCode;
+                              269 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              270 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              271 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              272 ; 163  |    int m_uTimeOutHigh;
+                              273 ; 164  |    int m_uTimeOutLow;
+                              274 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              275 ; 166  |};
+                              276 ; 167  |
+                              277 ; 168  |union WaitMask{
+                              278 ; 169  |    struct B{
+                              279 ; 170  |        unsigned int m_bNone     :1;
+                              280 ; 171  |        unsigned int m_bMessage  :1;
+                              281 ; 172  |        unsigned int m_bTimer    :1;
+                              282 ; 173  |        unsigned int m_bButton   :1;
+                              283 ; 174  |    } B;
+                              284 ; 175  |    int I;
+                              285 ; 176  |} ;
+                              286 ; 177  |
+                              287 ; 178  |
+                              288 ; 179  |struct Button {
+                              289 ; 180  |        WORD wButtonEvent;
+                              290 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              291 ; 182  |};
+                              292 ; 183  |
+                              293 ; 184  |struct Message {
+                              294 ; 185  |        WORD wMsgLength;
+                              295 ; 186  |        WORD wMsgCommand;
+                              296 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              297 ; 188  |};
+                              298 ; 189  |
+                              299 ; 190  |union EventTypes {
+                              300 ; 191  |        struct CMessage msg;
+                              301 ; 192  |        struct Button Button ;
+                              302 ; 193  |        struct Message Message;
+                              303 ; 194  |};
+                              304 ; 195  |
+                              305 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              306 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              307 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              308 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              309 ; 200  |
+                              310 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              311 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              312 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              313 ; 204  |
+                              314 ; 205  |#if DEBUG
+                              315 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              316 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              317 ; 208  |#else 
+                              318 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              319 ; 210  |#define DebugBuildAssert(x)    
+                              320 ; 211  |#endif
+                              321 ; 212  |
+                              322 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              323 ; 214  |//  #pragma asm
+                              324 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              325 ; 216  |//  #pragma endasm
+                              326 ; 217  |
+                              327 ; 218  |
+                              328 ; 219  |#ifdef COLOR_262K
+                              329 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              330 ; 221  |#elif defined(COLOR_65K)
+                              331 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              332 ; 223  |#else
+                              333 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              334 ; 225  |#endif
+                              335 ; 226  |    
+                              336 ; 227  |#endif // #ifndef _TYPES_H
+                              337 
+                              339 
+                              340 ; 5    |
+                              341 ; 6    |// move FSMEDIA_TABLE from devicetable.h  15Apr2005   First moved in SDK2.6.
+                              342 ; 7    |typedef struct
+                              343 ; 8    |{
+                              344 ; 9    |
+                              345 ; 10   |INT     _Y BytesPerSector;
+                              346 ; 11   |INT     _Y SectorsPerCluster;
+                              347 ; 12   |INT     _Y RsvdSectors;
+                              348 ; 13   |INT     _Y NoOfFATs;
+                              349 ; 14   |INT     _Y MaxRootDirEntries;
+                              350 ; 15   |LONG    _Y TotalSectors;
+                              351 ; 16   |LONG    _Y FATSize;
+                              352 ; 17   |LONG    _Y RootdirCluster;
+                              353 ; 18   |//INT   _Y FSInfoSector;
+                              354 ; 19   |//INT   _Y BkBootSector;
+                              355 ; 20   |LONG    _Y NextFreeCluster;
+                              356 ; 21   |LONG    _Y TotalFreeClusters;
+                              357 ; 22   |INT     _Y RootDirSectors;
+                              358 ; 23   |INT     _Y FIRSTDataSector;
+                              359 ; 24   |INT    _Y FATType;
+                              360 ; 25   |LONG   _Y TotalNoofclusters;
+                              361 ; 26   |INT    _Y ClusterMask;
+                              362 ; 27   |INT    _Y ClusterShift;
+                              363 ; 28   |INT    _Y SectorShift;
+                              364 ; 29   |INT    _Y SectorMask;
+                              365 ; 30   |INT    _Y DevicePresent;
+                              366 ; 31   |LONG   _Y FirRootdirsec;
+                              367 ; 32   |INT             _Y FSInfoSector;
+                              368 ; 33   |}FSMEDIA_TABLE;
+                              369 ; 34   |
+                              370 ; 35   |
+                              371 ; 36   |#define         MAXDEVICES              2
+                              372 ; 37   |//#define       NUMCACHES               8  // this is already in fsproj.h (2 for player 2 for mtp as of 28jun2005) TOVERIFY 2 ok for player and mtp. 
+                              373 ; 38   |
+                              374 ; 39   |// NOTE:  This offset is the same no matter what the sector actual size!  
+                              375 ; 40   |//        TOVERIFY 3.0 doesn't have this defined but uses it in filesystempresent.c. lbmlc def'd it here so I insert it here.
+                              376 ; 41   |#define         FATFS_SIGNATURE_OFFSET  510
+                              377 ; 42   |#define         BOOTSECTOR              0
+                              378 ; 43   |#define     FSINFOSECTOR        1
+                              379 ; 44   |
+                              380 ; 45   |#define     READ_MODE           1
+                              381 ; 46   |#define     WRITE_MODE          2
+                              382 ; 47   |#define     APPEND_MODE         4
+                              383 ; 48   |#define     SEQ_WRITE_MODE      8
+                              384 ; 49   |#define     DIRECTORY_MODE         16
+                              385 ; 50   |#define     CREATE_MODE        32
+                              386 ; 51   |
+                              387 ; 52   |#define     RPLUS               5
+                              388 ; 53   |#define     WPLUS                   6
+                              389 ; 54   |#define     APLUS               7
+                              390 ; 55   |
+                              391 ; 56   |
+                              392 ; 57   |
+                              393 ; 58   |#define     X_MEMORY            0
+                              394 ; 59   |#define     Y_MEMORY            2
+                              395 ; 60   |#define     P_MEMORY            4
+                              396 ; 61   |
+                              397 ; 62   |#define     FAT12               0 
+                              398 ; 63   |#define     FAT16               1   
+                              399 ; 64   |#define     FAT32               2 
+                              400 ; 65   |
+                              401 ; 66   |
+                              402 ; 67   |#define FAT12EOF            0x0FFF
+                              403 ; 68   |#define FAT16EOF            0xFFFF
+                              404 ; 69   |#define FAT32EOF            0x0FFFFFFF
+                              405 ; 70   |
+                              406 ; 71   |
+                              407 ; 72   |
+                              408 ; 73   |#define FAT12FREECX         0x000
+                              409 ; 74   |#define FAT16FREECX         0x0000
+                              410 ; 75   |#define FAT32FREECX         0x00000000
+                              411 ; 76   |
+                              412 ; 77   |
+                              413 ; 78   |#define  DBCS               1
+                              414 ; 79   |#define  UNICODE            2
+                              415 ; 80   |
+                              416 ; 81   |
+                              417 ; 82   |#define     CREATION_DATE       1
+                              418 ; 83   |#define     CREATION_TIME       2
+                              419 ; 84   |#define     MODIFICATION_DATE   3
+                              420 ; 85   |#define     MODIFICATION_TIME   4
+                              421 ; 86   |
+                              422 ; 87   |
+                              423 ; 88   |#define     READ_ONLY      0X01
+                              424 ; 89   |#define     HIDDEN         0X02
+                              425 ; 90   |#define     SYSTEM         0X04
+                              426 ; 91   |#define     VOLUME_ID      0X08
+                              427 ; 92   |#define     DIRECTORY      0X10
+                              428 ; 93   |#define     ARCHIVE        0X20
+                              429 ; 94   |
+                              430 ; 95   |#define READCOUNTER         105
+                              431 ; 96   |#define WRITECOUNTER        100
+                              432 ; 97   |#define FLUSHCOUNTER        200
+                              433 ; 98   |
+                              434 ; 99   |
+                              435 ; 100  |#define DEFAULT_MEMORY      Y_MEMORY
+                              436 ; 101  |
+                              437 ; 102  |#define  CWD_HANDLE           0
+                              438 ; 103  |#define  DIRECTORY_HANDLE     1
+                              439 ; 104  |#define  FIRST_VALID_HANDLE   2
+                              440 ; 105  |#define  END_OF_DIR_PATH      3
+                              441 ; 106  |
+                              442 ; 107  |//Constants for Sector read and write (Normal and FAT 
+                              443 ; 108  |#define         NORMALTYPE              0
+                              444 ; 109  |#define         FATTYPE                 1
+                              445 ; 110  |#define     RAWTYPE         2
+                              446 ; 111  |
+                              447 ; 112  |#define  SHORTNAMERES_CH      6
+                              448 ; 113  |#define  LONGNAMERES_CH       9
+                              449 ; 114  |#define  MAXFILENAME_CH       260
+                              450 ; 115  |
+                              451 ; 116  |#define VOLUME_TYPE          0
+                              452 ; 117  |#define DIR_TYPE             1
+                              453 ; 118  |#define FILE_TYPE            2
+                              454 ; 119  |                                           
+                              455 ; 120  |#define WRITE_TYPE_RANDOM               0
+                              456 ; 121  |#define WRITE_TYPE_SEQ_FIRST    1
+                              457 ; 122  |#define WRITE_TYPE_SEQ_NEXT             2
+                              458 ; 123  |#define WRITE_TYPE_NOREADBACK   3
+                              459 ; 124  |                  
+                              460 ; 125  |
+                              461 ; 126  |#define     HANDLEENTRYSIZE         19
+                              462 ; 127  |
+                              463 ; 128  |// DEVICERECORDSIZE is now only defined in cachedef.h so deleted from here in first 3.1 prelim 
+                              464 ; 129  |
+                              465 ; 130  |#define     CACHEDESCRSIZE          8
+                              466 ; 131  |#define     CACHEBUFSIZE            705
+                              467 ; 132  |
+                              468 ; 133  |#define     UCS2s                     0
+                              469 ; 134  |#define     UCS3s                     1
+                              470 ; 135  |
+                              471 ; 136  |#define     FAT32FSIFREECOUNTSIZE       4
+                              472 ; 137  |
+                              473 ; 138  |#endif // _FS_TYPE_H_
+                              474 ; 139  |
+                              475 
+                              477 
+                              478 ; 2    |#include "fsproj.h"
+                              479 
+                              481 
+                              482 ; 1    |//------------------------------------------------------------------------------
+                              483 ; 2    |// Copyright(C) SigmaTel, Inc. 2005
+                              484 ; 3    |// Filename: fsproj.h (player lcdexample project)
+                              485 ; 4    |//------------------------------------------------------------------------------
+                              486 ; 5    |#ifndef __fsproj_h__
+                              487 ; 6    |#define __fsproj_h__
+                              488 ; 7    |// NOTE:  cachedef.h with its defaults is included here. Any defines in 
+                              489 ; 8    |// this fsproj.h supercede and are used as actual NUMHANDLES, NUMDEVICES, NUMCACHES, DRIVELETTERS.  
+                              490 ; 9    |
+                              491 ; 10   |// TOVERIFY  large block sdk 2.6 had 16 handles while sdk3.0 had only 8.
+                              492 ; 11   |#define NUMHANDLES 8
+                              493 ; 12   |
+                              494 ; 13   |// To help non MMC/SD builds, made this 2 not 3. jun28 2005
+                              495 ; 14   |#ifdef MMC
+                              496 ; 15   |#define NUMDEVICES 3
+                              497 ; 16   |#else
+                              498 ; 17   |#define NUMDEVICES 2
+                              499 ; 18   |#endif
+                              500 ; 19   |
+                              501 ; 20   |// TOVERIFY: SDK3.0 had 4 caches here but the large block sdk had only 2 larger caches. 
+                              502 ; 21   |// Consider finding memory for 3 for performance.
+                              503 ; 22   |#define NUMCACHES  2
+                              504 ; 23   |#define DRIVELETTERS {'a','b','c'}
+                              505 ; 24   |
+                              506 ; 25   |#include "cachedef.h"
+                              507 
+                              509 
+                              510 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              511 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                              512 ; 3    |//
+                              513 ; 4    |// Filename:     cachedef.h
+                              514 ; 5    |// Description:  Constants and externs for the file system routines.
+                              515 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              516 ; 7    |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              517 ; 8    |// NOTE: this file is included by fsproj.h, which overrides DRIVELETTERS, NUMCACHES,
+                              518 ; 9    |// NUMDEVICES, NUMHANDLES.  the values here for these are defaults for building as
+                              519 ; 10   |// a library.
+                              520 ; 11   |
+                              521 ; 12   |#ifndef __cachedef_h__
+                              522 ; 13   |#define __cachedef_h__
+                              523 ; 14   |
+                              524 ; 15   |#ifndef NUMHANDLES
+                              525 ; 16   |#define NUMHANDLES 20  
+                              526 ; 17   |#endif
+                              527 ; 18   |
+                              528 ; 19   |#ifndef NUMDEVICES
+                              529 ; 20   |#define NUMDEVICES 1 
+                              530 ; 21   |#endif
+                              531 ; 22   |
+                              532 ; 23   |#ifndef NUMCACHES
+                              533 ; 24   |#define NUMCACHES 2 
+                              534 ; 25   |#endif
+                              535 ; 26   |
+                              536 ; 27   |#ifndef DRIVELETTERS
+                              537 ; 28   |#define DRIVELETTERS {'a','b','c'}
+                              538 ; 29   |#endif
+                              539 ; 30   |
+                              540 ; 31   |// sector size variants.
+                              541 ; 32   |#include "sectordef.h"
+                              542 
+                              544 
+                              545 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              546 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                              547 ; 3    |//
+                              548 ; 4    |// Filename:     sectordef.h
+                              549 ; 5    |// Description:  Contains structs, prototypes, equates for the NAND Hal & other 
+                              550 ; 6    |//               routines.
+                              551 ; 7    |////////////////////////////////////////////////////////////////////////////////
+                              552 ; 8    |
+                              553 ; 9    |#ifndef _SECTORDEF_H
+                              554 ; 10   |#define _SECTORDEF_H
+                              555 ; 11   |
+                              556 ; 12   |    #define RAM_SECTOR_TOTAL_SIZE                 (528)
+                              557 ; 13   |    #define RAM_SECTOR_DATA_SIZE                  (512)
+                              558 ; 14   |    #define RAM_SECTOR_REDUNDANT_SIZE             (16)
+                              559 ; 15   |
+                              560 ; 16   |
+                              561 ; 17   |    #define MMC_SECTOR_TOTAL_SIZE                 (528)
+                              562 ; 18   |    #define MMC_SECTOR_DATA_SIZE                  (512)
+                              563 ; 19   |    #define MMC_SECTOR_REDUNDANT_SIZE             (16)
+                              564 ; 20   |
+                              565 ; 21   |
+                              566 ; 22   |    #define SSFDC_SECTOR_TOTAL_SIZE                 (528)
+                              567 ; 23   |    #define SSFDC_SECTOR_DATA_SIZE                  (512)
+                              568 ; 24   |    #define SSFDC_SECTOR_REDUNDANT_SIZE             (16)
+                              569 ; 25   |
+                              570 ; 26   | // Define large sector macros as small ones so sdk3.x fits in ram and mtp with small 
+                              571 ; 27   | // sector flash gets the performance boosts from optimized nand timings, etc. 
+                              572 ; 28   | // TOVERIFY: Comment out the next macro def when you want large sector support as 
+                              573 ; 29   | // in sdk2.6 and you can find the free data RAM. Or uncomment if you want to save data ram
+                              574 ; 30   | // and only support 512 byte sectors and their associated flash types. 
+                              575 ; 31   |//#define LARGE_SECTOR_DEFS_AS_SMALL_SECTOR
+                              576 ; 32   |#ifdef LARGE_SECTOR_DEFS_AS_SMALL_SECTOR 
+                              577 ; 33   |    #define LARGE_SECTOR_TOTAL_SIZE                 (528)
+                              578 ; 34   |    #define LARGE_SECTOR_DATA_SIZE                  (512)
+                              579 ; 35   |    #define LARGE_SECTOR_REDUNDANT_SIZE             (16)
+                              580 ; 36   |#else
+                              581 ; 37   |    // Real large sector defines to use when large sector flash support is desired.
+                              582 ; 38   |    #define LARGE_SECTOR_TOTAL_SIZE                 (2112)
+                              583 ; 39   |    #define LARGE_SECTOR_DATA_SIZE                  (2048)
+                              584 ; 40   |    #define LARGE_SECTOR_REDUNDANT_SIZE             (64)
+                              585 ; 41   |#endif
+                              586 ; 42   |    
+                              587 ; 43   |    // round up to the nearest WORD, then add one to pad for the ECC DMA bug
+                              588 ; 44   |    #define SECTOR_BUFFER_ALLOC_SIZE(a)             (((a+2)/3)+1)
+                              589 ; 45   |
+                              590 ; 46   |
+                              591 ; 47   |    // These are moved here from chkdsk.h     TOVERIFY. 
+                              592 ; 48   |    #define SEC_512_BYTES_PER_SECTOR                        SSFDC_SECTOR_DATA_SIZE
+                              593 ; 49   |        #define SEC_512_BYTES_TOTAL_SIZE                                                SSFDC_SECTOR_TOTAL_SIZE
+                              594 ; 50   |        #define SEC_512_WORDS_TOTAL_SIZE                                                176
+                              595 ; 51   |    #define SEC_512_BYTES_CLUSTER_ENTRY_PER_SECTOR_SHIFT    12
+                              596 ; 52   |    #define SEC_512_BYTES_DIR_REC_PER_SECTOR                16
+                              597 ; 53   |    #define SEC_512_BYTES_WORDS_PER_SECTOR                  177
+                              598 ; 54   |    #define SEC_2K_BYTES_PER_SECTOR                         LARGE_SECTOR_DATA_SIZE
+                              599 ; 55   |        #define SEC_2K_BYTES_TOTAL_SIZE                                                 LARGE_SECTOR_TOTAL_SIZE
+                              600 ; 56   |    #define SEC_2K_BYTES_CLUSTER_ENTRY_PER_SECTOR_SHIFT     12
+                              601 ; 57   |    #define SEC_2K_BYTES_DIR_REC_PER_SECTOR                 64
+                              602 ; 58   |    #define SEC_2K_BYTES_WORDS_PER_SECTOR                   705
+                              603 ; 59   |    #define SEC_2K_BYTES_WORDS_PER_SECTOR_NO_RA             683
+                              604 ; 60   |
+                              605 ; 61   |    // Next 5 lines imported from nandsystemdrivewritesector.c
+                              606 ; 62   |    #define RA_ATTR_MEMORY_OFFSET           682
+                              607 ; 63   |    #define NUMBER_OF_WORDS_IN_512BYTES     171
+                              608 ; 64   |    #define NUM_ECC_DATA_IN_WORDS           3
+                              609 ; 65   |    #define SEC_512_WORD1_RA_SWAP           171
+                              610 ; 66   |    #define SEC_512_WORD2_RA_SWAP           173
+                              611 ; 67   |
+                              612 ; 68   |#endif  // _SECTORDEF_H
+                              613 ; 69   |
+                              614 
+                              616 
+                              617 ; 33   |
+                              618 ; 34   |// in bytes?                    
+                              619 ; 35   |#define HANDLEENTRYSIZE 19
+                              620 ; 36   |
+                              621 ; 37   |// in bytes?                    
+                              622 ; 38   |#define DEVICERECORDSIZE 28 //stmp6956
+                              623 ; 39   |
+                              624 ; 40   |// in words.  todo: consider using a formula based on sizeof().
+                              625 ; 41   |#define CACHEDESCRSIZE 8 
+                              626 ; 42   |
+                              627 ; 43   |// in words, for large sectors.
+                              628 ; 44   |#define CACHEBUFSIZE 705
+                              629 ; 45   |
+                              630 ; 46   |// the number of small caches that fit into a large cache
+                              631 ; 47   |#define SSFDC_SECTORS_PER_LARGE_SECTOR 4
+                              632 ; 48   |
+                              633 ; 49   |// the amount of Y space required to cache sectors.  maximum space reserved
+                              634 ; 50   |// based on large (2k) sectors.
+                              635 ; 51   |#define XBUF_SIZE (NUMCACHES                                                   \ 
+                              636 ; 52   |                   * SSFDC_SECTORS_PER_LARGE_SECTOR                            \ 
+                              637 ; 53   |                   * SECTOR_BUFFER_ALLOC_SIZE(SSFDC_SECTOR_TOTAL_SIZE))
+                              638 ; 54   |
+                              639 ; 55   |// X space allocated for cached sector buffers.
+                              640 ; 56   |// it must be allocated outside of the file system, by the application, since
+                              641 ; 57   |// the application can override the number of entries in fsproj.h, but the file
+                              642 ; 58   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              643 ; 59   |extern INT _X bufx[];
+                              644 ; 60   |
+                              645 ; 61   |// the amount of Y space required to cache sectors. note that the maximim space
+                              646 ; 62   |// for the cache descriptor entries is the size of each entry multiplied by
+                              647 ; 63   |// the number of entries (specified for large sector entries) multiplied by
+                              648 ; 64   |// the number of small sectors that can overlay a large sector.  i.e., when the 
+                              649 ; 65   |// cache reconfigures from 2k sectors to 512 byte sectors there are 4 times as
+                              650 ; 66   |// many useable cache dscr entries available.  this declaration must accommodate
+                              651 ; 67   |// that many to ensure that sufficient space is reserved.
+                              652 ; 68   |#ifdef k_opt_dynamic_cache
+                              653 ; 69   |#define YBUF_SIZE ((NUMDEVICES * DEVICERECORDSIZE)                             \ 
+                              654 ; 70   |                   + (NUMHANDLES * HANDLEENTRYSIZE)                            \ 
+                              655 ; 71   |                   + (SSFDC_SECTORS_PER_LARGE_SECTOR * NUMCACHES * CACHEDESCRSIZE))
+                              656 ; 72   |#else
+                              657 ; 73   |#define YBUF_SIZE ((NUMDEVICES * DEVICERECORDSIZE)                             \ 
+                              658 ; 74   |                   + (NUMHANDLES * HANDLEENTRYSIZE)                            \ 
+                              659 ; 75   |                   + (NUMCACHES * CACHEDESCRSIZE))
+                              660 ; 76   |#endif
+                              661 ; 77   |
+                              662 ; 78   |
+                              663 ; 79   |// Y space allocated for file system handles and cache descriptors.
+                              664 ; 80   |// it must be allocated outside of the file system, by the application, since
+                              665 ; 81   |// the application can override the number of entries in fsproj.h, but the file
+                              666 ; 82   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              667 ; 83   |extern INT _Y bufy[];
+                              668 ; 84   |
+                              669 ; 85   |// thse must be allocated outside of the file system, by the application, since
+                              670 ; 86   |// the application can override these values in fsproj.h, but the file
+                              671 ; 87   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              672 ; 88   |extern INT DriveLetter[];
+                              673 ; 89   |extern INT maxhandles;
+                              674 ; 90   |extern INT maxdevices;
+                              675 ; 91   |extern INT maxcaches; 
+                              676 ; 92   |
+                              677 ; 93   |#endif // __cachedef_h__
+                              678 ; 94   |
+                              679 ; 95   |
+                              680 
+                              682 
+                              683 ; 26   |
+                              684 ; 27   |// TOVERIFY  Don't think we need fstypes.h. Was added by HK patch of 2.521. See stmp00006965 description. 
+                              685 ; 28   |//           Macro desired to be included by HK patch was moved to cachedef.h during 2.6 development.
+                              686 ; 29   |//#include "fstypes.h"
+                              687 ; 30   |
+                              688 ; 31   |// TOVERIFY:   TODO: DELETE LINES below until the #endif
+                              689 ; 32   |//extern INT DriveLetter[];
+                              690 ; 33   |//
+                              691 ; 34   |//extern INT maxhandles;
+                              692 ; 35   |//extern INT maxdevices;
+                              693 ; 36   |//extern INT maxcaches; 
+                              694 ; 37   |
+                              695 ; 38   |// The cache buffers are allocated in the X memory
+                              696 ; 39   |//extern int _X bufx[NUMCACHES*CACHEBUFSIZE];
+                              697 ; 40   |
+                              698 ; 41   |// All other global, custom configurable data is in Y memory.
+                              699 ; 42   |// Two handles are reserved by the file system, so the number of handles must be more than 2
+                              700 ; 43   |//extern int _Y bufy[NUMDEVICES*DEVICERECORDSIZE + NUMHANDLES*HANDLEENTRYSIZE + NUMCACHES*CACHEDESCRSIZE];
+                              701 ; 44   |
+                              702 ; 45   |#endif // __fsproj_h__
+                              703 ; 46   |//---eof------------------------------------------------------------------------
+                              704 ; 47   |
+                              705 
+                              707 
+                              708 ; 3    |#include "fsapi.h"
+                              709 
+                              711 
+                              712 ; 1    |#ifndef _FSAPI_H_
+                              713 ; 2    |#define _FSAPI_H_
+                              714 ; 3    |#include "filespec.h"
+                              715 
+                              717 
+                              718 ; 1    |#ifndef _FILESPEC_H_
+                              719 ; 2    |#define _FILESPEC_H_
+                              720 ; 3    |#include  "fstypes.h"
+                              721 
+                              723 
+                              724 ; 1    |#ifndef _FS_TYPE_H_
+                              725 ; 2    |#define _FS_TYPE_H_
+                              726 ; 3    |
+                              727 ; 4    |#include   "types.h"
+                              728 ; 5    |
+                              729 ; 6    |// move FSMEDIA_TABLE from devicetable.h  15Apr2005   First moved in SDK2.6.
+                              730 ; 7    |typedef struct
+                              731 ; 8    |{
+                              732 ; 9    |
+                              733 ; 10   |INT     _Y BytesPerSector;
+                              734 ; 11   |INT     _Y SectorsPerCluster;
+                              735 ; 12   |INT     _Y RsvdSectors;
+                              736 ; 13   |INT     _Y NoOfFATs;
+                              737 ; 14   |INT     _Y MaxRootDirEntries;
+                              738 ; 15   |LONG    _Y TotalSectors;
+                              739 ; 16   |LONG    _Y FATSize;
+                              740 ; 17   |LONG    _Y RootdirCluster;
+                              741 ; 18   |//INT   _Y FSInfoSector;
+                              742 ; 19   |//INT   _Y BkBootSector;
+                              743 ; 20   |LONG    _Y NextFreeCluster;
+                              744 ; 21   |LONG    _Y TotalFreeClusters;
+                              745 ; 22   |INT     _Y RootDirSectors;
+                              746 ; 23   |INT     _Y FIRSTDataSector;
+                              747 ; 24   |INT    _Y FATType;
+                              748 ; 25   |LONG   _Y TotalNoofclusters;
+                              749 ; 26   |INT    _Y ClusterMask;
+                              750 ; 27   |INT    _Y ClusterShift;
+                              751 ; 28   |INT    _Y SectorShift;
+                              752 ; 29   |INT    _Y SectorMask;
+                              753 ; 30   |INT    _Y DevicePresent;
+                              754 ; 31   |LONG   _Y FirRootdirsec;
+                              755 ; 32   |INT             _Y FSInfoSector;
+                              756 ; 33   |}FSMEDIA_TABLE;
+                              757 ; 34   |
+                              758 ; 35   |
+                              759 ; 36   |#define         MAXDEVICES              2
+                              760 ; 37   |//#define       NUMCACHES               8  // this is already in fsproj.h (2 for player 2 for mtp as of 28jun2005) TOVERIFY 2 ok for player and mtp. 
+                              761 ; 38   |
+                              762 ; 39   |// NOTE:  This offset is the same no matter what the sector actual size!  
+                              763 ; 40   |//        TOVERIFY 3.0 doesn't have this defined but uses it in filesystempresent.c. lbmlc def'd it here so I insert it here.
+                              764 ; 41   |#define         FATFS_SIGNATURE_OFFSET  510
+                              765 ; 42   |#define         BOOTSECTOR              0
+                              766 ; 43   |#define     FSINFOSECTOR        1
+                              767 ; 44   |
+                              768 ; 45   |#define     READ_MODE           1
+                              769 ; 46   |#define     WRITE_MODE          2
+                              770 ; 47   |#define     APPEND_MODE         4
+                              771 ; 48   |#define     SEQ_WRITE_MODE      8
+                              772 ; 49   |#define     DIRECTORY_MODE         16
+                              773 ; 50   |#define     CREATE_MODE        32
+                              774 ; 51   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              775 ; 52   |#define     RPLUS               5
+                              776 ; 53   |#define     WPLUS                   6
+                              777 ; 54   |#define     APLUS               7
+                              778 ; 55   |
+                              779 ; 56   |
+                              780 ; 57   |
+                              781 ; 58   |#define     X_MEMORY            0
+                              782 ; 59   |#define     Y_MEMORY            2
+                              783 ; 60   |#define     P_MEMORY            4
+                              784 ; 61   |
+                              785 ; 62   |#define     FAT12               0 
+                              786 ; 63   |#define     FAT16               1   
+                              787 ; 64   |#define     FAT32               2 
+                              788 ; 65   |
+                              789 ; 66   |
+                              790 ; 67   |#define FAT12EOF            0x0FFF
+                              791 ; 68   |#define FAT16EOF            0xFFFF
+                              792 ; 69   |#define FAT32EOF            0x0FFFFFFF
+                              793 ; 70   |
+                              794 ; 71   |
+                              795 ; 72   |
+                              796 ; 73   |#define FAT12FREECX         0x000
+                              797 ; 74   |#define FAT16FREECX         0x0000
+                              798 ; 75   |#define FAT32FREECX         0x00000000
+                              799 ; 76   |
+                              800 ; 77   |
+                              801 ; 78   |#define  DBCS               1
+                              802 ; 79   |#define  UNICODE            2
+                              803 ; 80   |
+                              804 ; 81   |
+                              805 ; 82   |#define     CREATION_DATE       1
+                              806 ; 83   |#define     CREATION_TIME       2
+                              807 ; 84   |#define     MODIFICATION_DATE   3
+                              808 ; 85   |#define     MODIFICATION_TIME   4
+                              809 ; 86   |
+                              810 ; 87   |
+                              811 ; 88   |#define     READ_ONLY      0X01
+                              812 ; 89   |#define     HIDDEN         0X02
+                              813 ; 90   |#define     SYSTEM         0X04
+                              814 ; 91   |#define     VOLUME_ID      0X08
+                              815 ; 92   |#define     DIRECTORY      0X10
+                              816 ; 93   |#define     ARCHIVE        0X20
+                              817 ; 94   |
+                              818 ; 95   |#define READCOUNTER         105
+                              819 ; 96   |#define WRITECOUNTER        100
+                              820 ; 97   |#define FLUSHCOUNTER        200
+                              821 ; 98   |
+                              822 ; 99   |
+                              823 ; 100  |#define DEFAULT_MEMORY      Y_MEMORY
+                              824 ; 101  |
+                              825 ; 102  |#define  CWD_HANDLE           0
+                              826 ; 103  |#define  DIRECTORY_HANDLE     1
+                              827 ; 104  |#define  FIRST_VALID_HANDLE   2
+                              828 ; 105  |#define  END_OF_DIR_PATH      3
+                              829 ; 106  |
+                              830 ; 107  |//Constants for Sector read and write (Normal and FAT 
+                              831 ; 108  |#define         NORMALTYPE              0
+                              832 ; 109  |#define         FATTYPE                 1
+                              833 ; 110  |#define     RAWTYPE         2
+                              834 ; 111  |
+                              835 ; 112  |#define  SHORTNAMERES_CH      6
+                              836 ; 113  |#define  LONGNAMERES_CH       9
+                              837 ; 114  |#define  MAXFILENAME_CH       260
+                              838 ; 115  |
+                              839 ; 116  |#define VOLUME_TYPE          0
+                              840 ; 117  |#define DIR_TYPE             1
+                              841 ; 118  |#define FILE_TYPE            2
+                              842 ; 119  |                                           
+                              843 ; 120  |#define WRITE_TYPE_RANDOM               0
+                              844 ; 121  |#define WRITE_TYPE_SEQ_FIRST    1
+                              845 ; 122  |#define WRITE_TYPE_SEQ_NEXT             2
+                              846 ; 123  |#define WRITE_TYPE_NOREADBACK   3
+                              847 ; 124  |                  
+                              848 ; 125  |
+                              849 ; 126  |#define     HANDLEENTRYSIZE         19
+                              850 ; 127  |
+                              851 ; 128  |// DEVICERECORDSIZE is now only defined in cachedef.h so deleted from here in first 3.1 prelim 
+                              852 ; 129  |
+                              853 ; 130  |#define     CACHEDESCRSIZE          8
+                              854 ; 131  |#define     CACHEBUFSIZE            705
+                              855 ; 132  |
+                              856 ; 133  |#define     UCS2s                     0
+                              857 ; 134  |#define     UCS3s                     1
+                              858 ; 135  |
+                              859 ; 136  |#define     FAT32FSIFREECOUNTSIZE       4
+                              860 ; 137  |
+                              861 ; 138  |#endif // _FS_TYPE_H_
+                              862 ; 139  |
+                              863 
+                              865 
+                              866 ; 4    |#define MAX_FILESNAME   13
+                              867 ; 5    |
+                              868 ; 6    |typedef struct {
+                              869 ; 7    |    INT     gCurrentRecord;
+                              870 ; 8    |    INT     DirAttribute;
+                              871 ; 9    |    _packed char    FileName[9];
+                              872 ; 10   |    _packed char    FileExtension[4];
+                              873 ; 11   |}FILESPEC;
+                              874 ; 12   |
+                              875 ; 13   |typedef struct {
+                              876 ; 14   |    INT attrib;
+                              877 ; 15   |        LONG FileSize;
+                              878 ; 16   |    int  device;
+                              879 ; 17   |    INT startrecord;
+                              880 ; 18   |    _packed char name[MAX_FILESNAME];
+                              881 ; 19   |        LONG Key;
+                              882 ; 20   |}Finddata;
+                              883 ; 21   |#endif
+                              884 ; 22   |
+                              885 
+                              887 
+                              888 ; 4    |extern _reentrant LONG Ftell(INT HandleNumber);
+                              889 ; 5    |extern _reentrant LONG Feof(INT HandleNumber);
+                              890 ; 6    |extern _reentrant INT *Fputs(INT HandleNumber,INT *Buffer);
+                              891 ; 7    |extern _reentrant LONG Fread(INT HandleNumber,INT *Buffer,LONG NumBytesToRead,INT Source_Memory,INT MOdulo);
+                              892 ; 8    |extern _reentrant INT Fgetc(INT HandleNumber);
+                              893 ; 9    |extern _reentrant INT Fputc(INT HandleNumber,INT ByteToWrite);
+                              894 ; 10   |extern _reentrant LONG ReadDirectoryRecord(INT HandleNumber,INT RecordNumber,INT *Buffer);
+                              895 ; 11   |extern _reentrant INT Fseek(INT HandleNumber,LONG NumBytesToSeek,INT SeekPosition);
+                              896 ; 12   |extern _reentrant INT Fopen(_packed char *filepath,_packed char *mode);
+                              897 ; 13   |extern _reentrant LONG Fwrite(INT HandleNumber,INT  *Buffer,LONG NumBytesToWrite,INT Source_Memory,INT MOdulo);
+                              898 ; 14   |extern _reentrant LONG Totalfreecluster(INT DeviceNum);
+                              899 ; 15   |extern _reentrant INT Rmdir(_packed char *filepath);
+                              900 ; 16   |extern _reentrant INT Rmdirw(_packed char *filepath);
+                              901 ; 17   |extern _reentrant INT Mkdir(_packed char *filepath);
+                              902 
+                              904 
+                              905 ; 18   |
+                              906 ; 19   |        //      SGTL-HK 27-05-2005
+                              907 ; 20   |extern _reentrant INT Mkdirw(UCS3 *filepath);
+                              908 ; 21   |
+                              909 ; 22   |extern _reentrant INT Chdir(_packed char *filepath);
+                              910 ; 23   |extern _reentrant INT FastOpen(LONG Key,_packed char *mode);
+                              911 ; 24   |
+                              912 ; 25   |extern _reentrant INT Setcwd(_packed char *filepath, _packed char *gCworkingDir,INT index,INT length);
+                              913 ; 26   |extern _reentrant _packed char *Getcwd(void);
+                              914 ; 27   |extern  _reentrant _packed char *Fgets(INT HandleNumber,INT NumBytesToRead, _packed char *Buffer);
+                              915 ; 28   |extern INT  FSInit(INT _X *bufx, INT _Y *bufy, INT maxdevices, INT maxhandles, INT maxcaches);
+                              916 ; 29   |extern INT  FlushCache(void);
+                              917 ; 30   |extern _reentrant INT FsShutDown(void);
+                              918 ; 31   |extern _reentrant LONG GetFileSize(INT HandleNumber);
+                              919 ; 32   |
+                              920 ; 33   |extern _reentrant INT filegetattrib(_packed char *FilePath);
+                              921 ; 34   |extern _reentrant INT Fopenw(INT *filepath,_packed char *mode);
+                              922 ; 35   |extern _reentrant INT Fremove(_packed char *filepath);
+                              923 ; 36   |extern _reentrant INT Fremovew(_packed char *filepath);
+                              924 ; 37   |extern _reentrant void DBCSToUnicode(_packed unsigned char *pDBCS, WORD *pUnicode,INT iLength);
+                              925 ; 38   |extern INT FlushCache(void);
+                              926 ; 39   |extern _reentrant INT DeleteTree(_packed char *Path);
+                              927 ; 40   |extern _reentrant INT Fclose(INT HandleNumber);
+                              928 ; 41   |extern INT FSMediaPresent(INT DeviceNum);
+                              929 ; 42   |extern INT FSFATType (INT DeviceNum);
+                              930 ; 43   |extern  INT _reentrant  GetVolumeLabel(_packed char *Buffer,INT DeviceNum);
+                              931 ; 44   |extern _reentrant INT SetVolumeLabel(_packed char *Buffer,INT DeviceNum);
+                              932 ; 45   |extern _reentrant LONG FgetFastHandle(INT HandleNumber);
+                              933 ; 46   |
+                              934 ; 47   |extern _reentrant INT ConstructLongFileName(INT HandleNumber, INT RecordNumber, INT *LFNBuffer);
+                              935 ; 48   |extern _reentrant void Uppercase(_packed char *file); 
+                              936 ; 49   |extern _reentrant INT FindNext(INT HandleNumber,Finddata *_finddata);
+                              937 
+                              947 
+                              948 ; 50   |extern _reentrant INT FindFirst(Finddata *_finddata,_packed char *FileName);
+                              949 ; 51   |extern _reentrant void ClearData(Finddata *_finddata);
+                              950 ; 52   |extern _reentrant INT GetShortfilename(LONG Key,INT *Buffer);
+                              951 ; 53   |
+                              952 ; 54   |
+                              953 ; 55   |
+                              954 ; 56   |
+                              955 ; 57   |typedef struct
+                              956 ; 58   |{
+                              957 ; 59   |
+                              958 ; 60   |INT             Day;
+                              959 ; 61   |INT             Month;
+                              960 ; 62   |INT             Year;
+                              961 ; 63   |}DIR_DATE;
+                              962 ; 64   |
+                              963 ; 65   |
+                              964 ; 66   |typedef struct
+                              965 ; 67   |{
+                              966 ; 68   |
+                              967 ; 69   |INT             Second;
+                              968 ; 70   |INT             Minute;
+                              969 ; 71   |INT             Hour;
+                              970 ; 72   |}DIR_TIME;
+                              971 ; 73   |
+                              972 ; 74   |
+                              973 ; 75   |typedef struct
+                              974 ; 76   |{
+                              975 ; 77   |LONG CurrentOffset;     
+                              976 ; 78   |LONG CurrentCluster;
+                              977 ; 79   |}HANDLECONTEXT;
+                              978 ; 80   |
+                              979 ; 81   |extern _reentrant INT filesetattrib(INT HandleNumber,INT dirattribute);
+                              980 ; 82   |extern _reentrant INT filesetdate(_packed char *FilePath,INT crt_mod_date_time_para,DIR_DATE *dirdate,DIR_TIME *dirtime);
+                              981 
+                              992 
+                              993 ; 83   |extern _reentrant INT filegetdate(INT HandleNumber,INT crt_mod_date_time_para,DIR_DATE *dirdate,DIR_TIME *dirtime);
+                              994 ; 84   |#endif
+                              995 
+                              997 
+                              998 ; 4    |#include "platform.h"
+                              999 
+                             1001 
+                             1002 ; 1    |// Plafform API
+                             1003 ; 2    |
+                             1004 ; 3    |extern void EnterNonReentrantSection(void);
+                             1005 ; 4    |extern void LeaveNonReentrantSection(void);
+                             1006 ; 5    |
+                             1007 ; 6    |extern INT FSGetByte(void *buffer, INT Offset,INT MemoryType);
+                             1008 ; 7    |extern INT FSGetWord(void *buffer, INT Offset,INT MemoryType);
+                             1009 ; 8    |extern LONG FSGetDWord(void *buffer, INT Offset,INT MemoryType);
+                             1010 ; 9    |extern void FsCopyBuffer(void *Dest_Buffer,INT Dest_Offset,void *Source_Buffer,INT Source_Offset,INT Size,INT Source_MemoryType,INT Dest_MemoryType,INT Dest_modulo,INT SourceModule);
+                             1011 ; 10   |extern void PutByte(void *buffer, INT byte,INT Offset ,INT MemoryType);
+                             1012 ; 11   |extern void PutWord(void *buffer, INT word, INT Offset,INT MemoryType);
+                             1013 ; 12   |extern void PutDword(void *buffer,  LONG dword,INT Offset,INT MemoryType);
+                             1014 ; 13   |extern LONG GetDWordY(void *buffer, INT Offset,INT MemoryType);
+                             1015 
+                             1017 
+                             1018 ; 5    |#include "FileSystem.h"
+                             1019 
+                             1021 
+                             1022 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                             1023 ; 2    |//  Copyright(C) SigmaTel, Inc. 2001
+                             1024 ; 3    |//
+                             1025 ; 4    |//  File        : FileSystem.h
+                             1026 ; 5    |//  Description : Header File for File System
+                             1027 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                             1028 ; 7    |
+                             1029 ; 8    |#ifndef _FILESYSTEM_H
+                             1030 ; 9    |#define _FILESYSTEM_H
+                             1031 ; 10   |
+                             1032 ; 11   |#include "types.h"
+                             1033 
+                             1035 
+                             1036 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                             1037 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                             1038 ; 3    |//
+                             1039 ; 4    |// Filename: types.h
+                             1040 ; 5    |// Description: Standard data types
+                             1041 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                             1042 ; 7    |
+                             1043 ; 8    |#ifndef _TYPES_H
+                             1044 ; 9    |#define _TYPES_H
+                             1045 ; 10   |
+                             1046 ; 11   |// TODO:  move this outta here!
+                             1047 ; 12   |#if !defined(NOERROR)
+                             1048 ; 13   |#define NOERROR 0
+                             1049 ; 14   |#define SUCCESS 0
+                             1050 ; 15   |#endif 
+                             1051 ; 16   |#if !defined(SUCCESS)
+                             1052 ; 17   |#define SUCCESS  0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1053 ; 18   |#endif
+                             1054 ; 19   |#if !defined(ERROR)
+                             1055 ; 20   |#define ERROR   -1
+                             1056 ; 21   |#endif
+                             1057 ; 22   |#if !defined(FALSE)
+                             1058 ; 23   |#define FALSE 0
+                             1059 ; 24   |#endif
+                             1060 ; 25   |#if !defined(TRUE)
+                             1061 ; 26   |#define TRUE  1
+                             1062 ; 27   |#endif
+                             1063 ; 28   |
+                             1064 ; 29   |#if !defined(NULL)
+                             1065 ; 30   |#define NULL 0
+                             1066 ; 31   |#endif
+                             1067 ; 32   |
+                             1068 ; 33   |#define MAX_INT     0x7FFFFF
+                             1069 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                             1070 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                             1071 ; 36   |#define MAX_ULONG   (-1) 
+                             1072 ; 37   |
+                             1073 ; 38   |#define WORD_SIZE   24              // word size in bits
+                             1074 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                             1075 ; 40   |
+                             1076 ; 41   |
+                             1077 ; 42   |#define BYTE    unsigned char       // btVarName
+                             1078 ; 43   |#define CHAR    signed char         // cVarName
+                             1079 ; 44   |#define USHORT  unsigned short      // usVarName
+                             1080 ; 45   |#define SHORT   unsigned short      // sVarName
+                             1081 ; 46   |#define WORD    unsigned int        // wVarName
+                             1082 ; 47   |#define INT     signed int          // iVarName
+                             1083 ; 48   |#define DWORD   unsigned long       // dwVarName
+                             1084 ; 49   |#define LONG    signed long         // lVarName
+                             1085 ; 50   |#define BOOL    unsigned int        // bVarName
+                             1086 ; 51   |#define FRACT   _fract              // frVarName
+                             1087 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                             1088 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                             1089 ; 54   |#define FLOAT   float               // fVarName
+                             1090 ; 55   |#define DBL     double              // dVarName
+                             1091 ; 56   |#define ENUM    enum                // eVarName
+                             1092 ; 57   |#define CMX     _complex            // cmxVarName
+                             1093 ; 58   |typedef WORD UCS3;                   // 
+                             1094 ; 59   |
+                             1095 ; 60   |#define UINT16  unsigned short
+                             1096 ; 61   |#define UINT8   unsigned char   
+                             1097 ; 62   |#define UINT32  unsigned long
+                             1098 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                             1099 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                             1100 ; 65   |#define WCHAR   UINT16
+                             1101 ; 66   |
+                             1102 ; 67   |//UINT128 is 16 bytes or 6 words
+                             1103 ; 68   |typedef struct UINT128_3500 {   
+                             1104 ; 69   |    int val[6];     
+                             1105 ; 70   |} UINT128_3500;
+                             1106 ; 71   |
+                             1107 ; 72   |#define UINT128   UINT128_3500
+                             1108 ; 73   |
+                             1109 ; 74   |// Little endian word packed byte strings:   
+                             1110 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                             1111 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                             1112 ; 77   |// Little endian word packed byte strings:   
+                             1113 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                             1114 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                             1115 ; 80   |
+                             1116 ; 81   |// Declare Memory Spaces To Use When Coding
+                             1117 ; 82   |// A. Sector Buffers
+                             1118 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                             1119 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                             1120 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                             1121 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                             1122 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                             1123 ; 88   |// B. Media DDI Memory
+                             1124 ; 89   |#define MEDIA_DDI_MEM _Y
+                             1125 ; 90   |
+                             1126 ; 91   |
+                             1127 ; 92   |
+                             1128 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                             1129 ; 94   |// Examples of circular pointers:
+                             1130 ; 95   |//    INT CIRC cpiVarName
+                             1131 ; 96   |//    DWORD CIRC cpdwVarName
+                             1132 ; 97   |
+                             1133 ; 98   |#define RETCODE INT                 // rcVarName
+                             1134 ; 99   |
+                             1135 ; 100  |// generic bitfield structure
+                             1136 ; 101  |struct Bitfield {
+                             1137 ; 102  |    unsigned int B0  :1;
+                             1138 ; 103  |    unsigned int B1  :1;
+                             1139 ; 104  |    unsigned int B2  :1;
+                             1140 ; 105  |    unsigned int B3  :1;
+                             1141 ; 106  |    unsigned int B4  :1;
+                             1142 ; 107  |    unsigned int B5  :1;
+                             1143 ; 108  |    unsigned int B6  :1;
+                             1144 ; 109  |    unsigned int B7  :1;
+                             1145 ; 110  |    unsigned int B8  :1;
+                             1146 ; 111  |    unsigned int B9  :1;
+                             1147 ; 112  |    unsigned int B10 :1;
+                             1148 ; 113  |    unsigned int B11 :1;
+                             1149 ; 114  |    unsigned int B12 :1;
+                             1150 ; 115  |    unsigned int B13 :1;
+                             1151 ; 116  |    unsigned int B14 :1;
+                             1152 ; 117  |    unsigned int B15 :1;
+                             1153 ; 118  |    unsigned int B16 :1;
+                             1154 ; 119  |    unsigned int B17 :1;
+                             1155 ; 120  |    unsigned int B18 :1;
+                             1156 ; 121  |    unsigned int B19 :1;
+                             1157 ; 122  |    unsigned int B20 :1;
+                             1158 ; 123  |    unsigned int B21 :1;
+                             1159 ; 124  |    unsigned int B22 :1;
+                             1160 ; 125  |    unsigned int B23 :1;
+                             1161 ; 126  |};
+                             1162 ; 127  |
+                             1163 ; 128  |union BitInt {
+                             1164 ; 129  |        struct Bitfield B;
+                             1165 ; 130  |        int        I;
+                             1166 ; 131  |};
+                             1167 ; 132  |
+                             1168 ; 133  |#define MAX_MSG_LENGTH 10
+                             1169 ; 134  |struct CMessage
+                             1170 ; 135  |{
+                             1171 ; 136  |        unsigned int m_uLength;
+                             1172 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                             1173 ; 138  |};
+                             1174 ; 139  |
+                             1175 ; 140  |typedef struct {
+                             1176 ; 141  |    WORD m_wLength;
+                             1177 ; 142  |    WORD m_wMessage;
+                             1178 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                             1179 ; 144  |} Message;
+                             1180 ; 145  |
+                             1181 ; 146  |struct MessageQueueDescriptor
+                             1182 ; 147  |{
+                             1183 ; 148  |        int *m_pBase;
+                             1184 ; 149  |        int m_iModulo;
+                             1185 ; 150  |        int m_iSize;
+                             1186 ; 151  |        int *m_pHead;
+                             1187 ; 152  |        int *m_pTail;
+                             1188 ; 153  |};
+                             1189 ; 154  |
+                             1190 ; 155  |struct ModuleEntry
+                             1191 ; 156  |{
+                             1192 ; 157  |    int m_iSignaledEventMask;
+                             1193 ; 158  |    int m_iWaitEventMask;
+                             1194 ; 159  |    int m_iResourceOfCode;
+                             1195 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                             1196 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                             1197 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                             1198 ; 163  |    int m_uTimeOutHigh;
+                             1199 ; 164  |    int m_uTimeOutLow;
+                             1200 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                             1201 ; 166  |};
+                             1202 ; 167  |
+                             1203 ; 168  |union WaitMask{
+                             1204 ; 169  |    struct B{
+                             1205 ; 170  |        unsigned int m_bNone     :1;
+                             1206 ; 171  |        unsigned int m_bMessage  :1;
+                             1207 ; 172  |        unsigned int m_bTimer    :1;
+                             1208 ; 173  |        unsigned int m_bButton   :1;
+                             1209 ; 174  |    } B;
+                             1210 ; 175  |    int I;
+                             1211 ; 176  |} ;
+                             1212 ; 177  |
+                             1213 ; 178  |
+                             1214 ; 179  |struct Button {
+                             1215 ; 180  |        WORD wButtonEvent;
+                             1216 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                             1217 ; 182  |};
+                             1218 ; 183  |
+                             1219 ; 184  |struct Message {
+                             1220 ; 185  |        WORD wMsgLength;
+                             1221 ; 186  |        WORD wMsgCommand;
+                             1222 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                             1223 ; 188  |};
+                             1224 ; 189  |
+                             1225 ; 190  |union EventTypes {
+                             1226 ; 191  |        struct CMessage msg;
+                             1227 ; 192  |        struct Button Button ;
+                             1228 ; 193  |        struct Message Message;
+                             1229 ; 194  |};
+                             1230 ; 195  |
+                             1231 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                             1232 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                             1233 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                             1234 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                             1235 ; 200  |
+                             1236 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                             1237 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                             1238 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                             1239 ; 204  |
+                             1240 ; 205  |#if DEBUG
+                             1241 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                             1242 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                             1243 ; 208  |#else 
+                             1244 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                             1245 ; 210  |#define DebugBuildAssert(x)    
+                             1246 ; 211  |#endif
+                             1247 ; 212  |
+                             1248 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                             1249 ; 214  |//  #pragma asm
+                             1250 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                             1251 ; 216  |//  #pragma endasm
+                             1252 ; 217  |
+                             1253 ; 218  |
+                             1254 ; 219  |#ifdef COLOR_262K
+                             1255 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                             1256 ; 221  |#elif defined(COLOR_65K)
+                             1257 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                             1258 ; 223  |#else
+                             1259 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                             1260 ; 225  |#endif
+                             1261 ; 226  |    
+                             1262 ; 227  |#endif // #ifndef _TYPES_H
+                             1263 
+                             1265 
+                             1266 ; 12   |
+                             1267 ; 13   |
+                             1268 ; 14   |// File attributes
+                             1269 ; 15   |#ifndef _FS_ATTRIBUTES
+                             1270 ; 16   |#define _FS_ATTRIBUTES
+                             1271 ; 17   |#define READ        1
+                             1272 ; 18   |#define WRITE       2
+                             1273 ; 19   |#define WRITE_PLUS  3
+                             1274 ; 20   |#define APPEND      4
+                             1275 ; 21   |#define TRUNCATE    8
+                             1276 ; 22   |#define CREATE      16
+                             1277 ; 23   |#endif
+                             1278 ; 24   |
+                             1279 ; 25   |//#ifndef FAT12
+                             1280 ; 26   |//#define FAT12   1
+                             1281 ; 27   |//#endif
+                             1282 ; 28   |//
+                             1283 ; 29   |#ifndef FAT16
+                             1284 ; 30   |#define FAT16   2
+                             1285 ; 31   |#endif
+                             1286 ; 32   |
+                             1287 ; 33   |#define MEM_SPACE_P 0x100000
+                             1288 ; 34   |#define MEM_SPACE_Y 0x400000
+                             1289 ; 35   |#define MEM_SPACE_X 0x800000
+                             1290 ; 36   |
+                             1291 ; 37   |#define FILE_SYS_MODE_READ  0
+                             1292 ; 38   |#define FILE_SYS_MODE_WRITE 1
+                             1293 ; 39   | 
+                             1294 ; 40   |#define ATTR_READ_ONLY      0x01
+                             1295 ; 41   |#define ATTR_HIDDEN         0x02
+                             1296 ; 42   |#define ATTR_SYSTEM         0x04
+                             1297 ; 43   |#define ATTR_VOLUME_ID      0x08
+                             1298 ; 44   |#define ATTR_DIRECTORY      0x10
+                             1299 ; 45   |#define ATTR_ARCHIVE        0x20
+                             1300 ; 46   |#define ATTR_LONG_NAME      ATTR_READ_ONLY|ATTR_HIDDEN|ATTR_SYSTEM|ATTR_VOLUME_ID
+                             1301 ; 47   |
+                             1302 ; 48   |#define SEEK_SET           -1
+                             1303 ; 49   |#define SEEK_CUR            0
+                             1304 ; 50   |#define SEEK_END            1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1305 ; 51   |
+                             1306 ; 52   |#define DEVICE_INSTALLED              (WORD)(0)
+                             1307 ; 53   |#define DEVICE_NOT_FOUND              (WORD)(2)
+                             1308 ; 54   |#define INVALID_FILESYSTEM                        (WORD)(3)
+                             1309 ; 55   |#define DEVICE_INVALID                (WORD)(-1)
+                             1310 ; 56   |#define DEVICE_ERROR_WRITE_PROTECTED  (WORD)(-2)
+                             1311 ; 57   |
+                             1312 ; 58   |#define MEDIA_SIZE_TOTAL_SECTORS    0
+                             1313 ; 59   |#define MEDIA_SIZE_TOTAL_BYTES      1
+                             1314 ; 60   |#define MEDIA_SIZE_BYTES_PER_SECTOR 2
+                             1315 ; 61   |#define MEDIA_SIZE_IN_MEGABYTES     3     
+                             1316 ; 62   |
+                             1317 ; 63   |#define READ_TYPE_NORMAL            0
+                             1318 ; 64   |#define READ_TYPE_FAT               1
+                             1319 ; 65   |#define READ_TYPE_RAW               2
+                             1320 ; 66   |
+                             1321 ; 67   |
+                             1322 ; 68   |#ifdef MEDIA_DDI_PARTIAL_SEQ_ENABLE
+                             1323 ; 69   |    #define WRITE_TYPE_RANDOM                   0
+                             1324 ; 70   |    #define WRITE_TYPE_SEQ_FIRST                1
+                             1325 ; 71   |    #define WRITE_TYPE_SEQ_NEXT                 2
+                             1326 ; 72   |    #define WRITE_TYPE_RESET_CLEAN_UP           3
+                             1327 ; 73   |    #define WRITE_TYPE_PARTIAL_SEQ_FIRST        4
+                             1328 ; 74   |    #define WRITE_TYPE_PARTIAL_SEQ_NEXT         5
+                             1329 ; 75   |    #define WRITE_TYPE_PARTIAL_SEQ_LAST         6
+                             1330 ; 76   |    #ifdef MEDIA_DDI_RAW_SECTOR_SERVER_ENABLE
+                             1331 ; 77   |        #define WRITE_TYPE_RANDOM_RAW               7
+                             1332 ; 78   |        #define WRITE_TYPE_SEQ_FIRST_RAW            8
+                             1333 ; 79   |        #define WRITE_TYPE_SEQ_NEXT_RAW             9
+                             1334 ; 80   |        #define WRITE_TYPE_PARTIAL_SEQ_FIRST_RAW    10
+                             1335 ; 81   |        #define WRITE_TYPE_PARTIAL_SEQ_NEXT_RAW     11
+                             1336 ; 82   |        #define WRITE_TYPE_PARTIAL_SEQ_LAST_RAW     12
+                             1337 ; 83   |    #endif
+                             1338 ; 84   |#else
+                             1339 ; 85   |    #define WRITE_TYPE_RANDOM                   0
+                             1340 ; 86   |    #define WRITE_TYPE_SEQ_FIRST                1
+                             1341 ; 87   |    #define WRITE_TYPE_SEQ_NEXT                 2
+                             1342 ; 88   |    #ifdef MEDIA_DDI_RAW_SECTOR_SERVER_ENABLE
+                             1343 ; 89   |        #define WRITE_TYPE_RANDOM_RAW               3
+                             1344 ; 90   |        #define WRITE_TYPE_SEQ_FIRST_RAW            4
+                             1345 ; 91   |        #define WRITE_TYPE_SEQ_NEXT_RAW             5
+                             1346 ; 92   |    #endif
+                             1347 ; 93   |#endif
+                             1348 ; 94   |    #define WRITE_TYPE_UNDEFINED 0xFFFFFF
+                             1349 ; 95   |
+                             1350 ; 96   |
+                             1351 ; 97   |#ifndef MAX_FILENAME_LENGTH
+                             1352 ; 98   |#define MAX_FILENAME_LENGTH 256
+                             1353 ; 99   |#endif
+                             1354 ; 100  |
+                             1355 ; 101  |typedef struct {
+                             1356 ; 102  |    WORD wNumberOfZones;
+                             1357 ; 103  |    WORD wSizeInMegaBytes;
+                             1358 ; 104  |} SMARTMEDIA_CHIP_INFO;
+                             1359 ; 105  |
+                             1360 ; 106  |typedef struct {
+                             1361 ; 107  |    WORD wBootIdentification;
+                             1362 ; 108  |    WORD wStartHeadNumber;
+                             1363 ; 109  |    WORD wStartSectorNumber;
+                             1364 ; 110  |    WORD wStartCylinderNumber;
+                             1365 ; 111  |    WORD wSystemIdentification;
+                             1366 ; 112  |    WORD wEndHeadNumber;
+                             1367 ; 113  |    WORD wEndSectorNumber;
+                             1368 ; 114  |    WORD wEndCylinderNumber;
+                             1369 ; 115  |    WORD wStartLogicalSectorNumberHigh;
+                             1370 ; 116  |    WORD wStartLogicalSectorNumberLow;
+                             1371 ; 117  |    WORD wPartitionSizeHigh;
+                             1372 ; 118  |    WORD wPartitionSizeLow;
+                             1373 ; 119  |} SMARTMEDIA_PARTITION_TABLE;
+                             1374 ; 120  |
+                             1375 ; 121  |typedef struct {
+                             1376 ; 122  |    WORD wWord0;
+                             1377 ; 123  |    WORD wWord1;
+                             1378 ; 124  |    WORD wWord2;
+                             1379 ; 125  |} SMARTMEDIA_CIS_IDI_MANUFACTURER_NAME;
+                             1380 ; 126  |
+                             1381 ; 127  |typedef struct {
+                             1382 ; 128  |    WORD wWord0;
+                             1383 ; 129  |    WORD wWord1;
+                             1384 ; 130  |} SMARTMEDIA_CIS_IDI_PRODUCT_NAME;
+                             1385 ; 131  |
+                             1386 ; 132  |typedef struct {
+                             1387 ; 133  |    WORD wWord0;
+                             1388 ; 134  |    WORD wWord1;
+                             1389 ; 135  |} SMARTMEDIA_CIS_IDI_PRODUCT_VERSION;
+                             1390 ; 136  |
+                             1391 ; 137  |typedef struct {
+                             1392 ; 138  |    WORD wWord0;
+                             1393 ; 139  |    WORD wWord1;
+                             1394 ; 140  |    WORD wWord2;
+                             1395 ; 141  |    WORD wWord3;
+                             1396 ; 142  |} SMARTMEDIA_CIS_IDI_SERIAL_NUMBER;
+                             1397 ; 143  |
+                             1398 ; 144  |typedef struct {
+                             1399 ; 145  |    WORD wWord0;
+                             1400 ; 146  |} SMARTMEDIA_CIS_IDI_MODEL_NUMBER;
+                             1401 
+                             1424 
+                             1425 ; 147  |
+                             1426 ; 148  |typedef struct {
+                             1427 ; 149  |    SMARTMEDIA_CIS_IDI_MANUFACTURER_NAME ManufacturerName;
+                             1428 ; 150  |    SMARTMEDIA_CIS_IDI_PRODUCT_NAME ProductName;
+                             1429 ; 151  |    SMARTMEDIA_CIS_IDI_PRODUCT_VERSION ProductVersion;
+                             1430 ; 152  |    SMARTMEDIA_CIS_IDI_SERIAL_NUMBER SerialNumber;
+                             1431 ; 153  |    SMARTMEDIA_CIS_IDI_MODEL_NUMBER ModelNumber;
+                             1432 ; 154  |} SMARTMEDIA_CIS_IDI_TABLE;
+                             1433 
+                             1455 
+                             1456 ; 155  |   
+                             1457 ; 156  |typedef struct {
+                             1458 ; 157  |    WORD wPageSizeInBytes;
+                             1459 ; 158  |    WORD wRedundantAreaSizeInBytes;
+                             1460 ; 159  |    WORD wNumberOfPagesPerBlock;
+                             1461 ; 160  |    WORD wNumberOfBlocksPerZone;
+                             1462 ; 161  |    WORD wNumberOfZonesInMedia;
+                             1463 ; 162  |    WORD wMediaSizeInMBytes;
+                             1464 ; 163  |    SMARTMEDIA_PARTITION_TABLE * pPartitionTable;
+                             1465 ; 164  |    SMARTMEDIA_CIS_IDI_TABLE * pCisIdiTable;
+                             1466 ; 165  |    WORD wMediaFlagStatus;
+                             1467 ; 166  |    WORD wNumberOfBlocksToTheCisIdiBlock;
+                             1468 ; 167  |    WORD wTotalNumberOfPhysicalBlocks;
+                             1469 ; 168  |    WORD wNumberOfSystemBlocks;
+                             1470 ; 169  |} SMARTMEDIA_ENTRY_TABLE;
+                             1471 ; 170  |
+                             1472 ; 171  |typedef struct {
+                             1473 ; 172  |    WORD wDevice;        
+                             1474 ; 173  |    WORD wDirtyBlockFlag;
+                             1475 ; 174  |    WORD wCleanTailFlag; 
+                             1476 ; 175  |    WORD wLogDOSPage;    
+                             1477 ; 176  |    WORD wSrcLogBlock;   
+                             1478 ; 177  |    WORD wSrcPhyBlock;   
+                             1479 ; 178  |    WORD wDestPhyBlock;  
+                             1480 ; 179  |    WORD wStartSrcPage;  
+                             1481 ; 180  |    WORD wStartDestPage; 
+                             1482 ; 181  |    WORD wPagesToCopy;   
+                             1483 ; 182  |    WORD wReplaceBuff;   
+                             1484 ; 183  |    WORD wReplaceRdnt;
+                             1485 ; 184  |    #ifdef MEDIA_DDI_PARTIAL_SEQ_ENABLE
+                             1486 ; 185  |        WORD wFirstCount;
+                             1487 ; 186  |        WORD wNextCount;
+                             1488 ; 187  |        WORD wLastCount;
+                             1489 ; 188  |    #endif
+                             1490 ; 189  |} SMARTMEDIA_FWPPS_TABLE;
+                             1491 ; 190  |
+                             1492 ; 191  |typedef struct {
+                             1493 ; 192  |    WORD wWord0;
+                             1494 ; 193  |    WORD wWord1;
+                             1495 ; 194  |    WORD wWord2;
+                             1496 ; 195  |    WORD wWord3;
+                             1497 ; 196  |} DIRECTORY_NAME;
+                             1498 ; 197  |
+                             1499 ; 198  |typedef struct {
+                             1500 ; 199  |    WORD wWord0;
+                             1501 ; 200  |    WORD wWord1;
+                             1502 ; 201  |} DIRECTORY_EXTENSION;
+                             1503 ; 202  |
+                             1504 ; 203  |typedef struct {
+                             1505 ; 204  |    WORD wWord0;
+                             1506 ; 205  |    WORD wWord1;
+                             1507 ; 206  |} DIRECTORY_SIZE;
+                             1508 
+                             1523 
+                             1524 ; 207  |
+                             1525 ; 208  |typedef struct {
+                             1526 ; 209  |    DIRECTORY_NAME Name;
+                             1527 ; 210  |    DIRECTORY_EXTENSION Extension;
+                             1528 ; 211  |    WORD wAttribute;
+                             1529 ; 212  |    WORD wReserved[4];
+                             1530 ; 213  |    WORD wCreationTime;
+                             1531 ; 214  |    WORD wCreationData;
+                             1532 ; 215  |    WORD wFirstCluster;
+                             1533 ; 216  |    DIRECTORY_SIZE Size;
+                             1534 ; 217  |    WORD wCurrentCluster;
+                             1535 ; 218  |    WORD wPointer;
+                             1536 ; 219  |    WORD wRecord;
+                             1537 ; 220  |    WORD wRd;
+                             1538 ; 221  |} DIRECTORY_FILE_CONTROL_BLOCK;
+                             1539 ; 222  |
+                             1540 ; 223  |// TODO:  clean this up.  There are two versions.
+                             1541 ; 224  |struct FCB
+                             1542 ; 225  |{
+                             1543 ; 226  |    _packed BYTE m_szFileName[9];       //0-2
+                             1544 ; 227  |    int     m_wReserved;                //3
+                             1545 ; 228  |    _packed BYTE m_szExt[4];            //4-5
+                             1546 ; 229  |    int     m_wAttributes;              //6
+                             1547 ; 230  |    int     m_wReserved2[4];            //7,8,9,a
+                             1548 ; 231  |    int     m_wTimeofCreation;          //b
+                             1549 ; 232  |    int     m_wDateofCreation;          //c
+                             1550 ; 233  |    int     m_wFirstCluster;            //d
+                             1551 ; 234  |    int     m_wFileSizeHigh;            //e
+                             1552 ; 235  |    int     m_wFileSizeLow;             //f
+                             1553 ; 236  |};
+                             1554 
+                             1570 
+                             1571 ; 237  |
+                             1572 ; 238  |
+                             1573 ; 239  |typedef struct {
+                             1574 ; 240  |    WORD wFirstClusterCurrentDirectory;
+                             1575 ; 241  |    WORD wFirstClusterParentDirectory;
+                             1576 ; 242  |    WORD wAbsSectorCurrentlyCached;
+                             1577 ; 243  |    WORD wCurrentRelativeSector;
+                             1578 ; 244  |    WORD wNumberOfSectors;
+                             1579 ; 245  |    WORD wCurrentRecordLoadedInDcb;
+                             1580 ; 246  |    WORD wBufferedRecord;
+                             1581 ; 247  |    WORD wMaxNumberRecordsCurrentDirectory;
+                             1582 ; 248  |    WORD * pwPointerToBuffer;
+                             1583 ; 249  |    WORD * pwPointerToPath;
+                             1584 ; 250  |    DIRECTORY_FILE_CONTROL_BLOCK * pDirFcb;
+                             1585 ; 251  |} DIRECTORY_CONTROL_BLOCK;
+                             1586 ; 252  |
+                             1587 ; 253  |typedef struct {
+                             1588 ; 254  |    WORD wWord0;
+                             1589 ; 255  |    WORD wWord1;
+                             1590 ; 256  |    WORD wWord2;
+                             1591 ; 257  |    WORD wWord3;
+                             1592 ; 258  |} FILE_NAME;
+                             1593 ; 259  |
+                             1594 ; 260  |typedef struct {
+                             1595 ; 261  |    WORD wWord0;
+                             1596 ; 262  |    WORD wWord1;
+                             1597 ; 263  |} FILE_EXTENSION;
+                             1598 ; 264  |
+                             1599 ; 265  |typedef struct {
+                             1600 ; 266  |    WORD wWord0;
+                             1601 ; 267  |    WORD wWord1;
+                             1602 ; 268  |} FILE_SIZE;
+                             1603 ; 269  |
+                             1604 ; 270  |typedef union {
+                             1605 ; 271  |    struct {
+                             1606 ; 272  |        int Read        :1;
+                             1607 ; 273  |        int Write       :1;
+                             1608 ; 274  |        int Append      :1;
+                             1609 ; 275  |        int Truncate    :1;
+                             1610 ; 276  |        int Create      :1;
+                             1611 ; 277  |        int Rsrv        :3;
+                             1612 ; 278  |        int Mode        :8;
+                             1613 ; 279  |        int Device      :8;
+                             1614 ; 280  |    } B;
+                             1615 ; 281  |    int I;
+                             1616 ; 282  |} FILE_FLAGS;
+                             1617 ; 283  |
+                             1618 ; 284  |typedef struct {
+                             1619 ; 285  |    WORD wWord0;
+                             1620 ; 286  |    WORD wWord1;
+                             1621 ; 287  |} FILE_BYTE_CURRENT;
+                             1622 
+                             1662 
+                             1663 ; 288  |
+                             1664 ; 289  |typedef struct {
+                             1665 ; 290  |    FILE_NAME Name;
+                             1666 ; 291  |    FILE_EXTENSION Extension;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1667 ; 292  |    WORD wAttributes;
+                             1668 ; 293  |    WORD wReserved[4];
+                             1669 ; 294  |    WORD wCreationTime;
+                             1670 ; 295  |    WORD wCreationData;
+                             1671 ; 296  |    WORD wFirstCluster;
+                             1672 ; 297  |    FILE_SIZE Size;
+                             1673 ; 298  |    WORD wCurrentCluster;
+                             1674 ; 299  |    WORD wPointer;
+                             1675 ; 300  |    WORD wRecord;
+                             1676 ; 301  |    WORD wRd;
+                             1677 ; 302  |    FILE_FLAGS Flags;
+                             1678 ; 303  |    FILE_BYTE_CURRENT FcbByteCurrent;
+                             1679 ; 304  |    WORD wFcbFlagEndOfCx;
+                             1680 ; 305  |} FILE_CONTROL_BLOCK;    
+                             1681 ; 306  |
+                             1682 ; 307  |typedef struct {
+                             1683 ; 308  |    WORD wWord0;
+                             1684 ; 309  |    WORD wWord1;
+                             1685 ; 310  |    WORD wWord2;
+                             1686 ; 311  |    WORD wWord3;
+                             1687 ; 312  |} VOLUME_LABEL;
+                             1688 ; 313  |
+                             1689 ; 314  |typedef struct {
+                             1690 ; 315  |    WORD wFATPhysicalBlock1;
+                             1691 ; 316  |    WORD wFATPhysicalBlock2;
+                             1692 ; 317  |    WORD wFATPhysicalBlock3;
+                             1693 ; 318  |    WORD wFATPhysicalBlock4;
+                             1694 ; 319  |} FAT_PHYSICAL_BLOCK_LIST;
+                             1695 
+                             1702 
+                             1703 ; 320  |
+                             1704 ; 321  |typedef struct {
+                             1705 ; 322  |    WORD wFATSectorInCache;
+                             1706 ; 323  |    WORD wLastClusterFree;
+                             1707 ; 324  |    WORD wNumberOfUsedClusters;
+                             1708 ; 325  |    WORD wNumberOfFreeClusters;
+                             1709 ; 326  |    WORD wNumberOfBadClusters;
+                             1710 ; 327  |    WORD wNumberOfReservedClusters;
+                             1711 ; 328  |    WORD wControl;
+                             1712 ; 329  |    WORD * pwSectorCache;
+                             1713 ; 330  |    FAT_PHYSICAL_BLOCK_LIST FATPhysicalLocationList;
+                             1714 ; 331  |} FAT_TABLE;
+                             1715 
+                             1722 
+                             1723 ; 332  |
+                             1724 ; 333  |typedef struct {
+                             1725 ; 334  |    WORD wStateMediaTable;
+                             1726 ; 335  |    WORD wTypeFs;
+                             1727 ; 336  |    WORD wBytesPerSector;
+                             1728 ; 337  |    WORD wSectorsPerCluster;
+                             1729 ; 338  |    WORD wNumberOfReservedSectors;
+                             1730 ; 339  |    WORD wMaximumNumberOfFATs;
+                             1731 ; 340  |    WORD wMaxRootDirectoryEntries;
+                             1732 ; 341  |    WORD wTotalSectors;
+                             1733 ; 342  |    WORD wNumberOfFATSectors;
+                             1734 ; 343  |    WORD wNumberOfSectorsPerTrack;
+                             1735 ; 344  |    WORD wNumberOfHeads;
+                             1736 ; 345  |    WORD wNumberOfHiddenSectorsMSB;
+                             1737 ; 346  |    WORD wNumberOfHiddenSectorsLSB;
+                             1738 ; 347  |    WORD wTotalSectors32MSB;
+                             1739 ; 348  |    WORD wTotalSectors32LSB;
+                             1740 ; 349  |    WORD wDriverNumber;
+                             1741 ; 350  |    WORD wExtendedBootSignature;
+                             1742 ; 351  |    WORD wVolumeIDMSB;
+                             1743 ; 352  |    WORD wVolumeIDLSB;
+                             1744 ; 353  |    VOLUME_LABEL VolumeLabel;
+                             1745 ; 354  |    WORD * pwWriteBuffer;
+                             1746 ; 355  |    WORD wPrimaryFATRelativeSector;
+                             1747 ; 356  |    WORD wSecondaryFATRelativeSector;
+                             1748 ; 357  |    WORD wRootDirectoryRelativeSector;
+                             1749 ; 358  |    WORD wFirstSectorNumberDataZone;
+                             1750 ; 359  |    WORD wMaxNumberOfFATEntries;
+                             1751 ; 360  |    WORD wRootDirectorySizeInSectors;
+                             1752 ; 361  |    WORD wDataAreaSizeInSectors;
+                             1753 ; 362  |} MEDIA_TABLE;
+                             1754 
+                             1813 
+                             1814 ; 363  |
+                             1815 ; 364  |typedef struct {
+                             1816 ; 365  |    MEDIA_TABLE * pMediaTable;
+                             1817 ; 366  |    DIRECTORY_CONTROL_BLOCK * pDirectoryControlBlock;
+                             1818 ; 367  |    FAT_TABLE * pFATTable;
+                             1819 ; 368  |} DEVICE_CONTROL_TABLE;
+                             1820 ; 369  |    
+                             1821 ; 370  |typedef struct {
+                             1822 ; 371  |    WORD dwTotalSizeInMegaBytes;        // dwTotalSizeInMegaBytes is limited
+                             1823 ; 372  |                                        //  to 2-bytes for compatibility with
+                             1824 ; 373  |                                        //  older host drivers.
+                             1825 ; 374  |    DWORD dwTotalNumberOfSectors;
+                             1826 ; 375  |    DWORD dwTotalNumberOfBytes;
+                             1827 ; 376  |    WORD wSectorSizeInBytes;
+                             1828 ; 377  |} MEDIA_SIZE;
+                             1829 ; 378  |
+                             1830 ; 379  |typedef struct {
+                             1831 ; 380  |    BOOL    bInstalled;
+                             1832 ; 381  |    INT     iPbsSectorOffset;   // from the beginning of the data drive 
+                             1833 ; 382  |    DWORD   dwSize;
+                             1834 ; 383  |} DATA_DRIVE_PBS_LOC;
+                             1835 ; 384  |extern  INT _reentrant FSFileOpen(_packed BYTE *fname,INT attribute, INT DeviceNumber);
+                             1836 ; 385  |extern  INT _reentrant FSFastOpen(DWORD Key, INT attribute);
+                             1837 ; 386  |extern  INT FSFileDelete(_packed BYTE *fname,INT DeviceNumber);
+                             1838 ; 387  |extern  INT FSFileCreate(_packed BYTE *fname,INT DeviceNumber);
+                             1839 ; 388  |extern  INT _reentrant FSChangeDir(_packed BYTE *dirname,INT DeviceNumber);
+                             1840 ; 389  |extern  INT _reentrant FSCreateDir(_packed BYTE *dirname,INT DeviceNumber);
+                             1841 ; 390  |extern  INT _reentrant FSDeleteDir(_packed BYTE *dirname,INT DeviceNumber);
+                             1842 ; 391  |extern  INT _reentrant FSFileAppend(_packed BYTE *fname,INT DeviceNumber);
+                             1843 ; 392  |extern  INT _reentrant FSFileRead(INT BytestoRead, INT Handle, INT memory_type, INT modulo, WORD *buffer);
+                             1844 ; 393  |extern  INT _reentrant FSFileWrite(INT wNumberBytes, INT Handle, INT memory_type, INT iModulo, WORD *buffer);
+                             1845 ; 394  |extern  INT _reentrant FSFileClose(INT Handle);
+                             1846 ; 395  |extern  LONG _reentrant FSFileSize(INT HandleNumber);
+                             1847 ; 396  |extern  LONG  FSSize(INT DeviceNum, INT TYPE);   
+                             1848 ; 397  |extern  INT FSFreeClusters(INT Device);
+                             1849 ; 398  |extern  INT BytesPerCluster(INT Device);
+                             1850 ; 399  |
+                             1851 ; 400  |
+                             1852 ; 401  |
+                             1853 ; 402  |//extern  INT FSFileCreate(_packed BYTE *pbFileName, BYTE bDevice);
+                             1854 ; 403  |//extern  INT FSFileDelete(_packed BYTE *pbFileName, BYTE bDevice);
+                             1855 ; 404  |extern  INT FSFileRename(_packed BYTE *pbCurFilename, _packed BYTE *pbNewFilename, BYTE bDevice);
+                             1856 ; 405  |//extern  INT _reentrant FSFileAttribute(_packed BYTE *pbFilename, WORD wAttributes, BYTE bDevice);
+                             1857 ; 406  |//extern  INT FSFileAppend(_packed BYTE *pbFileName, BYTE bDevice);
+                             1858 ; 407  |//extern  INT FSFileOpen(_packed BYTE *pbFileName, WORD wAttributes, BYTE bDevice);
+                             1859 ; 408  |//extern  INT FSFileClose(INT bHandle);
+                             1860 ; 409  |//extern  INT FSFileRead(WORD wNumberBytes, BYTE bHandle, WORD wMemSpace, INT iModulo, WORD *pwBuffer);
+                             1861 ; 410  |//extern  INT FSFileWrite(WORD wNumberBytes, BYTE bHandle, WORD wMemSpace, INT iModulo, WORD *pwBuffer);
+                             1862 ; 411  |extern  INT _reentrant fseek( INT handle , LONG offset, INT iOrigin );
+                             1863 ; 412  |extern  INT _reentrant FSFileEof(INT Handle);
+                             1864 ; 413  |extern INT _reentrant FSFileAttribute(INT Attributes, _packed BYTE *fname, INT DeviceNumber);
+                             1865 ; 414  |extern INT _reentrant FSFileAttributeClear(INT Attributes, _packed BYTE *fname, INT DeviceNumber);
+                             1866 ; 415  |//extern  LONG FSFileSize(INT bHandle);
+                             1867 ; 416  |extern _asmfunc INT FSPresent(BYTE bDevice);
+                             1868 ; 417  |extern _asmfunc INT FSType(BYTE bDevice);
+                             1869 ; 418  |//extern LONG FSSize(WORD wDevice, WORD wReturnType);
+                             1870 ; 419  |//extern INT FSChangeDir(_packed BYTE *pbDirName, BYTE bDevice);
+                             1871 ; 420  |//extern INT FSCreateDir(_packed BYTE *pbDirName, BYTE bDevice);
+                             1872 ; 421  |//extern INT FSDeleteDir(_packed BYTE *pbDirName, BYTE bDevice);
+                             1873 ; 422  |extern _asmfunc void SysLoadFATWrite(void);
+                             1874 ; 423  |extern _asmfunc INT SysUnLoadFATWrite(void);
+                             1875 ; 424  |extern LONG _reentrant ftell(INT iHandle);
+                             1876 ; 425  |extern _asmfunc struct FCB * ReadDirectory(int iDevice, int iEntry);
+                             1877 ; 426  |
+                             1878 ; 427  |#endif
+                             1879 
+                             1881 
+                             1882 ; 6    |#include "battery_config.h"
+                             1883 
+                             1885 
+                             1886 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                             1887 ; 2    |// Sigmatel, Inc  copyright (C) 2003-2004
+                             1888 ; 3    |// Filename: battery_config.h
+                             1889 ; 4    |// Battery Low Resolution ADC values & recharge values 
+                             1890 ; 5    |///////////////////////////////////////////////////////////////////////////////
+                             1891 ; 6    |
+                             1892 ; 7    |#ifdef BATTERY_TYPE_LI_ION
+                             1893 ; 8    |    //these are 3500 only
+                             1894 ; 9    |    #define VBATT_REF           REF_5120MV
+                             1895 ; 10   |    #define VBATT_MIN_MV        3000
+                             1896 ; 11   |    #define VBATT_MAX_MV        4200
+                             1897 ; 12   |
+                             1898 ; 13   |    #define VBATT_BO_MV         3000
+                             1899 ; 14   |
+                             1900 ; 15   |    #define BATT_BROWNOUT       VBATT_BO_MV
+                             1901 ; 16   |
+                             1902 ; 17   |    #ifndef LIION_BATTERY_VOLTAGE
+                             1903 ; 18   |    //this is in mV
+                             1904 ; 19   |    //The reference design uses a 4.2V LiIon battery
+                             1905 ; 20   |    #define LIION_BATTERY_VOLTAGE LIION_BATTERY_VOLTAGE_4_2
+                             1906 ; 21   |    #endif 
+                             1907 ; 22   |
+                             1908 ; 23   |    #ifndef LIION_CONDITIONING_VOLTAGE_THRESHHOLD
+                             1909 ; 24   |    //This is in millivolts
+                             1910 ; 25   |    #define LIION_CONDITIONING_VOLTAGE_THRESHHOLD 3000
+                             1911 ; 26   |    #endif
+                             1912 ; 27   |
+                             1913 ; 28   |    #ifndef LIION_CONDITIONING_CURRENT_LIMIT
+                             1914 ; 29   |    //This is in mA.   
+                             1915 ; 30   |    //Refer to the battery data sheet for the proper value
+                             1916 ; 31   |    //the reference design uses a 400mAh battery that suggests 40mA is a good conditioning current
+                             1917 ; 32   |    #define LIION_CONDITIONING_CURRENT_LIMIT 40
+                             1918 ; 33   |    #endif 
+                             1919 ; 34   |
+                             1920 ; 35   |    #ifndef LIION_CHARGING_TIMEOUT
+                             1921 ; 36   |    //the default is 4 hours
+                             1922 ; 37   |    #define LIION_CHARGING_TIMEOUT  ((DWORD)(DWORD)4*(DWORD)60*(DWORD)60*(DWORD)1000)
+                             1923 ; 38   |    #endif 
+                             1924 ; 39   |
+                             1925 ; 40   |    #ifndef LIION_CHARGING_DIFFERENTIAL_THRESHHOLD
+                             1926 ; 41   |    //We want to enter the 'top-off' mode when the voltage differential between
+                             1927 ; 42   |    //charging on and off is 20 mV
+                             1928 ; 43   |    #define LIION_CHARGING_DIFFERENTIAL_THRESHHOLD  20
+                             1929 ; 44   |    #endif 
+                             1930 ; 45   |
+                             1931 ; 46   |    #ifndef LIION_CHARGING_DIFFERENTIAL_THRESHHOLD_COUNT
+                             1932 ; 47   |    //we want 10 samples of the non-charging current to be within the 
+                             1933 ; 48   |    //differential threshhold.  
+                             1934 ; 49   |
+                             1935 ; 50   |#ifdef STMP_BUILD_PLAYER
+                             1936 ; 51   |    #define LIION_CHARGING_DIFFERENTIAL_THRESHHOLD_COUNT 5
+                             1937 ; 52   |#else
+                             1938 ; 53   |    #define LIION_CHARGING_DIFFERENTIAL_THRESHHOLD_COUNT 10
+                             1939 ; 54   |#endif
+                             1940 ; 55   |    #endif 
+                             1941 ; 56   |
+                             1942 ; 57   |    #ifndef LIION_CHARGING_CURRENT_LIMIT
+                             1943 ; 58   |    //This is in mA.   
+                             1944 ; 59   |    //Refer to the battery data sheet for the proper value
+                             1945 ; 60   |    //the reference design uses a 400mAh battery that suggests 400mA is a good charging current
+                             1946 ; 61   |    #define LIION_CHARGING_CURRENT_LIMIT 400
+                             1947 ; 62   |    #endif 
+                             1948 ; 63   |
+                             1949 ; 64   |    #ifndef LIION_TOPOFF_TIMEOUT
+                             1950 ; 65   |    //After we reach that limit, we want to run for a set amount of time to 'top off' the charging
+                             1951 ; 66   |    //in this case, 2 minutes (was 30)
+                             1952 ; 67   |#ifdef STMP_BUILD_PLAYER
+                             1953 ; 68   |    #define LIION_TOPOFF_TIMEOUT ((DWORD)(DWORD)15*(DWORD)60*(DWORD)1000)
+                             1954 ; 69   |#else
+                             1955 ; 70   |    #define LIION_TOPOFF_TIMEOUT ((DWORD)(DWORD)2*(DWORD)60*(DWORD)1000)
+                             1956 ; 71   |#endif
+                             1957 ; 72   |    #endif
+                             1958 ; 73   |
+                             1959 ; 74   |        #ifndef POWER_OFF_FREQUENCY
+                             1960 ; 75   |        //Set the Power Off Frequency.  Determines how frequently charging is turned-off.  
+                             1961 ; 76   |#ifdef STMP_BUILD_PLAYER
+                             1962 ; 77   |        #define POWER_OFF_FREQUENCY 40
+                             1963 ; 78   |#else
+                             1964 ; 79   |        #define POWER_OFF_FREQUENCY 500
+                             1965 ; 80   |#endif
+                             1966 ; 81   |        #endif
+                             1967 ; 82   |#endif
+                             1968 ; 83   |
+                             1969 ; 84   |////////////////////////////////////////////////////////////////////////////////
+                             1970 ; 85   |#ifdef BATTERY_TYPE_NIMH
+                             1971 ; 86   |    #define ONE  1
+                             1972 ; 87   |    #define ZERO 0
+                             1973 ; 88   |
+                             1974 ; 89   |    //NOTE:  Battery is currently Hardcoded to REF_5120MV in USBMSC
+                             1975 ; 90   |#ifdef STMP_BUILD_PLAYER
+                             1976 ; 91   |    #define VBATT_REF          REF_2700MV
+                             1977 ; 92   |    #define VBATT_MIN_MV       900
+                             1978 ; 93   |    #define VBATT_MAX_MV       1500
+                             1979 ; 94   |    #define VBATT_BO_MV        840
+                             1980 ; 95   |#else
+                             1981 ; 96   |    #define VBATT_REF          REF_5120MV
+                             1982 ; 97   |    #define VBATT_MIN_MV       900
+                             1983 ; 98   |    #define VBATT_MAX_MV       1200
+                             1984 ; 99   |    #define VBATT_BO_MV        850
+                             1985 ; 100  |#endif
+                             1986 ; 101  |
+                             1987 ; 102  |    #ifdef DEVICE_3500
+                             1988 ; 103  |        #define BATT_BROWNOUT                           VBATT_BO_MV
+                             1989 ; 104  |    #else
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1990 ; 105  |        #define BATT_BROWNOUT               HW_LRADC_BO_TRIP_830MV_SETMASK
+                             1991 ; 106  |    #endif
+                             1992 ; 107  |    // nimh settings above this line are similar to alkaline values below except v max.
+                             1993 ; 108  |    
+                             1994 ; 109  |    #ifndef NIMH_BATTERY_VOLTAGE
+                             1995 ; 110  |    //Units: mV. This is the rated battery voltage.
+                             1996 ; 111  |    //The reference design uses a 1.5V NIMH battery
+                             1997 ; 112  |    #define NIMH_BATTERY_VOLTAGE NIMH_BATTERY_VOLTAGE_1_2
+                             1998 ; 113  |    #endif 
+                             1999 ; 114  |
+                             2000 ; 115  |    #ifndef NIMH_VOLTAGE_THRESHHOLD_MV
+                             2001 ; 116  |    //Units: mV      Stop charging if this ADC battery voltage is measured. This can occur if an alkaline is inserted.
+                             2002 ; 117  |    #define NIMH_VOLTAGE_THRESHHOLD_MV 1800
+                             2003 ; 118  |    #endif
+                             2004 ; 119  |    // 1 enables alkaline detection via brief charge current & voltage threshold check.
+                             2005 ; 120  |    #define ALKALINE_DETECTION_IMPULSE_CHARGE_ENABLE 0 /* LEAVE DISABLED. Unimplemented. */
+                             2006 ; 121  |
+                             2007 ; 122  |    //------- NIMH Detection via exposed batt case check w/ gpio. You must configure a gpio reg & pin num also below.
+                             2008 ; 123  |    #define BATTERY_CASE_POLARITY_DETECT_ENABLE 0 // Verified. GPIO pin setup in nimh.c init, External pullup R (47kOhm)
+                             2009 ; 124  |    // Explanation: General Purpose Input pin can connect to cylindrical batt end corner. 
+                             2010 ; 125  |    // NiMH AAA batteries have ground case exposed at corner, else casing insulation 
+                             2011 ; 126  |    //   causes signal to float & external pullup R gives a logic 1 indicating non-nimh. 
+                             2012 ; 127  |    // NiMH AA  batteries instead have additional positive terminal exposure (opposite polarity). 
+                             2013 ; 128  |    //   Ext transistor can Vlevel shift for gpio logic-1 voltage. 
+                             2014 ; 129  |    //   non-NIMH casing will allow gpio pin to stay grounded & gives logic 0.
+                             2015 ; 130  |
+                             2016 ; 131  |    // SET this to ZERO if your NiMH is AAA or has ground case contact (detects NiMH via case (-) contact)
+                             2017 ; 132  |    // SET this to ONE if your NiMH battery is AA (detects NiMH via (+) terminal contact). Requires ext transistor V level shift.
+                             2018 ; 133  |    #define NIMH_BATTERY_CASE_LOGIC_LEVEL ZERO
+                             2019 ; 134  |    // *** IF YOU HAVE ENABLED, battery case polarity detection (used with nimh), 
+                             2020 ; 135  |    //  NOTE: The GP number and bit number in the four macros below must be set to match your input PIN number. 
+                             2021 ; 136  |    //    LAYOUT SPECIFIC, but all 3550/3560 qfp and bga can use a single GPIO register & bit num as below. 
+                             2022 ; 137  |    //    SigmaTel HW apps recommends pin GP37= pin 17 (100qfp)= pin j7 (bga)= cpu card pin24= GP1 Bit13 per 35xx datasheet.
+                             2023 ; 138  |    #define CONFIGURED_GPIO_INPUT_BIT_FOR_BATTERY_CASE_POLARITY ( HW_GP1DIR.B.B13 )
+                             2024 ; 139  |    // GPIO Enable register number as GPIO function.
+                             2025 ; 140  |    #define CONFIGURED_BATT_CASE_GP_NUM_ENR (HW_GP1ENR)
+                             2026 ; 141  |    // Data output enable reg num to use (will be set as input pin in this case)
+                             2027 ; 142  |    #define CONFIGURED_BATT_CASE_GP_NUM_DOER  (HW_GP1DOER)
+                             2028 ; 143  |    // bit num to use with desired input pin above
+                             2029 ; 144  |    #define CONFIGURED_BATT_CASE_GP_BIT  (HW_GP_B13_SETMASK)
+                             2030 ; 145  |    
+                             2031 ; 146  |    // Error code returned during charging init when case detect feature enabled but cell case not detected.
+                             2032 ; 147  |    #define NIMH_POLARITY_NOT_DETECTED (-2)
+                             2033 ; 148  |    //------- end batt case polarity detection
+                             2034 ; 149  |
+                             2035 ; 150  |    //------------------------------------
+                             2036 ; 151  |    #ifndef NIMH_EQUILIBRIUM_CHARGING_TIMEOUT_MS
+                             2037 ; 152  |    // 0.1C = 10 hr charge, but use 12 hours to more fully charge larger cells. (units: msec)
+                             2038 ; 153  |    #define NIMH_EQUILIBRIUM_CHARGING_TIMEOUT_MS ((DWORD)((DWORD)12*(DWORD)60*(DWORD)60*(DWORD)1000))
+                             2039 ; 154  |    //#define NIMH_EQUILIBRIUM_CHARGING_TIMEOUT_MS ((DWORD)((DWORD)10*(DWORD)1000)) //10 sec test mode to easily observe transition
+                             2040 ; 155  |    #endif 
+                             2041 ; 156  |    
+                             2042 ; 157  |    #ifndef NIMH_EQUILIBRIUM_CHARGING_CURRENT_LIMIT
+                             2043 ; 158  |    // Units: mA. Refer to the battery data sheet for the proper value. 
+                             2044 ; 159  |    // Usually 1 C AAA means a charge of 700 mAh, 750 mAh for a few AAA cells (energizer).
+                             2045 ; 160  |    // Assume 700mAh battery so EQUILIBRIUM charge at 0.1C rate (1/10th charge/hr) = 70mA. 
+                             2046 ; 161  |    // Register options are 60 or 75mA. Suggest 75mA for AAA. AA's have wide mAh range. Use 1/10th of mAh here:
+                             2047 ; 162  |    #define NIMH_EQUILIBRIUM_CHARGING_CURRENT_LIMIT 75
+                             2048 ; 163  |    #endif   
+                             2049 ; 164  |    #ifndef
+                             2050 ; 165  |    #define NIMH_TRICKLE_CHARGE_ENABLE 1
+                             2051 ; 166  |    #endif
+                             2052 ; 167  |    #ifndef NIMH_TRICKLE_CHARGE_CURRENT
+                             2053 ; 168  |    #define NIMH_TRICKLE_CHARGE_CURRENT 10  
+                             2054 ; 169  |    #endif //25mA is 0.035C rate for a 700mAh cell. 10mA recommended by 35xx charger designer.
+                             2055 ; 170  |    //-------------------------------------
+                             2056 ; 171  |    #ifndef NIMH_QUICK_CHARGING_TIMEOUT_MS   // NOTE: C/3 quick charging (3.6hrs) is not implemented.
+                             2057 ; 172  |    // ~4 hr charge rate of C/3 terminated by one of 3 events: (per Duracell whitepaper) 
+                             2058 ; 173  |    //   -dV/minute of 10mV, or 3.6hr timeout (216 minutes), or real temperature>=(60celcius|140F).
+                             2059 ; 174  |    // Thermal warning: at this C/3 charge rate, all 3 of the above termination events must be checked.
+                             2060 ; 175  |    #define NIMH_QUICK_CHARGING_TIMEOUT_MS ((DWORD)(DWORD)216*(DWORD)60*(DWORD)1000) 
+                             2061 ; 176  |    #endif
+                             2062 ; 177  |    #ifndef NIMH_QUICK_CHARGING_MV_PER_MINUTE_THRESHOLD
+                             2063 ; 178  |    #define NIMH_QUICK_CHARGING_MV_PER_MINUTE_THRESHOLD 10
+                             2064 ; 179  |    #endif
+                             2065 ; 180  |    #ifndef NIMH_QUICK_CHARGING_TEMPERATURE_LIMIT_C
+                             2066 ; 181  |    // For temp check to function:    10celcius|50F < Ambient Temperature < 45celcius|113F
+                             2067 ; 182  |    #define NIMH_QUICK_CHARGING_TEMPERATURE_LIMIT_C 60
+                             2068 ; 183  |    #endif
+                             2069 ; 184  |    #ifndef NIMH_QUICK_CHARGING_TEMPERATURE_LIMIT_F
+                             2070 ; 185  |    #define NIMH_QUICK_CHARGING_TEMPERATURE_LIMIT_F 140
+                             2071 ; 186  |    #endif
+                             2072 ; 187  |    // C/3 = 700mA/3 = 233 mA, HW supports 235mA. For C=750mAh: 750mA/3= 250mA. 
+                             2073 ; 188  |    #ifndef NIMH_QUICK_CHARGING_CURRENT_LIMIT
+                             2074 ; 189  |    #define NIMH_QUICK_CHARGING_CURRENT_LIMIT 235        
+                             2075 ; 190  |    #endif    
+                             2076 ; 191  |    //-------------------------------------
+                             2077 ; 192  |    #ifndef NIMH_FAST_CHARGING_CURRENT_LIMIT  // NOTE: C/2 Fast charging (2hrs) is not implemented. 
+                             2078 ; 193  |    // in units of mA.   Temperature measurement required with this mode. 
+                             2079 ; 194  |    #define NIMH_FAST_CHARGING_CURRENT_LIMIT 400
+                             2080 ; 195  |    #endif      
+                             2081 ; 196  |    #ifndef NIMH_FAST_CHARGING_TOPOFF_TIMEOUT
+                             2082 ; 197  |    //After we reach that limit, we may want to run for a set amount of time to 'top off'
+                             2083 ; 198  |    //the charging in this case,                       n minutes
+                             2084 ; 199  |    #define NIMH_FAST_CHARGING_TOPOFF_TIMEOUT ((DWORD)(DWORD)30*(DWORD)60*(DWORD)1000)
+                             2085 ; 200  |    #endif
+                             2086 ; 201  |
+                             2087 ; 202  |        #ifndef POWER_OFF_FREQUENCY
+                             2088 ; 203  |        //Set the Power Off Frequency Count.  Determines how frequently charging is turned-off. 
+                             2089 ; 204  |#ifdef STMP_BUILD_PLAYER
+                             2090 ; 205  |        #define POWER_OFF_FREQUENCY 40
+                             2091 ; 206  |#else
+                             2092 ; 207  |        #define POWER_OFF_FREQUENCY 500
+                             2093 ; 208  |#endif
+                             2094 ; 209  |        #endif
+                             2095 ; 210  |    
+                             2096 ; 211  |#endif // BATTERY_TYPE_NIMH
+                             2097 ; 212  |////////////////////////////////////////////////////////////////////////////////
+                             2098 ; 213  |
+                             2099 ; 214  |#ifdef BATTERY_TYPE_ALKALINE
+                             2100 ; 215  |#ifdef STMP_BUILD_PLAYER
+                             2101 ; 216  |    #define VBATT_REF          REF_2700MV
+                             2102 ; 217  |    #define VBATT_MIN_MV       900
+                             2103 ; 218  |    #define VBATT_MAX_MV       1500
+                             2104 ; 219  |    #define VBATT_BO_MV        840
+                             2105 ; 220  |#else
+                             2106 ; 221  |    #define VBATT_REF          REF_5120MV
+                             2107 ; 222  |    #define VBATT_MIN_MV       900
+                             2108 ; 223  |    #define VBATT_MAX_MV       1500
+                             2109 ; 224  |    #define VBATT_BO_MV        850
+                             2110 ; 225  |#endif
+                             2111 ; 226  |
+                             2112 ; 227  |    #define BATT_BROWNOUT                               VBATT_BO_MV
+                             2113 ; 228  |    
+                             2114 ; 229  |    #define OXYRIDE_THRESHOLD_MV  1550     // Battery considered Oxyride if avg voltage exceeds 1.55v
+                             2115 ; 230  |    #define OXYRIDE_SETBACK_MV     200     // Battery Voltage - VDDD < 200mv for VDDIO stability
+                             2116 ; 231  |#endif 
+                             2117 
+                             2119 
+                             2120 ; 7    |#include "battery.h"
+                             2121 
+                             2123 
+                             2124 ; 1    |//;///////////////////////////////////////////////////////////////////////////////
+                             2125 ; 2    |//; Copyright(C) SigmaTel, Inc. 2000-2004
+                             2126 ; 3    |//;
+                             2127 ; 4    |//; Filename: battery.h
+                             2128 ; 5    |//; Description: 
+                             2129 ; 6    |//;///////////////////////////////////////////////////////////////////////////////
+                             2130 ; 7    |
+                             2131 ; 8    |#ifndef _BATTERY_H
+                             2132 ; 9    |#define _BATTERY_H
+                             2133 ; 10   |
+                             2134 ; 11   |
+                             2135 ; 12   |// Functions  
+                             2136 ; 13   |extern _reentrant void SysLRADCBrownoutInit(WORD wLowResADCBrownoutLevel);
+                             2137 ; 14   |extern _reentrant WORD SysBatteryGetLevel(void);
+                             2138 ; 15   |extern _reentrant WORD MvToLradcResult(WORD mVolts);
+                             2139 ; 16   |extern _reentrant void SysBatteryLRADCInit(void);
+                             2140 ; 17   |extern _reentrant void SysLRADCBrownoutIsrInit(void);
+                             2141 ; 18   |
+                             2142 ; 19   |// player resource drive refresh allowed only when battery usable % is above this value. 
+                             2143 ; 20   |// 50% of usable range [0.9V to 1.5V] is around 1.2V This is the safe target alkaline voltage to do a refresh.
+                             2144 ; 21   |// LIION will also require 50% which will work but that could be changed in the future. 
+                             2145 ; 22   |#define RESOURCE_REFRESH_MIN_BATT_PCT 50
+                             2146 ; 23   |
+                             2147 ; 24   |
+                             2148 ; 25   |#endif // _BATTERY_H
+                             2149 ; 26   |
+                             2150 ; 27   |
+                             2151 ; 28   |
+                             2152 ; 29   |
+                             2153 
+                             2155 
+                             2156 ; 8    |
+                             2157 ; 9    |////////////////////////EXTERN/////////////////////////////////
+                             2158 ; 10   |
+                             2159 ; 11   |extern long g_UserTimeoffset;
+                             2160 ; 12   |extern unsigned long ReadRTC(void);
+                             2161 ; 13   |//;///////////////////////////////////////////////////////////////////////////////
+                             2162 ; 14   |
+                             2163 ; 15   |////////////////////////GLOBAL/////////////////////////////////
+                             2164 ; 16   |void LoadUserTime(void);
+                             2165 ; 17   |void SaveUserTime(void);
+                             2166 ; 18   |void  FSSwizzleText(_packed char *pText);
+                             2167 ; 19   |_packed char settingfile[]="A:/TIME.DAT";
+                             2168 
+                             2169 
+Y:0000                       2170         org     y,".ydatasaveusertime",init:
+                             2172 Fsettingfile:
+Y:0000 413A2F 54494D         2173         dc      "A:/TIME.DAT"++$00
+       452E44 415400              
+                             2177 
+                             2178 ; 20   |
+                             2179 ; 21   |////////////////////////////////////////////////////////////////////////////////
+                             2180 ; 22   |//
+                             2181 ; 23   |//>  Name:           FSSwizzleText(_packed char *pText)
+                             2182 ; 24   |
+                             2183 ; 25   |//   Type:           Function
+                             2184 ; 26   |//
+                             2185 ; 27   |//   Description:    TSwizzle the text
+                             2186 ; 28   |
+                             2187 ; 29   |//   Inputs:       _packed char *pText
+                             2188 ; 30   |
+                             2189 ; 31   |//   Outputs:        none
+                             2190 ; 32   |//
+                             2191 ; 33   |////////////////////////////////////////////////////////////////////////////////
+                             2192 ; 34   |
+                             2193 ; 35   |void  FSSwizzleText(_packed char *pText)
+                             2194 ; 36   |{
+                             2195 
+P:0000                       2196         org     p,".ptextsaveusertime":
+                             2203 FFSSwizzleText:
+                             2208 
+                             2209 ; 37   |    int bDone=0;
+                             2210 
+P:0000 260000         2    2 2212         move    #0,y0
+P:0001 4E7000 rrrrrr  3    5 2214         move    y0,y:ss_FSSwizzleText
+                             2219 
+                             2220 ; 38   |    unsigned int *pTmp=(unsigned int*)pText;
+                             2221 
+P:0003 221600         2    7 2223         move    r0,r6
+                             2227 
+                             2228 ; 39   |    unsigned int tmp;
+                             2229 ; 40   |    while(!bDone)
+                             2230 
+P:0004 44F400 0000FF  3   10 2232         move    #>$FF,x0
+P:0006 47F400 00FF00  3   13 2233         move    #$FF00,y1
+P:0008 26FF00         2   15 2234         move    #<$FF,y0
+P:0009 0AF080 rrrrrr  6   21 2235         jmp     L7
+                             2236 
+                             2237 ; 41   |    {
+                             2238 ; 42   |        tmp = *pTmp;
+                             2239 
+P:000B 5DE600         2   23 2241 L3:     move    y:(r6),b1
+                             2243 
+                             2244 ; 43   |        tmp = ((tmp & 0x0000ff)<<16) | ((tmp & 0x00ff00)) | ((tmp & 0xff0000)>>16);
+                             2245 
+P:000C 21A900         2   25 2247         move    b1,b0
+P:000D 20004E         2   27 2248         and     x0,b
+P:000E 21A500         2   29 2251         move    b1,x1
+P:000F 0108F0         2   31 2252         mpy     x1,#8,a
+P:0010 212D00         2   33 2253         move    b0,b1
+P:0011 20007E         2   35 2254         and     y1,b
+P:0012 21A500         2   37 2255         move    b1,x1
+P:0013 210C00         2   39 2256         move    a0,a1
+P:0014 200062         2   41 2257         or      x1,a
+P:0015 212D00         2   43 2258         move    b0,b1
+P:0016 20005E         2   45 2259         and     y0,b
+P:0017 061080 rrrrrr  6   51 2263         do      #16,L8
+P:0019 20002B         2   53 2265         lsr     b
+P:001A 000000         2   55 2266         nop
+                         (4) 2267 L8:
+P:001B 21A500         2   57 2269         move    b1,x1
+P:001C 200062         2   59 2270         or      x1,a
+                             2272 
+                             2273 ; 44   |        *pTmp++=tmp;
+                             2274 
+P:001D 5C5E00         2   61 2276         move    a1,y:(r6)+
+                             2277 
+                             2278 ; 45   |        if(!(tmp&0x0000ff) || !(tmp&0x00ff00)  || !(tmp&0xff0000))
+                             2279 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:001E 218F00         2   63 2281         move    a1,b
+P:001F 20004E         2   65 2282         and     x0,b
+P:0020 2B0000         2   67 2283         move    #0,b2
+P:0021 20000B         2   69 2284         tst     b
+P:0022 0AF0AA rrrrrr  6   75 2285         jeq     L5
+P:0024 218F00         2   77 2286         move    a1,b
+P:0025 20007E         2   79 2287         and     y1,b
+P:0026 2B0000         2   81 2288         move    #0,b2
+P:0027 20000B         2   83 2289         tst     b
+P:0028 0AF0AA rrrrrr  6   89 2290         jeq     L5
+P:002A 200056         2   91 2291         and     y0,a
+P:002B 218E00         2   93 2293         move    a1,a
+P:002C 2A0000         2   95 2294         move    #0,a2
+P:002D 200003         2   97 2295         tst     a
+P:002E 0AF0A2 rrrrrr  6  103 2296         jne     L7
+                             2297 
+                             2298 ; 46   |            bDone = 1;
+                             2299 
+P:0030 2D0100         2  105 2301 L5:     move    #1,b1
+P:0031 5D7000 rrrrrr  3  108 2304         move    b1,y:ss_FSSwizzleText
+P:0033 5FF000 rrrrrr  3  111 2308 L7:     move    y:ss_FSSwizzleText,b
+P:0035 20000B         2  113 2309         tst     b
+P:0036 0AF0AA rrrrrr  6  119 2310         jeq     L3
+                             2311 
+                             2312 ; 47   |    }
+                             2313 ; 48   |}
+                             2314 
+P:0038 00000C         4  123 2316         rts
+                             2320 
+Y:0000                       2321         org     y,".yovlsaveusertime@FSSwizzleText",overlay:
+                             2322 ss_FSSwizzleText:
+Y:0000 RESERVED              2323         ds      1
+Y:0000
+                             2324 
+P:0039                       2325         org     p,".ptextsaveusertime":
+                             2327 
+                             2328 ; 49   |
+                             2329 ; 50   |
+                             2330 ; 51   |/*
+                             2331 ; 52   |;///////////////////////////////////////////////////////////////////////////////
+                             2332 ; 53   |;> Name:            LoadUserTime
+                             2333 ; 54   |; Type:             Function
+                             2334 ; 55   |
+                             2335 ; 56   |; Inputs:           None
+                             2336 ; 57   |
+                             2337 ; 58   |; outputs:          None
+                             2338 ; 59   |;
+                             2339 ; 60   |; Notes:            This function load varaible g_UserTimeoffset from file time.dat
+                             2340 ; 61   |
+                             2341 ; 62   |;
+                             2342 ; 63   |;<
+                             2343 ; 64   |;///////////////////////////////////////////////////////////////////////////////
+                             2344 ; 65   |*/
+                             2345 ; 66   |
+                             2346 ; 67   |#ifdef FUNCLET
+                             2347 ; 68   |    #pragma asm
+P:0039                       2348         org p,".ptextsaveusertime":
+                             2349         global FLoadUserTime
+                             2350         FLoadUserTime:
+                             2351 
+                             2356 
+                             2357         ;If using funclet, function will be executed via funclet kernel
+                             2358         CallFunclet RSRC_FUNCLET_LOADUSERTIME
+P:0039 0D0080         4  127 2358     jsr       $80
+P:003A 00038F                2358     DC       RSRC_FUNCLET_LOADUSERTIME  ; 1 word
+                             2359 
+P:0000                       2360         org p,"SYSFUNCLET_LOADUSERTIME_P":
+P:0000 00038F                2361         dc      RSRC_FUNCLET_LOADUSERTIME
+                             2362 ; 83   |    #pragma endasm
+                             2363 ; 84   |
+                             2364 ; 85   |void LoadUserTime_funclet(void)
+                             2365 ; 86   |#else
+                             2366 ; 87   |void LoadUserTime(void)
+                             2367 ; 88   |#endif
+                             2368 ; 89   |{
+                             2369 
+                             2374 FLoadUserTime_funclet:
+P:0001 05707C rrrrrr  4    4 2375         movec   ssh,y:ss_LoadUserTime_funclet
+                             2383 
+                             2384 ; 90   |    int Handle,Attribute;
+                             2385 ; 91   |    long crt_time;
+                             2386 ; 92   |
+                             2387 ; 93   |    g_UserTimeoffset = 0;
+                             2388 
+P:0003 20001B         2    6 2390         clr     b   
+P:0004 5D7000 rrrrrr  3    9 2391         move    b1,y:Fg_UserTimeoffset+1
+P:0006 597000 rrrrrr  3   12 2392         move    b0,y:Fg_UserTimeoffset
+                             2393 
+                             2394 ; 94   |
+                             2395 ; 95   |        FSSwizzleText(settingfile);
+                             2396 
+P:0008 60F400 rrrrrr  3   15 2398         move    #Fsettingfile,r0
+P:000A 0BF080 rrrrrr  6   21 2399         jsr     FFSSwizzleText
+                             2400 
+                             2401 ; 96   |
+                             2402 ; 97   |    if((Handle = Fopen(settingfile,(_packed char*)"r")) <0)
+                             2403 
+P:000C 60F400 rrrrrr  3   24 2405         move    #Fsettingfile,r0
+P:000E 64F400 rrrrrr  3   27 2406         move    #L9,r4
+P:0010 0BF080 rrrrrr  6   33 2407         jsr     FFopen
+P:0012 200009         2   35 2408         tfr     a,b
+P:0013 20000B         2   37 2410         tst     b
+P:0014 0AF0A1 rrrrrr  6   43 2411         jge     L17
+                             2412 
+                             2413 ; 98   |    {
+                             2414 ; 99   |        // The file may not exist, try to create one.
+                             2415 ; 100  |        FSSwizzleText(settingfile);
+                             2416 
+P:0016 60F400 rrrrrr  3   46 2418         move    #Fsettingfile,r0
+P:0018 0BF080 rrrrrr  6   52 2419         jsr     FFSSwizzleText
+                             2421 
+                             2422 ; 101  |        SaveUserTime();
+                             2423 
+P:001A 0BF080 rrrrrr  6   58 2425         jsr     FSaveUserTime
+                             2426 
+                             2427 ; 102  |        return;
+                             2428 
+P:001C 0AF080 rrrrrr  6   64 2430         jmp     L22
+                             2431 
+                             2432 ; 103  |    }
+                             2433 
+                             2435 L17:
+P:001E 5D7000 rrrrrr  3   67 2437         move    b1,y:ss_LoadUserTime_funclet+2
+                             2440 
+                             2441 ; 104  |
+                             2442 ; 105  |    if(Fread(Handle,(INT*)&g_UserTimeoffset,6,Y_MEMORY,-1)!=6)
+                             2443 
+P:0020 60F400 rrrrrr  3   70 2445         move    #Fg_UserTimeoffset,r0
+P:0022 5C7000 rrrrrr  3   73 2446         move    a1,y:ss_LoadUserTime_funclet+1
+P:0024 200013         2   75 2447         clr     a   
+P:0025 280600         2   77 2448         move    #6,a0
+P:0026 44F400 000002  3   80 2449         move    #>2,x0
+P:0028 46F400 FFFFFF  3   83 2450         move    #>-1,y0
+P:002A 0BF080 rrrrrr  6   89 2451         jsr     FFread
+P:002C 20001B         2   91 2452         clr     b   
+P:002D 290600         2   93 2453         move    #6,b0
+P:002E 200005         2   95 2454         cmp     b,a
+P:002F 0AF0A2 rrrrrr  6  101 2455         jne     L22
+                             2456 
+                             2457 ; 106  |        return;
+                             2458 ; 107  |
+                             2459 ; 108  |        crt_time = ReadRTC();
+                             2460 
+P:0031 0BF080 rrrrrr  6  107 2462         jsr     FReadRTC
+                             2464 
+                             2465 ; 109  |        crt_time /= (long)1000; //Start time now has the number of seconds
+                             2466 
+P:0033 20001B         2  109 2468         clr     b   
+P:0034 51F400 0003E8  3  112 2469         move    #1000,b0
+P:0036 0BF080 rrrrrr  6  118 2470         jsr     Rdiv_lll
+P:0038 200009         2  120 2471         tfr     a,b
+                             2474 
+                             2475 ; 110  |   crt_time=(long)crt_time + (long)g_UserTimeoffset;
+                             2476 
+P:0039 5EF000 rrrrrr  3  123 2478         move    y:Fg_UserTimeoffset+1,a
+P:003B 58F000 rrrrrr  3  126 2479         move    y:Fg_UserTimeoffset,a0
+P:003D 200018         2  128 2480         add     a,b
+                             2481 
+                             2482 ; 111  |
+                             2483 ; 112  |   if((crt_time)<0)
+                             2484 
+P:003E 0AF0A1 rrrrrr  6  134 2486         jge     L18
+                             2487 
+                             2488 ; 113  |   {
+                             2489 ; 114  |        g_UserTimeoffset=0;
+                             2490 
+P:0040 250000         2  136 2492         move    #0,x1
+P:0041 240000         2  138 2493         move    #0,x0
+P:0042 4D7000 rrrrrr  3  141 2494         move    x1,y:Fg_UserTimeoffset+1
+P:0044 4C7000 rrrrrr  3  144 2495         move    x0,y:Fg_UserTimeoffset
+                             2496 
+                             2497 ; 115  |
+                             2498 ; 116  |        Fclose(Handle);
+                             2499 
+P:0046 5EF000 rrrrrr  3  147 2501         move    y:ss_LoadUserTime_funclet+1,a
+P:0048 0BF080 rrrrrr  6  153 2502         jsr     FFclose
+                             2504 
+                             2505 ; 117  |
+                             2506 ; 118  |        Attribute= (READ_ONLY|SYSTEM|HIDDEN);
+                             2507 ; 119  |        FSFileAttributeClear(Attribute,settingfile,0);
+                             2508 
+P:004A 60F400 rrrrrr  3  156 2510         move    #Fsettingfile,r0
+P:004C 20001B         2  158 2511         clr     b   
+P:004D 56F400 000007  3  161 2512         move    #>7,a
+P:004F 687000 rrrrrr  3  164 2513         move    r0,y:ss_LoadUserTime_funclet+3
+P:0051 0BF080 rrrrrr  6  170 2514         jsr     FFSFileAttributeClear
+                             2515 
+                             2516 ; 120  |
+                             2517 ; 121  |        if((Handle = Fopen(settingfile,(_packed char*)"r+")) <0)
+                             2518 
+P:0053 60F400 rrrrrr  3  173 2520         move    #Fsettingfile,r0
+P:0055 64F400 rrrrrr  3  176 2521         move    #L10,r4
+P:0057 0BF080 rrrrrr  6  182 2522         jsr     FFopen
+P:0059 200009         2  184 2523         tfr     a,b
+P:005A 20000B         2  186 2526         tst     b
+P:005B 0AF0A9 rrrrrr  6  192 2527         jlt     L22
+                             2528 
+                             2529 ; 122  |            return;
+                             2530 ; 123  |
+                             2531 ; 124  |        if(Fwrite(Handle,(INT *)&g_UserTimeoffset,6,Y_MEMORY,-1)!=6)
+                             2532 
+P:005D 5F7000 rrrrrr  3  195 2534         move    b,y:ss_LoadUserTime_funclet+2
+P:005F 200013         2  197 2539         clr     a   
+P:0060 280600         2  199 2540         move    #6,a0
+P:0061 60F400 rrrrrr  3  202 2541         move    #Fg_UserTimeoffset,r0
+P:0063 44F400 000002  3  205 2542         move    #>2,x0
+P:0065 46F400 FFFFFF  3  208 2543         move    #>-1,y0
+P:0067 0BF080 rrrrrr  6  214 2544         jsr     FFwrite
+P:0069 20001B         2  216 2547         clr     b   
+P:006A 290600         2  218 2548         move    #6,b0
+P:006B 200005         2  220 2549         cmp     b,a
+P:006C 0AF0A2 rrrrrr  6  226 2550         jne     L22
+                             2551 
+                             2552 ; 125  |            return;
+                             2553 ; 126  |        Attribute=(READ_ONLY|SYSTEM|HIDDEN);
+                             2554 ; 127  |        FSFileAttribute(Attribute,settingfile,0);
+                             2555 
+P:006E 20001B         2  228 2557         clr     b   
+P:006F 56F400 000007  3  231 2558         move    #>7,a
+P:0071 68F000 rrrrrr  3  234 2559         move    y:ss_LoadUserTime_funclet+3,r0
+P:0073 0BF080 rrrrrr  6  240 2560         jsr     FFSFileAttribute
+                             2561 
+                             2562 ; 128  |
+                             2563 ; 129  |   }
+                             2564 ; 130  |
+                             2565 ; 131  |   Fclose(Handle);
+                             2566 
+P:0075 5EF000 rrrrrr  3  243 2568 L18:    move    y:ss_LoadUserTime_funclet+2,a
+P:0077 0BF080 rrrrrr  6  249 2569         jsr     FFclose
+                             2573 
+                             2574 ; 132  |        FSSwizzleText(settingfile);
+                             2575 
+P:0079 60F400 rrrrrr  3  252 2577         move    #Fsettingfile,r0
+P:007B 0BF080 rrrrrr  6  258 2578         jsr     FFSSwizzleText
+                             2579 
+                             2580 ; 133  |}
+                             2581 
+P:007D 05F07C rrrrrr  4  262 2583 L22:    movec   y:ss_LoadUserTime_funclet,ssh
+P:007F 000000         2  264 2585         nop
+P:0080 00000C         4  268 2586         rts
+                             2587 
+Y:0000                       2588         org     y,".yovlsaveusertime@LoadUserTime_funclet",overlay:
+                             2589 ss_LoadUserTime_funclet:
+Y:0000                       2590         ds      5
+   |   RESERVED                   
+Y:0004
+                             2591 
+P:003B                       2592         org     p,".ptextsaveusertime":
+                             2594 
+                             2595 ; 134  |/*
+                             2596 ; 135  |;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2597 ; 136  |;> Name:            SaveUserTime
+                             2598 ; 137  |
+                             2599 ; 138  |; Type:             Function
+                             2600 ; 139  |
+                             2601 ; 140  |; Inputs:           None
+                             2602 ; 141  |
+                             2603 ; 142  |; outputs:          None
+                             2604 ; 143  |;
+                             2605 ; 144  |; Notes:            This function Write the  varaible g_UserTimeoffset to file time.dat
+                             2606 ; 145  |                    at the time of player Shutdown.
+                             2607 ; 146  |
+                             2608 ; 147  |;
+                             2609 ; 148  |;<
+                             2610 ; 149  |;///////////////////////////////////////////////////////////////////////////////
+                             2611 ; 150  |*/
+                             2612 ; 151  |#ifdef FUNCLET
+                             2613 ; 152  |    #pragma asm
+P:003B                       2614         org p,".ptextsaveusertime":
+                             2615         global FSaveUserTime
+as2410 W137: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc5eab.src: line 2615 : label "FSaveUserTime" defined extern and global
+                             2616         FSaveUserTime:
+                             2617 
+                             2622 
+                             2623         ;If using funclet, function will be executed via funclet kernel
+                             2624         CallFunclet RSRC_FUNCLET_SAVEUSERTIME
+P:003B 0D0080         4  131 2624     jsr       $80
+P:003C 000390                2624     DC       RSRC_FUNCLET_SAVEUSERTIME  ; 1 word
+                             2625 
+P:0000                       2626         org p,"SYSFUNCLET_SAVEUSERTIME_P":
+P:0000 000390                2627         dc      RSRC_FUNCLET_SAVEUSERTIME
+                             2628 ; 167  |    #pragma endasm
+                             2629 ; 168  |
+                             2630 ; 169  |void SaveUserTime_funclet()
+                             2631 ; 170  |#else
+                             2632 ; 171  |void SaveUserTime()
+                             2633 ; 172  |#endif
+                             2634 ; 173  |{
+                             2635 
+                             2640 FSaveUserTime_funclet:
+P:0001 05707C rrrrrr  4    4 2641         movec   ssh,y:ss_SaveUserTime_funclet
+                             2647 
+                             2648 ; 174  |    int Handle,Attribute;
+                             2649 ; 175  |
+                             2650 ; 176  |    if(SysBatteryGetLevel()<=0)
+                             2651 
+P:0003 0BF080 rrrrrr  6   10 2653         jsr     FSysBatteryGetLevel
+P:0005 2A0000         2   12 2654         move    #0,a2
+P:0006 200003         2   14 2655         tst     a
+P:0007 0AF0AF rrrrrr  6   20 2656         jle     L29
+                             2657 
+                             2658 ; 177  |        return;
+                             2659 ; 178  |
+                             2660 ; 179  |        FSSwizzleText(settingfile);
+                             2661 
+P:0009 60F400 rrrrrr  3   23 2663         move    #Fsettingfile,r0
+P:000B 0BF080 rrrrrr  6   29 2664         jsr     FFSSwizzleText
+                             2665 
+                             2666 ; 180  |    Attribute= (READ_ONLY|SYSTEM|HIDDEN);
+                             2667 ; 181  |    FSFileAttributeClear(Attribute,settingfile,0);
+                             2668 
+P:000D 74F400 rrrrrr  3   32 2670         move    #Fsettingfile,n4
+P:000F 20001B         2   34 2671         clr     b   
+P:0010 56F400 000007  3   37 2672         move    #>7,a
+P:0012 7C7000 rrrrrr  3   40 2673         move    n4,y:ss_SaveUserTime_funclet+1
+P:0014 239000         2   42 2674         move    n4,r0
+P:0015 0BF080 rrrrrr  6   48 2675         jsr     FFSFileAttributeClear
+                             2676 
+                             2677 ; 182  |
+                             2678 ; 183  |    if((Handle = Fopen(settingfile,(_packed char*)"w")) <0)
+                             2679 
+P:0017 60F400 rrrrrr  3   51 2681         move    #Fsettingfile,r0
+P:0019 64F400 rrrrrr  3   54 2682         move    #L23,r4
+P:001B 0BF080 rrrrrr  6   60 2683         jsr     FFopen
+P:001D 200009         2   62 2684         tfr     a,b
+P:001E 20000B         2   64 2686         tst     b
+P:001F 0AF0A9 rrrrrr  6   70 2687         jlt     L29
+                             2688 
+                             2689 ; 184  |    {
+                             2690 ; 185  |        return;
+                             2691 ; 186  |    }
+                             2692 ; 187  |
+                             2693 ; 188  |//    if(Fseek(Handle,USER_TIME_OFFSET,SEEK_SET))
+                             2694 ; 189  |//        return;
+                             2695 ; 190  |
+                             2696 ; 191  |    if(Fwrite(Handle,(INT *)&g_UserTimeoffset,6,Y_MEMORY,-1)!=6)
+                             2697 
+P:0021 250000         2   72 2699         move    #0,x1
+P:0022 44F400 000006  3   75 2700         move    #>6,x0
+P:0024 5E7000 rrrrrr  3   78 2701         move    a,y:ss_SaveUserTime_funclet+2
+P:0026 200009         2   80 2702         tfr     a,b
+P:0027 200061         2   82 2704         tfr     x1,a
+P:0028 208800         2   84 2705         move    x0,a0
+P:0029 44F400 000002  3   87 2706         move    #>2,x0
+P:002B 60F400 rrrrrr  3   90 2707         move    #Fg_UserTimeoffset,r0
+P:002D 46F400 FFFFFF  3   93 2708         move    #>-1,y0
+P:002F 0BF080 rrrrrr  6   99 2709         jsr     FFwrite
+P:0031 20001B         2  101 2710         clr     b   
+P:0032 290600         2  103 2711         move    #6,b0
+P:0033 200005         2  105 2712         cmp     b,a
+P:0034 0AF0A2 rrrrrr  6  111 2713         jne     L29
+                             2714 
+                             2715 ; 192  |        return;
+                             2716 ; 193  |    Attribute=(READ_ONLY|SYSTEM|HIDDEN);
+                             2717 ; 194  |    FSFileAttribute(Attribute,settingfile,0);
+                             2718 
+P:0036 20001B         2  113 2720         clr     b   
+P:0037 56F400 000007  3  116 2721         move    #>7,a
+P:0039 68F000 rrrrrr  3  119 2722         move    y:ss_SaveUserTime_funclet+1,r0
+P:003B 0BF080 rrrrrr  6  125 2723         jsr     FFSFileAttribute
+                             2724 
+                             2725 ; 195  |        FSSwizzleText(settingfile);
+                             2726 
+P:003D 60F400 rrrrrr  3  128 2728         move    #Fsettingfile,r0
+P:003F 0BF080 rrrrrr  6  134 2729         jsr     FFSSwizzleText
+                             2730 
+                             2731 ; 196  |
+                             2732 ; 197  |    Fclose(Handle);
+                             2733 
+P:0041 5EF000 rrrrrr  3  137 2735         move    y:ss_SaveUserTime_funclet+2,a
+P:0043 0BF080 rrrrrr  6  143 2736         jsr     FFclose
+                             2737 
+                             2738 ; 198  |  }
+                             2739 
+P:0045 05F07C rrrrrr  4  147 2741 L29:    movec   y:ss_SaveUserTime_funclet,ssh
+P:0047 000000         2  149 2743         nop
+P:0048 00000C         4  153 2744         rts
+                             2745 
+Y:0000                       2746         org     y,".yovlsaveusertime@SaveUserTime_funclet",overlay:
+                             2747 ss_SaveUserTime_funclet:
+Y:0000                       2748         ds      3
+   |   RESERVED                   
+Y:0002
+                             2749 
+P:003D                       2750         org     p,".ptextsaveusertime":
+                             2752 
+                             2753 ; 199  |
+                             2754 ; 200  |
+                             2755 ; 201  |
+                             2756 ; 202  |
+                             2757 
+                             2774 
+                             2775 
+Y:0000                       2776         org     y,".yconstsaveusertime",const:
+Y:0000 000072 000000         2778 L9:     dc      "r"++$00
+Y:0002 000077 000000         2781 L23:    dc      "w"++$00
+Y:0004 000072 00002B         2786 L10:    dc      "r+"++$00
+       000000                     
+                             2789 
+                             2790         extern  Rdiv_lll, FFSFileAttribute, FFSFileAttributeClear, FFclose
+                             2791         extern  FFopen, FFread, FFwrite, FReadRTC, FSaveUserTime
+as2410 W137: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc5eab.src: line 2791 : label "FSaveUserTime" defined global and extern
+                             2792         extern  FSysBatteryGetLevel, y:Fg_UserTimeoffset
+                             2793 
+                             2794         global  FFSSwizzleText, FLoadUserTime_funclet
+                             2795         global  FSaveUserTime_funclet, Fsettingfile
+                             2796 
+                             2797         local   L3, L5, L7, L8, L9, L10, L17, L18, L22, L23, L29
+                             2798         local   ss_FSSwizzleText, ss_LoadUserTime_funclet
+                             2799         local   ss_SaveUserTime_funclet
+                             2800 
+                             2801         calls   "LoadUserTime_funclet", "FSFileAttribute"
+                             2802         calls   "LoadUserTime_funclet", "FSFileAttributeClear"
+                             2803         calls   "LoadUserTime_funclet", "FSSwizzleText", "Fclose", "Fopen"
+                             2804         calls   "LoadUserTime_funclet", "Fread", "Fwrite", "Rdiv_lll"
+                             2805         calls   "LoadUserTime_funclet", "ReadRTC", "SaveUserTime"
+                             2806         calls   "SaveUserTime_funclet", "FSFileAttribute"
+                             2807         calls   "SaveUserTime_funclet", "FSFileAttributeClear"
+                             2808         calls   "SaveUserTime_funclet", "FSSwizzleText", "Fclose", "Fopen"
+                             2809         calls   "SaveUserTime_funclet", "Fwrite", "SysBatteryGetLevel"
+                             2810 

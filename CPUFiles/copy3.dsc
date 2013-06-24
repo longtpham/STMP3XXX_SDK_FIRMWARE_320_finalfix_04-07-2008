@@ -1,0 +1,13 @@
+copy .xconstdrmmd5;
+copy .xdatalayer2tables;
+copy .ptextsetdatemenu;
+copy .xdevecerttemplate;
+copy .xdevcert;
+copy .ptextdrmxmlparser;
+copy .ptextdrmmd5;
+copy .xconstdrmconstants;
+copy .ydatahufftables;
+copy .ptextnanddatadrivemultiwritecache;
+copy .pInit;
+copy .ptextdrmexpreval;
+copy .ptextecexpon;

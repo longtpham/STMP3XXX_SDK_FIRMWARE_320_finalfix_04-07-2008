@@ -1,0 +1,54 @@
+;******************************************************************************
+; Copyright(C) SigmaTel, Inc. 2000
+;
+; STMP3 Wave Xref
+;******************************************************************************
+ IF !@DEF('Wave_xref')
+   DEFINE   Wave_xref	'1'
+    
+    extern Fg_Wave_wChannels   
+    extern Fg_Wave_dwWavDuration
+    extern Fg_Wave_wFormatTag
+    extern Fg_Wave_wChannels		
+    extern Fg_Wave_dwSamplesPerSec
+    extern Fg_Wave_dwAvgBytesPerSec
+    extern Fg_Wave_wBlockAlign
+    extern Fg_Wave_datachunksize
+    extern Fg_Wave_riffsize
+    extern Fg_Wave_wavesize
+    extern Fg_Wave_datasize
+
+    if (@def('MS_ADPCM')||@def('IMA_ADPCM'))
+    extern Fg_Wave_wBitsPerSample
+    extern Fg_Wave_wcbSize
+    extern Fg_Wave_wnSamplesPerBlock
+
+    extern Fg_Wave_wBitsPerSample;
+    extern Fg_Wave_wcbSize;
+    extern Fg_Wave_wnSamplesPerBlock;
+    endif
+
+    if @def('MS_ADPCM')
+    extern Fg_Wave_wnNumCoef;
+    extern Fg_Wave_wCoef1
+    extern Fg_Wave_wCoef2
+    extern Fg_Wave_iCoef1Array
+    extern Fg_Wave_iCoef2Array
+    endif
+
+
+    ; Function Declarations
+    extern Fwaveparser
+    extern  FWave_Fill_Input_Bitstream_Buffer
+    extern  FGetSamplestoDecodeLastBlock
+
+    if @def('IMA_ADPCM')
+    extern FInit_IMA_ADPCM_States
+    endif
+
+    if @def('MS_ADPCM')
+    extern FInit_MS_ADPCM_States
+    endif
+
+
+    endif

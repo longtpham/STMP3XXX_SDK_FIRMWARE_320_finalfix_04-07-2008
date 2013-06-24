@@ -1,0 +1,182 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\projects\sdk\lcdexample\player\msgs.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : msgs.asm
+                                5 ;  Description : Message structures used in player
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section     EXEC_Msgs
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Macros
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               15 ;   Includes
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17                             
+                               23     list                     
+                               25 ;///////////////////////////////////////////////////////////////////////////////
+                               26 ;   External Definitions
+                               27 ;///////////////////////////////////////////////////////////////////////////////
+                               42     
+                               46     ; Geq Messages
+                               50     ; Parser Messages
+                               77   
+                               78   
+                               94     
+                               99     
+                              100 ;///////////////////////////////////////////////////////////////////////////////
+                              101 ;   External References
+                              102 ;///////////////////////////////////////////////////////////////////////////////
+                              104 ;///////////////////////////////////////////////////////////////////////////////
+                              105 ;   Equates
+                              106 ;///////////////////////////////////////////////////////////////////////////////
+                              110 ;///////////////////////////////////////////////////////////////////////////////
+                              111 ;   Equates
+                              112 ;///////////////////////////////////////////////////////////////////////////////
+                              114 ; LCD dimensions
+                              115 LCD_SIZE_X              equ     128
+                              116 LCD_SIZE_Y              equ     64
+                              117 LCD_SIZE_ROW            equ     8
+                              119 ; Physical rows are numbered from 0 to LCD_SIZE_Y/LCD_SIZE_ROW
+                              120 LCD_FIRST_ROW_NUM       equ     1
+                              121 LCD_FIRST_ROW_POS_Y     equ     LCD_FIRST_ROW_NUM*LCD_SIZE_ROW ; skipping the first row
+                              123 ; LCD menu line positions
+                              124 LCD_DLINE_ICON_0_POS_Y              equ     LCD_FIRST_ROW_POS_Y
+                              125 LCD_DLINE_ICON_1_POS_Y              equ     LCD_DLINE_ICON_0_POS_Y+LCD_SIZE_ROW
+                              127 ; leave a blank row between the icons & typical menu information (lists may use different placemen
+                                  t)
+                              128 LCD_DLINE_MENU_START_POS_Y          equ     LCD_DLINE_ICON_1_POS_Y+(2*LCD_SIZE_ROW)
+                              130 LCD_DLINE_MENU_00_SONG_NAME_POS_Y   equ     LCD_DLINE_MENU_START_POS_Y
+                              131 LCD_DLINE_MENU_00_ARTIST_NAME_POS_Y equ     LCD_DLINE_MENU_00_SONG_NAME_POS_Y+LCD_SIZE_ROW
+                              132 LCD_DLINE_MENU_00_SONG_TIME_POS_Y   equ     LCD_DLINE_MENU_00_ARTIST_NAME_POS_Y+LCD_SIZE_ROW
+                              133 LCD_DLINE_MENU_00_SONG_NUMBER_POS_Y equ     LCD_DLINE_MENU_00_SONG_TIME_POS_Y+LCD_SIZE_ROW
+                              135 LCD_DLINE_MENU_06_VOICE_NAME_POS_Y          equ     LCD_DLINE_MENU_START_POS_Y
+                              136 LCD_DLINE_MENU_06_VOICE_TIME_CURRENT_POS_Y  equ     LCD_DLINE_MENU_06_VOICE_NAME_POS_Y+LCD_SIZE_RO
+                                  W
+                              137 LCD_DLINE_MENU_06_VOICE_TIME_TOTAL_POS_Y    equ     LCD_DLINE_MENU_06_VOICE_TIME_CURRENT_POS_Y+LCD
+                                  _SIZE_ROW
+                              139 LCD_DLINE_MENU_TITLE_POS_Y                  equ     LCD_FIRST_ROW_POS_Y+(1*LCD_SIZE_ROW)
+                              141 ; LCD Object postions
+                              142 LCD_DOBJ_SONG_NAME_POS_X    equ     0
+                              143 LCD_DOBJ_SONG_NAME_POS_Y    equ     LCD_DLINE_MENU_00_SONG_NAME_POS_Y
+                              144 LCD_DOBJ_ARTIST_NAME_POS_X  equ     0
+                              145 LCD_DOBJ_ARTIST_NAME_POS_Y  equ     LCD_DLINE_MENU_00_ARTIST_NAME_POS_Y
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              146 LCD_DOBJ_STATE_POS_X        equ     0
+                              147 LCD_DOBJ_STATE_POS_Y        equ     LCD_DLINE_ICON_0_POS_Y
+                              148 LCD_DOBJ_STATE_SIZE_X       equ     8
+                              149 LCD_DOBJ_STATE_SIZE_Y       equ     8
+                              151 ;///////////////////////////////////////////////////////////////////////////////
+                              152 ;   Y Memory
+                              153 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        155       org y,"EXEC_Msgs_Y":
+                              157 ;///////////////////////////////////////////////////////////////////////////////
+                              158 ; Misc Messages
+                              159 ;///////////////////////////////////////////////////////////////////////////////
+                              161 ;--------------------------------------
+                              162 ; Decoder Stop Message
+                              163 StopMessage         
+Y:0000 000002                 164                     dc      2
+Y:0001 000003                 165                     dc      DECODER_STOP
+                              166 ;--------------------------------------
+                              167 MsgParserNextSong   
+Y:0002 000003                 168                     dc      3
+Y:0003 020000                 169                     dc      PARSER_NEXT_SONG
+Y:0004 000002                 170 MsgParserNextParam  dc      NEXT_SONG
+                              172 ;--------------------------------------
+                              173 MsgParserPrevSong   
+Y:0005 000003                 174                     dc      3
+Y:0006 020001                 175                     dc      PARSER_PREV_SONG
+Y:0007 000000                 176 MsgParserPrevParam  dc      PREV_SONG
+                              178 ;--------------------------------------
+                              179 MsgParserStopSong   
+Y:0008 000002                 180                     dc      2
+Y:0009 020004                 181                     dc      PARSER_STOP
+                              183 ;--------------------------------------
+                              184 MsgParserDeviceEnum  
+Y:000A 000002                 185                     dc      2
+Y:000B 020005                 186                     dc      PARSER_DEVICE_ENUMERATE
+                              188 ;--------------------------------------
+                              189 MsgParserSetCurrentSong
+Y:000C 000003                 190                     dc      3
+Y:000D 020006                 191                     dc      PARSER_SET_CURRENT_SONG
+                              192 SetCurrentSongStringPtr
+Y:000E 000000                 193                     dc      0
+                              195 ;--------------------------------------
+                              196 PlayMessage         
+Y:000F 000002                 197                     dc      2
+Y:0010 000002                 198                     dc      DECODER_PLAY
+                              200 ;--------------------------------------
+                              201         ;///////////////// T E M P O R A R Y ////////////////////////////
+                              202 PlayDirMsg          
+Y:0011 000005                 203                     dc      5                     ; count
+Y:0012 000001                 204                     dc      DECODER_SET_DIR       ; opcode
+Y:0013 000001                 205                     dc      1                     ; device (card) number
+Y:0014 000000                 206                     dc      0                     ; song index number
+Y:0015 00005C                 207                     dc      $00005C               ; '\' "root directory"
+                              208         ;///////////////// T E M P O R A R Y ////////////////////////////
+                              210 ;--------------------------------------
+                              211 MsgDecoderNextSong  
+Y:0016 000002                 212                     dc      2
+Y:0017 000006                 213                     dc      DECODER_NEXT_SONG
+                              215 ;--------------------------------------
+                              216 MsgDecoderPrevSong  
+Y:0018 000002                 217                     dc      2
+Y:0019 000007                 218                     dc      DECODER_PREV_SONG
+                              220 ;--------------------------------------
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              221 MsgDecoderFf        
+Y:001A 000002                 222                     dc      2
+Y:001B 000004                 223                     dc      DECODER_FFWD
+                              225 ;--------------------------------------
+                              226 MsgDecoderRw        
+Y:001C 000002                 227                     dc      2
+Y:001D 000005                 228                     dc      DECODER_RWND
+                              231 ;--------------------------------------
+                              232 MsgDecoderStateChange
+Y:001E 000002                 233                     dc      2
+Y:001F 060001                 234                     dc      MENU_DECODER_STATE_CHNG                                               
+                                   
+                              236 ;--------------------------------------
+                              237 MsgMenuSongTimeChange
+Y:0020 000002                 238                     dc      2
+Y:0021 060003                 239                     dc      MENU_SONG_TIME_CHNG
+                              241 ;--------------------------------------
+                              242 MsgDecoderABModeOff
+Y:0022 000002                 243                     dc      2
+Y:0023 060004                 244                     dc      MENU_AB_MODE_OFF
+                              246 ;--------------------------------------
+                              247 MsgBatteryChange
+Y:0024 000002                 248                     dc      2
+Y:0025 060005                 249                     dc      MENU_BATTERY_CHNG
+                              251 ;--------------------------------------
+                              252 MsgRecorderWriteData
+Y:0026 000002                 253                     dc      2
+Y:0027 06000D                 254                     dc      MENU_RECORDER_WRITE_DATA
+                              256 ;--------------------------------------                   
+                              257 MsgGeqSetCoef
+Y:0028 000003                 258                     dc      3
+Y:0029 0A0004                 259                     dc      GEQ_SET_COEFFICIENTS
+Y:002A 000000                 260 MsgGeqParam         dc      0
+                              262 MsgMenuSongTrackchange
+Y:002B 000002                 263                     dc      2
+Y:002C 06000E                 264                     dc      MENU_SONG_TRACK_CHNG
+                              283 ;--------------------------------------
+                              284 MsgUpdateLyricsAB
+Y:002D 000002                 285                     dc      2
+Y:002E 060012                 286                     dc      MENU_MSG_LYRICS_SYNC_AB
+                              289 ;///////////////////////////////////////////////////////////////////////////////
+                              290 ;   X Memory
+                              291 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        292     org x,"EXEC_Msgs_X":
+                              293     
+                              294     endsec

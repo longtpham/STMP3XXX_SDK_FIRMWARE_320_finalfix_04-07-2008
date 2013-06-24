@@ -1,0 +1,209 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\effects\graphiceq\geqmem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;;***********************************************************************
+                                2 ;SigmaTel, Inc
+                                3 ;$Archive:  $
+                                4 ;$Revision: 3 $
+                                5 ;$Date:  $
+                                6 ;Description: 
+                                7 ;Notes: Graphic Eq coefficients, dBTables. etc.
+                                8 ;               
+                                9 ;***********************************************************************/
+                               10         Section GeqMem
+                               12 ;*******************************************************************************
+                               13 ;  Include files
+                               14 ;*******************************************************************************
+                               15         include "Geqequ.inc"
+                                1 ;;***********************************************************************
+                                2 ;SigmaTel, Inc
+                                3 ;$Archive: $
+                                4 ;$Revision: 3 $
+                                5 ;$Date: 8/07/00 6:37p $
+                                6 ;Description: 
+                                7 ;Notes: 
+                                8 ;               
+                                9 ;***********************************************************************/
+                               11 ; The scaling factor of the feedforward path. 
+                               12 scalingfactor                           equ             0.25
+                               14 ; BLOCKSIZE: The numnber  of samples consecutively processed before a gain update.
+                               15 BLOCKSIZE                                       equ             `16
+                               18 MAX_CHANNELS                            equ             2
+                               20 NumberOfBands                           equ             5
+                               22 GEQBUFSIZE                                      equ     256
+                               25 SimInL                                  equ     $8000
+                               26 SimInR                                  equ     $8001
+                               27 SimOutL                                 equ     $8000
+                               28 SimOutR                                 equ     $8001
+                               17 ;*******************************************************************************
+                               18 ;  Extern definitions
+                               19 ;*******************************************************************************
+                               35 ;*******************************************************************************
+                               36 ;  X memory
+                               37 ;*******************************************************************************
+Y:0000                         40         org y,"GeqCoefmem":
+                               41 ; The filter coefficients for each of the bandpass filters. These values are obtained
+                               42 ; using filtdes.c. Sampling Frequency = 48000 Hz.
+                               43 ;-------------------------------------
+                               44 ;  Type                 Center freq                Q
+                               45 ;-------------------------------------
+                               46 ; bandpass        80              1            
+                               47 ; bandpass        250             1          
+                               48 ; bandpass        1000            1          
+                               49 ; bandpass        4000            1          
+                               50 ; bandpass        12000           1          
+                               52         buffer  M,NumberOfBands*3
+                               53 FilterCoefs
+Y:0000 3F5AA1                  54                         DC              0.49495327                      ; a2
+Y:0001 0052AF                  55                         DC              0.00252335                      ; b0
+Y:0002 7F598D                  56                         DC              0.99492043                      ; a1
+Y:0003 3D6F58                  58                         DC              0.47996041
+Y:0004 014854                  59                         DC              0.01001981
+Y:0005 7D5E26                  60                         DC              0.97943568
+Y:0006 365873                  62                         DC              0.42457429
+Y:0007 04D3C6                  63                         DC              0.03771286
+Y:0008 755543                  64                         DC              0.91666448
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0009 218619                  66                         DC              0.26190478
+Y:000A 0F3CF4                  67                         DC              0.11904762
+Y:000B 547545                  68                         DC              0.65982884
+Y:000C 130C72                  70                         DC              0.14881733
+Y:000D 1679C7                  71                         DC              0.17559133
+Y:000E D679C7                  72                         DC              -0.32440868
+                               73         endbuf
+Y:000F RESERVED
+RESE          75 currentgainbase                                 DSM                     NumberOfBands
+Y:0014
+Y:0015                         77 currentdBgainbase                               DS                      NumberOfBands
+   |   RESERVED                   
+Y:0019
+                               79 TargetdBGainBase        
+Y:001A rrrrrr                  80                         DC                      ZerodBPoint
+Y:001B rrrrrr                  81                         DC                      ZerodBPoint
+Y:001C rrrrrr                  82                         DC                      ZerodBPoint
+Y:001D rrrrrr                  83                         DC                      ZerodBPoint
+Y:001E rrrrrr                  84                         DC                      ZerodBPoint
+                               87 ; dBTable: Converts dB to actual gain. Entries are in steps of 0.5 dB.
+                               88 ; The first entry corresponds to cut of -14 dB
+                               89 ; The last entry corresponds to a boost of +14 dB.
+                               90 ; Zero dB point corresponds to zero gain, for the filter, giving a flat response.
+                               91 ; dB table computation
+                               92 ; for i=1:57,
+                               93 ;       A(i)=(10^((i-29)/40)-1)/4;
+                               94 ; end;                                  
+                               96 ; Explaination:
+                               97 ; A(i)=(10^((i-29)/40)-1)/4;
+                               98 ;                     ^   ^   
+                               99 ; Output is scaled by 4 in the code.
+                              100 ; Subtraction by 1 to compensate for feedforward path.
+X:0000                        102                 org x,".GEqdBTable":
+                              103 dBTable
+X:0000 E66285                 104                 dc -0.200118442126               ;      -14.0    dB
+X:0001 E6C35F                 105                 dc -0.197162774004               ;              -13.5    dB
+X:0002 E729F6                 106                 dc -0.194031971536               ;              -13.0    dB
+X:0003 E796A1                 107                 dc -0.190715657358               ;              -12.5    dB
+X:0004 E809BD                 108                 dc -0.187202839212               ;              -12.0    dB
+X:0005 E883AA                 109                 dc -0.183481873505               ;              -11.5    dB
+X:0006 E904D2                 110                 dc -0.179540426718               ;              -11.0    dB
+X:0007 E98DA0                 111                 dc -0.175365434527               ;              -10.5    dB
+X:0008 EA1E8A                 112                 dc -0.170943058496               ;              -10.0    dB
+X:0009 EAB809                 113                 dc -0.166258640211               ;              -9.5     dB
+X:000A EB5AA2                 114                 dc -0.161296652692               ;              -9.0     dB
+X:000B EC06DC                 115                 dc -0.156040648928               ;              -8.5     dB
+X:000C ECBD4B                 116                 dc -0.150473207362               ;              -8.0     dB
+X:000D ED7E8A                 117                 dc -0.144575874143               ;              -7.5     dB
+X:000E EE4B3B                 118                 dc -0.138329101962               ;              -7.0     dB
+X:000F EF240E                 119                 dc -0.131712185260               ;              -6.5     dB
+X:0010 F009BA                 120                 dc -0.124703191593               ;              -6.0     dB
+X:0011 F0FD01                 121                 dc -0.117278888942               ;              -5.5     dB
+X:0012 F1FEB3                 122                 dc -0.109414668702               ;              -5.0     dB
+X:0013 F30FAA                 123                 dc -0.101084464118               ;              -4.5     dB
+X:0014 F430CD                 124                 dc -0.092260663880               ;              -4.0     dB
+X:0015 F56313                 125                 dc -0.082914020608               ;              -3.5     dB
+X:0016 F6A77E                 126                 dc -0.073013553904               ;              -3.0     dB
+X:0017 F7FF22                 127                 dc -0.062526447667               ;              -2.5     dB
+X:0018 F96B23                 128                 dc -0.051417941319               ;              -2.0     dB
+X:0019 FAECB6                 129                 dc -0.039651214589               ;              -1.5     dB
+X:001A FC8521                 130                 dc -0.027187265467               ;              -1.0     dB
+X:001B FE35BF                 131                 dc -0.013984780929               ;              -0.5     dB
+                              132 ZerodBPoint                                              
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:001C 000000                 133                 dc      0                                        ;                0              d
+                                  B
+X:001D 01E568                 134                 dc      0.014813431294           ;               0.5     dB
+X:001E 03E793                 135                 dc      0.030504613575           ;               1.0     dB
+X:001F 060836                 136                 dc      0.047125556859           ;               1.5     dB
+X:0020 08491E                 137                 dc      0.064731352949           ;               2.0     dB
+X:0021 0AAC35                 138                 dc      0.083380358041           ;               2.5     dB
+X:0022 0D3382                 139                 dc      0.103134386156           ;               3.0     dB
+X:0023 0FE12A                 140                 dc      0.124058914024           ;               3.5     dB
+X:0024 12B772                 141                 dc      0.146223298115           ;               4.0     dB
+X:0025 15B8C3                 142                 dc      0.169701004531           ;               4.5     dB
+X:0026 18E7AA                 143                 dc      0.194569852510           ;               5.0     dB
+X:0027 1C46DA                 144                 dc      0.220912272372           ;               5.5     dB
+X:0028 1FD930                 145                 dc      0.248815578742           ;               6.0     dB
+X:0029 23A1B4                 146                 dc      0.278372259959           ;               6.5     dB
+X:002A 27A39B                 147                 dc      0.309680284642           ;               7.0     dB
+X:002B 2BE24B                 148                 dc      0.342843426415           ;               7.5     dB
+X:002C 306160                 149                 dc      0.377971607877           ;               8.0     dB
+X:002D 3524A9                 150                 dc      0.415181264950           ;               8.5     dB
+X:002E 3A3031                 151                 dc      0.454595732816           ;               9.0     dB
+X:002F 3F8841                 152                 dc      0.496345654729           ;               9.5     dB
+X:0030 453161                 153                 dc      0.540569415042           ;               10.0    dB
+X:0031 4B305E                 154                 dc      0.587413597895           ;               10.5    dB
+X:0032 518A50                 155                 dc      0.637033473084           ;               11.0    dB
+X:0033 58449A                 156                 dc      0.689593510721           ;               11.5    dB
+X:0034 5F64F0                 157                 dc      0.745267926384           ;               12.0    dB
+X:0035 66F161                 158                 dc      0.804241258571           ;               12.5    dB
+X:0036 6EF052                 159                 dc      0.866708980377           ;               13.0    dB
+X:0037 77688D                 160                 dc      0.932878147404           ;               13.5    dB
+X:0038 7FFFFF                 161                 dc      $7fffff                          ;         ~ 14.0        dB
+                              163     ; Other GeQ data
+                              164 ; These values are over-ridden by GEQ_SET_PARAMS message.
+                              165 ; Corresponding Q for each filter.
+X:0039 400000                 166 Filter_1_by_2Q      dc          0.5         ; Q = 1
+X:003A 400000                 167                     dc          0.5
+X:003B 400000                 168                     dc          0.5
+X:003C 400000                 169                     dc          0.5
+X:003D 400000                 170                     dc          0.5
+                              173 ; Band Pass Filter Center Frequencies
+X:003E 000050                 174 CenterFreq          dc          80
+X:003F 0000FA                 175                     dc          250
+X:0040 0003E8                 176                     dc          1000
+X:0041 000FA0                 177                     dc          4000
+X:0042 002EE0                 178                     dc          12000
+X:0043 RESERVED               180 Geq_Quadrant        ds          1
+X:0043
+X:0044 RESERVED               181 Geq_sn              ds          1
+X:0044
+X:0045 RESERVED               182 Geq_cs              ds          1
+X:0045
+X:0046 RESERVED               183 Geq_alpha_by_4      ds          1
+X:0046
+X:0000                        187         org x,"GeqFilterStateMem":
+X:0000                        189 x_filter_state_base_odd                 DSM                     2*MAX_CHANNELS
+   |   RESERVED                   
+X:0003
+X:0004                        190 x_filter_state_base_even                DSM                     2*MAX_CHANNELS
+   |   RESERVED                   
+X:0007
+X:0008                        191 y_filter_state_base_odd                 DSM                     2*NumberOfBands*MAX_CHANNELS
+   |   RESERVED
+RESE             
+X:0033
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:0034                        192 y_filter_state_base_even                DSM                     2*NumberOfBands*MAX_CHANNELS
+   |   RESERVED
+RESE             
+X:0053
+                              194         EndSec

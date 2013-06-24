@@ -1,0 +1,1080 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\userinput\buttons\button.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ; File          : Button.asm
+                                5 ; Description   : 
+                                6 ;                 
+                                7 ;///////////////////////////////////////////////////////////////////////////////
+                                9     section BUTMOD_Button
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               14 ;   Includes
+                               15 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;    nolist
+                               29     list
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               32 ;   External Definitions
+                               33 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ; Functions  
+                               48 ; Variables in Y
+                               66     
+                               69 ; Variables in X    
+                               72 ;///////////////////////////////////////////////////////////////////////////////
+                               73 ;   External References
+                               74 ;///////////////////////////////////////////////////////////////////////////////
+                               92     list
+                               93     
+                               97     
+                              101 ;///////////////////////////////////////////////////////////////////////////////
+                              102 ;   Equates
+                              103 ;///////////////////////////////////////////////////////////////////////////////
+                              105 STATE_NO_BUTTONS_PRESSED    equ     0
+                              106 STATE_DEBOUNCING            equ     1
+                              107 STATE_TEST_HOLD_RELEASE     equ     2
+                              108 HoldButtonReportedBit       equ     2
+                              109 HoldBit                     equ     23 ; bit position of hold modifier
+                              111 DebounceTime                equ     10 ; measured in msec
+                              112 HoldTime                    equ     300 ; measured in msec
+                              114 ; test values below used to simplify single stepping
+                              115 ;DebounceTime            equ     3
+                              116 ;HoldTime                equ     6
+                              118 BUTTON_BUFFER_SIZE      equ     10
+                              119 BUTTON_BUFFER_MODULO    equ     BUTTON_BUFFER_SIZE-1
+                              121 BUTTON_ON               equ     0
+                              122 BUTTON_TRACK_TIME_BIT   equ     1
+                              124 ;///////////////////////////////////////////////////////////////////////////////
+                              125 ;   X Memory
+                              126 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        127     org     x,"BUTMOD_Button_X":
+X:0000 000000                 129 ButtonIsrSp             dc      0
+X:0001 000000                 130 ButtonIsrFlag           dc      0
+X:0002 000000                 131 ButtonTrackTimeLow      dc      0
+X:0003 000000                 132 ButtonTrackTimeHigh     dc      0
+                              134 ;///////////////////////////////////////////////////////////////////////////////
+                              135 ;   Y Memory
+                              136 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        137     org     y,"BUTMOD_Button_mod_Y":
+Y:0000                        138 ButtonBuffer            dsm     BUTTON_BUFFER_SIZE
+   |   RESERVED                   
+Y:0009
+Y:0000                        140     org     y,"BUTMOD_Button_Y":
+                              143 FButtonBufferDescriptor
+Y:0000 rrrrrr                 144 ButtonBufferDescriptor  dc      ButtonBuffer
+Y:0001 000009                 145 ButtonBufferModulo      dc      BUTTON_BUFFER_MODULO
+Y:0002 00000A                 146                         dc      BUTTON_BUFFER_SIZE
+Y:0003 rrrrrr                 147 ButtonBufferHeadPtr     dc      ButtonBuffer
+Y:0004 rrrrrr                 148 ButtonBufferTailPtr     dc      ButtonBuffer
+                              150 ; data for ButtonTranslator
+                              157 ; data for ButtonDriver Init
+Y:0005 000000                 158 State                   dc      STATE_NO_BUTTONS_PRESSED
+Y:0006 FFFFFF                 159 ColRowBitsPrevious      dc      $ffffff
+Y:0007 000000                 160 ColRowBitsCurrent       dc      0
+Y:0008 000000                 161 ColRowBitsDebounced     dc      0
+Y:0009 000000                 162 PreviousTimeLow         dc      0
+Y:000A 000000                 163 PreviousTimeHigh        dc      0
+                              165 ; data for ScanButtons
+Y:000B 000000                 166 Sb_ButtonBits           dc  0
+                              168 ;Btl_PhysMap             ds      BTL_BUTTON_PHYS_MAP_SIZE
+                              169 ;Btl_EventMap            ds      BTL_BUTTON_EVENT_MAP_SIZE
+Y:000C RESERVED               171 Btl_ResourceByteCount   ds      1
+Y:000C
+Y:000D RESERVED               172 Btl_ResourceSize        ds      1
+Y:000D
+Y:000E RESERVED               173 Btl_MessageNumber       ds      1
+Y:000E
+Y:000F RESERVED               174 Btl_MessageCount        ds      1
+Y:000F
+                              176 FBtl_Flags
+Y:0010 000000                 177 Btl_Flags               dc      $000000 ; Bit 0 = Execute Translator
+                              178                                         ;  0 -> ButtonsOff
+                              179                                         ;  1 -> ButtonsOn
+                              180                                         ; Bit 1 = Keep track of time between buttons
+                              181                                         ;  0 -> Turn OFF
+                              182                                         ;  1 -> Turn ON
+                              183                                         ; Bit 2 = Keep track of Hold Button Status
+                              184                                         ;   0 -> Hold button "press hold" event not yet reported
+                              185                                         ;   1 -> Hold button "press hold" event already reported
+                              189 Btl_Rows
+Y:0011 000001                 190     dc BUTTON_ROWS
+                              191 Btl_RowEntries
+                              192 ;Bd_Rows_Ptr
+                              194     dupf num,0,(BUTTON_ROWS-1)
+                              195         dc BUTTON_GPIO_ENABLE_ROW_\num
+                              196         dc BUTTON_GPIO_SENSE_ROW_\num
+                              197         dc BUTTON_BITPOS_ROW_\num
+                              198     endm
+Y:0012 00F420                 198         dc BUTTON_GPIO_ENABLE_ROW_0
+Y:0013 00F422                 198         dc BUTTON_GPIO_SENSE_ROW_0
+Y:0014 000004                 198         dc BUTTON_BITPOS_ROW_0
+                              201 Btl_Columns
+Y:0015 000004                 202     dc BUTTON_COLUMNS
+                              203 Btl_ColumnEntries
+                              204 ;Bd_Columns_Ptr
+                              206     dupf ColumnNumber,0,(BUTTON_COLUMNS-1)
+                              207         dc BUTTON_GPIO_ENABLE_COLUMN_\ColumnNumber
+                              208         dc BUTTON_GPIO_DATA_OUT_COLUMN_\ColumnNumber
+                              209         dc BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_\ColumnNumber
+                              210         dc BUTTON_BITPOS_COLUMN_\ColumnNumber
+                              211     endm
+Y:0016 00F420                 211         dc BUTTON_GPIO_ENABLE_COLUMN_0
+Y:0017 00F421                 211         dc BUTTON_GPIO_DATA_OUT_COLUMN_0
+Y:0018 00F423                 211         dc BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_0
+Y:0019 000001                 211         dc BUTTON_BITPOS_COLUMN_0
+Y:001A 00F410                 211         dc BUTTON_GPIO_ENABLE_COLUMN_1
+Y:001B 00F411                 211         dc BUTTON_GPIO_DATA_OUT_COLUMN_1
+Y:001C 00F413                 211         dc BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_1
+Y:001D 800000                 211         dc BUTTON_BITPOS_COLUMN_1
+Y:001E 00F410                 211         dc BUTTON_GPIO_ENABLE_COLUMN_2
+Y:001F 00F411                 211         dc BUTTON_GPIO_DATA_OUT_COLUMN_2
+Y:0020 00F413                 211         dc BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_2
+Y:0021 400000                 211         dc BUTTON_BITPOS_COLUMN_2
+Y:0022 00F420                 211         dc BUTTON_GPIO_ENABLE_COLUMN_3
+Y:0023 00F421                 211         dc BUTTON_GPIO_DATA_OUT_COLUMN_3
+Y:0024 00F423                 211         dc BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_3
+Y:0025 000002                 211         dc BUTTON_BITPOS_COLUMN_3
+                              213     
+                              214 Btl_NonScanButtons
+Y:0026 000002                 215     dc BUTTON_NON_SCAN_BUTTONS
+                              216 Btl_NonScanEntries
+                              217 ;Bd_NsButton_Ptr
+                              219     dupf num,0,(BUTTON_NON_SCAN_BUTTONS-1)
+                              220         dc BUTTON_GPIO_ENABLE_NON_SCAN_\num
+                              221         dc BUTTON_GPIO_SENSE_NON_SCAN_\num
+                              222         dc BUTTON_BITPOS_NON_SCAN_\num
+                              223     endm
+Y:0027 00F410                 223         dc BUTTON_GPIO_ENABLE_NON_SCAN_0
+Y:0028 00F412                 223         dc BUTTON_GPIO_SENSE_NON_SCAN_0
+Y:0029 000400                 223         dc BUTTON_BITPOS_NON_SCAN_0
+Y:002A 00F410                 223         dc BUTTON_GPIO_ENABLE_NON_SCAN_1
+Y:002B 00F412                 223         dc BUTTON_GPIO_SENSE_NON_SCAN_1
+Y:002C 000800                 223         dc BUTTON_BITPOS_NON_SCAN_1
+                              226 Btl_ScanButtonEvents
+                              227 ;Bd_ButtonNumbers_Ptr
+                              228     dupf column,0,(BUTTON_COLUMNS-1)
+                              229         dupf row,0,(BUTTON_ROWS-1)
+                              230             dc BUTTON_EVENT_COL\column\ROW\\row 
+                              231         endm
+                              232     endm
+                              232         dupf row,0,(BUTTON_ROWS-1)
+                              232             dc BUTTON_EVENT_COL0ROW\row 
+                              232         endm
+Y:002D 000002                 232             dc BUTTON_EVENT_COL0ROW0 
+                              232         dupf row,0,(BUTTON_ROWS-1)
+                              232             dc BUTTON_EVENT_COL1ROW\row 
+                              232         endm
+Y:002E 000008                 232             dc BUTTON_EVENT_COL1ROW0 
+                              232         dupf row,0,(BUTTON_ROWS-1)
+                              232             dc BUTTON_EVENT_COL2ROW\row 
+                              232         endm
+Y:002F 001000                 232             dc BUTTON_EVENT_COL2ROW0 
+                              232         dupf row,0,(BUTTON_ROWS-1)
+                              232             dc BUTTON_EVENT_COL3ROW\row 
+                              232         endm
+Y:0030 002000                 232             dc BUTTON_EVENT_COL3ROW0 
+                              234 Btl_NonScanEvents
+                              235 ;Bd_NsButtonNumbers_Ptr
+                              236     dupf nonscan,0,(BUTTON_NON_SCAN_BUTTONS-1)
+                              237         dc BUTTON_EVENT_NONSCAN\nonscan
+                              238     endm    
+Y:0031 000004                 238         dc BUTTON_EVENT_NONSCAN0
+Y:0032 000040                 238         dc BUTTON_EVENT_NONSCAN1
+                              260 Btl_NumEvents
+Y:0033 00000E                 261     dc BUTTON_MAPPED_EVENTS
+                              262 Btl_EventMap
+                              263     dupf num,0,(BUTTON_MAPPED_EVENTS-1)
+                              264         dc BUTTON_EVENT_\num
+                              265     endm  
+Y:0034 002000                 265         dc BUTTON_EVENT_0
+Y:0035 802000                 265         dc BUTTON_EVENT_1
+Y:0036 001000                 265         dc BUTTON_EVENT_2
+Y:0037 801000                 265         dc BUTTON_EVENT_3
+Y:0038 000002                 265         dc BUTTON_EVENT_4
+Y:0039 800002                 265         dc BUTTON_EVENT_5
+Y:003A 000008                 265         dc BUTTON_EVENT_6
+Y:003B 800008                 265         dc BUTTON_EVENT_7
+Y:003C 000004                 265         dc BUTTON_EVENT_8
+Y:003D 800004                 265         dc BUTTON_EVENT_9
+Y:003E 000040                 265         dc BUTTON_EVENT_10
+Y:003F 800040                 265         dc BUTTON_EVENT_11
+Y:0040 802008                 265         dc BUTTON_EVENT_12
+Y:0041 801008                 265         dc BUTTON_EVENT_13
+                              269 ; The variables here that are global should be allocated in 
+                              270 ; System\3xxx\LowResolutionAdc.c and externed here
+                              271 ; 
+                              272 ; Low resolution ADC variables
+Y:0042 000000                 273 FLowResAdcStatus        dc  0       ; Bit 0 Execute Low Resolution ADC BATT reading
+                              274                                     ; 0 -> Low Resolution ADC BATT OFF
+                              275                                     ; 1 -> Low Resolution ADC BATT ON
+                              276                                     ; Bit 1 Execute Low Resolution ADC AUX reading
+                              277                                     ; 0 -> Low Resolution ADC AUX OFF
+                              278                                     ; 1 -> Low Resolution ADC AUX ON
+                              279                                     ; Bit 2 Execute Low Resolution ADC AUX2 reading (3500)
+                              280                                     ; 0 -> Low Resolution ADC AUX2 OFF
+                              281                                     ; 1 -> Low Resolution ADC AUX2 ON
+                              283 ; The result and average variables should be declared in the LowResolutionAdc.c files
+                              284 ; And externed here.
+                              285 LowResAdcBattVar
+Y:0043 000000                 286 FLowResAdcBattResult    dc  0                                    
+Y:0044 000000                 287 FLowResAdcBattAvg       dc  0
+Y:0045 000000                 288 LowResAdcBattAccu       dc  0
+Y:0046 000100                 289 LowResAdcBattAvgCnt     dc  LOW_RES_ADC_AVG_CNT
+                              291 LowResAdcAuxVar
+Y:0047 000000                 292 FLowResAdcAuxResult     dc  0                                    
+Y:0048 000000                 293 FLowResAdcAuxAvg        dc  0
+Y:0049 000000                 294 LowResAdcAuxAccu        dc  0
+Y:004A 000100                 295 LowResAdcAuxAvgCnt      dc  LOW_RES_ADC_AVG_CNT
+                              297 ; This set of variables is only applicable to the 3500
+                              298 LowResAdcAux2Var
+Y:004B 000000                 299 FLowResAdcAux2Result    dc  0                                    
+Y:004C 000000                 300 FLowResAdcAux2Avg       dc  0
+Y:004D 000000                 301 LowResAdcAux2Accu       dc  0
+Y:004E 000100                 302 LowResAdcAux2AvgCnt     dc  LOW_RES_ADC_AVG_CNT
+                              305 IndexLowResAdcResult    equ FLowResAdcBattResult-LowResAdcBattVar
+                              306 IndexLowResAdcAvg       equ FLowResAdcBattAvg-LowResAdcBattVar  
+                              307 IndexLowResAdcAccu      equ LowResAdcBattAccu-LowResAdcBattVar
+                              308 IndexLowResAdcAvgCnt    equ LowResAdcBattAvgCnt-LowResAdcBattVar
+                              310 LOW_RES_ADC_AVG_SHIFTER equ 8
+                              311 LOW_RES_ADC_AVG_CNT     equ 1<<LOW_RES_ADC_AVG_SHIFTER
+                              313 ;   IMPORTANT: The following defines must match the enums (LowResADCChannel,
+                              314 ;   LowResADCHalfPwr, and LowResADCRef) in lowresolutionadc.h.
+                              315 LRADC_AUX       equ 1
+                              316 LRADC_OFF       equ 0
+                              318 LRADC_REF_VDDIO equ HW_LRADC_CTRL_AUXADC_SETMASK
+                              320 LOW_RES_ADC_BATT        equ 0   ;Bit position in FlowResAdcStatus
+                              321 LOW_RES_ADC_AUX         equ 1
+                              322 LOW_RES_ADC_AUX2        equ 2
+                              324                                     
+                              325 ;///////////////////////////////////////////////////////////////////////////////
+                              326 ;   P Memory
+                              327 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        328     org     p,"BUTMOD_Button_P":
+                              330 ;///////////////////////////////////////////////////////////////////////////////
+                              331 ;> Name:            ButtonInit
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              332 ; Type:             Function
+                              333 ; Description:      Initializes button tables. The initialization parameters
+                              334 ;                   are read from the resources RSRC_BUTTON_PHYS_MAP and
+                              335 ;                   BTL_BUTTON_PHYS_MAP_SIZE.
+                              336 ; Inputs:           None.
+                              337 ; Outputs:          None.
+                              338 ;
+                              339 ; Notes:
+                              340 ;<         
+                              341 ;///////////////////////////////////////////////////////////////////////////////
+                              342 ButtonInit
+                              346     ;If using funclet, function will be executed via funclet kernel
+                              347     CallFunclet    RSRC_FUNCLET_BUTTONINIT
+P:0000 0D0080         4    4  347     jsr       $80
+P:0001 000161                 347     DC       RSRC_FUNCLET_BUTTONINIT  ; 1 word
+P:0000                        349     org p,"SYSFUNCLET_ButtonInit_P":
+                              350     
+P:0000 000161                 351     dc      RSRC_FUNCLET_BUTTONINIT           ; Funclet Resource number
+                              355     ; Init the state machine
+P:0001 0BF080 rrrrrr  6    6  356     jsr     ResetButtonState
+                              358     ; Enable all column outputs & drive them low
+P:0003 0BF080 rrrrrr  6   12  359     jsr     SysAllLinear                            
+P:0005 5EF000 rrrrrr  3   15  361     move    y:Btl_Columns,a
+P:0007 60F400 rrrrrr  3   18  362     move    #Btl_ColumnEntries,r0
+                              364     ;Check if any scan button declared 
+P:0009 200003         2   20  365     tst     a
+P:000A 0AF0AA rrrrrr  6   26  366     jeq     _end_row_enable
+                              367     
+P:000C 06CC00 rrrrrr  6   32  368     do      a1,_end_column_enable
+P:000E 69D800         2   34  369         move    y:(r0)+,r1             ; get the enable register address
+P:000F 6AD800         2   36  370         move    y:(r0)+,r2             ; get the data out register address
+P:0010 6BD800         2   38  371         move    y:(r0)+,r3             ; get the output enable register address
+P:0011 4CD800         2   40  372         move    y:(r0)+,x0             ; get the bit pos
+P:0012 56E200         2   42  373         move    x:(r2),a               ; get the data out register
+P:0013 200042         2   44  374         or      x0,a                   ; set the bit
+P:0014 546200         2   46  375         move    a1,x:(r2)
+P:0015 56E100         2   48  376         move    x:(r1),a               ; get the enable register
+P:0016 200042         2   50  377         or      x0,a                   ; set the bit
+P:0017 546100         2   52  378         move    a1,x:(r1)
+P:0018 208E00         2   54  379         move    x0,a                   ; setup for bit clear
+P:0019 200017         2   56  380         not     a
+P:001A 44E300         2   58  381         move    x:(r3),x0              ; get the output enable register
+P:001B 200046         2   60  382         and     x0,a                   ; clear the bit
+P:001C 546300         2   62  383         move    a1,x:(r3)
+                        (30)  384 _end_column_enable
+P:001D 200013         2   64  386     clr     a
+                              388     ; Enable all row inputs
+P:001E 5CF000 rrrrrr  3   67  389     move    y:Btl_Rows,a1
+P:0020 60F400 rrrrrr  3   70  390     move    #Btl_RowEntries,r0
+                              391     
+                              392     ;Check if any scan button declared 
+P:0022 200003         2   72  393     tst     a
+P:0023 0AF0AA rrrrrr  6   78  394     jeq     _end_row_enable
+P:0025 06CC00 rrrrrr  6   84  396     do      a1,_end_row_enable
+P:0027 69D800         2   86  397         move    y:(r0)+,r1             ; get the enable register address
+P:0028 6AD800         2   88  398         move    y:(r0)+,r2             ; get the data out register address
+P:0029 5ED800         2   90  399         move    y:(r0)+,a              ; get the bit pos
+P:002A 44E100         2   92  400         move    x:(r1),x0              ; get the enable register
+P:002B 200042         2   94  401         or      x0,a                   ; set the bit
+P:002C 546100         2   96  402         move    a1,x:(r1)
+                        (12)  403 _end_row_enable
+                              405     ; Enable all non-scan inputs
+P:002D 200013         2   98  406     clr     a
+P:002E 5CF000 rrrrrr  3  101  407     move    y:Btl_NonScanButtons,a1
+P:0030 60F400 rrrrrr  3  104  408     move    #Btl_NonScanEntries,r0
+                              410     ;Check if any non scan buttons declared 
+P:0032 200003         2  106  411     tst     a
+P:0033 0AF0AA rrrrrr  6  112  412     jeq     _end_nsb_enable
+P:0035 06CC00 rrrrrr  6  118  414     do      a1,_end_nsb_enable
+P:0037 69D800         2  120  415         move    y:(r0)+,r1             ; get the enable register address
+P:0038 6AD800         2  122  416         move    y:(r0)+,r2             ; get the data out register address
+P:0039 5ED800         2  124  417         move    y:(r0)+,a              ; get the bit pos
+P:003A 44E100         2  126  418         move    x:(r1),x0              ; get the enable register
+P:003B 200042         2  128  419         or      x0,a                   ; set the bit
+P:003C 546100         2  130  420         move    a1,x:(r1)
+                        (12)  421 _end_nsb_enable
+                              435     ; clear the flags
+P:003D 200013         2  132  436     clr     a
+P:003E 5E7000 rrrrrr  3  135  437     move    a,y:Btl_Flags
+                              438     
+                              439     ; turn on the button timer
+P:0040 60F400 rrrrrr  3  138  440     move    #_come_back_here,r0
+P:0042 44F400 rrrrrr  3  141  441     move    #>BUTTON_TIMER_NUM,x0
+P:0044 0AF080 rrrrrr  6  147  442     jmp     SysEnableTimer
+                              443 _come_back_here
+P:0046 00000C         4  151  445     rts
+                              449     ;If using funclet, switch counter back to original here
+P:0002                        450     org    p,"BUTMOD_Button_P":
+                              454 ;///////////////////////////////////////////////////////////////////////////////
+                              455 ;> Name:            ResetButtonState
+                              456 ; Type:             Function
+                              457 ; Description:      Resets all button state variables
+                              458 ; Inputs:           None.
+                              459 ; Outputs:          None.
+                              460 ;
+                              461 ; Notes:         
+                              462 ;<         
+                              463 ;///////////////////////////////////////////////////////////////////////////////
+                              464 ResetButtonState
+P:0002 200013         2    6  465     clr     a
+P:0003 5E7000 rrrrrr  3    9  466     move    a,y:State
+P:0005 5E7000 rrrrrr  3   12  467     move    a,y:ColRowBitsCurrent
+P:0007 5E7000 rrrrrr  3   15  468     move    a,y:ColRowBitsDebounced
+P:0009 5E7000 rrrrrr  3   18  469     move    a,y:PreviousTimeLow
+P:000B 5E7000 rrrrrr  3   21  470     move    a,y:PreviousTimeHigh
+P:000D 5E8000r        2   23  471     move    y:<Const_ffffff,a
+P:000E 5E7000 rrrrrr  3   26  472     move    a,y:ColRowBitsPrevious
+P:0010 56F400 000000  3   29  473     move    #>STATE_NO_BUTTONS_PRESSED,a
+P:0012 5E7000 rrrrrr  3   32  474     move    a,y:State
+P:0014 00000C         4   36  475     rts
+                              477 ;///////////////////////////////////////////////////////////////////////////////
+                              478 ;> Name:            ButtonsOn
+                              479 ; Type:             Function
+                              480 ; Description:      Enables button scanning
+                              481 ; Inputs:           None.
+                              482 ; Outputs:          None.
+                              483 ;
+                              484 ; Notes:         
+                              485 ;<         
+                              486 ;///////////////////////////////////////////////////////////////////////////////
+                              487 ButtonsOn
+P:0015 0A7060 rrrrrr  6   42  488     bset    #BUTTON_ON,y:Btl_Flags
+P:0017 00000C         4   46  489     rts
+                              490     
+                              491 ;///////////////////////////////////////////////////////////////////////////////
+                              492 ;> Name:            ButtonsOff
+                              493 ; Type:             Function
+                              494 ; Description:      Disables button scanning
+                              495 ; Inputs:           None.
+                              496 ; Outputs:          None.
+                              497 ;
+                              498 ; Notes:         
+                              499 ;<         
+                              500 ;///////////////////////////////////////////////////////////////////////////////
+                              501 ButtonsOff
+P:0018 0A7040 rrrrrr  6   52  502     bclr    #BUTTON_ON,y:Btl_Flags
+P:001A 00000C         4   56  503     rts
+                              505 ;///////////////////////////////////////////////////////////////////////////////
+                              506 ;> Name:            ButtonTrackTimeLastOn
+                              507 ; Type:             Function
+                              508 ; Description:      Enables tracking time between 2 button strokes
+                              509 ; Inputs:           None.
+                              510 ; Outputs:          None.
+                              511 ;
+                              512 ; Notes:         
+                              513 ;<         
+                              514 ;///////////////////////////////////////////////////////////////////////////////
+                              515 ButtonTrackTimeLastOn
+P:001B 0A7061 rrrrrr  6   62  516     bset    #BUTTON_TRACK_TIME_BIT,y:Btl_Flags
+                              518     ;Update Track Time Counters
+P:001D 0BF080 rrrrrr  6   68  519     jsr     SysGetCurrentTime
+P:001F 547000 rrrrrr  3   71  520     move    a1,x:ButtonTrackTimeHigh
+P:0021 507000 rrrrrr  3   74  521     move    a0,x:ButtonTrackTimeLow
+P:0023 00000C         4   78  522     rts
+                              524 ;///////////////////////////////////////////////////////////////////////////////
+                              525 ;> Name:            ButtonTrackTimeLastOff
+                              526 ; Type:             Function
+                              527 ; Description:      Disables tracking time between 2 button strokes
+                              528 ; Inputs:           None.
+                              529 ; Outputs:          None.
+                              530 ;
+                              531 ; Notes:         
+                              532 ;<         
+                              533 ;///////////////////////////////////////////////////////////////////////////////
+                              534 ButtonTrackTimeLastOff
+P:0024 0A7041 rrrrrr  6   84  535     bclr    #BUTTON_TRACK_TIME_BIT,y:Btl_Flags
+P:0026 00000C         4   88  536     rts
+                              538 ;///////////////////////////////////////////////////////////////////////////////
+                              539 ;> Name:            ButtonIsr
+                              540 ; Type:             Function
+                              541 ; Description:      Detects if a button is pressed, type (Press Release vs. press
+                              542 ;                   hold), and queues the event in the button buffer.
+                              543 ;                   Reads the 2 Low Resolution ADC Channels if device is not 3400 or 3300.
+                              544 ; Inputs:           None.
+                              545 ; Outputs:          None.
+                              546 ;
+                              547 ; Notes:         
+                              548 ;<         
+                              549 ;///////////////////////////////////////////////////////////////////////////////
+                              550 ButtonIsr
+                              552     ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              553     ; This will be returned to its previous state when the RTI occurs (since the SR
+                              554     ; will be popped back off System Stack Low (SSL).
+                              555     ; Accumulator behavior is unpredictable when the DM bit is set.
+                              556     ; Next cycle after clearing it should NOT be an ALU instruction.
+P:0027 00BFB8         2   90  557     andi #$BF,mr
+                              558     
+P:0028 4C7000 rrrrrr  3   93  559     move    x0,y:IntL2_SaveR6           ; save x0 
+                              561     ; Check if spirous interrupt. If so exit ...
+P:002A 44F000 00F302  3   96  562     move    x:HW_ICLSTATUS0R,x0
+P:002C 0AC42E rrrrrr  6  102  563     jset    #HW_ICLSTATUS0R_SST14_BITPOS,x0,_ContinueIsr
+                              565     ; None of the above, exit interruption
+P:002E 4CF000 rrrrrr  3  105  566     move    y:IntL2_SaveR6,x0           ; Restore x0
+P:0030 000004         4  109  567     rti
+                              569 _ContinueIsr
+P:0031 4CF000 rrrrrr  3  112  570     move    y:IntL2_SaveR6,x0           ; Restore x0
+P:0033 6F7000 rrrrrr  3  115  571     move    r7,y:IntL2_SaveR7          ; save minimal reg set to local
+P:0035 057067 rrrrrr  4  119  572     movec   m7,y:IntL2_SaveM7
+P:0037 6E7000 rrrrrr  3  122  573     move    r6,y:IntL2_SaveR6
+P:0039 67F400 rrrrrr  3  125  574     move    #>L2DataStack,r7           ; setup the L2 data stack
+P:003B 058067r        2  127  575     movec   y:<Const_ffffff,m7
+P:003C 66F400 rrrrrr  3  130  576     move    #ButtonSaveRegReturn,r6    ; setup the return address
+P:003E 0AF080 rrrrrr  6  136  577     jmp     SaveRegs                   ; save the remaining registers
+                              578 ButtonSaveRegReturn
+P:0040 66F400 rrrrrr  3  139  579     move    #ButtonSaveSysStackRtn,r6  ; setup the return address
+P:0042 65F400 rrrrrr  3  142  580     move    #L2Sp,r5                   ; pointer to the SP local save
+P:0044 0AF080 rrrrrr  6  148  581     jmp     SaveSystemStack            ; save the hardware stack
+                              582 ButtonSaveSysStackRtn
+                              584         ; BATT Low Resolution ADC on?
+P:0046 4CF000 rrrrrr  3  151  585         move    y:FLowResAdcStatus,x0
+P:0048 0AC400 rrrrrr  6  157  586         jclr    #LOW_RES_ADC_BATT,x0,_CheckAuxOn
+P:004A 44F400 000000  3  160  587         move    #>LOW_RES_ADC_BATT,x0    
+P:004C 46F400 01FF00  3  163  588         move    #>LOW_RES_ADC_BATT_READ_MASK,y0
+P:004E 61F400 rrrrrr  3  166  589         move    #>LowResAdcBattVar,r1
+P:0050 0BF080 rrrrrr  6  172  590         jsr     LowResAdcRead
+                              591     
+                              592 _CheckAuxOn
+                              593         ; AUX Low Resolution ADC on?
+P:0052 4CF000 rrrrrr  3  175  594         move    y:FLowResAdcStatus,x0
+P:0054 0AC401 rrrrrr  6  181  595         jclr    #LOW_RES_ADC_AUX,x0,_CheckButtonsOn
+P:0056 44F400 000001  3  184  596         move    #>LOW_RES_ADC_AUX,x0    
+P:0058 46F400 01FF00  3  187  597         move    #>LOW_RES_ADC_AUX_READ_MASK,y0
+P:005A 61F400 rrrrrr  3  190  598         move    #>LowResAdcAuxVar,r1
+P:005C 0BF080 rrrrrr  6  196  599         jsr     LowResAdcRead
+                              601 ;    if (@def('DEVICE_3500'))
+                              602 ;_CheckAux2On
+                              603 ;       ; AUX Low Resolution ADC on?
+                              604 ;        move    y:FLowResAdc2Status,x0
+                              605 ;        jclr    #LOW_RES_ADC_AUX2,x0,_CheckButtonsOn
+                              606 ;        move    #>LOW_RES_ADC_AUX2,x0    
+                              607 ;        move    #>LOW_RES_ADC_AUX2_READ_MASK,y0
+                              608 ;        move    #>LowResAdcAux2Var,r1
+                              609 ;        jsr     LowResAdcRead
+                              610 ;
+                              611 ;       else        
+                              612 ;   endif
+                              613     
+                              614 _CheckButtonsOn
+                              615     ; buttons on?
+P:005E 4CF000 rrrrrr  3  199  616     move    y:Btl_Flags,x0
+P:0060 0AC400 rrrrrr  6  205  617     jclr    #BUTTON_ON,x0,_bisr_exit
+                              619     ; Get a button
+P:0062 0BF080 rrrrrr  6  211  620     jsr     GetButton
+                              622     ; n1 = BUTTON_xx or BUTTON_NOT_FOUND
+P:0064 0AD90F rrrrrr  6  217  623     jclr    #15,n1,_bisr_exit          ; if no button then exit
+                              625     ;Update Track Time Counters
+P:0066 0BF080 rrrrrr  6  223  626     jsr     SysGetCurrentTime
+P:0068 547000 rrrrrr  3  226  627     move    a1,x:ButtonTrackTimeHigh
+P:006A 507000 rrrrrr  3  229  628     move    a0,x:ButtonTrackTimeLow
+P:006C 0AD94F         4  233  630     bclr    #15,n1                     ; clear the found bit
+                              632     ; see if there's enough room in the ButtonBuffer
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:006D 64F400 rrrrrr  3  236  633     move    #ButtonBufferDescriptor,r4
+P:006F 058064r        2  238  634     movec   y:<Const_ffffff,m4
+P:0070 0BF080 rrrrrr  6  244  635     jsr     GetEmptySpace
+P:0072 200003         2  246  636     tst     a
+                              637 ;    ccerror eq ; Assertion testpoint: HALTS IF BUTTON Q OVERFLOW OCCURRED.
+                              638 ;    alternate halt ver:
+P:0073 0AF0AA rrrrrr  6  252  639     jeq     _bisr_exit                 ; if no room then we lose it
+                              640     
+                              641     ; there's room so put it in!
+P:0075 68F000 rrrrrr  3  255  642     move    y:ButtonBufferHeadPtr,r0
+P:0077 05F060 rrrrrr  4  259  643     movec   y:ButtonBufferModulo,m0
+P:0079 000000         2  261  644     nop
+P:007A 795800         2  263  645     move    n1,y:(r0)+                 ; store the button
+P:007B 687000 rrrrrr  3  266  646     move    r0,y:ButtonBufferHeadPtr   ; update the head ptr
+                              648     ; Seed the Random Number Generator (RNG)
+                              649     ; Record the Dclock count low register at button press time for RNG
+                              650     ; Button press times are random and this 24 counter wraps over twice/sec @48MHz     
+                              651     push    A1
+P:007D 5C5F00         2  268  651     move    A1,y:(r7)+
+P:007E 54F000 00FFEA  3  271  652     move    x:HW_CLK_CNT_L,A1 
+P:0080 0BF080 rrrrrr  6  277  653     jsr     Fsrand              ; re-seed now with 24 bit random value.
+                              654     pop     A1          
+P:0082 5CFF00         4  281  654     move    y:-(r7),A1
+                              655     ;end RNG re-seeding
+                              656     
+                              657 _bisr_exit
+                              659     ; reset the isr for next time
+P:0083 44F400 rrrrrr  3  284  660     move    #>BUTTON_TIMER_NUM,x0
+P:0085 60F400 rrrrrr  3  287  661     move    #_TimerReset,r0
+P:0087 0AF080 rrrrrr  6  293  662     jmp     SysClearTimerIrq
+                              663 _TimerReset
+P:0089 65F400 rrrrrr  3  296  665     move    #L2Sp,r5                   ; pointer to the SP local save
+P:008B 66F400 rrrrrr  3  299  666     move    #ButtonRestoreSysStackRtn,r6 ; setup the return address
+P:008D 0AF080 rrrrrr  6  305  667     jmp     RestoreSystemStack         ; restore the hardware stack
+                              668 ButtonRestoreSysStackRtn
+P:008F 66F400 rrrrrr  3  308  669     move    #ButtonRestoreRegReturn,r6 ; setup the return address
+P:0091 0AF080 rrrrrr  6  314  670     jmp     RestoreRegs                ; restore registers
+                              671 ButtonRestoreRegReturn
+                              673     ; Assertion testpoint for IntL2_SaveR7 integrity
+P:0093 6EF000 rrrrrr  3  317  675     move    y:IntL2_SaveR6,r6          ; restore minimal reg set
+P:0095 05F067 rrrrrr  4  321  676     movec   y:IntL2_SaveM7,m7
+P:0097 6FF000 rrrrrr  3  324  677     move    y:IntL2_SaveR7,r7
+P:0099 000004         4  328  679     rti
+                              680     
+                              681 ;///////////////////////////////////////////////////////////////////////////////
+                              682 ;> Name:            GetButton
+                              683 ; Type:             Function
+                              684 ; Description:      Debounces the button detected by ScanButton. Determines if
+                              685 ;                   the action is type press release or press and hold. Selects
+                              686 ;                   the event corresponding to the button action.
+                              687 ;                   
+                              688 ; Inputs:           None.
+                              689 ; Outputs:          
+                              690 ;                   n1 = Button Event.
+                              691 ;                   n1 = 0 , No button event to report.
+                              692 ;
+                              693 ; Notes:            To avoid useless information, the HOLD button will be reported
+                              694 ;                   only after a changemet of its state.
+                              695 ;                   Press and Hold for the HOLD button is not reported.
+                              696 ;<         
+                              697 ;///////////////////////////////////////////////////////////////////////////////
+                              698 GetButton
+                              700     ; Scan the buttons
+P:009A 0BF080 rrrrrr  6  334  701     jsr     ScanButtons
+                              703     ; Run the button state machine
+                              704     ; jump to the appropriate state based upon state variable
+P:009C 62F400 rrrrrr  3  337  705     move    #StateJumpTable,r2
+P:009E 058062r        2  339  706     movec   y:<Const_ffffff,m2
+P:009F 7AF000 rrrrrr  3  342  707     move    y:State,n2
+P:00A1 000000         2  344  708     nop
+P:00A2 07EA93         8  352  709     movem   p:(r2+n2),r3
+P:00A3 000000         2  354  710     nop
+P:00A4 0AE380         4  358  711     jmp     (r3)
+                              713 NoButtonsPressed
+                              714     ; assumes x0=ColRowBitsCurrent
+P:00A5 208E00         2  360  715     move    x0,a
+P:00A6 200003         2  362  716     tst     a
+P:00A7 0AF0AA rrrrrr  6  368  717     jeq     ReturnNoButtonEvent        ; if no activity on buttons, then jump to exit
+                              718     push    x0                         ; save a copy of ColRowBitsCurrent
+P:00A9 4C5F00         2  370  718     move    x0,y:(r7)+
+P:00AA 0BF080 rrrrrr  6  376  719     jsr     SysGetCurrentTime          ; call returns time in ms in a
+P:00AC 5C7000 rrrrrr  3  379  720     move    a1,y:PreviousTimeHigh      ; save the current time to compare against later
+P:00AE 587000 rrrrrr  3  382  721     move    a0,y:PreviousTimeLow
+                              722     pop     x0                         ; get back the ColRowBitsCurrent value
+P:00B0 4CFF00         4  386  722     move    y:-(r7),x0
+P:00B1 4C7000 rrrrrr  3  389  723     move    x0,y:ColRowBitsPrevious    ; save current scanned val for compare against later
+P:00B3 44F400 000001  3  392  724     move    #>STATE_DEBOUNCING,x0
+P:00B5 4C7000 rrrrrr  3  395  725     move    x0,y:State
+P:00B7 0AF080 rrrrrr  6  401  726     jmp     ReturnNoButtonEvent
+                              728 Debouncing
+                              729     ; assumes x0=ColRowBitsCurrent
+P:00B9 5EF000 rrrrrr  3  404  730     move    y:ColRowBitsPrevious,a     ; If (ColRowBitsCurrent==ColRowBitsPrevious)
+P:00BB 5FF045 rrrrrr  3  407  731     cmp     x0,a    y:PreviousTimeHigh,b
+P:00BD 0AF0A2 rrrrrr  6  413  732     jne     ButtonChanged
+                              734     ; the button hasn't changed
+                              735     ; let's see if it hasn't changed for 10ms
+P:00BF 59F000 rrrrrr  3  416  736     move    y:PreviousTimeLow,b0
+P:00C1 45F400 00000A  3  419  737     move    #>DebounceTime,x1
+                              738     push    x0
+P:00C3 4C5F00         2  421  738     move    x0,y:(r7)+
+P:00C4 0BF080 rrrrrr  6  427  739     jsr     SysIsElapsedTime
+                              740     pop     x0
+P:00C6 4CFF00         4  431  740     move    y:-(r7),x0
+                              742     ; test if debounce time has elapsed, if not exit with no button event returned
+P:00C7 0AF0A9 rrrrrr  6  437  743     jlt     ReturnNoButtonEvent
+                              745     ; the RowCol held on for DebounceTime, so button is debounced!
+P:00C9 4C7000 rrrrrr  3  440  746     move    x0,y:ColRowBitsDebounced    ; ColRowBitsDebounced=ColRowBitsCurrent
+P:00CB 44F400 000002  3  443  747     move    #>STATE_TEST_HOLD_RELEASE,x0
+P:00CD 4C7000 rrrrrr  3  446  748     move    x0,y:State                  ; State=TestHoldRelease
+P:00CF 0BF080 rrrrrr  6  452  749     jsr     SysGetCurrentTime           ; function returns time in ms in a
+P:00D1 5C7000 rrrrrr  3  455  750     move    a1,y:PreviousTimeHigh       ; save the current time to compare against later
+P:00D3 587000 rrrrrr  3  458  751     move    a0,y:PreviousTimeLow
+P:00D5 0AF080 rrrrrr  6  464  752     jmp     ReturnNoButtonEvent
+                              754 ButtonChanged
+                              755     ; the button changed in less than 10ms, so start over
+P:00D7 0BF080 rrrrrr  6  470  756     jsr     ResetButtonState            ; reset all internal states
+P:00D9 0AF080 rrrrrr  6  476  757     jmp     ReturnNoButtonEvent
+                              759 TestHoldRelease
+                              760     ; assumes x0=ColRowBitsCurrent
+P:00DB 5EF000 rrrrrr  3  479  761     move    y:ColRowBitsDebounced,a
+P:00DD 5FF045 rrrrrr  3  482  762     cmp     x0,a    y:PreviousTimeHigh,b ; if (ColRowBitsCurrent==ColRowBitsDebounced)
+P:00DF 0AF0A2 rrrrrr  6  488  763     jne     ButtonChanged1
+                              765     ; user is still pressing the same button, let's see if it was held for "hold" time
+P:00E1 59F000 rrrrrr  3  491  766     move    y:PreviousTimeLow,b0
+P:00E3 0BF080 rrrrrr  6  497  767     jsr     SysGetCurrentTime          ; function returns time in ms in a
+P:00E5 200014         2  499  768     sub     b,a                        ; a=CurrentTime-PreviousTime in msec
+P:00E6 45F400 00012C  3  502  769     move    #>HoldTime,x1
+P:00E8 210F00         2  504  771     move    a0,b
+P:00E9 20006D         2  506  772     cmp     x1,b
+                              774     ; test to see if hold time has elapsed, if not exit with no button event returned
+P:00EA 0AF0A9 rrrrrr  6  512  775     jlt     ReturnNoButtonEvent
+                              777     ; button is a "hold"
+P:00EC 0BF080 rrrrrr  6  518  778     jsr     SysGetCurrentTime          ; function returns time in ms in a
+P:00EE 5C7000 rrrrrr  3  521  779     move    a1,y:PreviousTimeHigh      ; save the current time to compare against later
+P:00F0 587000 rrrrrr  3  524  780     move    a0,y:PreviousTimeLow
+                              781     ; leave State as TestHoldRelease to detect more holds/releases
+                              782     ; of this button, no need to debounce again
+P:00F2 4CF000 rrrrrr  3  527  783     move    y:ColRowBitsDebounced,x0   ; Get debounced value to construct return value
+P:00F4 0AC477         4  531  784     bset    #HoldBit,x0                ; set hold modifer in return value mapper, x0
+P:00F5 0AF080 rrrrrr  6  537  785     jmp     ReturnButtonEvent          ; jmp to return a button event value
+                              787 ButtonChanged1
+                              789     ; ColRowBitsCurrent!=ColRowBitsDebounced
+                              790     ; This is either a single button release, ColRowBitsCurrent==0
+                              791     ; or a multiple button combo had at least
+                              792     ; one button released, ColRowBitsCurrent!=ColRowBitsDebounced
+                              793     ; Remember, we did debounce before we got here.
+P:00F7 4CF000 rrrrrr  3  540  794     move    y:ColRowBitsDebounced,x0   ; Get debounced value to construct return value
+P:00F9 0AC457         4  544  795     bclr    #HoldBit,x0                ; clear hold modifer in return value mapper, x0
+                              796     push    x0                         ; save a copy of the return value mapper
+P:00FA 4C5F00         2  546  796     move    x0,y:(r7)+
+P:00FB 0BF080 rrrrrr  6  552  797     jsr     ResetButtonState           ; Call init code;
+                              798     pop     x0                         ; restore the return value mapper
+P:00FD 4CFF00         4  556  798     move    y:-(r7),x0
+P:00FE 0AF080 rrrrrr  6  562  799     jmp     ReturnButtonEvent          ; jmp to return a button event value
+                              801 ReturnNoButtonEvent
+                              802     ; no input was detected, so return no button event.
+P:0100 798000r        2  564  803     move    y:<Const_000000,n1
+P:0101 00000C         4  568  804     rts
+                              806 ReturnButtonEvent
+                              807     ;x0 = button event
+                              809     ;-------------------------------- Hold Button Management -----------------------------------------------------------
+                              810     ; The "Hold Button Event" is always reported if the HoldButtonReportedBit is cleared, otherwise it is reported only if:
+                              811     ;       1 - Event is "press and release". The HoldButtonReportedBit is then cleared again.
+                              812     ;Check Hold Button supported 
+                              816     ;Hold Button is supported, chek if detected             
+P:0102 46F400 000040  3  571  817     move    #>HOLD_BUTTON_EVENT,y0  
+P:0104 208E00         2  573  818     move    x0,a
+P:0105 200056         2  575  819     and     y0,a
+P:0106 0AF0AA rrrrrr  6  581  820     jeq     _FindEvent                 ;Hold Button not detected, proceed ...
+                              821     
+                              822     ;Hold Button detected.
+                              823     ;Restore Hold Bit and copy new event (all button bit clear but the Hold) to x0
+P:0108 0ACC77         4  585  824     bset    #HoldBit,a1
+P:0109 200046         2  587  825     and     x0,a
+P:010A 218400         2  589  826     move    a1,x0
+                              827     
+                              828     ;If Hold Button already reported and button event is "press and hold"
+                              829     ;return a No Event.
+P:010B 0B7062 rrrrrr  6  595  830     btst    #HoldButtonReportedBit,y:Btl_Flags
+P:010D 0AF0A0 rrrrrr  6  601  831     jcc     _HoldEvent
+                              832     
+P:010F 0BC477         4  605  833     btst    #HoldBit,x0
+P:0110 0AF0A0 rrrrrr  6  611  834     jcc     _ReportHoldEvent
+                              835     
+P:0112 0AF080 rrrrrr  6  617  836     jmp     ReturnNoButtonEvent
+                              837     
+                              838     ;Hold Button has been already reported and event is "press and release"
+                              839     ;We need to report the evnt and clear the "Hold Button already reported" bit
+                              840     ;so the next time the Hold Button Event is reported again
+                              841 _ReportHoldEvent
+P:0114 0A7042 rrrrrr  6  623  842     bclr    #HoldButtonReportedBit,y:Btl_Flags
+P:0116 0AF080 rrrrrr  6  629  843     jmp     _FindEvent                                          
+                              845     ; Determine the return event
+                              846 _HoldEvent
+P:0118 0A7062 rrrrrr  6  635  847     bset    #HoldButtonReportedBit,y:Btl_Flags
+                              852 _FindEvent    
+P:011A 0BF080 rrrrrr  6  641  853     jsr     FindEvent
+P:011C 00000C         4  645  855     rts
+                              857 StateJumpTable
+P:011D rrrrrr                 858     dc      NoButtonsPressed
+P:011E rrrrrr                 859     dc      Debouncing
+P:011F rrrrrr                 860     dc      TestHoldRelease
+                              863 ;///////////////////////////////////////////////////////////////////////////////
+                              864 ;> Name:            ScanButtons
+                              865 ; Type:             Function
+                              866 ; Description:      Scan all matrix and non matrix buttons. 
+                              867 ;                   
+                              868 ; Inputs:           None.
+                              869 ; Outputs:          
+                              870 ;                   x0 = Button Pressed.
+                              871 ;                      = 0 if no buttons pressed
+                              872 ;
+                              873 ; Notes:            If hold button supported and pressed, the hold button number
+                              874 ;                   is returned in place of the actual button.
+                              875 ;<         
+                              876 ;///////////////////////////////////////////////////////////////////////////////
+                              877 ScanButtons
+                              879     ; Scan Loop
+P:0120 4E8000r        2  647  880     move    y:<Const_000000,y0          ; reset the bits
+P:0121 4CF000 rrrrrr  3  650  881     move    y:Btl_Columns,x0            ; get the num cols
+P:0123 65F400 rrrrrr  3  653  882     move    #>Btl_ColumnEntries,r5      ; get the address of the first col descriptor
+P:0125 64F400 rrrrrr  3  656  883     move    #>Btl_ScanButtonEvents,r4   ; get ptr to the button numbers
+P:0127 0BF080 rrrrrr  6  662  885     jsr     SysAllLinear
+                              886     ;-- Prevent 'do 0' 0xffff loop when 0 buttons are type scanned. Stmp00002469
+P:0129 208E00         2  664  887     move    x0,a                        ; Btl_Columns zero check
+P:012A 200003         2  666  888     tst     a
+P:012B 0AF0AA rrrrrr  6  672  889     jeq     _scan_loop_end              ; Read non-scan buttons if none to scan.
+                              890     ;--
+                              891     
+P:012D 06C400 rrrrrr  6  678  892     do      x0,_scan_loop_end       ; For each column:
+                              893         ; enable the column
+P:012F 205D00         2  680  894         move    (r5)+                  ; skip the enable register address
+P:0130 205D00         2  682  895         move    (r5)+                  ; skip the data out register address
+P:0131 6BDD00         2  684  896         move    y:(r5)+,r3             ; get the output enable register address
+P:0132 4DDD00         2  686  897         move    y:(r5)+,x1             ; get the bit pos
+P:0133 56E300         2  688  898         move    x:(r3),a               ; get the output enable register
+P:0134 200062         2  690  899         or      x1,a                   ; set the bit
+P:0135 546300         2  692  900         move    a1,x:(r3)
+                              901         ; now scan the rows
+P:0136 60F400 rrrrrr  3  695  902         move    #>Btl_RowEntries,r0     ; get the address of the firt col descriptor
+P:0138 4CF000 rrrrrr  3  698  903         move    y:Btl_Rows,x0           ; get the num rows
+P:013A 06C400 rrrrrr  6  704  904         do      x0,_row_read_loop_end   ; read all the rows
+P:013C 200013         2  706  905             clr     a                   ; pause
+                              906             ; TODO:  abstract this count!  Value determined by trial-error.
+P:013D 588000r        2  708  907             move    y:<Const_000080,a0
+                              908 _row_pause
+P:013E 00000A         2  710  909             dec     a
+P:013F 0AF0A2 rrrrrr  6  716  910             jne     _row_pause
+P:0141 205800         2  718  911             move    (r0)+              ; skip the enable register address
+P:0142 6AD800         2  720  912             move    y:(r0)+,r2         ; get the data in register address
+P:0143 5ED800         2  722  913             move    y:(r0)+,a          ; get the bit pos
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0144 4FDC00         2  724  914             move    y:(r4)+,y1         ; get the button number
+P:0145 44E200         2  726  915             move    x:(r2),x0          ; get the data in register
+P:0146 200046         2  728  916             and     x0,a               ; isolate the bit to sense
+P:0147 5A8000r        2  730  917             move    y:<Const_000000,a2 ; get around neg problem
+P:0148 200003         2  732  918             tst     a
+P:0149 0AF0AA rrrrrr  6  738  919             jeq     _row_read_next     ; if not pressed check next one
+P:014B 20EE00         2  740  920             move    y1,a               ; setup for setting the button number
+P:014C 200052         2  742  921             or      y0,a               ; set the bit
+P:014D 21C600         2  744  922             move    a,y0               ; save it for next time
+                              923 _row_read_next
+P:014E 000000         2  746  924             nop
+P:014F 000000         2  748  925             nop
+                        (44)  926 _row_read_loop_end
+                              927         ; disable the column
+P:0150 20AE00         2  750  928         move    x1,a                   ; prep for bit clear
+P:0151 200017         2  752  929         not     a
+P:0152 45E300         2  754  930         move    x:(r3),x1              ; get the output enable reg
+P:0153 200066         2  756  931         and     x1,a                   ; clear the bit
+P:0154 546300         2  758  932         move    a1,x:(r3)
+                        (80)  933 _scan_loop_end
+                              935     ;
+                              936     ; Read the non-scan buttons
+                              937     ;
+P:0155 5EF000 rrrrrr  3  761  938     move    y:Btl_NonScanButtons,a
+P:0157 200003         2  763  939     tst     a
+P:0158 0AF0AA rrrrrr  6  769  940     jeq     _lradc_check
+P:015A 21C400         2  771  941     move    a,x0
+P:015B 60F400 rrrrrr  3  774  942     move    #>Btl_NonScanEntries,r0
+P:015D 64F400 rrrrrr  3  777  943     move    #>Btl_NonScanEvents,r4      ; get ptr to the button numbers
+P:015F 06C400 rrrrrr  6  783  944     do      x0,_nsb_read_loop_end       ; read all the rows
+P:0161 200013         2  785  945         clr     a                       ; pause
+P:0162 588000r        2  787  946         move    y:<Const_000080,a0
+                              947 _nsb_pause
+P:0163 00000A         2  789  948         dec     a
+P:0164 0AF0A2 rrrrrr  6  795  949         jne     _nsb_pause
+P:0166 205800         2  797  950         move    (r0)+                  ; skip the enable register address
+P:0167 6AD800         2  799  951         move    y:(r0)+,r2             ; get the data in register address
+P:0168 5ED800         2  801  952         move    y:(r0)+,a              ; get the bit pos
+P:0169 4FDC00         2  803  953         move    y:(r4)+,y1             ; get the button number
+P:016A 44E200         2  805  954         move    x:(r2),x0              ; get the data in register
+P:016B 200046         2  807  955         and     x0,a                   ; isolate the bit to sense
+P:016C 5A8000r        2  809  956         move    y:<Const_000000,a2     ; get around neg problem
+P:016D 200003         2  811  957         tst     a
+P:016E 0AF0AA rrrrrr  6  817  958         jeq     _nsb_read_next         ; if not pressed check next one
+P:0170 20EE00         2  819  959         move    y1,a                   ; setup for setting the button number
+P:0171 200052         2  821  960         or      y0,a                   ; set the bit
+P:0172 21C600         2  823  961         move    a,y0                   ; save it for next time
+                              962 _nsb_read_next
+P:0173 000000         2  825  963         nop
+P:0174 000000         2  827  964         nop
+                        (44)  965 _nsb_read_loop_end
+                              968 _lradc_check
+                             1007 _sb_exit
+                             1009     ; If Hold is supported then, if Hold is detected, mask all other buttons
+P:0175 44F400 000040  3  830 1011     move    #>HOLD_BUTTON_EVENT,x0  
+P:0177 20CE00         2  832 1012     move    y0,a
+P:0178 200046         2  834 1013     and     x0,a                       ; isolate the Hold button
+P:0179 0AF0AA rrrrrr  6  840 1014     jeq     _sb_really_exit
+P:017B 218600         2  842 1016     move    a1,y0                      ;keep sending hold
+                             1019 _sb_really_exit
+P:017C 20C400         2  844 1020     move    y0,x0                      
+P:017D 00000C         4  848 1021     rts
+                             1023 ;///////////////////////////////////////////////////////////////////////////////
+                             1024 ;> Name:            FindEvent
+                             1025 ; Type:             Function
+                             1026 ; Description:      Scan all matrix and non matrix buttons. 
+                             1027 ;                   
+                             1028 ; Inputs:           
+                             1029 ;                   x0 = Button Number.
+                             1030 ; Outputs:          
+                             1031 ;                   n1.Bit15 = 1 Event found
+                             1032 ;                              0 Event not found
+                             1033 ;                   n1 Bit0..Bit14 = Event Number.
+                             1034 ;
+                             1035 ; Notes:            If hold button supported and pressed, the hold button number
+                             1036 ;                   is returned in place of the actual button.
+                             1037 ;<         
+                             1038 ;///////////////////////////////////////////////////////////////////////////////
+                             1039 FindEvent
+P:017E 4DF000 rrrrrr  3  851 1040     move    y:Btl_NumEvents,x1          ; get number of events
+P:0180 60F400 rrrrrr  3  854 1041     move    #Btl_EventMap,r0            ; point to first entry
+P:0182 058060r        2  856 1042     movec   y:<Const_ffffff,m0
+P:0183 4E801Br        2  858 1043     clr     b   y:<Const_000001,y0     ; init the counter
+                             1044 _entry_search_loop
+P:0184 5ED800         2  860 1045     move    y:(r0)+,a
+P:0185 200045         2  862 1046     cmp     x0,a                       ; do we have a winner?
+P:0186 0AF0AA rrrrrr  6  868 1047     jeq     _found_event
+P:0188 200058         2  870 1048     add     y0,b                       ; increment the counter
+P:0189 20006D         2  872 1049     cmp     x1,b                       ; done?
+P:018A 0AF0A2 rrrrrr  6  878 1050     jne     _entry_search_loop
+P:018C 798000r        2  880 1051     move    y:<Const_000000,n1         ; no events to match the button combo
+P:018D 00000C         4  884 1052     rts
+                             1053 _found_event
+P:018E 21F900         2  886 1054     move    b,n1                       ; get the event number
+P:018F 0AD96F         4  890 1055     bset    #15,n1                     ; flag event found
+P:0190 00000C         4  894 1057     rts
+                             1060 ;///////////////////////////////////////////////////////////////////////////////
+                             1061 ;> Name:            SysGetButton
+                             1062 ; Type:             Function
+                             1063 ; Description:      Retrieves next button event to process from button buffer
+                             1064 ;                   
+                             1065 ; Inputs:           None.
+                             1066 ; Outputs:          
+                             1067 ;                   CARRY = 1 => No button events to process
+                             1068 ;                   CARRY = 0 => At least one button event to process
+                             1069 ;                   x0 = Button Event Number
+                             1070 ;
+                             1071 ; Notes:            
+                             1072 ;<         
+                             1073 ;///////////////////////////////////////////////////////////////////////////////
+                             1074 SysGetButton
+                             1075     ; any buttons to process?
+P:0191 60F400 rrrrrr  3  897 1076     move    #ButtonBufferDescriptor,r0
+P:0193 058060r        2  899 1077     movec   y:<Const_ffffff,m0
+P:0194 0BF080 rrrrrr  6  905 1078     jsr     GetFilledSpace
+P:0196 200003         2  907 1079     tst     a
+P:0197 0AF0AA rrrrrr  6  913 1080     jeq     _no_button_events
+                             1081   
+                             1082     ; we have a button...
+P:0199 68F000 rrrrrr  3  916 1083     move    y:ButtonBufferTailPtr,r0
+P:019B 05F060 rrrrrr  4  920 1084     movec   y:ButtonBufferModulo,m0
+P:019D 000000         2  922 1085     nop
+P:019E 4CD800         2  924 1086     move    y:(r0)+,x0
+P:019F 687000 rrrrrr  3  927 1087     move    r0,y:ButtonBufferTailPtr
+P:01A1 0AF960         4  931 1088     bset    #HW_SR_C_BITPOS,sr
+P:01A2 00000C         4  935 1089     rts
+                             1091 _no_button_events
+P:01A3 0AF940         4  939 1092     bclr    #HW_SR_C_BITPOS,sr
+P:01A4 00000C         4  943 1093     rts
+                             1096 ;///////////////////////////////////////////////////////////////////////////////
+                             1097 ;> Name:            SysButtonClearBuffer
+                             1098 ; Type:             Function
+                             1099 ; Description:      Clears all pending button events from button buffer
+                             1100 ;                   
+                             1101 ; Inputs:           None.
+                             1102 ; Outputs:          None.
+                             1103 ; Notes:            
+                             1104 ;<         
+                             1105 ;///////////////////////////////////////////////////////////////////////////////
+                             1106 SysButtonClearBuffer
+P:01A5 0BF080 rrrrrr  6  949 1107     jsr SysGetButton
+P:01A7 0AF0A8 rrrrrr  6  955 1108     jcs SysButtonClearBuffer
+P:01A9 00000C         4  959 1109     rts
+                             1110     
+                             1111 ;///////////////////////////////////////////////////////////////////////////////
+                             1112 ;> Name:            SysCheckForButton
+                             1113 ; Type:             Function
+                             1114 ; Description:      Checks for any pending button events in button buffer
+                             1115 ;                   
+                             1116 ; Inputs:           None.
+                             1117 ; Outputs:          
+                             1118 ;                   CARRY = 1 => No button events to process
+                             1119 ;                   CARRY = 0 => At least one button event to process
+                             1120 ;
+                             1121 ; Notes:            This function is the same as SysGetButton(), but does not 
+                             1122 ;                   retrieve the event from the button buffer.
+                             1123 ;<         
+                             1124 ;///////////////////////////////////////////////////////////////////////////////
+                             1125 SysCheckForButton
+                             1126     ; any buttons to process?
+P:01AA 60F400 rrrrrr  3  962 1127     move    #ButtonBufferDescriptor,r0
+P:01AC 058060r        2  964 1128     movec   y:<Const_ffffff,m0
+P:01AD 0BF080 rrrrrr  6  970 1129     jsr     GetFilledSpace
+P:01AF 200003         2  972 1130     tst     a
+P:01B0 0AF0AA rrrrrr  6  978 1131     jeq     _no_button_events
+P:01B2 0AF960         4  982 1132     bset    #HW_SR_C_BITPOS,sr
+P:01B3 00000C         4  986 1133     rts
+                             1134 _no_button_events
+P:01B4 0AF940         4  990 1135     bclr    #HW_SR_C_BITPOS,sr
+P:01B5 00000C         4  994 1136     rts
+                             1138 ;///////////////////////////////////////////////////////////////////////////////
+                             1139 ;> Name:            SysCheckForHoldButtonActivated
+                             1140 ; Type:             Function
+                             1141 ; Description:      Checks for HOLD button status
+                             1142 ;                   
+                             1143 ; Inputs:           None.
+                             1144 ; Outputs:          
+                             1145 ;                   CARRY = 1 => Hold button is activated.
+                             1146 ;                   CARRY = 0 => Hold button is not activated.
+                             1147 ;
+                             1148 ; Notes:         
+                             1149 ;<         
+                             1150 ;///////////////////////////////////////////////////////////////////////////////
+                             1151 SysCheckForHoldButtonActivated
+P:01B6 0B7062 rrrrrr  6 1000 1152     btst    #HoldButtonReportedBit,y:Btl_Flags
+P:01B8 00000C         4 1004 1153     rts
+                             1154     
+                             1155 ;///////////////////////////////////////////////////////////////////////////////
+                             1156 ;> Name:            ButtonGetTimeLast
+                             1157 ; Type:             Function
+                             1158 ; Description:      Calculates the time (ms) from last button activation to
+                             1159 ;                   current.
+                             1160 ;                   
+                             1161 ; Inputs:           None.
+                             1162 ; Outputs:          
+                             1163 ;                   a0 = Time (ms) least significant word
+                             1164 ;                   a1 = Time (ms) most significant word
+                             1165 ;
+                             1166 ; Notes:            If the BUTTON_TRACK_TIME_BIT is cleared, this function
+                             1167 ;                   returns 0. See ButtonTrackTimeLastOn and ButtonTrackTimeLastOff
+                             1168 ;                   functions.
+                             1169 ;<         
+                             1170 ;///////////////////////////////////////////////////////////////////////////////
+                             1171 ButtonGetTimeLast
+P:01B9 0B7061 rrrrrr  6 1010 1172     btst    #BUTTON_TRACK_TIME_BIT,y:Btl_Flags
+P:01BB 0AF0A8 rrrrrr  6 1016 1173     jcs     _DoTheMath
+P:01BD 200013         2 1018 1175     clr     a
+P:01BE 00000C         4 1022 1176     rts
+                             1178 _DoTheMath
+P:01BF 0BF080 rrrrrr  6 1028 1179     jsr     SysGetCurrentTime
+P:01C1 55F000 rrrrrr  3 1031 1181     move    x:ButtonTrackTimeHigh,b1
+P:01C3 51F000 rrrrrr  3 1034 1182     move    x:ButtonTrackTimeLow,b0
+P:01C5 200014         2 1036 1183     sub     b,a
+P:01C6 00000C         4 1040 1184     rts
+                             1185     
+                             1186 ;///////////////////////////////////////////////////////////////////////////////
+                             1187 ;> Name:            LowResAdcRead
+                             1188 ; Type:             Function
+                             1189 ; Description:      Reads the low resolution ADC specified in x0 and does an
+                             1190 ;                   average of LOW_RES_ADC_AVG_CNT samples
+                             1191 ;                   
+                             1192 ; Inputs:           x0 = Low Resolution ADC (BATT or AUX)
+                             1193 ;                   y0 = Read Mask
+                             1194 ;                   r1 = Pointer to ADC Var Table
+                             1195 ; Outputs:          None         
+                             1196 ;
+                             1197 ; Notes:            
+                             1198 ;<         
+                             1199 ;///////////////////////////////////////////////////////////////////////////////
+                             1200 LowResAdcRead
+P:01C7 058061r        2 1042 1201     movec   y:<Const_ffffff,m1    
+                             1204     ; Reads Batt and save result
+P:01C8 20001B         2 1044 1205     clr     b                           ; Check if BATT ADC
+P:01C9 55F400 000000  3 1047 1206     move    #>LOW_RES_ADC_BATT,b1
+P:01CB 20004D         2 1049 1207     cmp     x0,b
+P:01CC 0AF0AA rrrrrr  6 1055 1208     jeq     _3500_BAT_Read              ; BATT ADC
+P:01CE 20001B         2 1057 1210     clr     b                           ; Check if AUX1 or 2
+P:01CF 55F400 000001  3 1060 1211     move    #>LOW_RES_ADC_AUX,b1
+P:01D1 20004D         2 1062 1212     cmp     x0,b
+P:01D2 0AF0AA rrrrrr  6 1068 1213     jeq     _3500_AUX_Read              ; AUX
+                             1215 _3500_AUX2_Read
+P:01D4 0AF080 rrrrrr  6 1074 1216     jmp    _3500_Read_Done                              
+                             1218 _3500_AUX_Read
+P:01D6 200013         2 1076 1219         clr             a
+P:01D7 54F000 00FA25  3 1079 1220         move    x:HW_LRADC1_RESULT,a1
+P:01D9 200056         2 1081 1221         and             y0,a1
+P:01DA 0608A0         4 1085 1223     rep #8                                                              ; Justify the result
+P:01DB 200023         2 1087 1224         lsr     a1
+P:01DC 0AF080 rrrrrr  6 1093 1225         jmp     _3500_Read_Done
+                             1227 _3500_BAT_Read
+P:01DE 200013         2 1095 1228     clr     a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01DF 54F000 00FA22  3 1098 1229     move    x:HW_BATT_RESULT,a1
+P:01E1 200056         2 1100 1230     and     y0,a1                       ; Clear all unused bits
+P:01E2 0608A0         4 1104 1232     rep #8                                                              ; Justify the result
+P:01E3 200023         2 1106 1233         lsr     a1
+P:01E4 0AF080 rrrrrr  6 1112 1234         jmp     _3500_Read_Done
+                             1236 _3500_Read_Done
+                             1261         
+                             1263 _ResultFormatted
+                             1264     ; Save away the result
+P:01E6 71F400 000000  3 1115 1265     move    #>IndexLowResAdcResult,n1
+P:01E8 000000         2 1117 1266     nop
+P:01E9 5C6900         4 1121 1267     move    a1,y:(r1+n1)
+                             1268     
+                             1269     ; Accumulate result and save it
+P:01EA 71F400 000002  3 1124 1270     move    #>IndexLowResAdcAccu,n1
+P:01EC 000000         2 1126 1271     nop
+P:01ED 4CE900         4 1130 1272     move    y:(r1+n1),x0
+P:01EE 200040         2 1132 1273     add     x0,a
+P:01EF 5C6900         4 1136 1274     move    a1,y:(r1+n1)
+                             1275     
+                             1276     ; Is it time to average ?
+P:01F0 71F400 000003  3 1139 1277     move    #>IndexLowResAdcAvgCnt,n1
+P:01F2 20001B         2 1141 1278     clr     b
+P:01F3 59E900         4 1145 1279     move    y:(r1+n1),b0
+P:01F4 00000B         2 1147 1280     dec     b
+P:01F5 0AF0AA rrrrrr  6 1153 1281     jeq     _AverageResult
+                             1283     ; Save New Average Counter
+P:01F7 596900         4 1157 1284     move    b0,y:(r1+n1)
+P:01F8 0AF080 rrrrrr  6 1163 1285     jmp     _Done    
+                             1288 _AverageResult    
+                             1289     ; Average the result and save it away
+P:01FA 71F400 000001  3 1166 1290     move    #>IndexLowResAdcAvg,n1
+P:01FC 0608A0         4 1170 1292     rep #LOW_RES_ADC_AVG_SHIFTER
+P:01FD 200023         2 1172 1293         lsr     a1
+P:01FE 5C6900         4 1176 1295     move    a1,y:(r1+n1)
+                             1296     
+P:01FF 0AF080 rrrrrr  6 1182 1297     jmp    _ResetAverageVars
+                             1300 _TurnOnDacClock        
+                             1301     ; Turns ON Adc Clock
+P:0201 54F400 040001  3 1185 1302     move    #>(HW_CCR_ACKEN_SETMASK|HW_CCR_CKRST_SETMASK),a1
+P:0203 200062         2 1187 1303     or      x1,a1
+P:0204 547000 00FA00  3 1190 1304     move    a1,x:HW_CCR
+                             1305     
+                             1306 _ResetAverageVars
+                             1307     ; Resets average counter
+P:0206 71F400 000003  3 1193 1308     move    #>IndexLowResAdcAvgCnt,n1
+P:0208 45F400 000100  3 1196 1309     move    #>LOW_RES_ADC_AVG_CNT,x1
+P:020A 4D6900         4 1200 1310     move    x1,y:(r1+n1)
+                             1312     ; Resets ADC Accu
+P:020B 71F400 000002  3 1203 1313     move    #>IndexLowResAdcAccu,n1
+P:020D 4D8000r        2 1205 1314     move    y:<Const_000000,x1
+P:020E 4D6900         4 1209 1315     move    x1,y:(r1+n1)
+                             1316     
+                             1317 _Done
+P:020F 00000C         4 1213 1318     rts                
+                             1320     endsec

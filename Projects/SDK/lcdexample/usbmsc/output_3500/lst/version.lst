@@ -1,0 +1,1532 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\usbmsc\Make\cc87039b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -w68 -w66 -I..\output_3500\include
+                                3 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\usbmsc -I -I..\..
+                                4 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                                5 ;          -I..\..\..\..\..\System\Common\symbols -I
+                                6 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                                7 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                                8 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                                9 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               10 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               11 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               12 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               13 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               14 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               15 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive\include
+                               16 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               17 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               18 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive
+                               19 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               20 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive\include
+                               21 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               22 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               23 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media
+                               29 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               30 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               31 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               32 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               33 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               34 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               37 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include -I
+                               38 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               39 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               40 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               41 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               50 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               52 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               56 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               57 ;          -I..\..\..\..\..\devicedriver\media\include
+                               58 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               59 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               60 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               61 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               62 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               64 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               65 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               66 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               67 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               68 ;          -I..\..\..\..\..\DeviceDriver\Media\usb\Ch9
+                               69 ;          -I..\..\..\..\..\DeviceDriver\Media\scsi
+                               70 ;          -I..\..\..\..\..\DeviceDriver\Media\usbmsc
+                               71 ;          -I..\..\..\..\..\DeviceDriver\Media\mtp
+                               72 ;          -I..\..\..\..\..\System\Common\updater
+                               73 ;          -I..\..\..\..\..\libsource\sysserialnumber -DALL -DD3500 -DMMC
+                               74 ;          -DLIION -DTUNER_STFM1000 -DSTFM1000_LCD=TRUE -DDCDC_POWER_TRANSFER
+                               75 ;          -DBACKLIGHT -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DFAT16
+                               76 ;          -DDEVICE_3500 -DENGR_BD -DUSBMSC_BUILD -DBATTERY_TYPE_LI_ION
+                               77 ;          -DBATTERY_CHARGE -DUSE_PLAYLIST3_HOST -DASCII_ONLY -DRETAIL
+                               78 ;          -DDEVICE_3500 -DMMC -Dk_opt_performance_enhancement
+                               79 ;          -I..\..\..\..\..\devicedriver\display
+                               80 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -g -O2 -R -Cs
+                               81 ;          -MmyL
+                               82 
+                               90 
+                               91 ;      version.c:
+                               92 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               93 ; 2    |// Copyright(C) SigmaTel, Inc. 2002
+                               94 ; 3    |//
+                               95 ; 4    |// Filename: version.c
+                               96 ; 5    |// Description: Accessor functions for version information
+                               97 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                               98 ; 7    |
+                               99 ; 8    |////////////////////////////////////////////////////////////////////////////////
+                              100 ; 9    |//   Includes and external references
+                              101 ; 10   |////////////////////////////////////////////////////////////////////////////////
+                              102 ; 11   |
+                              103 ; 12   |#include "types.h"
+                              104 
+                              106 
+                              107 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              108 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              109 ; 3    |//
+                              110 ; 4    |// Filename: types.h
+                              111 ; 5    |// Description: Standard data types
+                              112 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              113 ; 7    |
+                              114 ; 8    |#ifndef _TYPES_H
+                              115 ; 9    |#define _TYPES_H
+                              116 ; 10   |
+                              117 ; 11   |// TODO:  move this outta here!
+                              118 ; 12   |#if !defined(NOERROR)
+                              119 ; 13   |#define NOERROR 0
+                              120 ; 14   |#define SUCCESS 0
+                              121 ; 15   |#endif 
+                              122 ; 16   |#if !defined(SUCCESS)
+                              123 ; 17   |#define SUCCESS  0
+                              124 ; 18   |#endif
+                              125 ; 19   |#if !defined(ERROR)
+                              126 ; 20   |#define ERROR   -1
+                              127 ; 21   |#endif
+                              128 ; 22   |#if !defined(FALSE)
+                              129 ; 23   |#define FALSE 0
+                              130 ; 24   |#endif
+                              131 ; 25   |#if !defined(TRUE)
+                              132 ; 26   |#define TRUE  1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              133 ; 27   |#endif
+                              134 ; 28   |
+                              135 ; 29   |#if !defined(NULL)
+                              136 ; 30   |#define NULL 0
+                              137 ; 31   |#endif
+                              138 ; 32   |
+                              139 ; 33   |#define MAX_INT     0x7FFFFF
+                              140 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              141 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              142 ; 36   |#define MAX_ULONG   (-1) 
+                              143 ; 37   |
+                              144 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              145 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              146 ; 40   |
+                              147 ; 41   |
+                              148 ; 42   |#define BYTE    unsigned char       // btVarName
+                              149 ; 43   |#define CHAR    signed char         // cVarName
+                              150 ; 44   |#define USHORT  unsigned short      // usVarName
+                              151 ; 45   |#define SHORT   unsigned short      // sVarName
+                              152 ; 46   |#define WORD    unsigned int        // wVarName
+                              153 ; 47   |#define INT     signed int          // iVarName
+                              154 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              155 ; 49   |#define LONG    signed long         // lVarName
+                              156 ; 50   |#define BOOL    unsigned int        // bVarName
+                              157 ; 51   |#define FRACT   _fract              // frVarName
+                              158 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              159 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              160 ; 54   |#define FLOAT   float               // fVarName
+                              161 ; 55   |#define DBL     double              // dVarName
+                              162 ; 56   |#define ENUM    enum                // eVarName
+                              163 ; 57   |#define CMX     _complex            // cmxVarName
+                              164 ; 58   |typedef WORD UCS3;                   // 
+                              165 ; 59   |
+                              166 ; 60   |#define UINT16  unsigned short
+                              167 ; 61   |#define UINT8   unsigned char   
+                              168 ; 62   |#define UINT32  unsigned long
+                              169 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              170 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              171 ; 65   |#define WCHAR   UINT16
+                              172 ; 66   |
+                              173 ; 67   |//UINT128 is 16 bytes or 6 words
+                              174 ; 68   |typedef struct UINT128_3500 {   
+                              175 ; 69   |    int val[6];     
+                              176 ; 70   |} UINT128_3500;
+                              177 ; 71   |
+                              178 ; 72   |#define UINT128   UINT128_3500
+                              179 ; 73   |
+                              180 ; 74   |// Little endian word packed byte strings:   
+                              181 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              182 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              183 ; 77   |// Little endian word packed byte strings:   
+                              184 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              185 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              186 ; 80   |
+                              187 ; 81   |// Declare Memory Spaces To Use When Coding
+                              188 ; 82   |// A. Sector Buffers
+                              189 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              190 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              191 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              192 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              193 
+                              195 
+                              196 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              197 ; 88   |// B. Media DDI Memory
+                              198 ; 89   |#define MEDIA_DDI_MEM _Y
+                              199 ; 90   |
+                              200 ; 91   |
+                              201 ; 92   |
+                              202 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              203 ; 94   |// Examples of circular pointers:
+                              204 ; 95   |//    INT CIRC cpiVarName
+                              205 ; 96   |//    DWORD CIRC cpdwVarName
+                              206 ; 97   |
+                              207 ; 98   |#define RETCODE INT                 // rcVarName
+                              208 ; 99   |
+                              209 ; 100  |// generic bitfield structure
+                              210 ; 101  |struct Bitfield {
+                              211 ; 102  |    unsigned int B0  :1;
+                              212 ; 103  |    unsigned int B1  :1;
+                              213 ; 104  |    unsigned int B2  :1;
+                              214 ; 105  |    unsigned int B3  :1;
+                              215 ; 106  |    unsigned int B4  :1;
+                              216 ; 107  |    unsigned int B5  :1;
+                              217 ; 108  |    unsigned int B6  :1;
+                              218 ; 109  |    unsigned int B7  :1;
+                              219 ; 110  |    unsigned int B8  :1;
+                              220 ; 111  |    unsigned int B9  :1;
+                              221 ; 112  |    unsigned int B10 :1;
+                              222 ; 113  |    unsigned int B11 :1;
+                              223 ; 114  |    unsigned int B12 :1;
+                              224 ; 115  |    unsigned int B13 :1;
+                              225 ; 116  |    unsigned int B14 :1;
+                              226 ; 117  |    unsigned int B15 :1;
+                              227 ; 118  |    unsigned int B16 :1;
+                              228 ; 119  |    unsigned int B17 :1;
+                              229 ; 120  |    unsigned int B18 :1;
+                              230 ; 121  |    unsigned int B19 :1;
+                              231 ; 122  |    unsigned int B20 :1;
+                              232 ; 123  |    unsigned int B21 :1;
+                              233 ; 124  |    unsigned int B22 :1;
+                              234 ; 125  |    unsigned int B23 :1;
+                              235 ; 126  |};
+                              236 ; 127  |
+                              237 ; 128  |union BitInt {
+                              238 ; 129  |        struct Bitfield B;
+                              239 ; 130  |        int        I;
+                              240 ; 131  |};
+                              241 ; 132  |
+                              242 ; 133  |#define MAX_MSG_LENGTH 10
+                              243 ; 134  |struct CMessage
+                              244 ; 135  |{
+                              245 ; 136  |        unsigned int m_uLength;
+                              246 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              247 ; 138  |};
+                              248 ; 139  |
+                              249 ; 140  |typedef struct {
+                              250 ; 141  |    WORD m_wLength;
+                              251 ; 142  |    WORD m_wMessage;
+                              252 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              253 ; 144  |} Message;
+                              254 ; 145  |
+                              255 ; 146  |struct MessageQueueDescriptor
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              256 ; 147  |{
+                              257 ; 148  |        int *m_pBase;
+                              258 ; 149  |        int m_iModulo;
+                              259 ; 150  |        int m_iSize;
+                              260 ; 151  |        int *m_pHead;
+                              261 ; 152  |        int *m_pTail;
+                              262 ; 153  |};
+                              263 ; 154  |
+                              264 ; 155  |struct ModuleEntry
+                              265 ; 156  |{
+                              266 ; 157  |    int m_iSignaledEventMask;
+                              267 ; 158  |    int m_iWaitEventMask;
+                              268 ; 159  |    int m_iResourceOfCode;
+                              269 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              270 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              271 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              272 ; 163  |    int m_uTimeOutHigh;
+                              273 ; 164  |    int m_uTimeOutLow;
+                              274 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              275 ; 166  |};
+                              276 ; 167  |
+                              277 ; 168  |union WaitMask{
+                              278 ; 169  |    struct B{
+                              279 ; 170  |        unsigned int m_bNone     :1;
+                              280 ; 171  |        unsigned int m_bMessage  :1;
+                              281 ; 172  |        unsigned int m_bTimer    :1;
+                              282 ; 173  |        unsigned int m_bButton   :1;
+                              283 ; 174  |    } B;
+                              284 ; 175  |    int I;
+                              285 ; 176  |} ;
+                              286 ; 177  |
+                              287 ; 178  |
+                              288 ; 179  |struct Button {
+                              289 ; 180  |        WORD wButtonEvent;
+                              290 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              291 ; 182  |};
+                              292 ; 183  |
+                              293 ; 184  |struct Message {
+                              294 ; 185  |        WORD wMsgLength;
+                              295 ; 186  |        WORD wMsgCommand;
+                              296 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              297 ; 188  |};
+                              298 ; 189  |
+                              299 ; 190  |union EventTypes {
+                              300 ; 191  |        struct CMessage msg;
+                              301 ; 192  |        struct Button Button ;
+                              302 ; 193  |        struct Message Message;
+                              303 ; 194  |};
+                              304 ; 195  |
+                              305 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              306 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              307 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              308 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              309 ; 200  |
+                              310 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              311 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              312 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              313 ; 204  |
+                              314 ; 205  |#if DEBUG
+                              315 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              316 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              317 ; 208  |#else 
+                              318 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              319 ; 210  |#define DebugBuildAssert(x)    
+                              320 ; 211  |#endif
+                              321 ; 212  |
+                              322 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              323 ; 214  |//  #pragma asm
+                              324 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              325 ; 216  |//  #pragma endasm
+                              326 ; 217  |
+                              327 ; 218  |
+                              328 ; 219  |#ifdef COLOR_262K
+                              329 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              330 ; 221  |#elif defined(COLOR_65K)
+                              331 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              332 ; 223  |#else
+                              333 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              334 ; 225  |#endif
+                              335 ; 226  |    
+                              336 ; 227  |#endif // #ifndef _TYPES_H
+                              337 
+                              339 
+                              340 ; 13   |#include "project.h"
+                              341 
+                              343 
+                              344 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              345 ; 2    |//  Copyright(C) SigmaTel, Inc. 2000-2004
+                              346 ; 3    |//  Filename: project.inc
+                              347 ; 4    |//  Description: 
+                              348 ; 5    |/////////////////////////////////////////////////////////////////////////////////
+                              349 ; 6    |
+                              350 ; 7    |#if (!defined(_PROJECT_INC))
+                              351 ; 8    |#define _PROJECT_INC 1
+                              352 ; 9    |
+                              353 ; 10   |#if defined(STMP_BUILD_PLAYER)
+                              354 ; 11   |#include "hwequ.h"
+                              355 ; 12   |#else 
+                              356 ; 13   |//include "regscodec.inc"
+                              357 ; 14   |#endif
+                              358 ; 15   |
+                              359 ; 16   |//////////////////////////////////////////////////////////////////////////////////
+                              360 ; 17   |// Uncomment next define to allow player boot if you have stfm1000 macro enabled (defaults
+                                   ON) & 
+                              361 ; 18   |// your board crystal is not able to output nominal voltage range. Used in player main.asm
+                                  . STMP00012148
+                              362 ; 19   |// Defining this will result in lower battery life (price of using a lower quality crystal
+                                  ). 
+                              363 ; 20   |// Those that want to save battery life and have good crystals that meet our HW team's spe
+                                  cs can 
+                              364 ; 21   |// comment out this line to reduce crystal bias current and so battery current in player m
+                                  ode.  
+                              365 ; 22   |#define SUPPORT_MARGINAL_XTALS 1
+                              366 ; 23   |
+                              367 ; 24   |/////////////////////////////////////////////////////////////////////////////////
+                              368 ; 25   |// BOOT SPEED CONFIG & ASSOCIATED BATTERY VOLTAGE CHECK ENABLE
+                              369 ; 26   |/////////////////////////////////////////////////////////////////////////////////
+                              370 ; 27   |// Users can enable one of ATTEMPT_FAST_BOOT or FASTEST boot or neither project define bel
+                                  ow by defining
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              371 ; 28   |// values as 0 or 1, else it defaults to the boot speed used in previous SDKs.
+                              372 ; 29   |#define ATTEMPT_FAST_BOOT 1
+                              373 ; 30   |#define ATTEMPT_FASTEST_BOOT 0   
+                              374 ; 31   |// Changing this define to 0 removes Vbat threshholding & unconditionally gives fast boot 
+                                  config above- 
+                              375 ; 32   |// disabling this check is suggested for profiling if you want to try to tweak down thresh
+                                  holds by maybe 50mV.
+                              376 ; 33   |// Also the tests should clear the fast boot config defines to link & boot at normal speed
+                                  .
+                              377 ; 34   |#define SPEED_BOOT_BATTERY_CHECK 1
+                              378 ; 35   |
+                              379 ; 36   |/////////////////////////////////////////////////////////////////////////////////
+                              380 ; 37   |// MEDIA DEFINITIONS
+                              381 ; 38   |/////////////////////////////////////////////////////////////////////////////////
+                              382 ; 39   |
+                              383 ; 40   |/////////////////////////////////////////////////////////////////////////////////
+                              384 ; 41   |// MNAND - Number of chips forming the internal physical device (i.e. # of NANDs)
+                              385 ; 42   |#if defined(NAND1)
+                              386 ; 43   |#define SM_INTERNAL_CHIPS 1
+                              387 ; 44   |#else 
+                              388 ; 45   |#if defined(NAND2)
+                              389 ; 46   |#define SM_INTERNAL_CHIPS 2
+                              390 ; 47   |#else 
+                              391 ; 48   |#if defined(NAND3)
+                              392 ; 49   |#define SM_INTERNAL_CHIPS 3
+                              393 ; 50   |#else 
+                              394 ; 51   |#if defined(NAND4)
+                              395 ; 52   |#define SM_INTERNAL_CHIPS 4
+                              396 ; 53   |#else 
+                              397 ; 54   |#define SM_INTERNAL_CHIPS 1
+                              398 ; 55   |#endif
+                              399 ; 56   |#endif
+                              400 ; 57   |#endif
+                              401 ; 58   |#endif
+                              402 ; 59   |
+                              403 ; 60   |/////////////////////////////////////////////////////////////////////////////////
+                              404 ; 61   |// If SMARTMEDIA_DETECT_ACTIVE_HIGH is defined:
+                              405 ; 62   |//   SmartMedia will be detected as inserted if the GPIO pin reads 1 and removed if it rea
+                                  ds 0.  
+                              406 ; 63   |// If SMARTMEDIA_DETECT_ACTIVE_HIGH is not defined ** comment out next line **
+                              407 ; 64   |//   SmartMedia will be detected as inserted if the GPIO pin reads 0 and removed if it rea
+                                  ds 1.
+                              408 ; 65   |//*** comment out if active high ****
+                              409 ; 66   |//SMARTMEDIA_DETECT_ACTIVE_HIGH  equ     1
+                              410 ; 67   |
+                              411 ; 68   |#if defined(SMEDIA)
+                              412 ; 69   |#define NUM_REMOVABLE_MEDIA 1
+                              413 ; 70   |#define NUM_SM_EXTERNAL 1
+                              414 ; 71   |#define MMC_MAX_PHYSICAL_DEVICES 0
+                              415 ; 72   |#define SM_MAX_LOGICAL_DEVICES 2
+                              416 ; 73   |#else 
+                              417 ; 74   |#if defined(MMC)
+                              418 ; 75   |#define NUM_REMOVABLE_MEDIA 1
+                              419 ; 76   |#define NUM_SM_EXTERNAL 0
+                              420 ; 77   |#define MMC_MAX_PHYSICAL_DEVICES 1
+                              421 ; 78   |#define SM_MAX_LOGICAL_DEVICES 1
+                              422 ; 79   |#else 
+                              423 ; 80   |#define NUM_REMOVABLE_MEDIA 0
+                              424 ; 81   |#define NUM_SM_EXTERNAL 0
+                              425 ; 82   |#define MMC_MAX_PHYSICAL_DEVICES 0
+                              426 ; 83   |#define SM_MAX_LOGICAL_DEVICES 1
+                              427 ; 84   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              428 ; 85   |#endif
+                              429 ; 86   |
+                              430 ; 87   |/////////////////////////////////////////////////////////////////////////////////
+                              431 ; 88   |// Mass Storage Class definitions
+                              432 ; 89   |/////////////////////////////////////////////////////////////////////////////////
+                              433 ; 90   |// Set to 0 if Composite Device build is desired.    
+                              434 ; 91   |#define MULTI_LUN_BUILD 1   
+                              435 ; 92   |
+                              436 ; 93   |////////////////////////////////////////////////////////////////////////////////
+                              437 ; 94   |//  SCSI
+                              438 ; 95   |#if (MULTI_LUN_BUILD==0)
+                              439 ; 96   |  #if (NUM_REMOVABLE_MEDIA == 1)
+                              440 ; 97   |    #define SCSI_NUM_TARGETS                        2
+                              441 ; 98   |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1
+                              442 ; 99   |    #define SCSI_DEVICE_NUM_LUNS_DEV_1              1
+                              443 ; 100  |  #else
+                              444 ; 101  |    #define SCSI_NUM_TARGETS                        1
+                              445 ; 102  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1
+                              446 ; 103  |  #endif
+                              447 ; 104  |#else
+                              448 ; 105  |    #define SCSI_NUM_TARGETS                        1
+                              449 ; 106  |  #if (NUM_REMOVABLE_MEDIA == 1)
+                              450 ; 107  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              2
+                              451 ; 108  |  #else
+                              452 ; 109  |    #define SCSI_DEVICE_NUM_LUNS_DEV_0              1  
+                              453 ; 110  |  #endif
+                              454 ; 111  |#endif
+                              455 ; 112  |
+                              456 ; 113  |
+                              457 ; 114  |#define USBMSC_NUM_DEVICES                      SCSI_NUM_TARGETS
+                              458 ; 115  |
+                              459 ; 116  |
+                              460 ; 117  |////////////////////////////////////////////////////////////////////////////////
+                              461 ; 118  |// Define number of logical medias and drives for three builds (MTP, USBMSC, and Player)
+                              462 ; 119  |////////////////////////////////////////////////////////////////////////////////
+                              463 ; 120  |#ifdef MMC
+                              464 ; 121  |#ifdef MTP_BUILD
+                              465 ; 122  |// --------------------
+                              466 ; 123  |// MTP and MMC
+                              467 ; 124  |// --------------------
+                              468 ; 125  |#define NUM_LOGICAL_MEDIA       2
+                              469 ; 126  |#define NUM_LOGICAL_DRIVES      8
+                              470 ; 127  |#else  // ifndef MTP_BUILD
+                              471 ; 128  |#ifdef STMP_BUILD_PLAYER
+                              472 ; 129  |// --------------------
+                              473 ; 130  |// Player and MMC
+                              474 ; 131  |// --------------------
+                              475 ; 132  |#else
+                              476 ; 133  |// --------------------
+                              477 ; 134  |// USBMSC and MMC
+                              478 ; 135  |// --------------------
+                              479 ; 136  |#define NUM_LOGICAL_MEDIA       3
+                              480 ; 137  |#define NUM_LOGICAL_DRIVES      8
+                              481 ; 138  |#endif // ifdef STMP_BUILD_PLAYER
+                              482 ; 139  |#endif // ifdef MTP_BUILD
+                              483 ; 140  |#else  // ifndef MMC
+                              484 ; 141  |#ifdef MTP_BUILD
+                              485 ; 142  |// --------------------
+                              486 ; 143  |// MTP and NAND only
+                              487 ; 144  |// --------------------
+                              488 ; 145  |#define NUM_LOGICAL_MEDIA       1
+                              489 ; 146  |#define NUM_LOGICAL_DRIVES      7
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              490 ; 147  |#else  // ifndef MTP_BUILD
+                              491 ; 148  |#ifdef STMP_BUILD_PLAYER
+                              492 ; 149  |// --------------------
+                              493 ; 150  |// Player and NAND only
+                              494 ; 151  |// --------------------
+                              495 ; 152  |#else
+                              496 ; 153  |// --------------------
+                              497 ; 154  |// USBMSC and NAND only
+                              498 ; 155  |// --------------------
+                              499 ; 156  |#define NUM_LOGICAL_MEDIA       2
+                              500 ; 157  |#define NUM_LOGICAL_DRIVES      7
+                              501 ; 158  |#endif // ifdef STMP_BUILD_PLAYER
+                              502 ; 159  |#endif // ifdef MTP_BUILD
+                              503 ; 160  |#endif // ifdef MMC 
+                              504 ; 161  |
+                              505 ; 162  |// If we are in an MTP build then we don't use as many transfers buffers.
+                              506 ; 163  |#if (defined(MTP_BUILD))
+                              507 ; 164  |#define MAX_USB_TRANSFERS_QUEUED 16
+                              508 ; 165  |
+                              509 ; 166  |////!
+                              510 ; 167  |////! This varible holds the watchdog count for the store flush.
+                              511 ; 168  |////!
+                              512 ; 169  |///
+                              513 ; 170  |#include <types.h>
+                              514 ; 171  |extern volatile INT g_StoreWatchDogCount;
+                              515 ; 172  |extern const INT g_StoreWatchDogTimeout;
+                              516 ; 173  |#endif
+                              517 ; 174  |
+                              518 ; 175  |////////////////////////////////////////////////////////////////////////////////
+                              519 ; 176  |// These are needed here for Mass Storage Class
+                              520 ; 177  |// Needs to be cleaned up
+                              521 ; 178  |////////////////////////////////////////////////////////////////////////////////
+                              522 ; 179  |#if (!defined(STMP_BUILD_PLAYER))
+                              523 ; 180  |#define SCRATCH_USER_Y_SIZE 512
+                              524 ; 181  |#define SCRATCH_USER_X_SIZE 512
+                              525 ; 182  |
+                              526 ; 183  |#define BROWNOUT_LEVEL1_DETECTED                0x000001
+                              527 ; 184  |
+                              528 ; 185  |#endif
+                              529 ; 186  |
+                              530 ; 187  |
+                              531 ; 188  |/////////////////////////////////////////////////////////////////////////////////
+                              532 ; 189  |// SmartMedia/NAND defs
+                              533 ; 190  |#define SM_MAX_PHYSICAL_DEVICES SM_INTERNAL_CHIPS+NUM_SM_EXTERNAL
+                              534 ; 191  |#define SM_REMOVABLE_DEVICE_NUM SM_INTERNAL_CHIPS
+                              535 ; 192  |
+                              536 ; 193  |/////////////////////////////////////////////////////////////////////////////////
+                              537 ; 194  |// Sysloadresources defs
+                              538 ; 195  |#define SM_MAX_RESOURCE_DEVICES SM_INTERNAL_CHIPS+NUM_SM_EXTERNAL
+                              539 ; 196  |
+                              540 ; 197  |/////////////////////////////////////////////////////////////////////////////////
+                              541 ; 198  |// MMC defs
+                              542 ; 199  |#define MMC_MAX_PARTITIONS 1
+                              543 ; 200  |#define MMC_MAX_LOGICAL_DEVICES MMC_MAX_PHYSICAL_DEVICES*MMC_MAX_PARTITIONS
+                              544 ; 201  |
+                              545 ; 202  |/////////////////////////////////////////////////////////////////////////////////
+                              546 ; 203  |// SPI defs
+                              547 ; 204  |#define SPI_MAX_DEVICES MMC_MAX_PHYSICAL_DEVICES
+                              548 ; 205  |
+                              549 ; 206  |/////////////////////////////////////////////////////////////////////////////////
+                              550 ; 207  |// Global media defs
+                              551 ; 208  |#define MAX_PHYSICAL_DEVICES SM_MAX_PHYSICAL_DEVICES+MMC_MAX_PHYSICAL_DEVICES
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              552 ; 209  |#define MAX_LOGICAL_DEVICES SM_MAX_LOGICAL_DEVICES+MMC_MAX_LOGICAL_DEVICES
+                              553 ; 210  |
+                              554 ; 211  |/////////////////////////////////////////////////////////////////////////////////
+                              555 ; 212  |// DO NOT CHANGE THESE!!!
+                              556 ; 213  |#define SM_MAX_PARTITIONS 4
+                              557 ; 214  |#define MAX_HANDLES 2
+                              558 ; 215  |/////////////////////////////////////////////////////////////////////////////////
+                              559 ; 216  |
+                              560 ; 217  |
+                              561 ; 218  |/////////////////////////////////////////////////////////////////////////////////
+                              562 ; 219  |// Battery LRADC Values 
+                              563 ; 220  |/////////////////////////////////////////////////////////////////////////////////
+                              564 ; 221  |// brownout trip point in mV (moved by RS)
+                              565 ; 222  |// BATT_SAFETY_MARGIN:  percentage value used by:
+                              566 ; 223  |//   * SysSaveSettings to determine if enough power is left to attempt a settings save. 
+                              567 ; 224  |//   * Recorder to conditionally prevent the start or continuation of 
+                              568 ; 225  |//     audio recording to media.
+                              569 ; 226  |#define BATT_SAFETY_MARGIN 10
+                              570 ; 227  |
+                              571 ; 228  |//; player resource drive refresh allowed only when battery usable % is above this value. 
+                                  
+                              572 ; 229  |//; 50% of usable range [0.9V to 1.5V] is around 1.2V This is the safe target alkaline vol
+                                  tage to do a refresh.
+                              573 ; 230  |//; LIION will also require 50% which will work but that could be changed in the future. 
+                              574 ; 231  |//RESOURCE_REFRESH_MIN_BATT_PCT equ 50
+                              575 ; 232  |
+                              576 ; 233  |// stmp00005071 adds these for mp3 encode stability at low battery per battery type & mmc 
+                                  presence.
+                              577 ; 234  |
+                              578 ; 235  |//// Vbat threshholds empirically tuned by profiling max bat current for 3 HW cases: 
+                              579 ; 236  |//// 1 GigaByte MMC, NAND flash only, & LiIon Buck mode. See voicemenu pre-encode Vbat che
+                                  ck.
+                              580 ; 237  |#if (!defined(CLCD))
+                              581 ; 238  |#define MP3_ENC_MMC_MIN_V_BAT_MV 1100
+                              582 ; 239  |#define MP3_ENC_NANDONLY_MIN_V_BAT_MV 1000
+                              583 ; 240  |#else 
+                              584 ; 241  |#define MP3_ENC_MMC_MIN_V_BAT_MV 1250
+                              585 ; 242  |#define MP3_ENC_NANDONLY_MIN_V_BAT_MV 1150
+                              586 ; 243  |#endif
+                              587 ; 244  |#define MP3_ENC_BUCKMODE_MIN_V_BAT_MV 3300
+                              588 ; 245  |
+                              589 ; 246  |// These Vbat use-range-percentages are derived to correspond with target battery 
+                              590 ; 247  |// voltages of 1.10V for MMC, 1.0V for nand only (alkaline or nimh), and 3.3V for any LiIo
+                                  n.
+                              591 ; 248  |// See mp3 encoder overlay.
+                              592 ; 249  |#define MP3_ENC_MMC_MIN_V_BAT_RANGE_PCT 33
+                              593 ; 250  |#define MP3_ENC_NANDONLY_MIN_V_BAT_RANGE_PCT 17
+                              594 ; 251  |#define MP3_ENC_BUCKMODE_MIN_V_BAT_RANGE_PCT 25
+                              595 ; 252  |
+                              596 ; 253  |/////////////////////////////////////////////////////////////////////////////////
+                              597 ; 254  |// Voice recording filenames
+                              598 ; 255  |// number of digits in filename Vxxx.wav
+                              599 ; 256  |/////////////////////////////////////////////////////////////////////////////////
+                              600 ; 257  |#define DIGITS_IN_VOICE_FILENAME 3   
+                              601 ; 258  |
+                              602 ; 259  |/////////////////////////////////////////////////////////////////////////////////
+                              603 ; 260  |// Mic Bias: Set this enable to 1 to internally generate mic bias voltage. 
+                              604 ; 261  |// Also below, must configure internal resistor value and pin to use for DC bias. 
+                              605 ; 262  |// Can set to 0 to disable internally generated mic bias voltage at pin lradc1/2.
+                              606 ; 263  |#if defined(DEVICE_3500)
+                              607 ; 264  |#define ENABLE_INTERNALLY_GENERATED_MICBIAS 1 
+                              608 ; 265  |// MIC BIAS circuit source selection: use Low Resolution ADC pin 2 or 1 to bias mic. 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              609 ; 266  |// Per your layout: select LRADC 2 or 1 below 
+                              610 ; 267  |//   (pin LRADC 2 for 35xx cpu card revB, LRADC 1 for 35xx cpu card revC, ref schematics, 
+                                  & demo player)
+                              611 ; 268  |#define LRADC_NUM_FOR_MIC_BIAS 1 
+                              612 ; 269  |// Sets internal mic bias R to value 2, 4, or 8 (in kOhms).
+                              613 ; 270  |#define MICBIAS_CONFIGURED_RESISTOR_KOHMS 8
+                              614 ; 271  |
+                              615 ; 272  |// Allows mic bias to settle before sampling. This delay currently unused. For rec btn whe
+                                  n bias not yet ready.
+                              616 ; 273  |#define REC_BTN_INTERNAL_MIC_BIAS_SETTLING_DELAY_MS 400 
+                              617 ; 274  |// Option always keeps bias enabled after mainmenu init. This allows for start pop prevent
+                                  ion if you use rec button from outside voice menu.
+                              618 ; 275  |// This selection costs 1 mWatt but gains the desired low record button to sampling latenc
+                                  y in the record-from-music-menu use-case.
+                              619 ; 276  |#define KEEP_MIC_BIAS_ENABLED 0
+                              620 ; 277  |
+                              621 ; 278  |#else 
+                              622 ; 279  |// STMP3410
+                              623 ; 280  |#define ENABLE_INTERNALLY_GENERATED_MICBIAS 0
+                              624 ; 281  |#define LRADC_NUM_FOR_MIC_BIAS 1 
+                              625 ; 282  |#define MICBIAS_CONFIGURED_RESISTOR_KOHMS 2
+                              626 ; 283  |#endif
+                              627 ; 284  |
+                              628 ; 285  |/////////////////////////////////////////////////////////////////////////////////
+                              629 ; 286  |// Number of available soft timers
+                              630 ; 287  |/////////////////////////////////////////////////////////////////////////////////
+                              631 ; 288  |#if defined(SYNC_LYRICS)
+                              632 ; 289  |#define SOFT_TIMERS 10
+                              633 ; 290  |#else 
+                              634 ; 291  |#if defined(JPEG_DECODER)
+                              635 ; 292  |#define SOFT_TIMERS 10
+                              636 ; 293  |#else 
+                              637 ; 294  |#define SOFT_TIMERS 9
+                              638 ; 295  |#endif
+                              639 ; 296  |#endif
+                              640 ; 297  |
+                              641 ; 298  |/////////////////////////////////////////////////////////////////////////////////
+                              642 ; 299  |//  sizes
+                              643 ; 300  |/////////////////////////////////////////////////////////////////////////////////
+                              644 ; 301  |#if defined(MMC)
+                              645 ; 302  |#if defined(USE_PLAYLIST5)
+                              646 ; 303  |#define MENU_STACK_SIZE 1500
+                              647 ; 304  |#else 
+                              648 ; 305  |#define MENU_STACK_SIZE 1250
+                              649 ; 306  |#endif //if @def('USE_PLAYLIST5')
+                              650 ; 307  |#else 
+                              651 ; 308  |#if defined(USE_PLAYLIST5)
+                              652 ; 309  |#define MENU_STACK_SIZE 1500
+                              653 ; 310  |#else 
+                              654 ; 311  |#define MENU_STACK_SIZE 1250
+                              655 ; 312  |#endif //if @def('USE_PLAYLIST5')
+                              656 ; 313  |#endif //if @def('MMC')
+                              657 ; 314  |
+                              658 ; 315  |// NOTE: SDK2.6 USED 550 FOR NEXT LINE, BUT SDK3.0BETA USED 750. Should it be ifdef MTP 75
+                                  0 else 550 for other builds? TOVERIFY. MYALLOC
+                              659 ; 316  |// 
+                              660 ; 317  |#define STACK_L1_SIZE 750
+                              661 ; 318  |#define STACK_L2_SIZE 100
+                              662 ; 319  |#define STACK_L3_SIZE 160
+                              663 ; 320  |
+                              664 ; 321  |// If we are in MTP mode the overlay task stack can shrink.
+                              665 ; 322  |// TODO shrink this stack for MTP, I will leave it at 500 until we verify that it 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              666 ; 323  |// is ok with switching code.
+                              667 ; 324  |#if defined(MTP_BUILD)
+                              668 ; 325  |#define OVERLAY_MANAGER_STACK_SIZE 300
+                              669 ; 326  |#endif
+                              670 ; 327  |
+                              671 ; 328  |/////////////////////////////////////////////////////////////////////////////////
+                              672 ; 329  |// maximum number of nested funclets 
+                              673 ; 330  |/////////////////////////////////////////////////////////////////////////////////
+                              674 ; 331  |#define MAX_NESTED_FUNCLET 6 
+                              675 ; 332  |
+                              676 ; 333  |/////////////////////////////////////////////////////////////////////////////////
+                              677 ; 334  |//    LCD DEFINITIONS
+                              678 ; 335  |/////////////////////////////////////////////////////////////////////////////////
+                              679 ; 336  |
+                              680 ; 337  |#define SPACE_CHAR 0x000020          
+                              681 ; 338  |#define ZERO_CHAR 0x000030
+                              682 ; 339  |#define COLON_CHAR 0x00003A
+                              683 ; 340  |#define PERIOD_CHAR 0x00002E
+                              684 ; 341  |
+                              685 ; 342  |#if (defined(S6B33B0A_LCD))
+                              686 ; 343  |#define LCD_X_SIZE 128
+                              687 ; 344  |#define LCD_Y_SIZE 159
+                              688 ; 345  |#endif
+                              689 ; 346  |
+                              690 ; 347  |#if (defined(SED15XX_LCD))
+                              691 ; 348  |#define LCD_X_SIZE 128
+                              692 ; 349  |#define LCD_Y_SIZE 64
+                              693 ; 350  |#endif
+                              694 ; 351  |
+                              695 ; 352  |
+                              696 ; 353  |//////////////////////////////////////////////////////////////////////////////////
+                              697 ; 354  |//   Details on Customizing Contrast
+                              698 ; 355  |/////////////////////////////////////////////////////////////////////////////////
+                              699 ; 356  |//   Max supported LCD range is 0 - 3F; however due to hardware/voltage differences
+                              700 ; 357  |//   the range of visibility is usually smaller than this.  It is important to 
+                              701 ; 358  |//   calibrate the visible range, because the contrast setting is saved.
+                              702 ; 359  |//   If the user shuts off the player while lcd is not visible, the player is useless
+                              703 ; 360  |//   unless the ezact sequence is remembered.
+                              704 ; 361  |//   To find out what range your player supports: 
+                              705 ; 362  |//   change these equs to full range or comment out (full range is default)
+                              706 ; 363  |//;;;;;;
+                              707 ; 364  |// uncomment the line below to build code that will provide raw contrast value
+                              708 ; 365  |// recommended calibration using player -- uncomment 
+                              709 ; 366  |//;;;;;;
+                              710 ; 367  |//CONTRAST_CALIBRATION    equ  1
+                              711 ; 368  |////////////////////////////
+                              712 ; 369  |#if (defined(DEMO_HW))
+                              713 ; 370  |// this is the setting for ET301 demos; Next 2 line have not been updated for new Shingyi 
+                                  LCD (June6'05)
+                              714 ; 371  |#define LCD_MAX_CONTRAST 0x32 
+                              715 ; 372  |#define LCD_MIN_CONTRAST 0x1E
+                              716 ; 373  |#else 
+                              717 ; 374  |
+                              718 ; 375  |#if (defined(S6B33B0A_LCD))
+                              719 ; 376  |#define LCD_MAX_CONTRAST 210
+                              720 ; 377  |#define LCD_MIN_CONTRAST 160    
+                              721 ; 378  |#endif
+                              722 ; 379  |
+                              723 ; 380  |#if (defined(SED15XX_LCD))
+                              724 ; 381  |// Next 3 line comment was for OLD shingyi LCD: (default LCD before sdk2.6)
+                              725 ; 382  |// Engineering board regs support range [17-37].
+                              726 ; 383  |//   Engineering board DC/DC support range [24-46]. 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              727 ; 384  |//   One default contrast range [24-42] works for both.
+                              728 ; 385  |// The 3 sets of contrast ranges below are updated for SDK2.6 to support either 
+                              729 ; 386  |// new or old ShingYih LCDs. "File" refers to \resource\shingyih\system_lcd_init_seq.src
+                              730 ; 387  |// 3/10/05 - Use one of the 2 next contrast ranges depending on which
+                              731 ; 388  |// ShingYih LCD you have.  See \resources\shingyi\readme.txt 
+                              732 ; 389  |// Optimal for NEW LCD with NEW file (SDK2.6 default)  
+                              733 ; 390  |// G098064-41 LCD module (present on engr board revH LCD card)
+                              734 ; 391  |
+                              735 ; 392  |#if (defined(NEWSHINGYIH))
+                              736 ; 393  |#define LCD_MAX_CONTRAST 250
+                              737 ; 394  |#define LCD_MIN_CONTRAST 0
+                              738 ; 395  |#else 
+                              739 ; 396  |//-----
+                              740 ; 397  |// Near optimal for OLD LCD with NEW file. 
+                              741 ; 398  |// NOT optimal for the new lcd but pretty good. So u may use this if u want 1 build for bo
+                                  th LCDs.
+                              742 ; 399  |#define LCD_MAX_CONTRAST 250
+                              743 ; 400  |#define LCD_MIN_CONTRAST 0
+                              744 ; 401  |
+                              745 ; 402  |//=====
+                              746 ; 403  |// Optimal for OLD ShingYih LCD with OLD file (as sdk2.521)
+                              747 ; 404  |// Suggest going with default new init file & values above for your LCD instead of this hi
+                                  storic ver.
+                              748 ; 405  |//LCD_MAX_CONTRAST equ 42
+                              749 ; 406  |//LCD_MIN_CONTRAST equ 24 
+                              750 ; 407  |
+                              751 ; 408  |#endif
+                              752 ; 409  |#endif
+                              753 ; 410  |
+                              754 ; 411  |#endif
+                              755 ; 412  |
+                              756 ; 413  |//////////////////////////////////////////////////////////////////////////////////
+                              757 ; 414  |// The default value of the lcd contrast in % of range
+                              758 ; 415  |//   the default value is used when no settings.dat is available
+                              759 ; 416  |//////////////////////////////////////////////////////////////////////////////////
+                              760 ; 417  |
+                              761 ; 418  |#if (defined(S6B33B0A_LCD))
+                              762 ; 419  |// 60% of range is default value
+                              763 ; 420  |#define DEFAULT_CONTRAST 50 
+                              764 ; 421  |#endif
+                              765 ; 422  |
+                              766 ; 423  |#if (defined(SED15XX_LCD))
+                              767 ; 424  |// % of range is default value (was 60%)
+                              768 ; 425  |#define DEFAULT_CONTRAST 50 
+                              769 ; 426  |#endif
+                              770 ; 427  |
+                              771 ; 428  |
+                              772 ; 429  |// percentage change per increment/decrement message (LCD_DEC_CONTRAST/LCD_INC_CONTRAST)
+                              773 ; 430  |// make lower when doing calibration
+                              774 ; 431  |#define LCD_STEPSIZE_CONTRAST 10  
+                              775 ; 432  |
+                              776 ; 433  |
+                              777 ; 434  |/////////////////////////////////////////////////////////////////////////////////
+                              778 ; 435  |// For FFWD and RWND
+                              779 ; 436  |/////////////////////////////////////////////////////////////////////////////////
+                              780 ; 437  |#define SECONDS_TO_SKIP 1
+                              781 ; 438  |#define SECONDS_TO_SKIP1 3
+                              782 ; 439  |#define SECONDS_TO_SKIP2 6
+                              783 ; 440  |// number of seconds to cause reset to begin of song for PREV push
+                              784 ; 441  |#define PREV_SONG_THRESHOLD 5  
+                              785 ; 442  |// number of 300 mSec periods before the numbers of seconds to skip increases
+                              786 ; 443  |#define FIRST_TIME_BOUNDARY 15 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              787 ; 444  |// number of 300 mSec periods before the numbers of seconds to skip increases
+                              788 ; 445  |#define SECOND_TIME_BOUNDARY 30 
+                              789 ; 446  |
+                              790 ; 447  |// For audible FFW/RWD
+                              791 ; 448  |#define SECONDS_TO_SKIP_FOR_3X_RATE 1
+                              792 ; 449  |#define SECONDS_TO_SKIP_FOR_60X_RATE 18
+                              793 ; 450  |#define SECONDS_TO_SKIP_FOR_600X_RATE 180
+                              794 ; 451  |#define SECONDS_TO_SKIP_FOR_1800X_RATE 540
+                              795 ; 452  |// number of 300 mSec periods before the numbers of seconds to skip increases
+                              796 ; 453  |#define LEVEL1_BOUNDARY 17 
+                              797 ; 454  |// number of 300 mSec periods before the numbers of seconds to skip increases
+                              798 ; 455  |#define LEVEL2_BOUNDARY 33 
+                              799 ; 456  |// number of 300 mSec periods before the numbers of seconds to skip increases
+                              800 ; 457  |#define LEVEL3_BOUNDARY 50 
+                              801 ; 458  |// Stmp00010296 Ticket #71685:  for song shorter than the min. skip size
+                              802 ; 459  |// if song_time < skip_size, bCurrentSongShort=>TRUE (ignore FWD/RWD commands)
+                              803 ; 460  |// Short Song Time, songs too short to play.
+                              804 ; 461  |#define SHORT_SONG_TIME SECONDS_TO_SKIP         
+                              805 ; 462  |
+                              806 ; 463  |/////////////////////////////////////////////////////////////////////////////////
+                              807 ; 464  |// MP3 Sync Values
+                              808 ; 465  |/////////////////////////////////////////////////////////////////////////////////
+                              809 ; 466  |// # bytes to look for sync before marking it bad
+                              810 ; 467  |#define MP3_SYNC_THRESHOLD 70000 
+                              811 ; 468  |// # bytes to look for sync before slowing decoder isr frequency (to let menus run)
+                              812 ; 469  |#define MP3_SYNC_THRESHOLD1 10000 
+                              813 ; 470  |// once we have sync'd, the isr should be called this frequently
+                              814 ; 471  |#define MP3_DECODERISR_FAST 7500  
+                              815 ; 472  |// if decoder is having difficulty syncing, switch isr to be called less frequently
+                              816 ; 473  |#define MP3_DECODERISR_SLOW 50000 
+                              817 ; 474  |
+                              818 ; 475  |
+                              819 ; 476  |/////////////////////////////////////////////////////////////////////////////////
+                              820 ; 477  |//// Multi-Stage Volume Control Definitions
+                              821 ; 478  |/////////////////////////////////////////////////////////////////////////////////
+                              822 ; 479  |//// Use Multi-Stage Volume
+                              823 ; 480  |#define MULTI_STAGE_VOLUME 0x1                  
+                              824 ; 481  |
+                              825 ; 482  |//// Master Volume definitions
+                              826 ; 483  |#define MIX_MSTR_MAX_VOL 0x0
+                              827 ; 484  |#define NUM_MSTR_ATT_STEPS (0x1F-MIX_MSTR_MAX_VOL)
+                              828 ; 485  |
+                              829 ; 486  |//// DAC-Mode definitions
+                              830 ; 487  |//// Adjusts 0dB point
+                              831 ; 488  |#define MIX_DAC_NOM_VOL 0x6                  
+                              832 ; 489  |#define MIX_DAC_MIN_VOL 0x1F
+                              833 ; 490  |// For minimum clipping: Set MIX_DAC_MAX_VOL below to match MIX_DAC_NOM_VOL value 2 lines 
+                                  above.
+                              834 ; 491  |// For additional gain (with possible clipping): Set MIX_DAC_MAX_VOL in range below. 
+                              835 ; 492  |//                                               Each integer below MIX_DAC_NOM_VOL provid
+                                  es 1.5 dB gain on Stmp34x0; 
+                              836 ; 493  |//                                               Max gain possible: 8 step diff would prov
+                                  ide +12dB gain.   
+                              837 ; 494  |// range: [0 to MIX_DAC_NOM_VOL] (0 for loudest volume)
+                              838 ; 495  |#define MIX_DAC_MAX_VOL 0x0  
+                              839 ; 496  |
+                              840 ; 497  |#define NUM_DAC_ATT_STEPS (MIX_DAC_MIN_VOL-MIX_DAC_NOM_VOL+1)
+                              841 ; 498  |#define NUM_DAC_GAIN_STEPS (MIX_DAC_NOM_VOL-MIX_DAC_MAX_VOL)
+                              842 ; 499  |#define NUM_DAC_MODE_VOL_STEPS (NUM_DAC_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_DAC_GAIN_STEPS+1)
+                                  
+                              843 ; 500  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              844 ; 501  |//// If there is no stored volume, set to 50% of DAC-Mode max; change if DAC Mode is not t
+                                  he default
+                              845 ; 502  |//// STMP35xx has 2dB attenuation per step so default needs a few more steps above midpoin
+                                  t.
+                              846 ; 503  |#define DEFAULT_VOLUME ((NUM_DAC_MODE_VOL_STEPS/2)+6)         
+                              847 ; 504  |
+                              848 ; 505  |//// Set maximum restored volume to 75% of DAC-Mode max; change if DAC Mode is not the def
+                                  ault
+                              849 ; 506  |#define MAX_RESTORED_VOLUME ((3*NUM_DAC_MODE_VOL_STEPS)/4)   
+                              850 ; 507  |
+                              851 ; 508  |
+                              852 ; 509  |//// Line In definitions (used for Line-In 1)
+                              853 ; 510  |//// 0dB point of the Line In
+                              854 ; 511  |#define MIX_LINE_NOM_VOL 0x8                  
+                              855 ; 512  |//// Minimum volume of Line In
+                              856 ; 513  |#define MIX_LINE_MIN_VOL 0x1F                 
+                              857 ; 514  |//// Maximum volume of Line In (can adjust extra gain)
+                              858 ; 515  |#define MIX_LINE_MAX_VOL 0x6                  
+                              859 ; 516  |#define NUM_LINE_ATT_STEPS (MIX_LINE_MIN_VOL-MIX_LINE_NOM_VOL+1)
+                              860 ; 517  |#define NUM_LINE_GAIN_STEPS (MIX_LINE_NOM_VOL-MIX_LINE_MAX_VOL)
+                              861 ; 518  |#define NUM_LINE_MODE_VOL_STEPS (NUM_LINE_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_LINE_GAIN_STEPS
+                                  +1)
+                              862 ; 519  |
+                              863 ; 520  |//// Line In definitions (used for FM tuner with 144 pin package)
+                              864 ; 521  |//// 0dB point of the Line In
+                              865 ; 522  |#define MIX_FM_NOM_VOL 0x8                  
+                              866 ; 523  |//// Minimum volume of Line In
+                              867 ; 524  |#define MIX_FM_MIN_VOL 0x1F                 
+                              868 ; 525  |//// Maximum volume of Line In (can adjust extra gain)
+                              869 ; 526  |#define MIX_FM_MAX_VOL 0x6                  
+                              870 ; 527  |#define NUM_FM_ATT_STEPS (MIX_FM_MIN_VOL-MIX_FM_NOM_VOL+1)
+                              871 ; 528  |#define NUM_FM_GAIN_STEPS (MIX_FM_NOM_VOL-MIX_FM_MAX_VOL)
+                              872 ; 529  |#define NUM_FM_MODE_VOL_STEPS (NUM_FM_ATT_STEPS+NUM_MSTR_ATT_STEPS+NUM_FM_GAIN_STEPS+1)
+                              873 ; 530  |
+                              874 ; 531  |/////////////////////////////////////////////////////////////////////////////////
+                              875 ; 532  |//// When enabled (1), periodically checks for one of several FM state machine invalid dea
+                                  dlock states & recovers. 
+                              876 ; 533  |//// Define as 0 to disable FM-deadlock-state checking and recovery.
+                              877 ; 534  |#define FM_WATCHDOG_ENABLE 1
+                              878 ; 535  |
+                              879 ; 536  |#if !defined(STMP_BUILD_PLAYER)
+                              880 ; 537  |////
+                              881 ; 538  |////! This varible holds the lcd display state for the mtp project.
+                              882 ; 539  |////
+                              883 ; 540  |///
+                              884 ; 541  |#include <types.h>
+                              885 
+                              887 
+                              888 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              889 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              890 ; 3    |//
+                              891 ; 4    |// Filename: types.h
+                              892 ; 5    |// Description: Standard data types
+                              893 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              894 ; 7    |
+                              895 ; 8    |#ifndef _TYPES_H
+                              896 ; 9    |#define _TYPES_H
+                              897 ; 10   |
+                              898 ; 11   |// TODO:  move this outta here!
+                              899 ; 12   |#if !defined(NOERROR)
+                              900 ; 13   |#define NOERROR 0
+                              901 ; 14   |#define SUCCESS 0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              902 ; 15   |#endif 
+                              903 ; 16   |#if !defined(SUCCESS)
+                              904 ; 17   |#define SUCCESS  0
+                              905 ; 18   |#endif
+                              906 ; 19   |#if !defined(ERROR)
+                              907 ; 20   |#define ERROR   -1
+                              908 ; 21   |#endif
+                              909 ; 22   |#if !defined(FALSE)
+                              910 ; 23   |#define FALSE 0
+                              911 ; 24   |#endif
+                              912 ; 25   |#if !defined(TRUE)
+                              913 ; 26   |#define TRUE  1
+                              914 ; 27   |#endif
+                              915 ; 28   |
+                              916 ; 29   |#if !defined(NULL)
+                              917 ; 30   |#define NULL 0
+                              918 ; 31   |#endif
+                              919 ; 32   |
+                              920 ; 33   |#define MAX_INT     0x7FFFFF
+                              921 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              922 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              923 ; 36   |#define MAX_ULONG   (-1) 
+                              924 ; 37   |
+                              925 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              926 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              927 ; 40   |
+                              928 ; 41   |
+                              929 ; 42   |#define BYTE    unsigned char       // btVarName
+                              930 ; 43   |#define CHAR    signed char         // cVarName
+                              931 ; 44   |#define USHORT  unsigned short      // usVarName
+                              932 ; 45   |#define SHORT   unsigned short      // sVarName
+                              933 ; 46   |#define WORD    unsigned int        // wVarName
+                              934 ; 47   |#define INT     signed int          // iVarName
+                              935 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              936 ; 49   |#define LONG    signed long         // lVarName
+                              937 ; 50   |#define BOOL    unsigned int        // bVarName
+                              938 ; 51   |#define FRACT   _fract              // frVarName
+                              939 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              940 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              941 ; 54   |#define FLOAT   float               // fVarName
+                              942 ; 55   |#define DBL     double              // dVarName
+                              943 ; 56   |#define ENUM    enum                // eVarName
+                              944 ; 57   |#define CMX     _complex            // cmxVarName
+                              945 ; 58   |typedef WORD UCS3;                   // 
+                              946 ; 59   |
+                              947 ; 60   |#define UINT16  unsigned short
+                              948 ; 61   |#define UINT8   unsigned char   
+                              949 ; 62   |#define UINT32  unsigned long
+                              950 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              951 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              952 ; 65   |#define WCHAR   UINT16
+                              953 ; 66   |
+                              954 ; 67   |//UINT128 is 16 bytes or 6 words
+                              955 ; 68   |typedef struct UINT128_3500 {   
+                              956 ; 69   |    int val[6];     
+                              957 ; 70   |} UINT128_3500;
+                              958 ; 71   |
+                              959 ; 72   |#define UINT128   UINT128_3500
+                              960 ; 73   |
+                              961 ; 74   |// Little endian word packed byte strings:   
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              962 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              963 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              964 ; 77   |// Little endian word packed byte strings:   
+                              965 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              966 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              967 ; 80   |
+                              968 ; 81   |// Declare Memory Spaces To Use When Coding
+                              969 ; 82   |// A. Sector Buffers
+                              970 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              971 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              972 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              973 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              974 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              975 ; 88   |// B. Media DDI Memory
+                              976 ; 89   |#define MEDIA_DDI_MEM _Y
+                              977 ; 90   |
+                              978 ; 91   |
+                              979 ; 92   |
+                              980 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              981 ; 94   |// Examples of circular pointers:
+                              982 ; 95   |//    INT CIRC cpiVarName
+                              983 ; 96   |//    DWORD CIRC cpdwVarName
+                              984 ; 97   |
+                              985 ; 98   |#define RETCODE INT                 // rcVarName
+                              986 ; 99   |
+                              987 ; 100  |// generic bitfield structure
+                              988 ; 101  |struct Bitfield {
+                              989 ; 102  |    unsigned int B0  :1;
+                              990 ; 103  |    unsigned int B1  :1;
+                              991 ; 104  |    unsigned int B2  :1;
+                              992 ; 105  |    unsigned int B3  :1;
+                              993 ; 106  |    unsigned int B4  :1;
+                              994 ; 107  |    unsigned int B5  :1;
+                              995 ; 108  |    unsigned int B6  :1;
+                              996 ; 109  |    unsigned int B7  :1;
+                              997 ; 110  |    unsigned int B8  :1;
+                              998 ; 111  |    unsigned int B9  :1;
+                              999 ; 112  |    unsigned int B10 :1;
+                             1000 ; 113  |    unsigned int B11 :1;
+                             1001 ; 114  |    unsigned int B12 :1;
+                             1002 ; 115  |    unsigned int B13 :1;
+                             1003 ; 116  |    unsigned int B14 :1;
+                             1004 ; 117  |    unsigned int B15 :1;
+                             1005 ; 118  |    unsigned int B16 :1;
+                             1006 ; 119  |    unsigned int B17 :1;
+                             1007 ; 120  |    unsigned int B18 :1;
+                             1008 ; 121  |    unsigned int B19 :1;
+                             1009 ; 122  |    unsigned int B20 :1;
+                             1010 ; 123  |    unsigned int B21 :1;
+                             1011 ; 124  |    unsigned int B22 :1;
+                             1012 ; 125  |    unsigned int B23 :1;
+                             1013 ; 126  |};
+                             1014 ; 127  |
+                             1015 ; 128  |union BitInt {
+                             1016 ; 129  |        struct Bitfield B;
+                             1017 ; 130  |        int        I;
+                             1018 ; 131  |};
+                             1019 ; 132  |
+                             1020 ; 133  |#define MAX_MSG_LENGTH 10
+                             1021 ; 134  |struct CMessage
+                             1022 ; 135  |{
+                             1023 ; 136  |        unsigned int m_uLength;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1024 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                             1025 ; 138  |};
+                             1026 ; 139  |
+                             1027 ; 140  |typedef struct {
+                             1028 ; 141  |    WORD m_wLength;
+                             1029 ; 142  |    WORD m_wMessage;
+                             1030 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                             1031 ; 144  |} Message;
+                             1032 ; 145  |
+                             1033 ; 146  |struct MessageQueueDescriptor
+                             1034 ; 147  |{
+                             1035 ; 148  |        int *m_pBase;
+                             1036 ; 149  |        int m_iModulo;
+                             1037 ; 150  |        int m_iSize;
+                             1038 ; 151  |        int *m_pHead;
+                             1039 ; 152  |        int *m_pTail;
+                             1040 ; 153  |};
+                             1041 ; 154  |
+                             1042 ; 155  |struct ModuleEntry
+                             1043 ; 156  |{
+                             1044 ; 157  |    int m_iSignaledEventMask;
+                             1045 ; 158  |    int m_iWaitEventMask;
+                             1046 ; 159  |    int m_iResourceOfCode;
+                             1047 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                             1048 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                             1049 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                             1050 ; 163  |    int m_uTimeOutHigh;
+                             1051 ; 164  |    int m_uTimeOutLow;
+                             1052 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                             1053 ; 166  |};
+                             1054 ; 167  |
+                             1055 ; 168  |union WaitMask{
+                             1056 ; 169  |    struct B{
+                             1057 ; 170  |        unsigned int m_bNone     :1;
+                             1058 ; 171  |        unsigned int m_bMessage  :1;
+                             1059 ; 172  |        unsigned int m_bTimer    :1;
+                             1060 ; 173  |        unsigned int m_bButton   :1;
+                             1061 ; 174  |    } B;
+                             1062 ; 175  |    int I;
+                             1063 ; 176  |} ;
+                             1064 ; 177  |
+                             1065 ; 178  |
+                             1066 ; 179  |struct Button {
+                             1067 ; 180  |        WORD wButtonEvent;
+                             1068 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                             1069 ; 182  |};
+                             1070 ; 183  |
+                             1071 ; 184  |struct Message {
+                             1072 ; 185  |        WORD wMsgLength;
+                             1073 ; 186  |        WORD wMsgCommand;
+                             1074 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                             1075 ; 188  |};
+                             1076 ; 189  |
+                             1077 ; 190  |union EventTypes {
+                             1078 ; 191  |        struct CMessage msg;
+                             1079 ; 192  |        struct Button Button ;
+                             1080 ; 193  |        struct Message Message;
+                             1081 ; 194  |};
+                             1082 ; 195  |
+                             1083 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                             1084 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1085 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                             1086 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                             1087 ; 200  |
+                             1088 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                             1089 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                             1090 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                             1091 ; 204  |
+                             1092 ; 205  |#if DEBUG
+                             1093 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                             1094 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                             1095 ; 208  |#else 
+                             1096 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                             1097 ; 210  |#define DebugBuildAssert(x)    
+                             1098 ; 211  |#endif
+                             1099 ; 212  |
+                             1100 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                             1101 ; 214  |//  #pragma asm
+                             1102 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                             1103 ; 216  |//  #pragma endasm
+                             1104 ; 217  |
+                             1105 ; 218  |
+                             1106 ; 219  |#ifdef COLOR_262K
+                             1107 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                             1108 ; 221  |#elif defined(COLOR_65K)
+                             1109 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                             1110 ; 223  |#else
+                             1111 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                             1112 ; 225  |#endif
+                             1113 ; 226  |    
+                             1114 ; 227  |#endif // #ifndef _TYPES_H
+                             1115 
+                             1117 
+                             1118 ; 542  |extern volatile WORD g_wActivityState;
+                             1119 ; 543  |#endif // if !@def('STMP_BUILD_PLAYER')
+                             1120 ; 544  |
+                             1121 ; 545  |void _reentrant Init5VSense(void);
+                             1122 ; 546  |void _reentrant ServiceDCDC(void);
+                             1123 ; 547  |
+                             1124 ; 548  |////////////////////////////////////////////////////////////////////////////
+                             1125 ; 549  |//// JPEG Thumbnail Mode Setting
+                             1126 ; 550  |//// number of column in thumbnail mode
+                             1127 ; 551  |#define THUMBNAIL_X 2           
+                             1128 ; 552  |//// number of row in  thumbnail mode
+                             1129 ; 553  |#define THUMBNAIL_Y 2           
+                             1130 ; 554  |//// thumbnail boundary offset x
+                             1131 ; 555  |#define THUMBNAIL_X_OFFSET 4            
+                             1132 ; 556  |//// thumbnail boundary offset y
+                             1133 ; 557  |#define THUMBNAIL_Y_OFFSET 4            
+                             1134 ; 558  |
+                             1135 ; 559  |#endif // if (!@def(_PROJECT_INC))
+                             1136 ; 560  |
+                             1137 
+                             1139 
+                             1140 ; 14   |#include "version.h"
+                             1141 
+                             1143 
+                             1144 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                             1145 ; 2    |// Copyright(C) SigmaTel, Inc. 2002
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1146 ; 3    |//
+                             1147 ; 4    |// Filename: version.h
+                             1148 ; 5    |// Description: 
+                             1149 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                             1150 ; 7    |
+                             1151 ; 8    |#ifndef _VERSION_H
+                             1152 ; 9    |#define _VERSION_H
+                             1153 ; 10   |
+                             1154 ; 11   |////////////////////////////////////////////////////////////////////////////////
+                             1155 ; 12   |// Defs
+                             1156 ; 13   |////////////////////////////////////////////////////////////////////////////////
+                             1157 ; 14   |
+                             1158 ; 15   |////////////////////////////////////////////////////////////////////////////////
+                             1159 ; 16   |// Error codes
+                             1160 ; 17   |////////////////////////////////////////////////////////////////////////////////
+                             1161 ; 18   |
+                             1162 ; 19   |#define VERSION_ERROR_NON_STANDARD_VERSION      1
+                             1163 ; 20   |
+                             1164 ; 21   |////////////////////////////////////////////////////////////////////////////////
+                             1165 ; 22   |// Typedefs
+                             1166 ; 23   |////////////////////////////////////////////////////////////////////////////////
+                             1167 ; 24   |
+                             1168 ; 25   |typedef struct
+                             1169 ; 26   |{
+                             1170 ; 27   |    WORD Major;
+                             1171 ; 28   |    WORD Minor;
+                             1172 ; 29   |} VERSION_COMPONENT_DECIMAL;
+                             1173 ; 30   |
+                             1174 ; 31   |typedef struct
+                             1175 ; 32   |{
+                             1176 ; 33   |    WORD Major_Char;
+                             1177 ; 34   |    WORD Minor_Char_2;
+                             1178 ; 35   |    WORD Minor_Char_1;
+                             1179 ; 36   |    WORD Minor_Char_0;
+                             1180 ; 37   |} VERSION_COMPONENT_ASCII;
+                             1181 ; 38   |
+                             1182 ; 39   |typedef struct
+                             1183 ; 40   |{
+                             1184 ; 41   |    WORD Major_Digit;
+                             1185 ; 42   |    WORD Minor_Digit_2;
+                             1186 ; 43   |    WORD Minor_Digit_1;
+                             1187 ; 44   |    WORD Minor_Digit_0;
+                             1188 ; 45   |} VERSION_COMPONENT_BCD;
+                             1189 
+                             1206 
+                             1207 ; 46   |
+                             1208 ; 47   |typedef union
+                             1209 ; 48   |{
+                             1210 ; 49   |    VERSION_COMPONENT_DECIMAL Decimal;
+                             1211 ; 50   |    VERSION_COMPONENT_ASCII Ascii;
+                             1212 ; 51   |    VERSION_COMPONENT_BCD Bcd;
+                             1213 ; 52   |} VERSION_COMPONENT;
+                             1214 
+                             1220 
+                             1221 ; 53   |
+                             1222 ; 54   |////////////////////////////////////////////////////////////////////////////////
+                             1223 ; 55   |// Prototypes
+                             1224 ; 56   |////////////////////////////////////////////////////////////////////////////////
+                             1225 ; 57   |RETCODE _reentrant SysGetComponentVersionDecimal(VERSION_COMPONENT * pVersion);
+                             1226 ; 58   |RETCODE _reentrant SysGetComponentVersionAscii(VERSION_COMPONENT * pVersion);
+                             1227 ; 59   |RETCODE _reentrant SysGetComponentVersionBcd(VERSION_COMPONENT * pVersion);
+                             1228 ; 60   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1229 ; 61   |
+                             1230 ; 62   |#endif // #ifndef _VERSION_H
+                             1231 
+                             1233 
+                             1234 ; 15   |
+                             1235 ; 16   |////////////////////////////////////////////////////////////////////////////////
+                             1236 ; 17   |// Symbol Exports
+                             1237 ; 18   |////////////////////////////////////////////////////////////////////////////////
+                             1238 ; 19   |
+                             1239 ; 20   |////////////////////////////////////////////////////////////////////////////////
+                             1240 ; 21   |// Externs
+                             1241 ; 22   |////////////////////////////////////////////////////////////////////////////////
+                             1242 ; 23   |
+                             1243 ; 24   |    extern WORD g_wVersionMajor;
+                             1244 ; 25   |    extern WORD g_wVersionMinor;
+                             1245 ; 26   |
+                             1246 ; 27   |////////////////////////////////////////////////////////////////////////////////
+                             1247 ; 28   |// defs
+                             1248 ; 29   |////////////////////////////////////////////////////////////////////////////////
+                             1249 ; 30   |
+                             1250 ; 31   |////////////////////////////////////////////////////////////////////////////////
+                             1251 ; 32   |// Prototypes
+                             1252 ; 33   |////////////////////////////////////////////////////////////////////////////////
+                             1253 ; 34   |
+                             1254 ; 35   |////////////////////////////////////////////////////////////////////////////////
+                             1255 ; 36   |// Variables
+                             1256 ; 37   |////////////////////////////////////////////////////////////////////////////////
+                             1257 ; 38   |
+                             1258 ; 39   |////////////////////////////////////////////////////////////////////////////////
+                             1259 ; 40   |// Code
+                             1260 ; 41   |////////////////////////////////////////////////////////////////////////////////
+                             1261 ; 42   |#if 0 // Mar 1 2007: historical code, not in use anymore and so comment it out
+                             1262 ; 43   |////////////////////////////////////////////////////////////////////////////////
+                             1263 ; 44   |//
+                             1264 ; 45   |//>  Name:          SysGetComponentVersionDecimal
+                             1265 ; 46   |//
+                             1266 ; 47   |//   Type:          Function
+                             1267 ; 48   |//
+                             1268 ; 49   |//   Description:   
+                             1269 ; 50   |//
+                             1270 ; 51   |//   Inputs:        
+                             1271 ; 52   |//
+                             1272 ; 53   |//   Outputs:       none
+                             1273 ; 54   |//
+                             1274 ; 55   |//   Notes:         none
+                             1275 ; 56   |//<
+                             1276 ; 57   |////////////////////////////////////////////////////////////////////////////////
+                             1277 ; 58   |RETCODE _reentrant SysGetComponentVersionDecimal(VERSION_COMPONENT * pVersion)
+                             1278 ; 59   |{
+                             1279 ; 60   |    pVersion->Decimal.Major = g_wVersionMajor;
+                             1280 ; 61   |    pVersion->Decimal.Minor = g_wVersionMinor;
+                             1281 ; 62   |    
+                             1282 ; 63   |    return SUCCESS;
+                             1283 ; 64   |}
+                             1284 ; 65   |
+                             1285 ; 66   |////////////////////////////////////////////////////////////////////////////////
+                             1286 ; 67   |//
+                             1287 ; 68   |//>  Name:          SysGetComponentVersionAscii
+                             1288 ; 69   |//
+                             1289 ; 70   |//   Type:          Function
+                             1290 ; 71   |//
+                             1291 ; 72   |//   Description:   
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1292 ; 73   |//
+                             1293 ; 74   |//   Inputs:        
+                             1294 ; 75   |//
+                             1295 ; 76   |//   Outputs:       none
+                             1296 ; 77   |//
+                             1297 ; 78   |//   Notes:         none
+                             1298 ; 79   |//<
+                             1299 ; 80   |////////////////////////////////////////////////////////////////////////////////
+                             1300 ; 81   |RETCODE _reentrant SysGetComponentVersionAscii(VERSION_COMPONENT * pVersion)
+                             1301 ; 82   |{
+                             1302 ; 83   |    WORD wTemp;
+                             1303 ; 84   |    
+                             1304 ; 85   |    if(!(g_wVersionMajor < 10) || !(g_wVersionMinor < 1000))
+                             1305 ; 86   |    {
+                             1306 ; 87   |        pVersion->Ascii.Major_Char = 0x39;
+                             1307 ; 88   |        pVersion->Ascii.Minor_Char_0 = 0x39;
+                             1308 ; 89   |        pVersion->Ascii.Minor_Char_1 = 0x39;
+                             1309 ; 90   |        pVersion->Ascii.Minor_Char_2 = 0x39;
+                             1310 ; 91   |        return VERSION_ERROR_NON_STANDARD_VERSION;
+                             1311 ; 92   |    }
+                             1312 ; 93   |
+                             1313 ; 94   |    pVersion->Ascii.Major_Char = g_wVersionMajor + 0x30;
+                             1314 ; 95   |
+                             1315 ; 96   |    // Get the hundreds
+                             1316 ; 97   |    wTemp = g_wVersionMinor;
+                             1317 ; 98   |    pVersion->Ascii.Minor_Char_2 = 0;
+                             1318 ; 99   |    while(1)
+                             1319 ; 100  |    {
+                             1320 ; 101  |        if(wTemp >= 100)
+                             1321 ; 102  |        {
+                             1322 ; 103  |            pVersion->Ascii.Minor_Char_2++;
+                             1323 ; 104  |            wTemp -= 100;
+                             1324 ; 105  |        }
+                             1325 ; 106  |        else
+                             1326 ; 107  |        {
+                             1327 ; 108  |            break;
+                             1328 ; 109  |        }
+                             1329 ; 110  |    }
+                             1330 ; 111  |    
+                             1331 ; 112  |    // Convert it to ASCII
+                             1332 ; 113  |    pVersion->Ascii.Minor_Char_2 += 0x30;
+                             1333 ; 114  |
+                             1334 ; 115  |    // Get the tens
+                             1335 ; 116  |    pVersion->Ascii.Minor_Char_1 = 0;
+                             1336 ; 117  |    while(1)
+                             1337 ; 118  |    {
+                             1338 ; 119  |        if(wTemp >= 10)
+                             1339 ; 120  |        {
+                             1340 ; 121  |            pVersion->Ascii.Minor_Char_1++;
+                             1341 ; 122  |            wTemp -= 10;
+                             1342 ; 123  |        }
+                             1343 ; 124  |        else
+                             1344 ; 125  |        {
+                             1345 ; 126  |            break;
+                             1346 ; 127  |        }
+                             1347 ; 128  |    }
+                             1348 ; 129  |    
+                             1349 ; 130  |    // Convert it to ASCII
+                             1350 ; 131  |    pVersion->Ascii.Minor_Char_1 += 0x30;
+                             1351 ; 132  |
+                             1352 ; 133  |    // Get the ones
+                             1353 ; 134  |    pVersion->Ascii.Minor_Char_0 = wTemp + 0x30;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1354 ; 135  |
+                             1355 ; 136  |    return SUCCESS;
+                             1356 ; 137  |}
+                             1357 ; 138  |
+                             1358 ; 139  |////////////////////////////////////////////////////////////////////////////////
+                             1359 ; 140  |//
+                             1360 ; 141  |//>  Name:          SysGetComponentVersionBcd
+                             1361 ; 142  |//
+                             1362 ; 143  |//   Type:          Function
+                             1363 ; 144  |//
+                             1364 ; 145  |//   Description:   
+                             1365 ; 146  |//
+                             1366 ; 147  |//   Inputs:        
+                             1367 ; 148  |//
+                             1368 ; 149  |//   Outputs:       none
+                             1369 ; 150  |//
+                             1370 ; 151  |//   Notes:         none
+                             1371 ; 152  |//<
+                             1372 ; 153  |////////////////////////////////////////////////////////////////////////////////
+                             1373 ; 154  |RETCODE _reentrant SysGetComponentVersionBcd(VERSION_COMPONENT * pVersion)
+                             1374 ; 155  |{
+                             1375 ; 156  |    WORD wTemp;
+                             1376 ; 157  |    
+                             1377 ; 158  |    if(!(g_wVersionMajor < 10) || !(g_wVersionMinor < 1000))
+                             1378 ; 159  |    {
+                             1379 ; 160  |        pVersion->Bcd.Major_Digit = 9;
+                             1380 ; 161  |        pVersion->Bcd.Minor_Digit_0 = 9;
+                             1381 ; 162  |        pVersion->Bcd.Minor_Digit_1 = 9;
+                             1382 ; 163  |        pVersion->Bcd.Minor_Digit_2 = 9;
+                             1383 ; 164  |        return VERSION_ERROR_NON_STANDARD_VERSION;
+                             1384 ; 165  |    }
+                             1385 ; 166  |
+                             1386 ; 167  |    pVersion->Bcd.Major_Digit = g_wVersionMajor;
+                             1387 ; 168  |
+                             1388 ; 169  |    // Get the hundreds
+                             1389 ; 170  |    wTemp = g_wVersionMinor;
+                             1390 ; 171  |    pVersion->Bcd.Minor_Digit_2 = 0;
+                             1391 ; 172  |    while(1)
+                             1392 ; 173  |    {
+                             1393 ; 174  |        if(wTemp >= 100)
+                             1394 ; 175  |        {
+                             1395 ; 176  |            pVersion->Bcd.Minor_Digit_2++;
+                             1396 ; 177  |            wTemp -= 100;
+                             1397 ; 178  |        }
+                             1398 ; 179  |        else
+                             1399 ; 180  |        {
+                             1400 ; 181  |            break;
+                             1401 ; 182  |        }
+                             1402 ; 183  |    }
+                             1403 ; 184  |    
+                             1404 ; 185  |    // Get the tens
+                             1405 ; 186  |    pVersion->Bcd.Minor_Digit_1 = 0;
+                             1406 ; 187  |    while(1)
+                             1407 ; 188  |    {
+                             1408 ; 189  |        if(wTemp >= 10)
+                             1409 ; 190  |        {
+                             1410 ; 191  |            pVersion->Bcd.Minor_Digit_1++;
+                             1411 ; 192  |            wTemp -= 10;
+                             1412 ; 193  |        }
+                             1413 ; 194  |        else
+                             1414 ; 195  |        {
+                             1415 ; 196  |            break;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1416 ; 197  |        }
+                             1417 ; 198  |    }
+                             1418 ; 199  |    
+                             1419 ; 200  |    // Get the ones
+                             1420 ; 201  |    pVersion->Bcd.Minor_Digit_0 = wTemp;
+                             1421 ; 202  |
+                             1422 ; 203  |    return SUCCESS;
+                             1423 ; 204  |}
+                             1424 ; 205  |#endif
+                             1425 
+                             1427 

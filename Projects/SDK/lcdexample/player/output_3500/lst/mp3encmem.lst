@@ -1,0 +1,94 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\algorithms\encoders\mp3\mp3encmem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1     section Mp3EncMem
+                               30     
+                               42     include "encmp3equ.inc"
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel Inc
+                                3 ;
+                                4 ; MP3 Encoder Module       
+                                5 ;/////////////////////////////////////////////////////////////////////////////// 
+                                7 MP3ENCODE_BLOCK_SIZE            equ     1152
+                                8 MP3ENCODE_SOURCE_BUF_BLOCK_SIZE equ     2*MP3ENCODE_BLOCK_SIZE
+                                9 MP3ENCODE_SOURCE_BUF_SIZE       equ     2048*2
+                               10 MP3ENCODE_SOURCE_BUF_MODULO     equ     MP3ENCODE_SOURCE_BUF_SIZE-1
+                               12 MP3ENCODE_SINK_BUF_BLOCK_SIZE   equ     512
+                               13 MP3ENCODE_SINK_BUF_SIZE         equ     8192
+                               14 MP3ENCODE_SINK_BUF_MODULO       equ     MP3ENCODE_SINK_BUF_SIZE-1
+                               17 ENC_ISR_STATE_STOPPED       equ     0
+                               18 ENC_ISR_STATE_RECORDING     equ     1
+                               19 ENC_ISR_STATE_PAUSED        equ     2
+                               23 ENC_MIN_CLUSTERS            equ     8
+                               26 ; Made this for the value 2 that was already in use. 
+                               27 ; NOTE: Total rec time remaining needs to exclude these reserved clusters in its calculation.
+                               28 ; As of Apr 11, 2002, ver tot time left does not seem to factor in these reserved clusters.
+                               30 ENC_MIN_FREE_CLUSTER_LIM    equ     2
+                               34 ; With bytes/cluster of 16,384. /4000 bytes/sec adpcm data =  4.096 sec/cluster
+                               35 ; (at 32kbps)
+                               36 ;  A 3 cluster threshhold warning above record free cluster limit gives ~12 sec warning.    
+                               37 ;  Note: Alternate approach checks remaining record bytes to get seconds but is probably not worth
+                                   the system performance  
+                               38 ;        hit as 'warning needed' is checked in the high frequency periodic timer ISR. Just check t
+                                  he free clusters.
+                               41 ENC_FREE_CLUSTERS_BEFORE_WARNING equ 3
+                               45 ENC_FREE_CLUSTERS_WARN_THRESHOLD equ ENC_MIN_FREE_CLUSTER_LIM+ENC_FREE_CLUSTERS_BEFORE_WARNING
+                               44 ;*******************************************************************************
+                               45 ;  X memory
+                               46 ;*******************************************************************************
+X:0000                         47     org     x,"ENCAPP_EncMp3Mem_mod_X":
+                               49     buffer  M,MP3ENCODE_SINK_BUF_SIZE
+                               50 MP3EncoderSinkBuf
+X:0000 000000                  51     bsc     MP3ENCODE_SINK_BUF_SIZE,$0         ; The MP3 output buffer
+   |   REPEATS                    
+X:1FFF
+                               52     endbuf
+                               54 ;*******************************************************************************
+                               55 ;  Y memory
+                               56 ;*******************************************************************************
+Y:0000                         57      org     y,"ENCAPP_EncMp3Mem_mod_Y":
+                               59         buffer  M,MP3ENCODE_SOURCE_BUF_SIZE
+                               60 FMp3_Inbuf
+                               61 MP3EncoderSourceBuf
+Y:0000 000000                  62         bsc     MP3ENCODE_SOURCE_BUF_SIZE,0         ; The MP3 input buffer
+   |   REPEATS                    
+Y:0FFF
+                               63         endbuf
+Y:0000                         68      org     y,"ENCAPP_EncMp3Mem_Y":
+Y:0000 000000                  70 FMp3EncFrameCount              dc      0
+                               72 FMp3Enc_BitRate                
+Y:0001 000080                  73 Mp3Enc_BitRate                 dc      128
+                               74 FMp3Enc_SamplingRate           
+Y:0002 00002C                  75 Mp3Enc_SamplingRate            dc      44
+                               76 FMp3Enc_NumChannels            
+Y:0003 000002                  77 Mp3Enc_NumChannels             dc      2
+                               79 MP3EncoderSourceBufDesc
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               80 FMP3EncoderSourceBufDesc
+                               81 FMP3EncoderBufAddrPtr
+Y:0004 rrrrrr                  82 MP3EncoderBufAddrPtr           dc      MP3EncoderSourceBuf
+                               83 FMP3EncoderBufModPtr
+Y:0005 000FFF                  84 MP3EncoderBufModPtr            dc      MP3ENCODE_SOURCE_BUF_MODULO
+                               85 FMP3EncoderBufSizePtr
+Y:0006 001000                  86 MP3EncoderBufSizePtr           dc      MP3ENCODE_SOURCE_BUF_SIZE
+                               87 FMP3EncoderBufHeadPtr
+Y:0007 rrrrrr                  88 MP3EncoderBufHeadPtr           dc      MP3EncoderSourceBuf
+                               89 FMP3EncoderBufTailPtr
+Y:0008 rrrrrr                  90 MP3EncoderBufTailPtr           dc      MP3EncoderSourceBuf
+                               92 FMP3EncoderSinkBufDesc
+                               93 MP3EncoderSinkBufDesc
+                               94 FMP3EncoderSinkBufAddrPtr
+Y:0009 rrrrrr                  95 MP3EncoderSinkBufAddrPtr       dc      MP3EncoderSinkBuf
+                               96 FMP3EncoderSinkBufModPtr
+Y:000A 001FFF                  97 MP3EncoderSinkBufModPtr        dc      MP3ENCODE_SINK_BUF_MODULO
+                               98 FMP3EncoderSinkBufSizePtr
+Y:000B 002000                  99 MP3EncoderSinkBufSizePtr       dc      MP3ENCODE_SINK_BUF_SIZE
+                              100 FMP3EncoderSinkBufHeadPtr
+Y:000C rrrrrr                 101 MP3EncoderSinkBufHeadPtr       dc      MP3EncoderSinkBuf
+                              102 FMP3EncoderSinkBufTailPtr
+Y:000D rrrrrr                 103 MP3EncoderSinkBufTailPtr       dc      MP3EncoderSinkBuf
+                              105     endsec

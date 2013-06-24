@@ -1,0 +1,1344 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\hardware\mixer\mixer.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ; Filename:     mixer.asm
+                                5 ; Description:  STMP3 Mixer Module
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     opt     mex
+                               10     section MIXMOD_Mixer
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Includes
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               23     list
+                               24     page    132,60,0,0,0
+                               26 ;///////////////////////////////////////////////////////////////////////////////
+                               27 ;   External Definitions
+                               28 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;///////////////////////////////////////////////////////////////////////////////
+                               44 ;   External References
+                               45 ;///////////////////////////////////////////////////////////////////////////////
+                               47         include   "syspostmsg.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 Sys Post Message Xrefs
+                                5 ;******************************************************************************
+                                8 SYSPOSTMSG_XREF equ 1
+                                9 ;Functions
+                               48         include   "sysmem.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ; ST System Routines
+                                5 ;******************************************************************************
+                                8 SYSMEM_XREF equ 1
+                               10 ;Variables in X
+                               22 ;Variables in Y
+                               46     ; WMA xref
+                               49         include   "systime.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; STMP System Time
+                                5 ;******************************************************************************
+                                8 SYSTIME_XREF equ 1                                                                                
+                                                
+                                9   ;Functions
+                               23   
+                               50         include   "const.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 const.EXTERN 
+                                5 ;******************************************************************************
+                                7    DEFINE   const_xref  '1'
+                               42     ; Parthus compatability
+                               55     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               56 ;///////////////////////////////////////////////////////////////////////////////
+                               57 ;   Equates
+                               58 ;///////////////////////////////////////////////////////////////////////////////
+                               60 MIX_MUTE_MASK   equ     $008000         ;Mixer Mute bit mask
+                               61 MIX_LVOL_MASK   equ     $001f00         ;Mixer Left Channel Volume setting mask
+                               62 MIX_RVOL_MASK   equ     $00001f         ;Mixer Right Channel Volume setting mask
+                               63 MIX_INV_VOLMSK  equ     $ffe0e0         ;Mixer Inverse Volume mask
+                               64 MIN_LVOL_MASK   equ     $006000         ;Mixer Left Channel Volume mask for value beyond min
+                               65 MIN_RVOL_MASK   equ     $0000e0         ;Mixer Right Channel Volume mask for value beyond min
+                               66 MIX_MIN_VOL     equ     $001f1f         ;Mixer Master Volume min left and right channel setting
+                               67                                         
+                               68 MIN_LVOL        equ     $001f00         ;Minimum left channel volume
+                               69 MIN_RVOL        equ     $00001f         ;Minimum right channel volume
+                               76     ; full scale for 3410       
+                               77 MAX_LVOL        equ     $000000         ;Maximum left channel volume   (0 dB)
+                               78 MAX_RVOL        equ     $000000         ;Maximum right channel volume  (0 dB)
+                               81 MAX_RBAL        equ    -31
+                               82 MAX_LBAL        equ     31
+                               84 ;///////////////////////////////////////////////////////////////////////////////
+                               85 ;  X memory
+                               86 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         88     org     x,"MIXSYS_Mixer_X":
+                               90 ;Global variable: MixerMaster Volume setting before MixerMasterFadeOut routine
+                               91 ;was called.  This value will be used when MixerMasterFadeIn routine is called.
+                               92 FMixerMasterVol
+X:0000 000F0F                  93 MixerMasterVol  dc      $000F0F         ; Default is half volume
+                               95 ;--------------------------------------------------------------------------------
+                               96 VOL_REG_BIT     equ     0
+                               97 VOL_MUTED       equ     1               ; Volume MUTEd due to VOL down button push
+                               98 SYS_INIT_VOL_MUTE equ   2               ; Indicates the system init mute 
+                               99 ;--------------------------------------------------------------------------------
+                              100 ;   Bit 0 - 0 Volume Increments and Decrements are done in register
+                              101 ;           1 Volume Increments and Decrements are done in global var MixerMasterVol
+                              102 ;   Bit 1 - Volume Muted due to VOL down button push
+                              103 ;   Bit 2 - Indicates the system init mute. Initial value is set.
+                              104 ;           Cleared by first fade in and never reset.  
+X:0001 000005                 106 MixerStatus           dc   $000005      ; Volume Register Bit and sys init mute bit set
+                              109 ;///////////////////////////////////////////////////////////////////////////////
+                              110 ;  Y memory
+                              111 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        113     org y,"MIXSYS_Mixer_Y":
+                              115 ;All the way to the right is -31. All the way to the left is 31.
+                              116 ;Centered between left and right is 0.
+                              117 FMixerMasterBal
+Y:0000 000000                 118 MixerMasterBal   dc   $000000           ; Default is centered
+Y:0000                        120     org     y,"MIXMOD_Mixer_settings_Y":
+                              121     SaveRange  MixerMasterVol,1
+Y:0000 rrrrrr                 121     dc      $800000|MixerMasterVol
+Y:0001 000003                 121     dc      1*3
+                              122     SaveRange  MixerMasterBal,1
+Y:0002 rrrrrr                 122     dc      $400000|MixerMasterBal
+Y:0003 000003                 122     dc      1*3
+                              124 ;///////////////////////////////////////////////////////////////////////////////
+                              125 ;   Code
+                              126 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        128     org p,"MIXMOD_Mixer_overlay_P":  
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              130     ; Resource number
+P:0000 000091                 131     dc      RSRC_MIXMOD_CODE
+                              133 ;///////////////////////////////////////////////////////////////////////////////
+                              134 ;> Name:        MixerInit
+                              135 ;
+                              136 ;  Type:        Function
+                              137 ;
+                              138 ;  Description: The mixer module's initial entry point
+                              139 ;
+                              140 ;  Inputs:      none
+                              141 ;  Outputs:     A contains the wait word specifying what events should trigger
+                              142 ;               calling this module's process routine.
+                              143 ;
+                              144 ;  Notes:       
+                              145 ;<
+                              146 ;///////////////////////////////////////////////////////////////////////////////
+                              148 MixerInit
+P:0001 56F400 000002  3    3  149     move    #>EVENT_MESSAGE,A ; wait to call the mixer process func until msg available
+P:0003 00000C         4    7  150     rts
+                              152 ;///////////////////////////////////////////////////////////////////////////////
+                              153 ;> Name:        MixerProcessQueue
+                              154 ;
+                              155 ;  Type:        Function
+                              156 ;
+                              157 ;  Description: This function processes the messages sent to the Mixer.
+                              158 ;               These messages include those for incrementing, decrementing, muting, 
+                              159 ;               unmuting, and setting levels for:
+                              160 ;                   Master Volume, Mic, Line, FM, DAC, and ADC.
+                              161 ;               A Record Select message can also be processed for choosing the recording source.
+                              162 ;
+                              163 ;  Inputs:      r0 = pointer to MixerQueueDescriptor
+                              164 ;               m0 = -1 for linear addressing mode
+                              165 ;
+                              166 ;  Outputs:     a1 word: This module requests to be called again when it has a message.
+                              167 ;
+                              168 ;  Notes: 
+                              169 ;<
+                              170 ;///////////////////////////////////////////////////////////////////////////////
+                              172 MixerProcessQueue
+                              174     ; Put the queue modulo into m1
+P:0004 70F400 000001  3   10  175     move    #>BD_BufferModulo,n0
+P:0006 000000         2   12  176     nop
+P:0007 05E861         4   16  177     movec   y:(r0+n0),m1
+                              179     ; Put the head pointer into a
+P:0008 380300         2   18  180     move    #BD_HdPtr,n0
+P:0009 000000         2   20  181     nop
+P:000A 5EE800         4   24  182     move    y:(r0+n0),a
+                              184     ; Put the tail pointer into b
+P:000B 380400         2   26  185     move    #BD_TailPtr,n0
+P:000C 000000         2   28  186     nop
+P:000D 5FE800         4   32  187     move    y:(r0+n0),b
+                              189     ; Check if the queue is empty
+P:000E 0AF080 rrrrrr  6   38  190     jmp     _CheckDone
+                              192 _ProcessMessage
+                              194     ; Put the tail pointer into r1
+P:0010 21B100         2   40  195     move    b1,r1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              197     ; Save working variables
+                              198     push    a1                          ; Head pointer
+P:0011 5C5F00         2   42  198     move    a1,y:(r7)+
+                              199     push    r0                          ; Pointer to queue descriptor
+P:0012 685F00         2   44  199     move    r0,y:(r7)+
+                              200     push    r1                          ; Tail pointer
+P:0013 695F00         2   46  200     move    r1,y:(r7)+
+                              201     push    m1                          ; Queue modulo
+P:0014 055F61         2   48  201     movec   m1,y:(r7)+
+                              203     ; Put the message ID into b
+P:0015 71F400 000001  3   51  204     move    #>MSG_ID,n1
+P:0017 000000         2   53  205     nop
+P:0018 5FE900         4   57  206     move    y:(r1+n1),b
+                              208     ; Verify that the message ID is valid by checking message range
+P:0019 44F400 040000  3   60  209     move    #>MIXER_FIRST_MSG_ID,x0
+P:001B 45F44D 040028  3   63  210     cmp     x0,b    #>MIXER_LAST_MSG_ID,x1
+P:001D 0AF0A9 rrrrrr  6   69  211     jlt     _InvalidMessageID
+P:001F 20006D         2   71  212     cmp     x1,b
+P:0020 0AF0A7 rrrrrr  6   77  213     jgt     _InvalidMessageID
+                              215     ; Point r1 to the first argument of the message
+P:0022 205900         2   79  216     move    (r1)+
+P:0023 205900         2   81  217     move    (r1)+
+                              219     ; Clear the upper byte of the message ID
+P:0024 44F400 00FFFF  3   84  220     move    #$00FFFF,x0
+P:0026 62F44E rrrrrr  3   87  221     and     x0,b    #_JumpTable,r2
+                              223     ; Jump to the message handler
+P:0028 058062r        2   89  224     movec   y:<Const_ffffff,m2
+P:0029 21BA00         2   91  225     move    b1,n2
+P:002A 000000         2   93  226     nop
+P:002B 07EA93         8  101  227     movem   p:(r2+n2),r3
+P:002C 000000         2  103  228     nop
+P:002D 0AE380         4  107  229     jmp     (r3)
+                              231 _MasterIncrement
+P:002E 0B7020 rrrrrr  6  113  232     btst    #VOL_REG_BIT,x:MixerStatus ;Check if mute set due to fade out
+P:0030 0AF0A8 rrrrrr  6  119  233     jcs     _UseMixerMasterVolumeInc
+P:0032 60F400 00FA04  3  122  235     move    #>HW_MIXMASTERVR,r0
+P:0034 0AF080 rrrrrr  6  128  236     jmp     _IncrementVolume
+                              238 _UseMixerMasterVolumeInc
+P:0036 60F400 rrrrrr  3  131  239     move    #>MixerMasterVol,r0
+                              240         
+                              241 _IncrementVolume        
+P:0038 0BF080 rrrrrr  6  137  242     jsr     IncrementMasterLevel
+P:003A 0A7001 rrrrrr  6  143  243     bclr    #VOL_MUTED,x:MixerStatus    ; bit clear allows MixerMasterFadeIn to run
+P:003C 0AF080 rrrrrr  6  149  244     jmp     _NextMessage
+                              246 _MasterDecrement
+P:003E 0B7020 rrrrrr  6  155  247     btst    #VOL_REG_BIT,x:MixerStatus  ; Check if mute was set due to fade out
+P:0040 0AF0A8 rrrrrr  6  161  248     jcs     _UseMixerMasterVolumeDec
+P:0042 60F400 00FA04  3  164  250     move    #>HW_MIXMASTERVR,r0
+P:0044 0AF080 rrrrrr  6  170  251     jmp     _DecrementVolume
+                              253 _UseMixerMasterVolumeDec
+P:0046 60F400 rrrrrr  3  173  254     move    #>MixerMasterVol,r0
+                              256 _DecrementVolume            
+P:0048 0BF080 rrrrrr  6  179  257     jsr     DecrementLevel
+P:004A 44E000         2  181  258     move    x:(r0),x0
+P:004B 0AC40F rrrrrr  6  187  259     jclr    #15,x0,_gotoNextMsg
+P:004D 0A7021 rrrrrr  6  193  260     bset    #VOL_MUTED,x:MixerStatus    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              261     ; Bit set usually prevents MixerMasterFadeIn from running. 
+                              262     ; Exception: Initial system mute is always undone by MixerMasterFadeIn.
+                              263 _gotoNextMsg
+P:004F 0AF080 rrrrrr  6  199  264     jmp     _NextMessage
+                              266 _MasterSetLevel
+P:0051 0B7020 rrrrrr  6  205  267     btst    #VOL_REG_BIT,x:MixerStatus  ; Check if mute was set due to fade out
+P:0053 0AF0A8 rrrrrr  6  211  268     jcs     _UseMixerMasterSetLevel
+P:0055 60F400 00FA04  3  214  270     move    #>HW_MIXMASTERVR,r0
+P:0057 0AF080 rrrrrr  6  220  271     jmp     _SetLevel
+                              273 _UseMixerMasterSetLevel
+P:0059 60F400 rrrrrr  3  223  274     move    #>MixerMasterVol,r0
+                              276 _SetLevel
+P:005B 4DE100         2  225  277     move    y:(r1),x1                   ; Level
+P:005C 0BF080 rrrrrr  6  231  278     jsr     SetLevel
+P:005E 0AF080 rrrrrr  6  237  279     jmp     _NextMessage
+                              281 _MasterMute
+P:0060 0A702F 00FA04  6  243  282     bset     #HW_MIXVOLUMER_MUTE_BITPOS,x:HW_MIXMASTERVR
+P:0062 0AF080 rrrrrr  6  249  283     jmp     _NextMessage
+                              285 _MasterUnmute
+P:0064 0A700F 00FA04  6  255  286     bclr    #HW_MIXVOLUMER_MUTE_BITPOS,x:HW_MIXMASTERVR
+P:0066 0AF080 rrrrrr  6  261  287     jmp     _NextMessage
+                              289 _MasterFadeOut
+P:0068 4CE100         2  263  290     move    y:(r1),x0                   ; Step delay
+P:0069 0BF080 rrrrrr  6  269  291     jsr     MixerMasterFadeOut
+P:006B 0AF080 rrrrrr  6  275  292     jmp     _NextMessage
+                              294 _MasterFadeIn
+P:006D 4CE100         2  277  295     move    y:(r1),x0                   ; Step delay
+P:006E 0BF080 rrrrrr  6  283  296     jsr     MixerMasterFadeIn
+P:0070 0AF080 rrrrrr  6  289  297     jmp     _NextMessage
+                              299 _MasterBalanceRight
+P:0072 0BF080 rrrrrr  6  295  300     jsr     MixerMasterBalRight
+P:0074 0AF080 rrrrrr  6  301  301     jmp     _NextMessage
+                              303 _MasterBalanceLeft
+P:0076 0BF080 rrrrrr  6  307  304     jsr     MixerMasterBalLeft
+P:0078 0AF080 rrrrrr  6  313  305     jmp     _NextMessage
+                              307 _MicIncrement
+P:007A 60F400 00FA05  3  316  308     move    #>HW_MIXMICINVR,r0
+P:007C 0BF080 rrrrrr  6  322  309     jsr     IncrementMicLevel
+P:007E 0AF080 rrrrrr  6  328  310     jmp     _NextMessage
+                              312 _MicDecrement
+P:0080 60F400 00FA05  3  331  313     move    #>HW_MIXMICINVR,r0
+P:0082 0BF080 rrrrrr  6  337  314     jsr     DecrementMicLevel
+P:0084 0AF080 rrrrrr  6  343  315     jmp     _NextMessage
+                              317 _MicSetLevel
+P:0086 60F400 00FA05  3  346  318     move    #>HW_MIXMICINVR,r0
+P:0088 4DE100         2  348  319     move    y:(r1),x1                   ; Level
+P:0089 0BF080 rrrrrr  6  354  320     jsr     SetMicLevel
+P:008B 0AF080 rrrrrr  6  360  321     jmp     _NextMessage
+                              323 _MicMute
+P:008D 0A702F 00FA05  6  366  324     bset     #15,x:HW_MIXMICINVR
+P:008F 0AF080 rrrrrr  6  372  325     jmp     _NextMessage
+                              327 _MicUnmute
+P:0091 0A700F 00FA05  6  378  328     bclr    #15,x:HW_MIXMICINVR
+P:0093 0AF080 rrrrrr  6  384  329     jmp     _NextMessage
+                              331 _MicBoost
+P:0095 0A7026 00FA05  6  390  332     bset     #6,x:HW_MIXMICINVR
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0097 0AF080 rrrrrr  6  396  333     jmp     _NextMessage
+                              335 _MicUnboost
+P:0099 0A7006 00FA05  6  402  336     bclr    #6,x:HW_MIXMICINVR
+P:009B 0AF080 rrrrrr  6  408  337     jmp     _NextMessage
+                              339 _LineIncrement
+P:009D 60F400 00FA06  3  411  340     move    #>HW_MIXLINE1INVR,r0
+P:009F 0BF080 rrrrrr  6  417  341     jsr     IncrementLevel
+P:00A1 0AF080 rrrrrr  6  423  342     jmp     _NextMessage
+                              344 _LineDecrement
+P:00A3 60F400 00FA06  3  426  345     move    #>HW_MIXLINE1INVR,r0
+P:00A5 0BF080 rrrrrr  6  432  346     jsr     DecrementLevel
+P:00A7 0AF080 rrrrrr  6  438  347     jmp     _NextMessage
+                              349 _LineSetLevel
+P:00A9 60F400 00FA06  3  441  350     move    #>HW_MIXLINE1INVR,r0
+P:00AB 4DE100         2  443  351     move    y:(r1),x1                   ; Level
+P:00AC 0BF080 rrrrrr  6  449  352     jsr     SetLevel
+P:00AE 0AF080 rrrrrr  6  455  353     jmp     _NextMessage
+                              355 _LineMute
+P:00B0 0A702F 00FA06  6  461  356     bset     #15,x:HW_MIXLINE1INVR
+P:00B2 0AF080 rrrrrr  6  467  357     jmp     _NextMessage
+                              359 _LineUnmute
+P:00B4 0A700F 00FA06  6  473  360     bclr    #15,x:HW_MIXLINE1INVR
+P:00B6 0AF080 rrrrrr  6  479  361     jmp     _NextMessage
+                              363 _FMIncrement
+P:00B8 60F400 00FA06  3  482  367     move    #>HW_MIXLINE1INVR,r0
+P:00BA 0BF080 rrrrrr  6  488  369     jsr     IncrementLevel
+P:00BC 0AF080 rrrrrr  6  494  370     jmp     _NextMessage
+                              372 _FMDecrement
+P:00BE 60F400 00FA06  3  497  376     move    #>HW_MIXLINE1INVR,r0
+P:00C0 0BF080 rrrrrr  6  503  378     jsr     DecrementLevel
+P:00C2 0AF080 rrrrrr  6  509  379     jmp     _NextMessage
+                              381 _FMSetLevel
+P:00C4 60F400 00FA06  3  512  385     move    #>HW_MIXLINE1INVR,r0
+P:00C6 4DE100         2  514  387     move    y:(r1),x1                   ; Level
+P:00C7 0BF080 rrrrrr  6  520  388     jsr     SetLevel
+P:00C9 0AF080 rrrrrr  6  526  389     jmp     _NextMessage
+                              391 _FMMute
+P:00CB 0A702F 00FA06  6  532  395     bset     #15,x:HW_MIXLINE1INVR
+P:00CD 0AF080 rrrrrr  6  538  397     jmp     _NextMessage
+                              399 _FMUnmute
+P:00CF 0A700F 00FA06  6  544  403     bclr    #15,x:HW_MIXLINE1INVR
+P:00D1 0AF080 rrrrrr  6  550  405     jmp     _NextMessage
+                              407 _DACIncrement
+P:00D3 60F400 00FA08  3  553  408     move    #>HW_MIXDACINVR,r0
+P:00D5 0BF080 rrrrrr  6  559  409     jsr     IncrementLevel
+P:00D7 0AF080 rrrrrr  6  565  410     jmp     _NextMessage
+                              412 _DACDecrement
+P:00D9 60F400 00FA08  3  568  413     move    #>HW_MIXDACINVR,r0
+P:00DB 0BF080 rrrrrr  6  574  414     jsr     DecrementLevel
+P:00DD 0AF080 rrrrrr  6  580  415     jmp     _NextMessage
+                              417 _DACSetLevel
+P:00DF 60F400 00FA08  3  583  418     move    #>HW_MIXDACINVR,r0
+P:00E1 4DE100         2  585  419     move    y:(r1),x1                   ; Level
+P:00E2 0BF080 rrrrrr  6  591  420     jsr     SetLevel
+P:00E4 0AF080 rrrrrr  6  597  421     jmp     _NextMessage
+                              423 _DACMute
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00E6 0A702F 00FA08  6  603  424     bset     #15,x:HW_MIXDACINVR
+P:00E8 0AF080 rrrrrr  6  609  425     jmp     _NextMessage
+                              427 _DACUnmute
+P:00EA 0A700F 00FA08  6  615  428     bclr    #15,x:HW_MIXDACINVR
+P:00EC 0AF080 rrrrrr  6  621  429     jmp     _NextMessage
+                              431 _ADCSelect
+P:00EE 4DE100         2  623  432     move    y:(r1),x1                   ; Select
+P:00EF 457000 00FA09  3  626  433     move    x1,x:HW_MIXRECSELR
+P:00F1 0AF080 rrrrrr  6  632  434     jmp     _NextMessage
+                              436 _ADCIncrement
+P:00F3 60F400 00FA0A  3  635  437     move    #>HW_MIXADCGAINR,r0
+P:00F5 0BF080 rrrrrr  6  641  438     jsr     IncrementLevel
+P:00F7 0AF080 rrrrrr  6  647  439     jmp     _NextMessage
+                              441 _ADCDecrement
+P:00F9 60F400 00FA0A  3  650  442     move    #>HW_MIXADCGAINR,r0
+P:00FB 0BF080 rrrrrr  6  656  443     jsr     DecrementLevel
+P:00FD 0AF080 rrrrrr  6  662  444     jmp     _NextMessage
+                              446 _ADCSetLevel
+P:00FF 60F400 00FA0A  3  665  447     move    #>HW_MIXADCGAINR,r0
+P:0101 4DE100         2  667  448     move    y:(r1),x1                   ; Level
+P:0102 0BF080 rrrrrr  6  673  449     jsr     SetLevel
+P:0104 0AF080 rrrrrr  6  679  450     jmp     _NextMessage
+                              452 _ADCMute
+P:0106 0A702F 00FA0A  6  685  453     bset     #15,x:HW_MIXADCGAINR
+P:0108 0AF080 rrrrrr  6  691  454     jmp     _NextMessage
+                              456 _ADCUnmute
+P:010A 0A700F 00FA0A  6  697  457     bclr    #15,x:HW_MIXADCGAINR
+P:010C 0AF080 rrrrrr  6  703  458     jmp     _NextMessage
+                              460 _RecordSelect
+P:010E 4CD900         2  705  461     move    y:(r1)+,x0                  ; left
+P:010F 4DE100         2  707  462     move    y:(r1),x1                   ; right
+P:0110 0BF080 rrrrrr  6  713  463     jsr     RecordSelect
+P:0112 0AF080 rrrrrr  6  719  464     jmp     _NextMessage
+                              466 _MixerPowerDown
+                              467     ; Used to power down the analog mixer when it is to be bypassed,
+                              468     ; or to power it up when it is to be used (FM Tuner, LineIn, etc).
+                              469     ; Also known as DAC BYPASS MODE.
+                              470     ; Input parameter: 0 = Analog Mixer ON , 1 = PowerDown the analog mixer (BYPASS mode)
+P:0114 5ED900         2  721  471     move    y:(r1)+,a                   ; 0 = Turn mixer ON , 1 = Power it down (set the bypass bi
+                                  t)
+                              473     ; IGNORE THIS MESSAGE IF YOU ARE A 3400 or 3300!!
+P:0115 200003         2  723  475     tst     a
+P:0116 0AF0AA rrrrrr  6  729  476     jeq     _PowerUp
+                              477 _PowerDown
+P:0118 0A702B 00FA0B  6  735  478     bset    #HW_MIXPWRDNR_PR2_BITPOS,x:HW_MIXPWRDNR
+P:011A 0AF080 rrrrrr  6  741  479     jmp     _NextMessage
+                              480 _PowerUp
+P:011C 0A700B 00FA0B  6  747  481     bclr    #HW_MIXPWRDNR_PR2_BITPOS,x:HW_MIXPWRDNR
+P:011E 0AF080 rrrrrr  6  753  484     jmp     _NextMessage
+                              486 _EnableRightChannel
+P:0120 0A7010 00FA03  6  759  487     bclr     #HW_MIXTBR_PW_ADC_RIGHT_CH_BITPOS,x:HW_MIXTBR
+P:0122 0AF080 rrrrrr  6  765  488     jmp     _NextMessage
+                              490 _DisableRightChannel
+P:0124 0A7030 00FA03  6  771  491     bset     #HW_MIXTBR_PW_ADC_RIGHT_CH_BITPOS,x:HW_MIXTBR
+P:0126 0AF080 rrrrrr  6  777  492     jmp     _NextMessage
+                              494 _InvalidMessageID
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              495     error
+P:0128 000200         4  781  495     debug
+                              497 _NextMessage
+                              498     ; Restore working variables
+                              499     pop     m1                          ; Queue modulo
+P:0129 05FF61         4  785  499     movec   y:-(r7),m1
+                              500     pop     r1                          ; Tail pointer
+P:012A 69FF00         4  789  500     move    y:-(r7),r1
+                              501     pop     r0                          ; Pointer to buffer descriptor
+P:012B 68FF00         4  793  501     move    y:-(r7),r0
+                              502     pop     a                           ; Head pointer
+P:012C 5EFF00         4  797  502     move    y:-(r7),a
+                              504     ; Add the message length to the tail pointer
+P:012D 79E100         2  799  505     move    y:(r1),n1
+P:012E 000000         2  801  506     nop
+P:012F 204900         2  803  507     move    (r1)+n1
+P:0130 000000         2  805  508     nop
+P:0131 222F00         2  807  509     move    r1,b
+                              511 _CheckDone
+                              512     ; Check if head pointer equals the tail pointer
+P:0132 20000D         2  809  513     cmp     a,b
+P:0133 0AF0A2 rrrrrr  6  815  514     jne     _ProcessMessage
+                              516     ; Update the buffer descriptor with the new tail pointer
+P:0135 70F400 000004  3  818  517     move    #>BD_TailPtr,n0
+P:0137 000000         2  820  518     nop
+P:0138 5D6800         4  824  519     move    b1,y:(r0+n0)
+                              521     ; I want to be called again when I have a message
+P:0139 2C0200         2  826  522     move    #EVENT_MESSAGE,a1
+P:013A 058061r        2  828  523     movec  y:<Const_ffffff,m1
+P:013B 00000C         4  832  525     rts
+                              527 _JumpTable
+P:013C rrrrrr                 528     dc      _MasterIncrement
+P:013D rrrrrr                 529     dc      _MasterDecrement
+P:013E rrrrrr                 530     dc      _MasterSetLevel
+P:013F rrrrrr                 531     dc      _MasterMute
+P:0140 rrrrrr                 532     dc      _MasterUnmute
+P:0141 rrrrrr                 533     dc      _MasterFadeOut
+P:0142 rrrrrr                 534     dc      _MasterFadeIn
+P:0143 rrrrrr                 535     dc      _MasterBalanceRight
+P:0144 rrrrrr                 536     dc      _MasterBalanceLeft
+P:0145 rrrrrr                 537     dc      _MicIncrement
+P:0146 rrrrrr                 538     dc      _MicDecrement
+P:0147 rrrrrr                 539     dc      _MicSetLevel
+P:0148 rrrrrr                 540     dc      _MicMute
+P:0149 rrrrrr                 541     dc      _MicUnmute
+P:014A rrrrrr                 542     dc      _MicBoost
+P:014B rrrrrr                 543     dc      _MicUnboost
+P:014C rrrrrr                 544     dc      _LineIncrement
+P:014D rrrrrr                 545     dc      _LineDecrement
+P:014E rrrrrr                 546     dc      _LineSetLevel
+P:014F rrrrrr                 547     dc      _LineMute
+P:0150 rrrrrr                 548     dc      _LineUnmute
+P:0151 rrrrrr                 549     dc      _FMIncrement
+P:0152 rrrrrr                 550     dc      _FMDecrement
+P:0153 rrrrrr                 551     dc      _FMSetLevel
+P:0154 rrrrrr                 552     dc      _FMMute
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0155 rrrrrr                 553     dc      _FMUnmute
+P:0156 rrrrrr                 554     dc      _DACIncrement
+P:0157 rrrrrr                 555     dc      _DACDecrement
+P:0158 rrrrrr                 556     dc      _DACSetLevel
+P:0159 rrrrrr                 557     dc      _DACMute
+P:015A rrrrrr                 558     dc      _DACUnmute
+P:015B rrrrrr                 559     dc      _ADCSelect
+P:015C rrrrrr                 560     dc      _ADCIncrement
+P:015D rrrrrr                 561     dc      _ADCDecrement
+P:015E rrrrrr                 562     dc      _ADCSetLevel
+P:015F rrrrrr                 563     dc      _ADCMute
+P:0160 rrrrrr                 564     dc      _ADCUnmute
+P:0161 rrrrrr                 565     dc      _RecordSelect
+P:0162 rrrrrr                 566     dc      _MixerPowerDown
+P:0163 rrrrrr                 567     dc      _EnableRightChannel
+P:0164 rrrrrr                 568     dc      _DisableRightChannel
+                              569 ; Note: It is important that the entries in the jump table be in the
+                              570 ; same order as the mixer message ID's which are defined in msgequ.inc
+                              572 ;///////////////////////////////////////////////////////////////////////////////
+                              573 ;> Name:        SetLevel
+                              574 ;
+                              575 ;  Type:        Function
+                              576 ;
+                              577 ;  Description: This function sets a volume register to a level specified in the
+                              578 ;               x1 register. If x1 is not within a given range, then the level is
+                              579 ;               automatically limited to the max or min value.
+                              580 ;               
+                              581 ;               The calling routine should be aware that bits 0-4 specify the right
+                              582 ;               channel and bits 8-12 specify the left channel. Bit 15 is the mute
+                              583 ;               bit. This routine will change the Mute bit as indicated by the value
+                              584 ;               of bit 15 in the input level specified in the x1 register.
+                              585 ;
+                              586 ;  Inputs:      r0 = pointer to a volume register (excluding microphone)
+                              587 ;               m0 = linear
+                              588 ;               x1 = level to set volume to
+                              589 ;  Outputs:     Volume adjusted to new level.
+                              590 ;
+                              591 ;  Notes: 
+                              592 ;<
+                              593 ;///////////////////////////////////////////////////////////////////////////////
+                              595 SetLevel
+                              596     ;Is argument left channel value exceed minimum allowed volume setting?
+P:0165 56F400 006000  3  835  597     move    #>MIN_LVOL_MASK,a
+P:0167 200066         2  837  598     and     x1,a                        ;Zero out every bit in argument except bit[15..13]
+P:0168 0AF0A2 rrrrrr  6  843  599     jne     _MixLMin                    ;Is argument value for left channel exceed min. allowed?
+P:016A 56F400 001F00  3  846  600     move    #>MIX_LVOL_MASK,a
+P:016C 200066         2  848  601     and     x1,a                        ;Extract desired left channel volume setting
+P:016D 0AF080 rrrrrr  6  854  602     jmp     _MixRVol
+                              604 _MixLMin:
+P:016F 56F400 001F00  3  857  605     move    #>MIN_LVOL,a                ;Set left channel to minimum value allowed
+                              607 _MixRVol:
+                              608     ;Is argument right channel value exceed minimum allowed volume setting?
+P:0171 57F400 0000E0  3  860  609     move    #>MIN_RVOL_MASK,b
+P:0173 20006E         2  862  610     and     x1,b                        ;Zero out every bit in argument except bit[7..5]
+P:0174 0AF0A2 rrrrrr  6  868  611     jne     _MixRMin                    ;Is argument value for right channel exceed min. allowed?
+P:0176 57F400 00001F  3  871  612     move    #>MIX_RVOL_MASK,b
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0178 20006E         2  873  613     and     x1,b                        ;Extract desired right channel volume setting
+P:0179 0AF080 rrrrrr  6  879  614     jmp     _MixMute
+                              616 _MixRMin:
+P:017B 57F400 00001F  3  882  617     move    #>MIN_RVOL,b                ;Set right channel to minimum value allowed
+                              619 _MixMute:
+P:017D 21A600         2  884  620     move    b1,y0
+P:017E 200052         2  886  621     or      y0,a1                       ;Form new left and right channel value for volume reg
+                              623     ;Form new volume reg value with the desired mute bit setting
+P:017F 0BC56F         4  890  624     btst    #HW_MIXVOLUMER_MUTE_BITPOS,x1 ;Is Mute bit of argument set?
+P:0180 0AF0A0 rrrrrr  6  896  625     jcc     _MixSet
+P:0182 0ACC6F         4  900  626     bset    #HW_MIXVOLUMER_MUTE_BITPOS,a1 ;Set the mute bit of the new volume value
+                              628 _MixSet:
+P:0183 546000         2  902  629     move    a1,x:(r0)                   ;Update desired STMP3400/3410 volume reg with new volume s
+                                  etting
+P:0184 00000C         4  906  630     rts
+                              632 ;///////////////////////////////////////////////////////////////////////////////
+                              633 ;> Name:        SetMicLevel
+                              634 ;
+                              635 ;  Type:        Function
+                              636 ;
+                              637 ;  Description: This function sets the microphone volume register to a level 
+                              638 ;               specified in the x1 register. If x1 is not within a given range, 
+                              639 ;               then the level is automatically limited to the max or min value.
+                              640 ;               
+                              641 ;               The calling routine should be aware that bits 0-4 specify the right
+                              642 ;               channel and bits 8-12 specify the left channel. Bit 15 is the mute
+                              643 ;               bit. This routine will change the Mute bit as indicated by the value
+                              644 ;               of bit 15 in the input level specified in the x1 register.
+                              645 ;
+                              646 ;  Inputs:      r0 = pointer to microphone volume register
+                              647 ;               m0 = linear
+                              648 ;               x1 = level to set mic volume to
+                              649 ;  Outputs:     Microphone volume adjusted to new level.
+                              650 ;
+                              651 ;  Notes: 
+                              652 ;<
+                              653 ;///////////////////////////////////////////////////////////////////////////////
+                              655 SetMicLevel
+                              656     ;Is argument right channel value exceeding minimum allowed volume setting?
+P:0185 5F8000r        2  908  657     move    y:<Const_000020,b           ;Mask for beyond limit
+P:0186 20006E         2  910  658     and     x1,b                        ;Zero out every bit in argument except bit[7..5]
+P:0187 0AF0A2 rrrrrr  6  916  659     jne     _MixRMin                    ;Is argument value for right channel exceed min. allowed?
+P:0189 57F400 00001F  3  919  660     move    #>MIX_RVOL_MASK,b
+P:018B 20006E         2  921  661     and     x1,b                        ;Extract desired right channel volume setting
+P:018C 0AF080 rrrrrr  6  927  662     jmp     _MixMute
+                              664 _MixRMin:
+P:018E 57F400 00001F  3  930  665     move    #>MIN_RVOL,b                ;Set right channel to minimum value allowed
+                              667 _MixMute:
+                              668     ;Form new volume reg value with the desired mute bit setting
+P:0190 0BC56F         4  934  669     btst    #HW_MIXMICINVR_MUTE_BITPOS,x1 ;Is Mute bit of argument set?
+P:0191 0AF0A0 rrrrrr  6  940  670     jcc     _MixBoost
+P:0193 0ACD6F         4  944  671     bset    #HW_MIXMICINVR_MUTE_BITPOS,b1 ;Set the mute bit of the new volume value
+                              673 _MixBoost
+                              674     ;Form new volume reg value with the desired boost bit setting
+P:0194 0BC566         4  948  675     btst    #HW_MIXMICINVR_P20DB_BITPOS,x1 ;Is boost bit set?
+P:0195 0AF0A0 rrrrrr  6  954  676     jcc     _MixSet
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0197 0ACD66         4  958  677     bset    #HW_MIXMICINVR_P20DB_BITPOS,b1 ;Set the boost bit
+                              679 _MixSet:
+P:0198 556000         2  960  680     move    b1,x:(r0)                   ;Update STMP34xx/STMP35xx volume reg with new volume setti
+                                  ng
+P:0199 00000C         4  964  681     rts
+                              683 ;///////////////////////////////////////////////////////////////////////////////
+                              684 ;> Name:        IncrementLevel
+                              685 ;
+                              686 ;  Type:        Function
+                              687 ;
+                              688 ;  Description: This function increments a specified volume register, excluding
+                              689 ;               the microphone and master volumes. 
+                              690 ;
+                              691 ;               If Muted:
+                              692 ;                   Unmute and exit
+                              693 ;               Else:
+                              694 ;                   If Max Volume:
+                              695 ;                       Exit
+                              696 ;                   Else:
+                              697 ;                       Increment the Left and Right volume by one level
+                              698 ;
+                              699 ;  Inputs:      r0 = pointer to a volume register (excluding microphone and master)
+                              700 ;               m0 = linear
+                              701 ;  Outputs:     Volume is incremented, mute bit is cleared
+                              702 ;
+                              703 ;  Notes: 
+                              704 ;<
+                              705 ;///////////////////////////////////////////////////////////////////////////////
+                              707 IncrementLevel
+                              708     ; If the mute is on and the left and right volumes are at minimum
+P:019A 44F400 009F1F  3  967  709     move    #>MIX_MUTE_MASK+MIX_RVOL_MASK+MIX_LVOL_MASK,x0
+P:019C 56E000         2  969  710     move    x:(r0),a
+P:019D 200046         2  971  711     and     x0,a                        ; If (vol & mask) == mask
+P:019E 200045         2  973  712     cmp     x0,a
+P:019F 0AF0A2 rrrrrr  6  979  713     jne     _Increment
+                              715     ; Turn off the mute and exit
+P:01A1 0A600F         4  983  716     bclr    #15,x:(r0)
+P:01A2 0AF080 rrrrrr  6  989  717     jmp     _Exit
+                              719 _Increment
+                              720     ; If the left volume is at maximum (zero)
+P:01A4 56E000         2  991  721     move    x:(r0),a
+P:01A5 44F400 001F00  3  994  722     move    #>MIX_LVOL_MASK,x0
+P:01A7 200046         2  996  723     and     x0,a
+P:01A8 0AF0AA rrrrrr  6 1002  724     jeq     _Exit                       ; Exit
+                              726     ; If the right voulme is at maximum (zero)
+P:01AA 57E000         2 1004  727     move    x:(r0),b
+P:01AB 44F400 00001F  3 1007  728     move    #>MIX_RVOL_MASK,x0
+P:01AD 20004E         2 1009  729     and     x0,b
+P:01AE 0AF0AA rrrrrr  6 1015  730     jeq     _Exit                       ; Exit
+                              732     ; Increment the left volume
+P:01B0 4C8000r        2 1017  733     move    y:<Const_000100,x0
+P:01B1 200044         2 1019  734     sub     x0,a
+                              736     ; Increment the right volume
+P:01B2 4C8000r        2 1021  737     move    y:<Const_000001,x0
+P:01B3 20004C         2 1023  738     sub     x0,b
+                              740     ; Form new volume reg value while preserving mute bit
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01B4 21A600         2 1025  741     move    b1,y0
+P:01B5 200052         2 1027  742     or      y0,a1                       ; Combine the left and right volumes
+P:01B6 57E000         2 1029  743     move    x:(r0),b
+P:01B7 47F400 FFE0E0  3 1032  744     move    #>MIX_INV_VOLMSK,y1
+P:01B9 20007E         2 1034  745     and     y1,b                        ;These instruction ensure all non volume bits remain
+P:01BA 21A700         2 1036  746     move    b1,y1                       ;unchanged.
+P:01BB 200072         2 1038  747     or      y1,a1
+P:01BC 546000         2 1040  748     move    a1,x:(r0)                   ;Update STMP3400 volume reg with new volume setting
+                              750 _Exit
+P:01BD 00000C         4 1044  751     rts
+                              753 ;///////////////////////////////////////////////////////////////////////////////
+                              754 ;> Name:        IncrementMicLevel
+                              755 ;
+                              756 ;  Type:        Function
+                              757 ;
+                              758 ;  Description: This function increments the microphone volume register.
+                              759 ;
+                              760 ;               If Muted & Min Vol:
+                              761 ;                   Unmute and exit
+                              762 ;               Else:
+                              763 ;                   If Max Volume:
+                              764 ;                       Exit
+                              765 ;                   Else:
+                              766 ;                       Increment the Left and Right volume by one level
+                              767 ;
+                              768 ;  Inputs:      r0 = pointer to the microphone volume register
+                              769 ;               m0 = linear
+                              770 ;  Outputs:     Volume is incremented, mute bit is cleared
+                              771 ;
+                              772 ;  Notes: 
+                              773 ;<
+                              774 ;///////////////////////////////////////////////////////////////////////////////
+                              776 IncrementMicLevel
+                              777     ; If the mute is on and the volume is at minimum
+P:01BE 44F400 00801F  3 1047  778     move    #>MIX_MUTE_MASK+MIX_RVOL_MASK,x0
+P:01C0 56E000         2 1049  779     move    x:(r0),a
+P:01C1 200046         2 1051  780     and     x0,a                        ; If (vol & mask) == mask
+P:01C2 200045         2 1053  781     cmp     x0,a
+P:01C3 0AF0A2 rrrrrr  6 1059  782     jne     _Increment
+                              784     ; Turn off the mute and exit
+P:01C5 0A600F         4 1063  785     bclr    #15,x:(r0)
+P:01C6 0AF080 rrrrrr  6 1069  786     jmp     _Exit
+                              788 _Increment
+                              789     ; If the volume is at maximum (zero)
+P:01C8 57E000         2 1071  790     move    x:(r0),b
+P:01C9 44F400 00001F  3 1074  791     move    #>MIX_RVOL_MASK,x0
+P:01CB 20004E         2 1076  792     and     x0,b
+P:01CC 0AF0AA rrrrrr  6 1082  793     jeq     _Exit                       ; Exit
+                              795     ; Increment the volume
+P:01CE 4C8000r        2 1084  796     move    y:<Const_000001,x0
+P:01CF 20004C         2 1086  797     sub     x0,b
+                              799     ; Form new volume reg value while preserving mute bit and boost bit
+P:01D0 21AC00         2 1088  800     move    b1,a1
+P:01D1 57E000         2 1090  801     move    x:(r0),b
+P:01D2 47F400 FFE0E0  3 1093  802     move    #>MIX_INV_VOLMSK,y1
+P:01D4 20007E         2 1095  803     and     y1,b                        ;These instruction ensure all non volume bits remain
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01D5 21A700         2 1097  804     move    b1,y1                       ;unchanged.
+P:01D6 200072         2 1099  805     or      y1,a1
+P:01D7 546000         2 1101  806     move    a1,x:(r0)                   ;Update STMP3400 volume reg with new volume setting
+                              807 _Exit
+P:01D8 00000C         4 1105  808     rts
+                              810 ;///////////////////////////////////////////////////////////////////////////////
+                              811 ;> Name:        IncrementMasterLevel
+                              812 ;
+                              813 ;  Type:        Function
+                              814 ;
+                              815 ;  Description: This function increments the master volume register.
+                              816 ;
+                              817 ;               If Muted & Min Vol:
+                              818 ;                   Unmute and exit
+                              819 ;               Else:
+                              820 ;                   If Max Volume:
+                              821 ;                       Exit
+                              822 ;                   Else:
+                              823 ;                       Increment the Left and Right volume by one level
+                              824 ;
+                              825 ;  Inputs:      r0 = pointer to the master volume register
+                              826 ;               m0 = linear
+                              827 ;  Outputs:     Volume is incremented, mute bit is cleared
+                              828 ;
+                              829 ;  Notes: 
+                              830 ;<
+                              831 ;///////////////////////////////////////////////////////////////////////////////
+                              833 IncrementMasterLevel
+                              834     ; If the mute is on and the left and right volumes are at minimum
+P:01D9 44F400 009F1F  3 1108  835     move    #>MIX_MUTE_MASK+MIX_RVOL_MASK+MIX_LVOL_MASK,x0
+P:01DB 56E000         2 1110  836     move    x:(r0),a
+P:01DC 200046         2 1112  837     and     x0,a                        ; If (vol & mask) == mask
+P:01DD 200045         2 1114  838     cmp     x0,a
+P:01DE 0AF0A2 rrrrrr  6 1120  839     jne     _Increment
+                              841     ; Turn off the mute and exit
+P:01E0 0A600F         4 1124  842     bclr    #15,x:(r0)
+P:01E1 0AF080 rrrrrr  6 1130  843     jmp     _Exit
+                              845 _Increment
+                              846     ; If the left volume is at maximum 
+P:01E3 56E000         2 1132  847     move    x:(r0),a
+P:01E4 44F400 001F00  3 1135  848     move    #>MIX_LVOL_MASK,x0
+P:01E6 44F446 000000  3 1138  849     and     x0,a    #>MAX_LVOL,x0       ;Discard bits that are not left volume
+P:01E8 218E00         2 1140  850     move    a1,a                        ;Make sure a0 and a2 are clear
+P:01E9 200045         2 1142  851     cmp     x0,a                        ;Compare volume vs max volume
+P:01EA 0AF0AF rrrrrr  6 1148  852     jle     _Exit
+                              853         
+                              854     ; If the right volume is at maximum 
+P:01EC 57E000         2 1150  855     move    x:(r0),b
+P:01ED 44F400 00001F  3 1153  856     move    #>MIX_RVOL_MASK,x0
+P:01EF 44F44E 000000  3 1156  857     and     x0,b    #>MAX_RVOL,x0       ;Discard bits that are not left volume
+P:01F1 20004D         2 1158  858     cmp     x0,b                        ;Compare volume vs. max volume
+P:01F2 0AF0AF rrrrrr  6 1164  859     jle     _Exit
+                              861     ; Save right and left volumes
+P:01F4 218700         2 1166  862     move    a1,y1                       ; Left volume
+P:01F5 21A600         2 1168  863     move    b1,y0                       ; Right volume
+                              865     ; if (right - left) <= balance
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01F6 0108C0         2 1170  866     mpy     y1,#8,a                     ; Shift "left" down 8 bits
+P:01F7 20001C         2 1172  867     sub     a,b                         ; Subtract "left" from "right"
+P:01F8 5EF000 rrrrrr  3 1175  868     move    y:MixerMasterBal,a
+P:01FA 20000D         2 1177  869     cmp     a,b
+P:01FB 0AF0A7 rrrrrr  6 1183  870     jgt     _IncRight
+                              872     ; Increment the left volume
+P:01FD 20EE00         2 1185  873     move    y1,a
+P:01FE 4C8000r        2 1187  874     move    y:<Const_000100,x0
+P:01FF 200044         2 1189  875     sub     x0,a
+P:0200 218700         2 1191  876     move    a1,y1
+                              878 _IncRight
+                              879     ; If (right - left) >= balance
+P:0201 5EF000 rrrrrr  3 1194  880     move    y:MixerMasterBal,a
+P:0203 20000D         2 1196  881     cmp     a,b
+P:0204 0AF0A9 rrrrrr  6 1202  882     jlt     _SaveIt
+                              884     ; Increment the right volume
+P:0206 20CF00         2 1204  885     move    y0,b
+P:0207 4C8000r        2 1206  886     move    y:<Const_000001,x0
+P:0208 20004C         2 1208  887     sub     x0,b
+P:0209 21A600         2 1210  888     move    b1,y0
+                              890 _SaveIt
+                              891     ; Form new volume reg value while preserving mute bit and boost bit
+P:020A 20EE00         2 1212  892     move    y1,a
+P:020B 200052         2 1214  893     or      y0,a1                       ; Combine the left and right volumes
+P:020C 57E000         2 1216  894     move    x:(r0),b
+P:020D 47F400 FFE0E0  3 1219  895     move    #>MIX_INV_VOLMSK,y1
+P:020F 20007E         2 1221  896     and     y1,b                        ;These instruction ensure all non volume bits remain
+P:0210 21A700         2 1223  897     move    b1,y1                       ;unchanged.
+P:0211 200072         2 1225  898     or      y1,a1
+P:0212 546000         2 1227  899     move    a1,x:(r0)                   ;Update STMP3400 volume reg with new volume setting
+                              900 _Exit
+P:0213 00000C         4 1231  901     rts
+                              903 ;///////////////////////////////////////////////////////////////////////////////
+                              904 ;> Name:        DecrementLevel
+                              905 ;
+                              906 ;  Type:        Function
+                              907 ;
+                              908 ;  Description: This function decrements a specified volume register, excluding
+                              909 ;               the microphone. 
+                              910 ;
+                              911 ;               If Min Vol (L&R):
+                              912 ;                   Mute and exit
+                              913 ;               Else:
+                              914 ;                   If Left Vol != Min Volume:
+                              915 ;                       Decrement Left Volume
+                              916 ;                   If Right Vol != Min Volume:
+                              917 ;                       Decrement Right Volume
+                              918 ;
+                              919 ;  Inputs:      r0 = pointer to a volume register (excluding microphone)
+                              920 ;               m0 = linear
+                              921 ;  Outputs:     Volume is decremented
+                              922 ;
+                              923 ;  Notes: 
+                              924 ;<
+                              925 ;///////////////////////////////////////////////////////////////////////////////
+                              927 DecrementLevel
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              928     ; If the left and right volumes are both at minimum
+P:0214 44F400 001F1F  3 1234  929     move    #>MIX_RVOL_MASK+MIX_LVOL_MASK,x0
+P:0216 56E000         2 1236  930     move    x:(r0),a
+P:0217 200046         2 1238  931     and     x0,a                        ; If (vol & mask) == mask
+P:0218 200045         2 1240  932     cmp     x0,a
+P:0219 0AF0A2 rrrrrr  6 1246  933     jne     _DecLeft
+                              935     ; Turn on the mute and exit
+P:021B 0A602F         4 1250  936     bset    #15,x:(r0)
+P:021C 0AF080 rrrrrr  6 1256  937     jmp     _Exit
+                              939 _DecLeft
+                              940     ; If the left volume is not at minimum (1F)
+P:021E 56E000         2 1258  941     move    x:(r0),a
+P:021F 44F400 001F00  3 1261  942     move    #>MIN_LVOL,x0
+P:0221 200046         2 1263  943     and     x0,a
+P:0222 200045         2 1265  944     cmp     x0,a
+P:0223 0AF0AA rrrrrr  6 1271  945     jeq     _DecRight
+                              947     ; Decrement the left volume
+P:0225 4C8000r        2 1273  948     move    y:<Const_000100,x0
+P:0226 200040         2 1275  949     add     x0,a
+                              951 _DecRight
+                              952     ; If the right volume is not at minimum (1F)
+P:0227 57E000         2 1277  953     move    x:(r0),b
+P:0228 46F400 00001F  3 1280  954     move    #>MIN_RVOL,y0
+P:022A 20005E         2 1282  955     and     y0,b
+P:022B 20005D         2 1284  956     cmp     y0,b
+P:022C 0AF0AA rrrrrr  6 1290  957     jeq     _SaveIt
+                              959     ; Decrement the right volume
+P:022E 4E8000r        2 1292  960     move    y:<Const_000001,y0
+P:022F 200058         2 1294  961     add     y0,b
+                              963 _SaveIt
+                              964     ; Form new volume reg value while preserving mute bit
+P:0230 21A600         2 1296  965     move    b1,y0
+P:0231 200052         2 1298  966     or      y0,a1                       ; Combine the left and right volumes
+P:0232 57E000         2 1300  967     move    x:(r0),b
+P:0233 47F400 FFE0E0  3 1303  968     move    #>MIX_INV_VOLMSK,y1
+P:0235 20007E         2 1305  969     and     y1,b                        ;These instruction ensure all non volume bits remain
+P:0236 21A700         2 1307  970     move    b1,y1                       ;unchanged.
+P:0237 200072         2 1309  971     or      y1,a1
+P:0238 546000         2 1311  972     move    a1,x:(r0)                   ;Update STMP3400/3410 volume reg with new volume setting
+                              974 _Exit
+P:0239 00000C         4 1315  975     rts
+                              977 ;///////////////////////////////////////////////////////////////////////////////
+                              978 ;> Name:        DecrementMicLevel
+                              979 ;
+                              980 ;  Type:        Function
+                              981 ;
+                              982 ;  Description: This function decrements a the microphone volume register.
+                              983 ;
+                              984 ;               If Min Vol:
+                              985 ;                   Mute and exit
+                              986 ;               Else:
+                              987 ;                   Decrement Mic volume
+                              988 ;
+                              989 ;  Inputs:      r0 = pointer to microphone volume register
+                              990 ;               m0 = linear
+                              991 ;  Outputs:     Volume is decremented
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              992 ;
+                              993 ;  Notes: 
+                              994 ;<
+                              995 ;///////////////////////////////////////////////////////////////////////////////
+                              997 DecrementMicLevel
+                              998     ; If the microphone volume is at minimum
+P:023A 44F400 00001F  3 1318  999     move    #>MIX_RVOL_MASK,x0
+P:023C 56E000         2 1320 1000     move    x:(r0),a
+P:023D 200046         2 1322 1001     and     x0,a                        ; If (vol & mask) == mask
+P:023E 200045         2 1324 1002     cmp     x0,a
+P:023F 0AF0A2 rrrrrr  6 1330 1003     jne     _Decrement
+                             1005     ; Turn on the mute and exit
+P:0241 0A602F         4 1334 1006     bset    #15,x:(r0)
+P:0242 0AF080 rrrrrr  6 1340 1007     jmp     _Exit
+                             1009 _Decrement
+                             1010     ; Decrement the mic volume
+P:0244 4E8000r        2 1342 1011     move    y:<Const_000001,y0
+P:0245 200050         2 1344 1012     add     y0,a
+                             1014     ; Form new volume reg value while preserving mute bit and boost bit
+P:0246 57E000         2 1346 1015     move    x:(r0),b
+P:0247 47F400 FFE0E0  3 1349 1016     move    #>MIX_INV_VOLMSK,y1
+P:0249 20007E         2 1351 1017     and     y1,b                        ;These instruction ensure all non volume bits remain
+P:024A 21A700         2 1353 1018     move    b1,y1                       ;unchanged.
+P:024B 200072         2 1355 1019     or      y1,a1
+P:024C 546000         2 1357 1020     move    a1,x:(r0)                   ;Update STMP3400 volume reg with new volume setting
+                             1022 _Exit
+P:024D 00000C         4 1361 1023     rts
+                             1025 ;///////////////////////////////////////////////////////////////////////////////
+                             1026 ;> Name:        MixerMasterBalRight
+                             1027 ;
+                             1028 ;  Type:        Function
+                             1029 ;
+                             1030 ;  Description: This function will move the balance to the right (decrement the balance).
+                             1031 ;               If Left Vol > Right Vol     : Then Inc Right
+                             1032 ;               ElseIf Left Vol != Min Vol  : Then Dec Left
+                             1033 ;               Else                        : Dec Balance
+                             1034 ;
+                             1035 ;  Inputs:      None.
+                             1036 ;  Outputs:     Balance is adjusted to right.
+                             1037 ;
+                             1038 ;  Notes: 
+                             1039 ;<
+                             1040 ;///////////////////////////////////////////////////////////////////////////////
+                             1042 MixerMasterBalRight
+                             1043     ; Get the left volume
+P:024E 56F000 00FA04  3 1364 1044     move    x:HW_MIXMASTERVR,a
+P:0250 44F400 001F00  3 1367 1045     move    #>MIX_LVOL_MASK,x0
+P:0252 200046         2 1369 1046     and     x0,a
+                             1048     ; Get the right volume
+P:0253 57F000 00FA04  3 1372 1049     move    x:HW_MIXMASTERVR,b
+P:0255 46F400 00001F  3 1375 1050     move    #>MIX_RVOL_MASK,y0
+P:0257 20005E         2 1377 1051     and     y0,b
+                             1053     ; Save right and left volumes
+P:0258 218700         2 1379 1054     move    a1,y1                       ; Left volume
+P:0259 21A600         2 1381 1055     move    b1,y0                       ; Right volume
+                             1057     ; If left >= right
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:025A 0108C0         2 1383 1058     mpy     y1,#8,a                     ; Shift "left" down 8 bits
+P:025B 20001C         2 1385 1059     sub     a,b                         ; Subtract "left" from "right"
+P:025C 0AF0A7 rrrrrr  6 1391 1060     jgt     _IncRight
+                             1062     ; If the left volume is not at minimum (1F)
+P:025E 20EE00         2 1393 1063     move    y1,a
+P:025F 44F400 001F00  3 1396 1064     move    #>MIN_LVOL,x0
+P:0261 200046         2 1398 1065     and     x0,a
+P:0262 200045         2 1400 1066     cmp     x0,a
+P:0263 0AF0AA rrrrrr  6 1406 1067     jeq     _DecBalance
+                             1069     ; Decrement the left volume
+P:0265 4C8000r        2 1408 1070     move    y:<Const_000100,x0
+P:0266 200040         2 1410 1071     add     x0,a
+P:0267 218700         2 1412 1072     move    a1,y1
+P:0268 0AF080 rrrrrr  6 1418 1073     jmp     _SaveIt
+                             1075 _IncRight
+                             1076     ; if (right - left) <= balance
+P:026A 5EF000 rrrrrr  3 1421 1077     move    y:MixerMasterBal,a
+P:026C 20000D         2 1423 1078     cmp     a,b
+P:026D 0AF0A9 rrrrrr  6 1429 1079     jlt     _SaveIt
+                             1081     ; Increment the right volume
+P:026F 20CF00         2 1431 1082     move    y0,b
+P:0270 4C8000r        2 1433 1083     move    y:<Const_000001,x0
+P:0271 20004C         2 1435 1084     sub     x0,b
+P:0272 21A600         2 1437 1085     move    b1,y0
+                             1087 _SaveIt
+                             1088     ; Form new volume reg value while preserving mute bit
+P:0273 20EE00         2 1439 1089     move    y1,a
+P:0274 200052         2 1441 1090     or      y0,a1                       ; Combine the left and right volumes
+P:0275 57F000 00FA04  3 1444 1091     move    x:HW_MIXMASTERVR,b
+P:0277 47F400 FFE0E0  3 1447 1092     move    #>MIX_INV_VOLMSK,y1
+P:0279 20007E         2 1449 1093     and     y1,b                        ;These instruction ensure all non volume bits remain
+P:027A 21A700         2 1451 1094     move    b1,y1                       ;unchanged.
+P:027B 200072         2 1453 1095     or      y1,a1
+P:027C 547000 00FA04  3 1456 1096     move    a1,x:HW_MIXMASTERVR         ;Update STMP3400 volume reg with new volume setting
+                             1098 _DecBalance
+                             1099     ; If the balance is at maximum right (-31)
+P:027E 5EF000 rrrrrr  3 1459 1100     move    y:MixerMasterBal,a
+P:0280 44F400 FFFFE1  3 1462 1101     move    #>MAX_RBAL,x0
+P:0282 200045         2 1464 1102     cmp     x0,a
+P:0283 0AF0AA rrrrrr  6 1470 1103     jeq     _Exit                       ; Exit
+                             1105     ; Decrement the balance
+P:0285 4C8000r        2 1472 1106     move    y:<Const_000001,x0
+P:0286 200044         2 1474 1107     sub     x0,a
+P:0287 5C7000 rrrrrr  3 1477 1108     move    a1,y:MixerMasterBal
+                             1110 _Exit
+P:0289 00000C         4 1481 1111     rts
+                             1113 ;///////////////////////////////////////////////////////////////////////////////
+                             1114 ;> Name:        MixerMasterBalLeft
+                             1115 ;
+                             1116 ;  Type:        Function
+                             1117 ;
+                             1118 ;  Description: This function will move the balance to the left (increment the balance).
+                             1119 ;               If Right Vol > Left Vol     : Then Inc Left
+                             1120 ;               ElseIf Right Vol != Min Vol : Then Inc Balance
+                             1121 ;               Else                        : Dec Right
+                             1122 ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1123 ;  Inputs:      None.
+                             1124 ;  Outputs:     Balance is adjusted to left.
+                             1125 ;
+                             1126 ;  Notes: 
+                             1127 ;<
+                             1128 ;///////////////////////////////////////////////////////////////////////////////
+                             1130 MixerMasterBalLeft
+                             1132     ; Get the left volume
+P:028A 56F000 00FA04  3 1484 1133     move    x:HW_MIXMASTERVR,a
+P:028C 44F400 001F00  3 1487 1134     move    #>MIX_LVOL_MASK,x0
+P:028E 200046         2 1489 1135     and     x0,a
+                             1137     ; Get the right volume
+P:028F 57F000 00FA04  3 1492 1138     move    x:HW_MIXMASTERVR,b
+P:0291 46F400 00001F  3 1495 1139     move    #>MIX_RVOL_MASK,y0
+P:0293 20005E         2 1497 1140     and     y0,b
+                             1142     ; Save right and left volumes
+P:0294 218700         2 1499 1143     move    a1,y1                       ; Left volume
+P:0295 21A600         2 1501 1144     move    b1,y0                       ; Right volume
+                             1146     ; If right >= left
+P:0296 0108C0         2 1503 1147     mpy     y1,#8,a                     ; Shift "left" down 8 bits
+P:0297 20001C         2 1505 1148     sub     a,b                         ; Subtract "left" from "right"
+P:0298 0AF0A9 rrrrrr  6 1511 1149     jlt     _IncLeft
+                             1151     ; If the right volume is not at minimum (1F)
+P:029A 20CF00         2 1513 1152     move    y0,b
+P:029B 44F400 00001F  3 1516 1153     move    #>MIN_RVOL,x0
+P:029D 20004E         2 1518 1154     and     x0,b
+P:029E 20004D         2 1520 1155     cmp     x0,b
+P:029F 0AF0AA rrrrrr  6 1526 1156     jeq     _IncBalance
+                             1158     ; Decrement the right volume
+P:02A1 4C8000r        2 1528 1159     move    y:<Const_000001,x0
+P:02A2 200048         2 1530 1160     add     x0,b
+P:02A3 21A600         2 1532 1161     move    b1,y0
+P:02A4 0AF080 rrrrrr  6 1538 1162     jmp     _SaveIt
+                             1164 _IncLeft
+                             1165     ; if (right - left) <= balance
+P:02A6 5EF000 rrrrrr  3 1541 1166     move    y:MixerMasterBal,a
+P:02A8 20000D         2 1543 1167     cmp     a,b
+P:02A9 0AF0A7 rrrrrr  6 1549 1168     jgt     _SaveIt
+                             1170     ; Increment the left volume
+P:02AB 20EE00         2 1551 1171     move    y1,a
+P:02AC 4C8000r        2 1553 1172     move    y:<Const_000100,x0
+P:02AD 200044         2 1555 1173     sub     x0,a
+P:02AE 218700         2 1557 1174     move    a1,y1
+                             1176 _SaveIt
+                             1177     ; Form new volume reg value while preserving mute bit
+P:02AF 20EE00         2 1559 1178     move    y1,a
+P:02B0 200052         2 1561 1179     or      y0,a1                       ; Combine the left and right volumes
+P:02B1 57F000 00FA04  3 1564 1180     move    x:HW_MIXMASTERVR,b
+P:02B3 47F400 FFE0E0  3 1567 1181     move    #>MIX_INV_VOLMSK,y1
+P:02B5 20007E         2 1569 1182     and     y1,b                        ;These instruction ensure all non volume bits remain
+P:02B6 21A700         2 1571 1183     move    b1,y1                       ;unchanged.
+P:02B7 200072         2 1573 1184     or      y1,a1
+P:02B8 547000 00FA04  3 1576 1185     move    a1,x:HW_MIXMASTERVR         ;Update STMP3400 volume reg with new volume setting
+                             1187 _IncBalance
+                             1188     ; If the balance is at maximum left (31)
+P:02BA 5EF000 rrrrrr  3 1579 1189     move    y:MixerMasterBal,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:02BC 44F400 00001F  3 1582 1190     move    #>MAX_LBAL,x0
+P:02BE 200045         2 1584 1191     cmp     x0,a
+P:02BF 0AF0AA rrrrrr  6 1590 1192     jeq     _Exit                       ; Exit
+                             1194     ; Increment the balance
+P:02C1 4C8000r        2 1592 1195     move    y:<Const_000001,x0
+P:02C2 200040         2 1594 1196     add     x0,a
+P:02C3 5C7000 rrrrrr  3 1597 1197     move    a1,y:MixerMasterBal
+                             1199 _Exit
+P:02C5 00000C         4 1601 1200     rts
+                             1202 ;///////////////////////////////////////////////////////////////////////////////
+                             1203 ;> Name:        RecordSelect
+                             1204 ;
+                             1205 ;  Type:        Function
+                             1206 ;
+                             1207 ;  Description: This function is used to select the sources for the left and right
+                             1208 ;               record inputs. The ADC allows mix-and-match of the various sources.
+                             1209 ;               The sources allowed are the following: mic, FM-in, line-in, and stereo
+                             1210 ;               mixer. Left and right record inputs can be set to different sources.
+                             1211 ;
+                             1212 ;  Inputs:      x0 = left channel record source
+                             1213 ;               x1 = right channel record source
+                             1214 ;  Outputs:     Record source is set for left and right channels.
+                             1215 ;
+                             1216 ;  Notes: 
+                             1217 ;<
+                             1218 ;///////////////////////////////////////////////////////////////////////////////
+                             1220 RecordSelect
+P:02C6 56F000 00FA09  3 1604 1221     move    x:HW_MIXRECSELR,a           ; get the current reg contents
+P:02C8 46F400 FFF8F8  3 1607 1222     move    #>HW_MIXRECSELR_SR_SL_CLRMASK,y0
+P:02CA 200056         2 1609 1223     and     y0,a                        ; clear out old source values
+P:02CB 200042         2 1611 1224     or      x0,a                        ; set the left channel
+P:02CC 200062         2 1613 1225     or      x1,a                        ; set the right channel
+P:02CD 567000 00FA09  3 1616 1226     move    a,x:HW_MIXRECSELR           ; make it so
+P:02CF 00000C         4 1620 1227     rts
+                             1229 ;///////////////////////////////////////////////////////////////////////////////
+                             1230 ;   Permanently resident code
+                             1231 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                       1233     org     p,"MIXSYS_Mixer_P":
+                             1235 ;///////////////////////////////////////////////////////////////////////////////
+                             1236 ;> Name:        MixerMasterFadeOut
+                             1237 ;
+                             1238 ;  Type:        Function
+                             1239 ;
+                             1240 ;  Description: This function will fade out the Master Volume. The fade out
+                             1241 ;               consists of decreasing the left and/or right channel volume(s)
+                             1242 ;               independently as needed until both channels are at their minimum
+                             1243 ;               volume settings then the MUTE bit will be set. 
+                             1244 ;
+                             1245 ;               The original HW_MIXMASTERVR reg content is saved in a global variable at
+                             1246 ;               the start of this routine.  This saved global value will be used to
+                             1247 ;               restore the HW_MIXMASTERVR reg when the MixerMasterFadeIn routine is
+                             1248 ;               executed.
+                             1249 ;
+                             1250 ;               Assumes MUTE bit is not set when this routine is 1st called and pretend
+                             1251 ;               MUTE bit is not set if it is set.
+                             1252 ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1253 ;  Inputs:      x0 = Number of milliseconds of delay between fade out steps
+                             1254 ;  Outputs: 
+                             1255 ;
+                             1256 ;  Notes: 
+                             1257 ;<
+                             1258 ;///////////////////////////////////////////////////////////////////////////////
+                             1259 MixerMasterFadeOut
+                             1263     ;If using funclet, function will be executed via funclet kernel
+                             1264     CallFunclet RSRC_FUNCLET_MIXER_MASTER_FADE_OUT
+P:0000 0D0080         4    4 1264     jsr       $80
+P:0001 000173                1264     DC       RSRC_FUNCLET_MIXER_MASTER_FADE_OUT  ; 1 word
+P:0000                       1266     org p,"SYSFUNCLET_MixerMasterFadeOut_P":
+                             1267     
+P:0000 000173                1268     dc      RSRC_FUNCLET_MIXER_MASTER_FADE_OUT           ; Funclet Resource number
+                             1273     push    x0                          ; Save the delay value
+P:0001 4C5F00         2    2 1273     move    x0,y:(r7)+
+P:0002 56F000 00FA04  3    5 1275     move    x:HW_MIXMASTERVR,a
+P:0004 547000 rrrrrr  3    8 1276     move    a1,x:MixerMasterVol         ;Save HW_MIXMASTERVR reg value in global variable
+                             1277         ; check for fast audio fade-out, x0 = 0
+P:0006 20001B         2   10 1278         clr             b
+P:0007 20004D         2   12 1279         cmp             x0,b
+P:0008 0AF0A2 rrrrrr  6   18 1280     jne     _MoreMixFadeO               ;Continue decreasing left/right volume level
+P:000A 44F400 009F1F  3   21 1281         move    #>$009f1f,x0
+P:000C 447000 00FA04  3   24 1282         move    x0,x:HW_MIXMASTERVR
+                             1283         pop             x0
+P:000E 4CFF00         4   28 1283     move    y:-(r7),x0
+P:000F 0AF080 rrrrrr  6   34 1284         jmp             _MixFadeOMute
+                             1286 _MoreMixFadeO:
+P:0011 44F400 001F00  3   37 1287     move    #>MIN_LVOL,x0
+P:0013 46F446 00001F  3   40 1288     and     x0,a   #>MIN_RVOL,y0        ;Zero out all non ML[4..0] bit of VOLMASTR reg
+                             1289                                         ;y0 reg should not be changed by this routine from this po
+                                  int
+P:0015 57F000 00FA04  3   43 1290     move    x:HW_MIXMASTERVR,b          ;b reg should only be changed by "add" instruction below
+P:0017 4D805Er        2   45 1291     and     y0,b   y:<Const_000100,x1   ;Zero out all non MR[4..0] bit of HW_MIXMASTERVR reg
+                             1292                                         ;x1 reg should not be changed by this routine from this po
+                                  int
+P:0018 4F8000r        2   47 1293     move    y:<Const_000001,y1          ;y1 reg should not be changed by this routine from this po
+                                  int
+P:0019 200045         2   49 1295     cmp     x0,a
+P:001A 0AF0AA rrrrrr  6   55 1296     jeq     _MixFadeORight              ;Has left channel volume already reach minimum setting?
+P:001C 200060         2   57 1297     add     x1,a                        ;Decrease left channel volume setting by one
+                             1299 _MixFadeORight:
+P:001D 20005D         2   59 1300     cmp     y0,b
+P:001E 0AF0AA rrrrrr  6   65 1301     jeq     _MixFadeONext               ;Has right channel volume already reach minimum setting?
+P:0020 200078         2   67 1302     add     y1,b                        ;Decrease right channel volume setting by one
+                             1304 _MixFadeONext:                          ;Form new HW_MIXMASTERVR reg value
+P:0021 21A400         2   69 1305     move    b1,x0
+P:0022 200042         2   71 1306     or      x0,a1                       ;Form new left and right channel value for HW_MIXMASTERVR 
+                                  reg
+P:0023 547000 00FA04  3   74 1307     move    a1,x:HW_MIXMASTERVR         ;Update STMP3400 HW_MIXMASTERVR reg with new volume settin
+                                  g
+                             1309     pop     x0                          ;Restore the delay value
+P:0025 4CFF00         4   78 1309     move    y:-(r7),x0
+                             1311     ;Check to see if both channel are set at minimum volume level
+P:0026 45F400 001F1F  3   81 1312     move    #>MIX_MIN_VOL,x1
+P:0028 200065         2   83 1313     cmp     x1,a                        ;Are both channel volume level at minimum volume setting?
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0029 0AF0AA rrrrrr  6   89 1314     jeq     _MixFadeOMute
+                             1316     push    x0                          ; Save the delay value
+P:002B 4C5F00         2   91 1316     move    x0,y:(r7)+
+P:002C 0BF080 rrrrrr  6   97 1318     jsr     SysDelay
+P:002E 56F000 00FA04  3  100 1320     move    x:HW_MIXMASTERVR,a
+P:0030 0AF080 rrrrrr  6  106 1321     jmp     _MoreMixFadeO               ;Continue decreasing left/right volume level
+                             1323 _MixFadeOMute:
+P:0032 0A702F 00FA04  6  112 1324     bset    #15,x:HW_MIXMASTERVR        ;Set MUTE bit of HW_MIXMASTERVR reg as final Fade Out step
+                                  
+P:0034 0A7020 rrrrrr  6  118 1325     bset    #VOL_REG_BIT,x:MixerStatus
+P:0036 00000C         4  122 1326     rts
+                             1329  
+                             1330     ;If using funclet, switch counter back to original here
+P:0002                       1331     org    p,"MIXSYS_Mixer_P":                             
+                             1335 ;///////////////////////////////////////////////////////////////////////////////
+                             1336 ;> Name:        MixerMasterFadeIn
+                             1337 ;
+                             1338 ;  Type:        Function
+                             1339 ;
+                             1340 ;  Description: This function will fade in the Master Volume to the saved value.
+                             1341 ;               The fade in consists of increasing the left and/or right channel volume(s)
+                             1342 ;               independently as needed until both channels are restored to the value
+                             1343 ;               saved in the global variable by the MixerMasterFadeOut routine when it
+                             1344 ;               was executed.
+                             1345 ;
+                             1346 ;               MUTE bit is cleared automatically if set.
+                             1347 ;
+                             1348 ;  Inputs:      x0 = Number of milliseconds of delay between fade in steps
+                             1349 ;  Outputs: 
+                             1350 ;
+                             1351 ;  Notes: 
+                             1352 ;<
+                             1353 ;///////////////////////////////////////////////////////////////////////////////
+                             1355 MixerMasterFadeIn
+                             1358     ;If using funclet, function will be executed via funclet kernel
+                             1359     CallFunclet RSRC_FUNCLET_MIXER_MASTER_FADE_IN
+P:0002 0D0080         4    8 1359     jsr       $80
+P:0003 000174                1359     DC       RSRC_FUNCLET_MIXER_MASTER_FADE_IN  ; 1 word
+P:0000                       1361     org p,"SYSFUNCLET_MixerMasterFadeIn_P":
+                             1362     
+P:0000 000174                1363     dc      RSRC_FUNCLET_MIXER_MASTER_FADE_IN           ; Funclet Resource number
+P:0001 45F000 rrrrrr  3    3 1367     move    x:MixerStatus,x1            ; check if VOL_MUTED set due to VOL down
+P:0003 0AC501 rrrrrr  6    9 1369     jclr    #VOL_MUTED,x1,_BeginFadeIn
+                             1371     ; Allow fade-in to undo mute if this MixerStatus mute case is the first (from 
+                             1372     ; system init). Note that the default state of SYS_INIT_VOL_MUTE bit is set or true.
+P:0005 0AC522 rrrrrr  6   15 1373     jset    #SYS_INIT_VOL_MUTE,x1,_UndoInitialMute
+P:0007 0AC540         4   19 1375     bclr    #VOL_REG_BIT,x1
+P:0008 457000 rrrrrr  3   22 1376     move    x1,x:MixerStatus
+P:000A 00000C         4   26 1377     rts
+                             1379     ; Clear MixerStatus:VOL_MUTED bit to false as this is the initial system mute. 
+                             1380     ; Continues to _BeginFadeIn which undoes mute.
+                             1381 _UndoInitialMute
+P:000B 0AC542         4   30 1382     bclr    #SYS_INIT_VOL_MUTE,x1
+P:000C 0AC541         4   34 1383     bclr    #VOL_MUTED,x1
+P:000D 457000 rrrrrr  3   37 1384     move    x1,x:MixerStatus
+                             1385     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1386 _BeginFadeIn
+                             1387     push    x0                          ; Save the delay value
+P:000F 4C5F00         2   39 1387     move    x0,y:(r7)+
+                             1389     ;Start fade in by initializing left and right channel to minimum volume setting
+P:0010 56F400 001F1F  3   42 1390     move    #>MIX_MIN_VOL,a
+P:0012 547000 00FA04  3   45 1391     move    a1,x:HW_MIXMASTERVR
+P:0014 0A700F rrrrrr  6   51 1393     bclr    #15,x:MixerMasterVol ;Make sure MUTE bit of global variable is cleared
+P:0016 0A7000 rrrrrr  6   57 1394     bclr    #VOL_REG_BIT,x:MixerStatus
+                             1396 _MoreMixFadeI:
+                             1397     ;Get final fade in left and right channel value from global variable
+P:0018 44F000 rrrrrr  3   60 1398     move    x:MixerMasterVol,x0         ;Get HW_MIXMASTERVR reg value saved in global variable
+P:001A 56F400 001F00  3   63 1399     move    #>MIX_LVOL_MASK,a
+P:001C 200046         2   65 1400     and     x0,a                        ;Zero out all non ML[4..0] bit of HW_MIXMASTERVR reg
+P:001D 218500         2   67 1401     move    a1,x1                       ;x1 reg should not be changed by this routine from this po
+                                  int
+P:001E 57F400 00001F  3   70 1403     move    #>MIX_RVOL_MASK,b
+P:0020 20004E         2   72 1404     and     x0,b                        ;Zero out all non ML[4..0] bit of HW_MIXMASTERVR reg
+P:0021 21A700         2   74 1405     move    b1,y1                       ;y1 reg should not be changed by this routine from this po
+                                  int
+P:0022 56F000 00FA04  3   77 1407     move    x:HW_MIXMASTERVR,a
+P:0024 44F400 001F00  3   80 1408     move    #>MIX_LVOL_MASK,x0
+P:0026 200046         2   82 1409     and     x0,a                        ;Zero out all non ML[4..0] bit of HW_MIXMASTERVR reg
+P:0027 4C8065r        2   84 1411     cmp     x1,a   y:<Const_000100,x0   ;Compare current left with target left
+                             1412                                         ;x0=Value by which to increase volume one higher at a time
+                                  
+P:0028 0AF0AA rrrrrr  6   90 1413     jeq     _MixFadeIRight              ;Has left channel volume reach final desired setting?
+P:002A 200044         2   92 1414     sub     x0,a                        ;Increase left channel volume setting by one
+                             1416 _MixFadeIRight:
+P:002B 57F000 00FA04  3   95 1417     move    x:HW_MIXMASTERVR,b
+P:002D 46F400 00001F  3   98 1418     move    #>MIX_RVOL_MASK,y0
+P:002F 20005E         2  100 1419     and     y0,b                        ;Get current right
+P:0030 4E807Dr        2  102 1421     cmp     y1,b   y:<Const_000001,y0   ;Compare current right with target right
+P:0031 0AF0AA rrrrrr  6  108 1422     jeq     _MixFadeINext               ;Has right channel volume reach final desired setting?
+P:0033 20005C         2  110 1423     sub     y0,b                        ;Increase right channel volume setting by one
+                             1425 _MixFadeINext:                          ;Form new HW_MIXMASTERVR reg value
+P:0034 21A400         2  112 1426     move    b1,x0
+P:0035 200042         2  114 1427     or      x0,a1                       ;Form new left and right channel value for HW_MIXMASTERVR 
+                                  reg
+P:0036 547000 00FA04  3  117 1428     move    a1,x:HW_MIXMASTERVR         ;Update STMP3400/3410 HW_MIXMASTERVR reg with new volume s
+                                  etting
+                             1430     pop     x0                          ;Restore the delay value
+P:0038 4CFF00         4  121 1430     move    y:-(r7),x0
+                             1432     ;Check to see if both channel are set at desired volume level
+P:0039 45F000 rrrrrr  3  124 1433     move    x:MixerMasterVol,x1
+P:003B 200065         2  126 1434     cmp     x1,a                        ;Are both channel volume level at desired volume setting?
+P:003C 0AF0AA rrrrrr  6  132 1435     jeq     _ExitMixFadeI
+                             1437     push    x0                          ; Save the delay value
+P:003E 4C5F00         2  134 1437     move    x0,y:(r7)+
+P:003F 0BF080 rrrrrr  6  140 1438     jsr     SysDelay
+P:0041 0AF080 rrrrrr  6  146 1439     jmp     _MoreMixFadeI               ;Continue decreasing left/right attenuation level (increas
+                                  ing volume)
+                             1441 _ExitMixFadeI:
+P:0043 00000C         4  150 1442     rts
+                             1446  
+                             1447     ;If using funclet, switch counter back to original here
+P:0004                       1448     org    p,"MIXSYS_Mixer_P":                             
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1452 ;///////////////////////////////////////////////////////////////////////////////
+                             1453 ;> Name:        MixerMasterMute
+                             1454 ;
+                             1455 ;  Type:        Function
+                             1456 ;
+                             1457 ;  Description: This function mutes the master volume register in the hardware.
+                             1458 ;               The previous value is stored off prior to the muting.
+                             1459 ;
+                             1460 ;  Inputs:      None.
+                             1461 ;  Outputs:     Master volume is muted.
+                             1462 ;
+                             1463 ;  Notes: 
+                             1464 ;<
+                             1465 ;///////////////////////////////////////////////////////////////////////////////
+                             1467 MixerMasterMute
+P:0004 56F000 00FA04  3   11 1468     move    x:HW_MIXMASTERVR,a
+P:0006 547000 rrrrrr  3   14 1469     move    a1,x:MixerMasterVol         ;Save HW_MIXMASTERVR reg value in global variable
+P:0008 0A702F 00FA04  6   20 1470     bset    #HW_MIXVOLUMER_MUTE_BITPOS,x:HW_MIXMASTERVR
+P:000A 00000C         4   24 1471     rts
+                             1473     endsec

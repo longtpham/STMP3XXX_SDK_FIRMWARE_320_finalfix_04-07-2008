@@ -1,0 +1,29 @@
+LCD test Documentation
+----------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the display module. This is done by using all the APIs provided. The list of APIs provided by the LCD module can be found in the document "Customizing the User Interface User Manual" on the extranet. 
+
+Build Options
+-------------
+Usage : lcdtest DEVICE [ALL]
+	DEVICE = 3400 or 3410
+     	ALL    = rebuilds all files
+
+Test Execution
+--------------
+The test runs and tests all the LCD APIs. There are no timers or interrupts used. Also there is no button functionality needed. The 'lcdsupport.c' file had functionality for calling the 'SysPostMessage(..)' function.
+We need to call 'SwizzleText()' to invert the sequence in which strings are stored in memory. This is done so that data is correctly displayed on the LCD.
+The scrolling functionality may/may not work depending upon the SDK version that is being used. 
+The value of maximum and minimum contrast can be changed by manipulating the 'project.inc' file and making corresponding changes in the 'lcdtest.c' file.
+
+Test Architecture
+-----------------
+The test uses the following modules
+Modules used in the test:
+DisplayModule - for display functionality
+
+The resources are in Y memory. The test uses forced processing of the module queues. This is done by calling the 'RetrieveLcdMessage()' function in the 'lcdsupport.c' file.
+
+For SDK 2.2, to include the display module, we include the list of make files that are listed under the 'Display Module' headline in the 'lcdtest.mk' file. We can either use the framebuffer functionality (by including the 'framebuffer.mk' file) or use the direct Lcd messaging functionality (by including the 'directtolcd.mk' file).

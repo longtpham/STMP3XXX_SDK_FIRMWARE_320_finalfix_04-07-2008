@@ -1,0 +1,240 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\decoder\wma\wma_decoder_nonoverlay.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000/2001
+                                3 ;
+                                4 ; STMP3410 ISR-level Decoder Module (CANNOT be overlayed)
+                                5 ;///////////////////////////////////////////////////////////////////////////////
+                                6         section Wma_DecoderNonOverlay
+                                7  
+                                9 ;///////////////////////////////////////////////////////////////////////////////
+                               10 ;   Includes
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               32     list
+                               33     page    132,60,0,0,0
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37 ;   External Definitions
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;///////////////////////////////////////////////////////////////////////////////
+                               44 ;   External References
+                               45 ;///////////////////////////////////////////////////////////////////////////////
+                               57 ;///////////////////////////////////////////////////////////////////////////////
+                               58 ;   Equates
+                               59 ;///////////////////////////////////////////////////////////////////////////////
+                               61 ;///////////////////////////////////////////////////////////////////////////////
+                               62 ;   X Memory
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         64         org     x,"DECWMAMOD_DecoderNonOverlay_X":
+                               66 ;///////////////////////////////////////////////////////////////////////////////
+                               67 ;   Y Memory
+                               68 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         69         org     y,"DECWMAMOD_DecoderNonOverlay_Y":
+                               71 ;///////////////////////////////////////////////////////////////////////////////
+                               72 ;   Code
+                               73 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         74         org     p,"DECMODWMA_DecoderNonOverlay_P":
+                               76 ;*******************************************************************************
+                               77 ;  Function:
+                               78 ;             WmaDecoderModuleTimerDisable
+                               79 ;  Description:
+                               80 ;                     Disable WMAModuleISR interrupt timer.
+                               81 ;  Parameters passed: 
+                               82 ;                     None
+                               83 ;  Registers Trashed: 
+                               84 ;             x0,r0,A
+                               85 ;  Return Values:
+                               86 ;             None
+                               87 ;*******************************************************************************
+                               88 WmaDecoderModuleTimerDisable
+                               89         ; CANNOT be overlayed, called by ISR.
+                               91         ; Hardware Workaround -- Disable IVL at HW_IPR
+P:0000 200013         2    2   92         clr     a
+P:0001 54F400 FF3FFF  3    5   93         move    #>DECODER_IVL_MASK,a1
+P:0003 44F000 00FFFF  3    8   94         move    x:HW_IPR,x0
+                               95         push    x0
+P:0005 4C5F00         2   10   95     move    x0,y:(r7)+
+P:0006 200046         2   12   96         and     x0,a
+P:0007 547000 00FFFF  3   15   97         move    a1,x:HW_IPR                     ; disables decoder timer IVL
+                               99         ; Disable Timer0 Module for use by decoder
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0009 44F400 rrrrrr  3   18  100         move    #>DecoderTimerNum,x0
+P:000B 60F400 rrrrrr  3   21  101         move    #_TimerDisabled,r0
+P:000D 0AF080 rrrrrr  6   27  102         jmp     SysDisableTimer
+                              103 _TimerDisabled
+                              105         ; Hardware Workaround -- Restore IVL at HW_IPR
+                              106         pop     x0
+P:000F 4CFF00         4   31  106     move    y:-(r7),x0
+P:0010 447000 00FFFF  3   34  107         move    x0,x:HW_IPR                      ; re-enables the IVL line of decoder
+P:0012 00000C         4   38  109         rts
+                              111 ;*******************************************************************************
+                              112 ;  Function:
+                              113 ;             DecoderByteCounter
+                              114 ;  Description:
+                              115 ;                     Counts how far the song has advanced in terms of bytes.
+                              116 ;  Parameters passed: 
+                              117 ;                     Uses WMA_File_Offset, to find the last accessed location in the file
+                              118 ;  Registers Trashed: 
+                              119 ;             A,B
+                              120 ;  Return Values:
+                              121 ;             None
+                              122 ;*******************************************************************************
+                              123 DecoderByteCounter
+P:0013 48F000 rrrrrr  3   41  125         move    L:WMA_File_Offset,A               ; Get the file offset 
+P:0015 5C7000 rrrrrr  3   44  126         move    a1,y:SongByteTotalHigh
+P:0017 587000 rrrrrr  3   47  127     move    a0,y:SongByteTotalLow
+                              128     ; total bytes in A1:A0
+                              129     ; 2 - Load B1:B0 with the song length in bytes
+P:0019 20001B         2   49  130     clr     b
+P:001A 5DF000 rrrrrr  3   52  131     move    y:SongByteLengthHigh,b1       ; high bytes of song length
+P:001C 59F000 rrrrrr  3   55  132     move    y:SongByteLengthLow,b0        ; low bytes of song length
+                              134     ; 3 - CMP total bytes expected to total bytes so far
+P:001E 20000D         2   57  135     cmp     a,b
+P:001F 0AF0A7 rrrrrr  6   63  136     jgt     _continue_decoding_song
+                              137 _done_with_song
+P:0021 0A702D rrrrrr  6   69  138     bset    #EndOfSong,x:DecoderCSR
+                              139 _continue_decoding_song
+P:0023 00000C         4   73  140     rts
+                              141         
+                              143 ;*******************************************************************************
+                              144 ;  Function:
+                              145 ;             WmaDecoderModuleIsr
+                              146 ;  Description:
+                              147 ;                     WMA ISR Module
+                              148 ;  Parameters passed: 
+                              149 ;                     None
+                              150 ;  Registers Trashed: 
+                              151 ;             None. Registers backed up on stack.
+                              152 ;  Return Values:
+                              153 ;             None
+                              154 ;*******************************************************************************
+                              155 WmaDecoderModuleIsr
+                              156         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              157         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              158         ; will be popped back off System Stack Low (SSL).
+                              159         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              160         ; Next cycle after clearing it should NOT be an ALU instruction.
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0024 00BFB8         2   75  161         andi #$BF,mr
+                              163         ; save off all registers
+P:0025 6E7000 rrrrrr  3   78  164         move    r6,y:IntL1_SaveR6            ; r6 used for return mechanism
+P:0027 66F400 rrrrrr  3   81  165         move    #_DecoderSaveRegReturn,r6    ; setup the return address
+P:0029 0AF080 rrrrrr  6   87  166         jmp     SaveRegs                     ; save the remaining registers
+                              167 _DecoderSaveRegReturn
+P:002B 0BF080 rrrrrr  6   93  168         jsr     SysAllLinear                 ; WMA Decoder always assumes linear modulo.        
+                              169         ; save off stack
+P:002D 66F400 rrrrrr  3   96  170         move    #_DecoderSaveStackReturn,r6  ; setup the return address
+P:002F 65F400 rrrrrr  3   99  171         move    #WmaDecIsrSp,r5                 ; pointer to the SP local save
+P:0031 0AF080 rrrrrr  6  105  172         jmp     SaveSystemStack              ; save the hardware stack
+                              173 _DecoderSaveStackReturn
+                              175 _DecoderStateMachine
+P:0033 44F000 rrrrrr  3  108  176         move    x:DecoderCSR,x0
+P:0035 0AC426 rrrrrr  6  114  177         jset    #Stop,x0,_IsrStopSequence
+P:0037 0AC425 rrrrrr  6  120  178         jset    #Pause,x0,_IsrPauseSequence
+                              180 _IsrPlaySequence
+P:0039 0A702C rrrrrr  6  126  181         bset    #Play,x:DecoderCSR
+                              183         ; Set the status register
+P:003B 0A7006 rrrrrr  6  132  184         bclr    #Stop,x:DecoderSR
+P:003D 0A7005 rrrrrr  6  138  185         bclr    #Pause,x:DecoderSR
+P:003F 0A702C rrrrrr  6  144  186         bset    #Play,x:DecoderSR
+                              188         ; enable the dac. 
+P:0041 44F000 00F800  3  147  189         move    x:HW_DACCSR,x0
+P:0043 0AC420 rrrrrr  6  153  190         jset    #HW_DACCSR_TXEN_BITPOS,x0,_checkFileOK
+P:0045 0A7020 00F800  6  159  191         bset    #HW_DACCSR_TXEN_BITPOS,x:HW_DACCSR
+                              193 _checkFileOK
+P:0047 4CF000 rrrrrr  3  162  194         move    y:CurrentSongBad,x0
+P:0049 0AC400 rrrrrr  6  168  195         jclr    #0,x0,_checkForData
+P:004B 0A702D rrrrrr  6  174  196         bset    #EndOfSong,x:DecoderCSR     ; force to end of bad file
+P:004D 0AF080 rrrrrr  6  180  197         jmp     _IsrStopSequence
+                              199 _checkForData
+                              200 _callDecoder
+P:004F 0BF080 rrrrrr  6  186  204         jsr     WmaDecProcess                   ; Decode a sub-frame.
+P:0051 200003         2  188  205         tst     A                               ; Check the return value.
+P:0052 0AF0AA rrrrrr  6  194  206         jeq     _incrementByteCount             
+P:0054 0A702D rrrrrr  6  200  207         bset    #EndOfSong,x:DecoderCSR         ; End of song reached or Error.
+                              209 _incrementByteCount
+P:0056 0BF080 rrrrrr  6  206  210         jsr     DecoderByteCounter              
+                              211 _checkIfTrackDone
+P:0058 44F000 rrrrrr  3  209  212         move    x:DecoderCSR,x0
+P:005A 0AC40D rrrrrr  6  215  213         jclr    #EndOfSong,x0,_restore_stack   ; continue decoding song if bit not yet set
+                              215 _IsrStopSequence
+                              216         ; Set the status register
+P:005C 0A7026 rrrrrr  6  221  217         bset    #Stop,x:DecoderSR
+P:005E 0A7005 rrrrrr  6  227  218         bclr    #Pause,x:DecoderSR
+P:0060 0A700C rrrrrr  6  233  219         bclr    #Play,x:DecoderSR
+P:0062 0AF080 rrrrrr  6  239  220         jmp     _decoderTimerOff
+                              221 _IsrPauseSequence
+                              222         ; Set the status register
+P:0064 0A7025 rrrrrr  6  245  223         bset    #Pause,x:DecoderSR
+P:0066 0A700C rrrrrr  6  251  224         bclr    #Play,x:DecoderSR
+                              225 _decoderTimerOff
+P:0068 44F000 rrrrrr  3  254  226         move    x:DecoderCSR,x0              ; copy contents of status register
+P:006A 0AC40D rrrrrr  6  260  227         jclr    #EndOfSong,x0,_ok
+                              228 _ok
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              229         ; if done decoding song, turn timer off
+                              230         ; user level will turn dac off before advancing to next song
+P:006C 0A700C rrrrrr  6  266  231         bclr    #Play,x:DecoderCSR           ; clear to avoid "Pause" on next song
+P:006E 0BF080 rrrrrr  6  272  232         jsr     WmaDecoderModuleTimerDisable    ; turn off timer
+                              233 _restore_stack
+                              234         ; Setup Timer0 Module for use by decoder        
+P:0070 45F400 001D4C  3  275  235             move        #>DecoderTimerCountWMADec,x1  ; Call every 0.5 ms, as often as possible.
+P:0072 44F400 rrrrrr  3  278  236         move    #>DecoderTimerNum,x0         ; input to timer routine
+P:0074 60F400 rrrrrr  3  281  237         move    #_TimerCountLoaded,r0
+P:0076 0AF080 rrrrrr  6  287  239         jmp     SysLoadTimerCount
+                              240 _TimerCountLoaded
+                              241         ; reset the isr for next time
+P:0078 44F400 rrrrrr  3  290  242         move    #>DecoderTimerNum,x0
+P:007A 60F400 rrrrrr  3  293  243         move    #_TimerReset,r0
+P:007C 0AF080 rrrrrr  6  299  244         jmp     SysClearTimerIrq
+                              245 _TimerReset
+                              246         ; restore stack
+P:007E 65F400 rrrrrr  3  302  247         move    #WmaDecIsrSp,r5                 ; pointer to the SP local save
+P:0080 66F400 rrrrrr  3  305  248         move    #_stackRestored,r6           ; setup the return address
+P:0082 0AF080 rrrrrr  6  311  249         jmp     RestoreSystemStack           ; restore the hardware stack
+                              250 _stackRestored
+                              252         ; restore all registers
+P:0084 66F400 rrrrrr  3  314  253         move    #DecoderRestoreRegReturn,r6  ; setup the return address
+P:0086 0AF080 rrrrrr  6  320  254         jmp     RestoreRegs                  ; restore registers
+                              255 DecoderRestoreRegReturn
+P:0088 6EF000 rrrrrr  3  323  256         move    y:IntL1_SaveR6,r6            ; restore minimal reg set
+P:008A 000004         4  327  257         rti
+                              259 ;*******************************************************************************
+                              260 ;  Function:
+                              261 ;             GetInvBitRate
+                              262 ;  Description:
+                              263 ;                     Uses the filehdr_bitrate information decoded from WMA file header
+                              264 ;             to compute inverse bit rate.  
+                              265 ;             The output is compatible to MP3.
+                              266 ;             Called only at beginning of file playback.
+                              267 ;             Uses Direct division. 
+                              268 ;  Parameters passed: 
+                              269 ;                     Uses filehdr_bitrate
+                              270 ;  Registers Trashed: 
+                              271 ;             x0,A
+                              272 ;  Return Values:
+                              273 ;             Writes y:SongInvBitRate variable.
+                              274 ;*******************************************************************************
+                              275 ;--------------------------------------------------
+                              276 ; Return value in A0
+                              278 GetInvBitRate
+P:008B 4CF013 rrrrrr  3  330  279         clr     A    y:filehdr_bitrate,x0
+P:008D 588000r        2  332  280         move    y:<Const_001000,A0              
+P:008E 00FEB9         2  334  281         andi    #$FE,CCR                  ; clear any carry bit if present      
+P:008F 0630A0         4  338  282         rep     #$30
+P:0090 018040         2  340  283         div     x0,A
+P:0091 200040         2  342  284         add     x0,a 
+P:0092 587000 rrrrrr  3  345  285         move    A0,y:SongInvBitRate
+P:0094 00000C         4  349  286     rts       
+                              289         endsec
+                              291     

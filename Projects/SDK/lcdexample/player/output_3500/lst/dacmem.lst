@@ -1,0 +1,75 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\fgndmodules\dacmem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; STMP DAC Driver Module XMEM
+                                5 ;******************************************************************************
+                                6         
+                                7 ;*******************************************************************************
+                                8 ;  Include files
+                                9 ;*******************************************************************************
+                               10         include "dacequ.inc"
+                                2 dacequ equ 1
+                                4         page 255,255
+                                7 FlashBufSize          equ     441             ; The size of the Flash buffer 
+                                8 FlashBufModulo        equ     FlashBufSize-1  ; The modulo of the MP3 decode buffer
+                               11 DacBlockSize          equ     $40             ; The size of the block we process at each interrupt
+                               13 DacBufSize            equ     $200            ; Use $41 for Sim only : Temporary : The buffer size dedicated to the DAC port
+                               17 DacBufModulo          equ     DacBufSize-1    ; The modulo of the DAC buffer 
+                               19 SimOutL               equ     $8000
+                               20 SimOutR               equ     $8001
+                               22 DacCoef1Taps          equ     35
+                               23 DacData1Size          equ     DacCoef1Taps/2+1
+                               24 ;DacOutputBufferSize  equ     DacData1Size*8
+                               27 ;; DAC 
+                               28 ;; Source frq -> Target 
+                               29 ;; 48.000 kHz -> 48kHz = (((8*48/48    ) - 1) * $010000) =   =>  DACSRR = $070000 
+                               30 ;; 44.100 kHz -> 48kHz = (((8*48/44.1  ) - 1) * $010000) =   =>  DACSRR = $07b51e 
+                               31 ;; 32.000 kHz -> 48kHz = (((8*48/32    ) - 1) * $010000) =   =>  DACSRR = $0b0000 
+                               32 ;; 24.000 kHz -> 48kHz = (((8*48/24    ) - 1) * $010000) =   =>  DACSRR = $0f0000 
+                               33 ;; 22.050 kHz -> 48kHz = (((8*48/22.05 ) - 1) * $010000) =   =>  DACSRR = $106a3b 
+                               34 ;; 16.000 kHz -> 48kHz = (((8*48/16    ) - 1) * $010000) =   =>  DACSRR = $170000 
+                               35 ;; 12.000 kHz -> 48kHz = (((8*48/12    ) - 1) * $010000) =   =>  DACSRR = $1f0000 
+                               36 ;; 11.025 kHz -> 48kHz = (((8*48/11.025) - 1) * $010000) =   =>  DACSRR = $21d476 
+                               37 ;;  8.000 kHz -> 48kHz = (((8*48/8     ) - 1) * $010000) =   =>  DACSRR = $2f0000 
+                               40 ; setting for 24MHz crystal, xtal/4=6MHz
+                               41 DAC48kHz              equ     $06d000         ; load into DACSRR
+                               42 DAC44_1kHz            equ     $0780df
+                               43 DAC32kHz              equ     $0ab800
+                               44 DAC24kHz              equ     $0ea000
+                               45 DAC22_05kHz           equ     $1001be
+                               46 DAC16kHz              equ     $167000
+                               47 DAC12kHz              equ     $1e4000
+                               48 DAC11_025kHz          equ     $21037c
+                               49 DAC8kHz               equ     $2de000
+                               12         
+                               13 ;*******************************************************************************
+                               14 ;  Extern definitions
+                               15 ;*******************************************************************************
+                               25 ;*******************************************************************************
+                               26 ;  Extern references
+                               27 ;*******************************************************************************
+                               29     
+                               30 ;*******************************************************************************
+                               31 ;  X memory
+                               32 ;*******************************************************************************
+X:0000                         33         org     x,"Dacmem_Mod_X":
+                               34         
+                               35         buffer  M,DacBufSize
+                               36 DacBuf      
+X:0000 000000                  37         bsc     DacBufSize,0                      ; The DAC port buffer
+   |   REPEATS                    
+X:01FF
+                               38         endbuf
+X:0000                         40         org     x,"DacMem_X":
+X:0000 000000                  42 DacIsrSavex0    dc      0               ; needed because x0 used before register save in isr
+X:0001 000000                  43 DacIsrSaver7    dc      0               ; needed because DacDrvProcess corrupts r7
+X:0002 000000                  45 RunStfmFilter   dc      0               ; Trigger the STFM filter to run
+X:0003 000000                  46 DacIsrSaveIPR   dc      0               ; Trigger the STFM filter to run
+                               51 ;*******************************************************************************
+                               52 ;  Y memory
+                               53 ;*******************************************************************************
+                               54 ; !!!!!!!!!!!!! All DAC ymem goes in dacmemy.asm

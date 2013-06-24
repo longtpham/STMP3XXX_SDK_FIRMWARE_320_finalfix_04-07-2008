@@ -1,0 +1,63 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\algorithms\common\msadpcm_mem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ; File : msadpcm_mem.asm
+                                5 ; Description : MS ADPCM specific memory
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7     
+                                9     section MSADPCM_Mem        
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;       Globals
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               19 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;       Y Memory
+                               21 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         23         org y,"MSADPCM_Mem_Y":
+                               24 Ffirst_block_flag
+Y:0000 RESERVED                25 first_block_flag        ds              1
+Y:0000
+                               27 ; Do not change the order of the following six variables.    
+Y:0001                         28 iSamp2                  ds          2
+   |   RESERVED                   
+Y:0002
+Y:0003                         29 iSamp1                  ds          2
+   |   RESERVED                   
+Y:0004
+Y:0005                         30 iCoef2                  ds          2
+   |   RESERVED                   
+Y:0006
+Y:0007                         31 iCoef1                  ds          2
+   |   RESERVED                   
+Y:0008
+Y:0009                         32 iPredSample             ds          2
+   |   RESERVED                   
+Y:000A
+Y:000B                         33 iDelta                  ds          2
+   |   RESERVED                   
+Y:000C
+                               35 FiDeltaEnc
+Y:000D                         36 iDeltaEnc               ds              2
+   |   RESERVED                   
+Y:000E
+                               37 AdaptionTable
+Y:000F 0000E6                  38                         dc              230
+Y:0010 0000E6                  39                         dc              230
+Y:0011 0000E6                  40                         dc              230
+Y:0012 0000E6                  41                         dc              230
+Y:0013 000133                  42                         dc              307
+Y:0014 000199                  43                         dc              409
+Y:0015 000200                  44                         dc              512
+Y:0016 000266                  45                         dc              614
+Y:0017 000300                  46                         dc              768
+Y:0018 000266                  47                         dc              614
+Y:0019 000200                  48                         dc              512
+Y:001A 000199                  49                         dc              409
+Y:001B 000133                  50                         dc              307
+Y:001C 0000E6                  51                         dc              230
+Y:001D 0000E6                  52                         dc              230
+Y:001E 0000E6                  53                         dc              230
+                               55     endsec

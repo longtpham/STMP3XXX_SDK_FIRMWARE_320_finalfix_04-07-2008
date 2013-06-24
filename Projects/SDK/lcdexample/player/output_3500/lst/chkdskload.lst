@@ -1,0 +1,63 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\filesystem\chkdsk\chkdskload.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;////////////////////////////////////////////////////////////////////////////////
+                                2 ;// Copyright(C) SigmaTel, Inc. 2004
+                                3 ;//
+                                4 ;// Filename: ChkdskLoad.c
+                                5 ;// Description: Load Checkdisk from resource file into Application space.
+                                6 ;// To do:
+                                7 ;////////////////////////////////////////////////////////////////////////////////
+                                9 ;////////////////////////////////////////////////////////////////////////////////
+                               10 ;//   Includes and external references
+                               11 ;////////////////////////////////////////////////////////////////////////////////
+                               17     list
+                               25 SIZECHKDSKMODULEY    equ     $1fff
+                               26 SIZECHKDSKMODULEP    equ     $6000
+P:0000                         34     org     p,"CheckDiskLoad_P":
+                               35 ;////////////////////////////////////////////////////////////////////////////////
+                               36 ;//
+                               37 ;//>  Name:          CheckDiskLoad
+                               38 ;//
+                               39 ;//  Type:           Function
+                               40 ;//
+                               41 ;//  Description:    Loads checkdisk into P App space from resource file.
+                               42 ;//                  
+                               43 ;//  Inputs:         none
+                               44 ;//
+                               45 ;//  Outputs:        none
+                               46 ;//                  
+                               47 ;//  Notes:          
+                               48 ;//<
+                               49 ;////////////////////////////////////////////////////////////////////////////////
+                               50 CheckDiskLoad:
+                               51     
+                               52     ; save off stack
+P:0000 66F400 rrrrrr  3    3   53     move    #_stackSaved,r6              ; setup the return address
+P:0002 65F400 rrrrrr  3    6   54     move    #UserScratchY,r5             ; pointer to the SP local save
+P:0004 0AF080 rrrrrr  6   12   55     jmp     SaveSystemStack              ; save the hardware stack
+                               56 _stackSaved
+                               58     ;Load checkdisk p memory module
+P:0006 44F400 00026C  3   15   59     move    #>RSRC_CHECKDISK,x0       ; Resource number
+P:0008 45F400 000002  3   18   60     move    #>RSRC_TYPE_DATA,x1             ; Resource type is data
+P:000A 47F400 rrrrrr  3   21   61     move    #3*(F_lc_u_e_CheckdiskOvl-F_lc_u_b_CheckdiskOvl),y1          ; Size of the overlay are
+                                  a
+P:000C 46F400 rrrrrr  3   24   62     move    #>F_lc_u_b_CheckdiskOvl,y0        ; Address of the overlay area
+P:000E 54F400 100000  3   27   63     move    #>TARGET_MEM_P,a1               ; Overlay area is in P memory
+P:0010 0BF080 rrrrrr  6   33   64     jsr     SysLoadResource
+                               66     ;Load checkdisk y memory module
+P:0012 44F400 00026D  3   36   67     move    #>RSRC_CHKDSK_YMEM,x0       ; Resource number
+P:0014 45F400 000002  3   39   68     move    #>RSRC_TYPE_DATA,x1             ; Resource type is data
+P:0016 47F400 rrrrrr  3   42   69     move    #3*(F_lc_u_e_chkdsk_Y_buf-F_lc_u_b_chkdsk_Y_buf),y1          ; Size of the overlay are
+                                  a
+P:0018 46F400 rrrrrr  3   45   70     move    #>F_lc_u_b_chkdsk_Y_buf,y0        ; Address of the overlay area
+P:001A 54F400 400000  3   48   71     move    #>TARGET_MEM_Y,a1               ; Overlay area is in P memory
+P:001C 0BF080 rrrrrr  6   54   72     jsr     SysLoadResource
+                               74     ; restore stack
+                               75 _restoreStack
+P:001E 65F400 rrrrrr  3   57   76     move    #UserScratchY,r5             ; pointer to the SP local save
+P:0020 66F400 rrrrrr  3   60   77     move    #_stackRestored,r6           ; setup the return address
+P:0022 0AF080 rrrrrr  6   66   78     jmp     RestoreSystemStack           ; restore the hardware stack
+                               79 _stackRestored
+P:0024 00000C         4   70   81     rts

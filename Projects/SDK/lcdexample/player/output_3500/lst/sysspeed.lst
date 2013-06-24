@@ -1,0 +1,988 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\3500\sysspeed.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2004
+                                3 ;
+                                4 ;  File        : sysspeed.asm
+                                5 ;  Description : System Speed Routines. Includes public and private functions.
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_SysSpeed
+                               10     opt     mex
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Macros
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               18     list
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               21 ;   Includes
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               29     list
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               32 ;   External Definitions
+                               33 ;///////////////////////////////////////////////////////////////////////////////
+                               53     
+                               54 ;///////////////////////////////////////////////////////////////////////////////
+                               55 ;   External References
+                               56 ;///////////////////////////////////////////////////////////////////////////////
+                               60     list
+                               70         
+                               74 ;///////////////////////////////////////////////////////////////////////////////
+                               75 ;   Equates
+                               76 ;///////////////////////////////////////////////////////////////////////////////
+                               77 ; NOTE: Speed Index equates are in sysspeed.inc. 
+                               78 ; Default header file in mp3basecc\inc , project specific files are in 
+                               79 ; Timer Count Value = (Interval * Speed) / 2   (Interval is in microseconds)
+                               80 CLOCK_INTERVAL  equ     1000            ; Increment system clock every 1 ms
+                               81 BUTTON_INTERVAL equ     40000           ; Check buttons every 40 ms
+                               83 ; Number of loop iterations needed to wait for the PLL and DC-DC to settle
+                               84 ; Count = Delay * 24.576MHz / 3  (Delay is in seconds)
+                               85 SETTLING_COUNT  equ     10000           ; 1.23 ms
+                               87 ; Core voltage (2.5 volt DC-DC) channel (S2C) field in the DCDC Status register
+                               88 ;S2C           equ   4                   ; Starts at bit 4           
+                               89 ;DCDC_STS_S2C_MASK equ   $F<<S2C         ; Four bits wide
+                               91 SPEED_FIRST      equ     23              ; bit indicator if changing speed/voltage first
+                               94 ; speed table offsets
+                               95 PDIV_OFFSET     equ     0
+                               96 DDIV_OFFSET     equ     1
+                               97 VDDD_OFFSET     equ     2
+                               98 BO_OFFSET       equ     3
+                               99 TIMER1_OFFSET   equ     4
+                              100 TIMER2_OFFSET   equ     5
+                              101 GF_OFFSET       equ     6
+                              103 ; Number of words in each entry of the speed table
+                              104 SPEED_ENTRY_SIZE equ    7
+                              107 HW_DCDC_VDDD_VLVL_BITPOS    equ    0
+                              110 ; Note that 3 was the optimal value as seen for VDDIO and VDDD on a scope.
+                              111 ; This works in conjunction with a delay per iteration after VDD_OK bit. See SteppingVoltageSet
+                              112 VOLTAGE_BITS_PER_STEP   equ 3
+                              115 ;///////////////////////////////////////////////////////////////////////////////
+                              116 ;  X memory
+                              117 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        119     org x,"SYSFUN_SysSpeed_X":
+                              120                 
+                              121 ;///////////////////////////////////////////////////////////////////////////////
+                              122 ;  Y memory
+                              123 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        125     org y,"SYSFUN_SysSpeed_Y":
+                              127 ; Note: Do not change SpeedIndex value here from SPEED_UNITIALIZED or startup will fail 
+                              128 ;       with updated SysSetSpeed.         
+                              129 SpeedIndex
+Y:0000 00000E                 130         dc      SPEED_UNINITIALIZED  ; Current Index saved here. High for HW requirement. 
+                              131 OldSpeedIndex
+Y:0001 000006                 132         dc      SPEED_MP3
+                              133 ;---------------------------------------------------
+                              134 ; SysSpeedIncrease() and SysSpeedClockFree() use this client bit flag.
+                              135 ; Each bit below is a binary semaphore set by a corresponding clock API user.
+                              136 ; Generally, new clock adjusting modules must insert a bit ID in sysspeed.inc 
+                              137 ; and use the SysSpeedIncrease(MY_BIT) and SysSpeedClockFree(MY_BIT) API passing 
+                              138 ; in their ID from sysspeed.inc for above SysSpeed calls to manipulate the 
+                              139 ; corresponding client bit flag.
+Y:0002 000000                 140 clockUserFlag  dc      0                        ; Private to this module
+                              142 ; Table saves requested client speed indeces, 
+                              143 ; written by SysSpeedIncrease(), read by SysSpeedClockFree() for restoration.
+Y:0003                        144 SavedClientSpeedIndeces ds SPEED_CLIENT_HIGHEST_USER+1
+   |   RESERVED                   
+Y:0015
+                              145 ;---------------------------------------------------
+                              146 ;g_wBootSpeedIndex  dc      255 ;define during profiling only. Records which boot speed used. Comment out if not profiling.
+                              147                 
+                              149 ;///////////////////////////////////////////////////////////////////////////////
+                              150 ;   P Memory
+                              151 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        153     org p,"SYSFUN_SysSpeed_P":
+                              154         
+                              156 ;///////////////////////////////////////////////////////////////////////////////
+                              157 ;>  Name:           SysGetSpeed   or    int currentSpeedIndex SysGetSpeed();
+                              158 ;
+                              159 ;   Type:           Function
+                              160 ;
+                              161 ;   Description:    Asm or C version returns current value of y:SpeedIndex in 
+                              162 ;                   X1 or A1 respectively. (Registers A2 and A0 cleared in C ver)
+                              163 ;
+                              164 ;   Inputs:         None
+                              165 ;
+                              166 ;   Outputs:        x1 = Current Speed Index; C version also returns this in A1.
+                              167 ;                   Speed index values in increasing order:
+                              168 ;                   SPEED_IDLE = Used during idle operation (no audio decoding)  
+                              169 ;                   SPEED_MP3  = Used during MP3 decode operation 
+                              170 ;                   SPEED_MAX  = Used during browsing, shutdown, etc -- when not playing
+                              171 ;                   SPEED_WMA  = Used during Windows Media Audio decode operation
+                              172 ;                   SPEED_MP3ENCODE = Used during mp3 encode from line-in, mic, or FM.
+                              173 ;
+                              174 ;   Notes:          See also SysSpeed.inc for Speed API.
+                              175 ;<
+                              176 ;///////////////////////////////////////////////////////////////////////////////
+                              177 FSysGetSpeed
+P:0000 5EF000 rrrrrr  3    3  178     move    y:SpeedIndex,a              ; current Speed Index
+                              179 SysGetSpeed
+P:0002 4DF000 rrrrrr  3    6  180     move    y:SpeedIndex,x1             ; current Speed Index
+P:0004 00000C         4   10  181     rts
+                              184 ;///////////////////////////////////////////////////////////////////////////////
+                              185 ;
+                              186 ;>  Name:           SysSetSpeed         int SysSetSpeed(int DesiredSpeedIndex);
+                              187 ;
+                              188 ;   Type:           Private Function. Used only by speed management API internals.
+                              189 ;
+                              190 ;   Description:    Programs the PLL and VDDD to the indexed values 
+                              191 ;                   of the speed table to provide the MIPS necessary for various
+                              192 ;                   system operational modes.
+                              193 ;
+                              194 ;   Inputs:         Desired speed index in x1; or from C: a1 is desired speed index
+                              195 ;
+                              196 ;                   Speed index values ** MUST BE ORDERED FROM LOWEST TO HIGHEST FREQ **:
+                              197 ;                   SPEED_IDLE = Used during idle operation (no audio decoding)  
+                              198 ;                   SPEED_MP3  = Used during MP3 decode operation 
+                              199 ;                   SPEED_MAX  = Used during browsing, shutdown, etc -- when not playing
+                              200 ;                   SPEED_WMA  = Used during WMA decode operation 
+                              201 ;                   SPEED_MP3ENCODE = Used during mp3 line-in, mic, or FM record.
+                              202 ;
+                              203 ;   Outputs:        Register A1 returns y:SpeedIndex that was active on function entry 
+                              204 ;                   
+                              205 ;   Notes: *** Routine should ONLY be used by the API wrapper at 'EOF & sysspeed.inc'*** 
+                              206 ;       All callers that were using SysSetSpeed must convert to use that API instead.
+                              207 ;
+                              208 ;       STMP3410 Reset values are : xtal 24.576MHz / Vddd = 1.77
+                              209 ;       when increasing frequency, the voltage should be increased first
+                              210 ;       when decreasing frequency, the frequency should be lowered before voltage
+                              211 ;
+                              212 ;       To minimize code complexity: IDLE speed index MUST be initially called
+                              213 ;               after reset so the same code path will be taken for the reset 
+                              214 ;               condition (freq lowered first). If a faster initial speed is
+                              215 ;               required change order at _CheckReset.
+                              216 ;
+                              217 ;       when adjusting voltage the brownout voltage should be considered:
+                              218 ;               lower before the core voltage is lowered
+                              219 ;               raise core voltage and settle before setting brownout
+                              220 ;
+                              221 ;       dc-dc settling time is about 1V per millisecond dV/dt, assuming SigmaTel recommended
+                              222 ;               configuration (C=64 and dcdc_clk = 1.5MHz) 
+                              223 ;
+                              224 ;       DDIV takes 256 dclocks to go into effect, do not enable pll until
+                              225 ;               DDIV is in effect because Vddd is set for final clock speed
+                              226 ;               and some pll values can cause core instability (too high freq)
+                              227 ;
+                              228 ;       OldSpeedIndex stores previous Speed Index
+                              229 ;               HOWEVER during the function msb is set to indicate speed 
+                              230 ;               changing first
+                              231 ;
+                              232 ;       All timing loops assume running off crystal with no dividers (DDIV = 0) 
+                              233 ;
+                              234 ;       Static Register Usage:
+                              235 ;       x0 = PDIV
+                              236 ;       x1 = DDIV  (after input value is used to find table entry)
+                              237 ;       r2 =  beginning of speed table entry
+                              238 ;       r3 =  y:OldSpeedIndex
+                              239 ;<
+                              240 ;///////////////////////////////////////////////////////////////////////////////
+                              241 FSysSetSpeed                    ; File Private entry point.
+                              242 FSysSpeedForce                  ; C entry point for test utilities only.
+P:0005 218500         2   12  243     move    a1,x1
+                              244 SysSetSpeed                     ; File private entry point.
+                              245 SysSpeedForce                   ; Asm entry point for test utilities only.
+                              247    
+                              248        ;If using funclet, function will be executed via funclet kernel
+                              249        CallFunclet RSRC_FUNCLET_SYSSETSPEED
+P:0006 0D0080         4   16  249     jsr       $80
+P:0007 00001B                 249     DC       RSRC_FUNCLET_SYSSETSPEED  ; 1 word
+                              250    
+P:0000                        251        org p,"SYSFUNCLET_SysSetSpeed_P":
+                              252        
+P:0000 00001B                 253        dc      RSRC_FUNCLET_SYSSETSPEED           ; Funclet Resource number
+                              254    
+                              256     ; If limited VDDD part.
+P:0001 47F400 rrrrrr  3    3  257         move    #>Const_000000,y1
+P:0003 5FF000 rrrrrr  3    6  258         move    y:Fg_bLimitedVDDD,b
+P:0005 20007D         2    8  259         cmp             y1,b
+P:0006 0AF0AA rrrrrr  6   14  260         jeq             _ValidateSpeedIndex ; jumps to skip ceil if vddd not limited. 
+                              261                                     ;(stability for future 3502 3501 device which may be qual'd at 60MHz)
+                              263     ; This is a vddd limited part, so ceil the speed index. 
+P:0008 56F400 00000B  3   17  264     move    #>SPEED_WMA,a  ;Warning: if SPEED_WMA is changed above 60. Must always have 60 here. 
+P:000A 200065         2   19  265     cmp     x1,a                
+P:000B 0AF0A1 rrrrrr  6   25  266     jge     _ValidateSpeedIndex
+P:000D 218500         2   27  267     move    a1,x1              ; If requested index>60Mhz, ceil requested speed index to 60MHz since vddd limited part
+                              269 _ValidateSpeedIndex
+                              270     ; Verify that the speed index (x1) is valid
+P:000E 56F400 00000D  3   30  271     move    #>SPEED_LAST,a
+P:0010 200065         2   32  272     cmp     x1,a                
+P:0011 0AF0A1 rrrrrr  6   38  273     jge     _CurrentVsRequested
+                              274     
+                              275     ; Invalid speed index value
+                              276     error
+P:0013 000200         4   42  276     debug
+P:0014 000000         2   44  277     nop
+                              279 _CurrentVsRequested 
+P:0015 4FF000 rrrrrr  3   47  280     move    y:SpeedIndex,y1                           ; save current one on the stack
+                              281     push    y1
+P:0017 4F5F00         2   49  281     move    y1,y:(r7)+
+                              282     ; If requested speed index equals current speed index, exit now.  
+                              283     ; Prevents system instability in case of excessive routine calls.
+P:0018 20001B         2   51  284         clr     b    
+P:0019 5DF000 rrrrrr  3   54  285     move    y:SpeedIndex,b1
+P:001B 20AE00         2   56  286     move    x1,a
+P:001C 20000D         2   58  287     cmp     a,b
+P:001D 0AF0AA rrrrrr  6   64  288     jeq     _Exit
+                              290 _WhichFirst
+                              291     ; Update old & new speed Index vars
+P:001F 5D7000 rrrrrr  3   67  292     move    b1,y:OldSpeedIndex
+P:0021 4D7000 rrrrrr  3   70  293     move    x1,y:SpeedIndex             ; used by SysGetSpeed
+                              295     ;Voltage or speed first ???
+                              296     ; if old freq (b1) >= new freq (x1), lower freq first (SPEED_FIRST)
+                              297     ; otherwise raise voltage before raising frequency
+P:0023 20006D         2   72  298     cmp     x1,b
+P:0024 0AF0AF rrrrrr  6   78  299     jle     _TableEntry
+P:0026 0A7077 rrrrrr  6   84  300     bset    #SPEED_FIRST,y:OldSpeedIndex
+                              302 _TableEntry       
+                              303     ; Calculate the offset into the speed table
+P:0028 46F400 000007  3   87  304     move    #>SPEED_ENTRY_SIZE,y0
+P:002A 2000E0         2   89  305     mpy     x1,y0,a                     ; Offset = speed index * entry size
+P:002B 200022         2   91  306     asr     a                       
+P:002C 210E00         2   93  307     move    a0,a                        ; Offset is in A
+                              309     ; Point to the selected entry in the speed table
+P:002D 46F400 rrrrrr  3   96  310     move    #>SpeedTable,y0
+P:002F 200050         2   98  311     add     y0,a
+P:0030 21D100         2  100  312     move    a,r1                        ; used by auto incrementing functions
+P:0031 21D200         2  102  313     move    a,r2                        ; always points to beginning of entry
+P:0032 058061r        2  104  314     movec   y:<Const_ffffff,m1
+P:0033 57F000 00FA00  3  107  316     move    x:HW_CCR,b
+                              318     ; Get the new divider values from the table
+P:0035 07D984         6  113  319     movem   p:(r1)+,x0                  ; Get PDIV value from table
+P:0036 07D985         6  119  320     movem   p:(r1)+,x1                  ; Get DDIV value from table
+                              322 _CheckReset
+                              323     ; Check if the clock logic block is still in reset
+                              324     ; If not in reset state then check the speed
+                              325     ; Otherwise set speed first *** see NOTES: *** 
+P:0037 0ACF20 rrrrrr  6  125  326     jset    #HW_CCR_CKRST_BITPOS,b,_PostReset        
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              327      
+                              328     ; Always set the speed first if coming out of reset *** see NOTES: ***
+P:0039 0A7077 rrrrrr  6  131  329     bset    #SPEED_FIRST,y:OldSpeedIndex
+P:003B 63F400 rrrrrr  3  134  330     move    #OldSpeedIndex,r3
+P:003D 0AF080 rrrrrr  6  140  331     jmp     _SetSpeed
+                              333 _PostReset
+                              334     ; if new freq <= old freq, lower freq first
+                              335     ; otherwise raise voltage before raising frequency
+P:003F 63F400 rrrrrr  3  143  336     move    #OldSpeedIndex,r3
+P:0041 000000         2  145  337     nop
+P:0042 000000         2  147  338     nop
+P:0043 0A63D7 rrrrrr  6  153  339     jclr    #SPEED_FIRST,y:(r3),_SetVoltage
+                              341     
+                              342 _CheckSpeed
+                              343     ; If already set to the requested speed then check voltage
+P:0045 208E00         2  155  344     move    x0,a                    
+P:0046 200062         2  157  345     or      x1,a                        ; A = PDIV | DDIV from table
+P:0047 46F400 01FE00  3  160  346     move    #>HW_CCR_PDIV_SETMASK|HW_CCR_DDIV_SETMASK,y0
+P:0049 20005E         2  162  347     and     y0,b                        ; B = PDIV | DDIV from register
+P:004A 20000D         2  164  348     cmp     a,b
+P:004B 0AF0AA rrrrrr  6  170  349     jeq     _SetVoltage
+                              351 _SetSpeed
+                              352     ; if new freq <= old freq, lower freq first
+                              353     ; otherwise raise voltage before raising frequency
+P:004D 0A63F7 rrrrrr  6  176  354     jset    #SPEED_FIRST,y:(r3),_SetPll
+                              355         
+                              357 ;~~~~~~~~~~~~~~~~~~~~ CHANGING VOLTAGE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              358 _SetVoltage
+                              359     ; Set the DC-DC converter to the new core voltage (Vddd)
+                              360     ; DCDC converter needs to be set before the PLL change, some speeds requiring higher voltages
+                              361     ; to function properly
+                              363     ; if setting speed first, assume voltage is being lowered so change brownout voltage first
+                              364     ; else raising voltage so raise Vddd first and allow to settle before setting new brownout
+P:004F 0A63F7 rrrrrr  6  182  365     jset    #SPEED_FIRST,y:(r3),_SetBOVolts
+                              367 _SetVdddVolts
+P:0051 72F400 000002  3  185  368         move    #>VDDD_OFFSET,n2             ; do this here for pipeline efficiency
+                              370         ; For parts with minimum VDDD settings (3501, 3502), skip this step.
+                              371         ; ASSUMING that the higher static VDDD setting is appropriate for any speed setting 
+                              372         ; resulting from the rest of this subroutine.
+P:0053 47F400 rrrrrr  3  188  373         move    #>Const_000000,y1
+P:0055 5EF000 rrrrrr  3  191  374         move    y:Fg_bLimitedVDDD,a
+P:0057 200075         2  193  375         cmp             y1,a
+P:0058 0AF0AA rrrrrr  6  199  376         jeq             _SVContinue1
+P:005A 0AF080 rrrrrr  6  205  377         jmp             _SVSkip1
+                              378 _SVContinue1
+                              380     ;------------------
+                              381 ;old ver of VDDD set.
+                              382      ;move    #>HW_DCDC_VDDD_VOLTAGE_LEVEL_CLRMASK,y1
+                              383      ;move    x:HW_DCDC_VDDD,a
+                              384      ;and     y1,a                        ; Erase the previous VDDD voltage
+                              385      ;
+                              386      ;movem   p:(r2+n2),y0                ; Get new core voltage from table
+                              387      ;or      y0,a                        ; OR in the new VDDD value
+                              388      ;move    a,x:HW_DCDC_VDDD            ; Set the new VDD voltage
+                              390 ;else newer V set approach with stepping. New ver also sets HW_DCDCTBR as old ver used to here.
+                              391     ;------------------
+                              392     ; call the new SteppingVoltageSet c function to set voltage
+                              393     ;           SteppingVoltageSet(int iCurrentVoltageCode, int iDesiredVoltageCode, int iStepSize, 
+                              394     ;                                          int iVoltageType) ;
+                              395     ; When called from asm, the register sequence with these params is: a,b,x0,y0
+                              397     ; Value in A is not used later so don't save & restore it.
+                              398     push    b2
+P:005C 5B5F00         2  207  398     move    b2,y:(r7)+
+                              399     push    b1
+P:005D 5D5F00         2  209  399     move    b1,y:(r7)+
+                              400     push    b0
+P:005E 595F00         2  211  400     move    b0,y:(r7)+
+                              401     push    x0
+P:005F 4C5F00         2  213  401     move    x0,y:(r7)+
+                              402     push    y0
+P:0060 4E5F00         2  215  402     move    y0,y:(r7)+
+                              403     push    x1
+P:0061 4D5F00         2  217  403     move    x1,y:(r7)+
+                              404     
+P:0062 56F000 00FA0F  3  220  405     move    x:HW_DCDC_VDDD,a ; original voltage in sub bitfield of this word
+P:0064 47F400 00001F  3  223  406     move    #>HW_DCDC_VDDD_VOLTAGE_LEVEL_SETMASK,y1    
+P:0066 200076         2  225  407     and     y1,a             ; original voltage masked into a.    
+P:0067 07EA8F         8  233  408     movem   p:(r2+n2),b      ; new desired VDDD core voltage from the table. n2=2
+P:0068 44F400 000003  3  236  409     move    #>VOLTAGE_BITS_PER_STEP,x0           ; iStepSize of 3 at ~30mV each gives 90mV per step.
+P:006A 46F400 000001  3  239  411     move    #>1,y0           ; iVoltageType 1 is VOLTAGE_TYPE_VDDD 
+P:006C 0BF080 rrrrrr  6  245  413     jsr     FSteppingVoltageSet
+P:006E 200003         2  247  416     tst     a
+                              417     ccerror ne  ; DEBUG build halts on error code return Not Equal to zero. See A1 for code. 
+P:006F 000302         4  251  417     debugne
+                              418                 ;; RETAIL build resets the processor.     
+                              419     pop     x1
+P:0070 4DFF00         4  255  419     move    y:-(r7),x1
+                              420     pop     y0
+P:0071 4EFF00         4  259  420     move    y:-(r7),y0
+                              421     pop     x0
+P:0072 4CFF00         4  263  421     move    y:-(r7),x0
+                              422     pop     b0
+P:0073 59FF00         4  267  422     move    y:-(r7),b0
+                              423     pop     b1
+P:0074 5DFF00         4  271  423     move    y:-(r7),b1
+                              424     pop     b2
+P:0075 5BFF00         4  275  424     move    y:-(r7),b2
+                              425 ;endif
+                              426     ;----------------           
+                              427     ; HW_DCDCTBR set subroutine was moved from here and imported under SteppingVoltageSet  
+                              428     ; interface since the TBR's DCDC1 duty cycle & VDD5V_ACTIVE fields must be set 
+                              429     ; per VDDD voltage change at time of change, according to SOC designer. 
+                              431 _SVSkip1
+                              432     ; if speed first then already did brownout
+P:0076 0A63F7 rrrrrr  6  281  433     jset    #SPEED_FIRST,y:(r3),_VoltageDone
+                              435     ; otherwise changing Vddd first so allow to settle before changing brownout
+                              436     ; Timing loop uses crystal clock and no post-divider
+P:0078 200013         2  283  437     clr     a
+P:0079 50F400 002710  3  286  438     move    #>SETTLING_COUNT,a0
+                              439 _SettlingDelay1  ; Each loop is 3 clocks (122 ns per loop if fDCLK=24.xMHz)
+P:007B 00000A         2  288  440     dec     a
+P:007C 0AF0A2 rrrrrr  6  294  441     jne     _SettlingDelay1                        
+                              443 _SetBOVolts
+                              444         ; Adjust the Brownout Voltage
+P:007E 72F400 000003  3  297  445         move    #>BO_OFFSET,n2
+                              447         ; For parts with minimum VDDD settings (3501), skip this step.
+                              448         ; ASSUMING that the higher static VDDD setting is appropriate for any speed setting 
+                              449         ; resulting from the rest of this subroutine.
+P:0080 47F400 rrrrrr  3  300  450         move    #>Const_000000,y1
+P:0082 5EF000 rrrrrr  3  303  451         move    y:Fg_bLimitedVDDD,a
+P:0084 200075         2  305  452         cmp             y1,a
+P:0085 0AF0AA rrrrrr  6  311  453         jeq             _SVContinue2
+P:0087 0AF080 rrrrrr  6  317  454         jmp             _SVSkip2
+                              455 _SVContinue2
+P:0089 56F000 00FA0F  3  320  458         move    x:HW_DCDC_VDDD,a
+P:008B 47F400 FFE0FF  3  323  459         move    #>HW_DCDC_VDDD_BROWNOUT_LEVEL_CLRMASK,y1  ; clear mask for Vddd brownout bits
+P:008D 200076         2  325  460         and     y1,a                        ; Erase the previous Brownout voltage
+P:008E 07EA86         8  333  462         movem   p:(r2+n2),y0                ; Get new brownout voltage from table                                              
+P:008F 200052         2  335  463         or      y0,a                        ; OR in the Brownout value
+P:0090 567000 00FA0F  3  338  465         move    a,x:HW_DCDC_VDDD            ; Set the new Brownout voltages
+                              467 _SVSkip2
+                              468      ; if speed first then doing brownout first so adjust Vddd now
+P:0092 0A63F7 rrrrrr  6  344  469      jset    #SPEED_FIRST,y:(r3),_SetVdddVolts
+                              472 _VoltageDone
+                              473     ; if speed set first then we're done -- otherwise adjust pll
+P:0094 0A63F7 rrrrrr  6  350  474     jset    #SPEED_FIRST,y:(r3),_Continue
+                              475 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              478 ;~~~~~~~~~~~~~~~~~~~~ CHANGING PLL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              479 ;;;;;
+                              480 ;;; requires x0 = PDIV
+                              481 ;;;          x1 = DDIV
+                              482 ;;;;;
+                              484 _SetPll
+                              485     ; Set the PLL frequency:
+                              486     ; 1 - switch clock sources to xtal
+                              487     ; 2 - enable the analog clocks; pll block
+                              488     ;   - DDIV set to zero (no divider)
+                              489     ;   - PDIV set to indexed speed table divider
+                              490     ; 3 - wait pll settling delay
+                              491     ; 4 - DDIV set to indexed speed table divider
+                              492     ; 5 - wait for DDIV to take effect (256 clks)
+                              493     ; 6 - switch clock source to pll
+                              495     ; Switch the clock source to the crystal
+P:0096 0A7008 00FA00  6  356  496     bclr    #HW_CCR_CKSRC_BITPOS,x:HW_CCR
+P:0098 000000         2  358  497     nop
+P:0099 000000         2  360  498     nop
+                              499         
+                              500     ; Read the current contents of the Clock Control register
+P:009A 57F000 00FA00  3  363  501     move    x:HW_CCR,b
+                              503     ; Turn on all the enables
+P:009C 46F400 04000F  3  366  504     move    #>HW_CCR_ACKEN_SETMASK|HW_CCR_XTLEN_SETMASK|HW_CCR_PLLEN_SETMASK|HW_CCR_LTC_SETMASK|HW_CCR_CKRST_SETMASK,y0
+P:009E 20005A         2  368  505     or      y0,b
+                              507     ; Clear the PDIV and the DDIV fields
+P:009F 46F400 FE01FF  3  371  508     move    #>~(HW_CCR_PDIV_SETMASK|HW_CCR_DDIV_SETMASK),y0
+P:00A1 20005E         2  373  509     and     y0,b
+                              510     
+                              511     ; Set the new PDIV value
+P:00A2 20004A         2  375  512     or      x0,b
+                              514     ; Set DAC Clock.  These go with the values in mp3mem.asm and dacequ.inc for sample rate adjustments
+                              515         ;If 3500 -- use default values from AnalogInit()
+                              517     ; Write the new contents to the Clock Control register
+P:00A3 577000 00FA00  3  378  518     move    b,x:HW_CCR
+P:00A5 000000         2  380  519     nop
+P:00A6 000000         2  382  520     nop
+                              523     ; Delay while the PLL settle
+P:00A7 200013         2  384  524     clr     a
+P:00A8 50F400 002710  3  387  525     move    #>SETTLING_COUNT,a0
+                              526 _SettlingDelay  ; Each loop is 3 clocks (122 ns per loop)
+P:00AA 00000A         2  389  527     dec     a
+P:00AB 0AF0A2 rrrrrr  6  395  528     jne     _SettlingDelay                        
+                              530     ; Set the post-divider to the new DDIV value
+P:00AD 20006A         2  397  531     or      x1,b
+P:00AE 577000 00FA00  3  400  532     move    b,x:HW_CCR
+                              534     ; Wait  Clocks for DDIV change to complete
+P:00B0 068080 rrrrrr  6  406  535     do    #128,_DDIVSettle
+P:00B2 000000         2  408  536     nop
+P:00B3 000000         2  410  537     nop
+                         (4)  538 _DDIVSettle
+                              540     ; Switch the clock source from the crystal to the PLL
+P:00B4 0ACF68         4  414  541     bset    #HW_CCR_CKSRC_BITPOS,b
+P:00B5 577000 00FA00  3  417  542     move    b,x:HW_CCR
+                              544    ; if new speed <= old speed:
+                              545    ; speed is being set first, so now do voltage
+P:00B7 0A63F7 rrrrrr  6  423  546     jset    #SPEED_FIRST,y:(r3),_SetVoltage
+                              547 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              549 _Continue
+                              550     ; fix table pointer so can autoincrement for the last 3
+P:00B9 200013         2  425  551     clr     a
+P:00BA 224C00         2  427  552     move    r2,a1
+P:00BB 44F400 000004  3  430  553     move    #>TIMER1_OFFSET,x0
+P:00BD 200040         2  432  554     add     x0,a
+P:00BE 219100         2  434  555     move    a1,r1
+P:00BF 000000         2  436  556     nop
+P:00C0 000000         2  438  557     nop
+                              558     ; Adjust the system clock timer count (timer 1) for the new clock speed
+P:00C1 07D986         6  444  559     movem   p:(r1)+,y0                  ; Get the timer count from the table
+P:00C2 467000 00F141  3  447  560     move    y0,x:HW_TMR1CNTR
+                              562     ; Adjust the button timer count (timer 2) for the new clock speed
+P:00C4 07D986         6  453  563     movem   p:(r1)+,y0                  ; Get the timer count from the table
+P:00C5 467000 00F181  3  456  564     move    y0,x:HW_TMR2CNTR
+                              565       
+                              567 _GPSpeed
+                              568     ; Adjust GPFlash port access time. This pulls a word from last entry in SpeedTable _GPSPEED
+                              569     ; JLN Note: the 2 instructions below could be changed to get the best timing 
+                              570     ; for this flash but the nandtables may only have it for an assumed fDCLK of 68MHz.
+P:00C7 07D986         6  462  571     movem   p:(r1)+,y0
+P:00C8 467000 00F0C5  3  465  572     move    y0,x:HW_GPFLASH_TIMING2R       
+                              574 _Exit
+                              575     pop a                           ;move the old speed into the return value
+P:00CA 5EFF00         4  469  575     move    y:-(r7),a
+P:00CB 00000C         4  473  576     rts
+                              577     
+                              578 SpeedTable
+                              579 ;!!!!! ** MUST BE ORDERED FROM LOWEST TO HIGHEST FREQ ** !!!!!    
+                              580         ; SPEED_IDLE
+P:00CC 001000                 581         dc      IDLE_PDIV<<HW_CCR_PDIV_B0_BITPOS        ; PLL divider
+P:00CD 000400                 582         dc      IDLE_DDIV<<HW_CCR_DDIV_B0_BITPOS        ; Post divider
+P:00CE 00000B                 583         dc      IDLE_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS  ; VDD voltage
+P:00CF 000800                 584         dc      IDLE_BOVOLTAGE
+P:00D0 030D40                 585         dc      IDLE_SPEED*BUTTON_INTERVAL/2            ; Timer 1 count
+P:00D1 001388                 586         dc      IDLE_SPEED*CLOCK_INTERVAL/2             ; Timer 2 count
+P:00D2 000101                 587         dc      IDLE_GPSPEED                            ; CompactFlash speed        
+                              588                 ; SPEED_AUDIBLE_MP3
+P:00D3 011000                 589         dc      AUDIBLE_MP3_PDIV<<HW_CCR_PDIV_B0_BITPOS        ; PLL divider
+P:00D4 000400                 590         dc      AUDIBLE_MP3_DDIV<<HW_CCR_DDIV_B0_BITPOS        ; Post divider
+P:00D5 00000B                 591         dc      AUDIBLE_MP3_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS  ; VDD voltage
+P:00D6 000800                 592         dc      AUDIBLE_MP3_BOVOLTAGE
+P:00D7 0493E0                 593         dc      AUDIBLE_MP3_SPEED*BUTTON_INTERVAL/2            ; Timer 1 count
+P:00D8 001D4C                 594         dc      AUDIBLE_MP3_SPEED*CLOCK_INTERVAL/2             ; Timer 2 count
+P:00D9 000101                 595         dc      AUDIBLE_MP3_GPSPEED                            ; CompactFlash speed 
+                              596                 ; SPEED_AUDIBLE_ACELP_SR8KHz
+P:00DA 011000                 597         dc      AUDIBLE_ACELP_SR8KHz_PDIV<<HW_CCR_PDIV_B0_BITPOS        ; PLL divider
+P:00DB 000400                 598         dc      AUDIBLE_ACELP_SR8KHz_DDIV<<HW_CCR_DDIV_B0_BITPOS        ; Post divider
+P:00DC 00000B                 599         dc      AUDIBLE_ACELP_SR8KHz_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS  ; VDD voltage
+P:00DD 000800                 600         dc      AUDIBLE_ACELP_SR8KHz_BOVOLTAGE
+P:00DE 0493E0                 601         dc      AUDIBLE_ACELP_SR8KHz_SPEED*BUTTON_INTERVAL/2            ; Timer 1 count
+P:00DF 001D4C                 602         dc      AUDIBLE_ACELP_SR8KHz_SPEED*CLOCK_INTERVAL/2             ; Timer 2 count
+P:00E0 000101                 603         dc      AUDIBLE_ACELP_SR8KHz_GPSPEED                            ; CompactFlash speed
+                              604         ; SPEED_FM  
+P:00E1 007000                 605         dc      FM_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:00E2 000200                 606         dc      FM_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00E3 00000D                 607         dc      FM_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:00E4 000800                 608         dc      FM_BOVOLTAGE
+P:00E5 075300                 609         dc      FM_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:00E6 002EE0                 610         dc      FM_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:00E7 000102                 611         dc      FM_GPSPEED                             ; CompactFlash speed
+                              612         ; SPEED_FM_EQ  
+P:00E8 011000                 613         dc      FM_EQ_PDIV<<HW_CCR_PDIV_B0_BITPOS      ; PLL divider
+P:00E9 000200                 614         dc      FM_EQ_DDIV<<HW_CCR_DDIV_B0_BITPOS      ; Post divider
+P:00EA 00000D                 615         dc      FM_EQ_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:00EB 000900                 616         dc      FM_EQ_BOVOLTAGE
+P:00EC 0927C0                 617         dc      FM_EQ_SPEED*BUTTON_INTERVAL/2          ; Timer 1 count
+P:00ED 003A98                 618         dc      FM_EQ_SPEED*CLOCK_INTERVAL/2           ; Timer 2 count
+P:00EE 000102                 619         dc      FM_EQ_GPSPEED                             ; CompactFlash speed
+                              620         ; SPEED_AUDIBLE_ACELP_SR16KHz
+P:00EF 01B000                 621         dc      AUDIBLE_ACELP_SR16KHz_PDIV<<HW_CCR_PDIV_B0_BITPOS        ; PLL divider
+P:00F0 000200                 622         dc      AUDIBLE_ACELP_SR16KHz_DDIV<<HW_CCR_DDIV_B0_BITPOS        ; Post divider
+P:00F1 00000B                 623         dc      AUDIBLE_ACELP_SR16KHz_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS  ; VDD voltage
+P:00F2 000800                 624         dc      AUDIBLE_ACELP_SR16KHz_BOVOLTAGE
+P:00F3 0AFC80                 625         dc      AUDIBLE_ACELP_SR16KHz_SPEED*BUTTON_INTERVAL/2            ; Timer 1 count
+P:00F4 004650                 626         dc      AUDIBLE_ACELP_SR16KHz_SPEED*CLOCK_INTERVAL/2             ; Timer 2 count
+P:00F5 000102                 627         dc      AUDIBLE_ACELP_SR16KHz_GPSPEED                            ; CompactFlash speed        
+                              628         ; SPEED_MP3
+P:00F6 01B000                 629         dc      MP3_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:00F7 000200                 630         dc      MP3_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+P:00F8 00000B                 631         dc      MP3_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:00F9 000800                 632         dc      MP3_BOVOLTAGE
+P:00FA 0AFC80                 633         dc      MP3_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:00FB 004650                 634         dc      MP3_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:00FC 000102                 635         dc      MP3_GPSPEED                             ; CompactFlash speed
+                              636         ; SPEED_ADPCM
+P:00FD 01B000                 637         dc      ADPCM_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:00FE 000200                 638         dc      ADPCM_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+P:00FF 00000B                 639         dc      ADPCM_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:0100 000800                 640         dc      ADPCM_BOVOLTAGE
+P:0101 0AFC80                 641         dc      ADPCM_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:0102 004650                 642         dc      ADPCM_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:0103 000102                 643         dc      ADPCM_GPSPEED                             ; CompactFlash speed
+                              644         ; SPEED_MIXER
+P:0104 001000                 645         dc      MIXER_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; As in the idle case's speed
+P:0105 000400                 646         dc      MIXER_DDIV<<HW_CCR_DDIV_B0_BITPOS
+P:0106 00000D                 647         dc      MIXER_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:0107 000A00                 648         dc      MIXER_BOVOLTAGE
+P:0108 030D40                 649         dc      MIXER_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:0109 001388                 650         dc      MIXER_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:010A 000101                 651         dc      MIXER_GPSPEED                             ; CompactFlash speed
+                              652         ; SPEED_ADCBASE
+P:010B 01B000                 653         dc      ADCBASE_PDIV<<HW_CCR_PDIV_B0_BITPOS       ; PLL divider
+P:010C 000200                 654         dc      ADCBASE_DDIV<<HW_CCR_DDIV_B0_BITPOS       ; Post divider
+P:010D 00000D                 655         dc      ADCBASE_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS ; Core Voltage
+P:010E 000A00                 656         dc      ADCBASE_BOVOLTAGE
+P:010F 0AFC80                 657         dc      ADCBASE_SPEED*BUTTON_INTERVAL/2           ; Timer 1 count
+P:0110 004650                 658         dc      ADCBASE_SPEED*CLOCK_INTERVAL/2            ; Timer 2 count
+P:0111 000102                 659         dc      ADCBASE_GPSPEED
+                              660         ; SPEED_MAX
+P:0112 007000                 661         dc      MAX_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:0113 000000                 662         dc      MAX_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+P:0114 00000D                 663         dc      MAX_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:0115 000A00                 664         dc      MAX_BOVOLTAGE
+P:0116 0EA600                 665         dc      MAX_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:0117 005DC0                 666         dc      MAX_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:0118 000203                 667         dc      MAX_GPSPEED                             ; CompactFlash speed
+                              668         ; SPEED_WMA
+P:0119 011000                 669         dc      WMA_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:011A 000000                 670         dc      WMA_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+P:011B 000013                 671         dc      WMA_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:011C 001000                 672         dc      WMA_BOVOLTAGE
+P:011D 124F80                 673         dc      WMA_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:011E 007530                 674         dc      WMA_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:011F 000203                 675         dc      WMA_GPSPEED                             ; CompactFlash speed
+                              676         ; SPEED_MP3ENCODE
+P:0120 014000                 677         dc      MP3ENCODE_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:0121 000000                 678         dc      MP3ENCODE_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+P:0122 000019                 679         dc      MP3ENCODE_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:0123 001700                 680         dc      MP3ENCODE_BOVOLTAGE
+P:0124 13D620                 681         dc      MP3ENCODE_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:0125 007EF4                 682         dc      MP3ENCODE_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:0126 000303                 683                 dc      MP3ENCODE_GPSPEED                             ; Compact Flash speed
+                              684         ; SPEED_PEAK
+P:0127 01E000                 685         dc      PEAK_PDIV<<HW_CCR_PDIV_B0_BITPOS         ; PLL divider
+P:0128 000000                 686         dc      PEAK_DDIV<<HW_CCR_DDIV_B0_BITPOS         ; Post divider
+P:0129 00001C                 687         dc      PEAK_VOLTAGE<<HW_DCDC_VDDD_VLVL_BITPOS   ; Core voltage
+P:012A 001900                 688         dc      PEAK_BOVOLTAGE
+P:012B 16E360                 689         dc      PEAK_SPEED*BUTTON_INTERVAL/2             ; Timer 1 count
+P:012C 00927C                 690         dc      PEAK_SPEED*CLOCK_INTERVAL/2              ; Timer 2 count
+P:012D 000304                 691         dc      PEAK_GPSPEED                             ; Compact Flash speed       
+                              695     
+                              696        ;If using funclet, switch counter back to original here
+P:0008                        697        org    p,"SYSFUN_SysSpeed_P":                             
+                              698    
+                              702 ;///////////////////////////////////////////////////////////////////////////////
+                              703 ;
+                              704 ;>  Name:           ProgramPll
+                              705 ;
+                              706 ;   Type:           Function
+                              707 ;
+                              708 ;   Description:    Dummy routine to make SystemRoutineListPtr happy in sysmem.asm.
+                              709 ;                   SysSetSpeed replaces ProgramPll in the atlm project.
+                              710 ;
+                              711 ;   Inputs:         ???
+                              712 ;
+                              713 ;   Outputs:        ???
+                              714 ;                   
+                              715 ;   Notes:          ???
+                              716 ;<
+                              717 ;///////////////////////////////////////////////////////////////////////////////
+                              718 ProgramPll
+P:0008 00000C         4   20  719     rts
+                              721 ;///////////////////////////////////////////////////////////////////////////////
+                              722 ;>  Name:           SysSpeedResetAPI
+                              723 ;   Type:           API Function
+                              724 ;   Description:    Reset internal API data structures. For use in emergencies.                   
+                              725 ;   Inputs:         None
+                              726 ;   Outputs:        None
+                              727 ;   Notes:          C or Asm callable.
+                              728 ;<
+                              729 ;///////////////////////////////////////////////////////////////////////////////
+                              730 FSysSpeedResetAPI 
+                              731 SysSpeedResetAPI 
+P:0009 20001B         2   22  732     clr     B
+P:000A 5D7000 rrrrrr  3   25  733     move    b1,y:clockUserFlag
+                              734     
+P:000C 55F400 00DEAF  3   28  735     move    #>$00deaf,b1  ; fill table with this invalid speed index values
+P:000E 60F400 rrrrrr  3   31  736     move    #>SavedClientSpeedIndeces,r0
+P:0010 0613A0         4   35  737     rep     #SPEED_CLIENT_HIGHEST_USER+1
+P:0011 5D5800         2   37  738      move   b1,y:(r0)+
+P:0012 000000         2   39  739     nop 
+P:0013 00000C         4   43  740     rts
+                              742 ;///////////////////////////////////////////////////////////////////////////////
+                              743 ;>  Name:           SysSpeedSysStartUp
+                              744 ;   Type:           API Function
+                              745 ;   Description:    Must be called once at system startup. 
+                              746 ;   Inputs:         None
+                              747 ;   Outputs:        None
+                              748 ;   Notes:          C or Asm callable.
+                              749 ;<
+                              750 ;///////////////////////////////////////////////////////////////////////////////
+                              751 FSysSpeedSysStartUp ; C entry point
+                              752 SysSpeedSysStartUp
+P:0014 45F400 000000  3   46  753     move    #>SPEED_IDLE,x1
+P:0016 0BF080 rrrrrr  6   52  754     jsr     SysSetSpeed
+P:0018 00000C         4   56  755     rts    
+                              757 ;///////////////////////////////////////////////////////////////////////////////
+                              758 ;>  Name:           SysSpeedBoot
+                              759 ;   Type:           API Function
+                              760 ;   Description:    Should only be called one time at system startup. 
+                              761 ;   Inputs:         No register inputs
+                              762 ;     Users can enable one of ATTEMPT_FAST_BOOT or FASTEST boot project.inc defines by 
+                              763 ;     defining values as 0 instead of 1, else default to boot speed used in previous SDKs.
+                              764 ;   Outputs:        Returns previous speed in A
+                              765 ;                   Writes core speed & voltage registers
+                              766 ;   Notes:          C or Asm callable. 
+                              767 ;<
+                              768 ;///////////////////////////////////////////////////////////////////////////////
+                              769 VBAT_LIION_THRESH_MV        equ 3200
+                              770 VBAT_NON_LIION_THRESH_MV    equ 1200
+                              772 FSysSpeedBoot  ; C entry point
+                              773 SysSpeedBoot   
+                              775     ;// Low Resolution ADC battery chan is already init by MiscProjectInit()
+                              776     ;// Get the current Vbat value  
+P:0019 56F400 rrrrrr  3   59  777     move    #>Const_000000,a    ; BATT param is 0
+P:001B 57F400 rrrrrr  3   62  778     move    #>Const_000000,b    ; bAverage bool param is INSTANT_RESULT = FALSE = 0
+P:001D 0BF080 rrrrrr  6   68  779     jsr     FSysLowResolutionAdcReadVolt ;//params: (BATT, INSTANT_RESULT) 
+                              780     ; LRADC Vbat result in A.
+P:001F 45F400 00000A  3   71  782     move    #>SPEED_MAX,x1        ; default: Change to safe player proven speed. Slower than other boot speeds.
+                              783  
+                              785     ;WARN '** SysSpeedBoot using BATTERY_TYPE_LI_ION threshholds **'
+P:0021 57F400 000C80  3   74  786     move    #>VBAT_LIION_THRESH_MV,b
+                              787     ; comment out this jmp when the LIION battery read is verified as reading correct voltages. done.
+                              788     ;jmp     _setTheBootSpeed
+P:0023 20000D         2   76  793     cmp     A,B                   ; compare Vbat to battery type's min boot voltage for this speed.
+P:0024 0AF0A9 rrrrrr  6   82  794     jlt     _trySpeedBoot         ; if B thresh < A Vbat, jump to _trySpeedBoot
+                              796     ; Vbat below thresh so keep safer default player proven speed. (slower)
+                              797         ; debug ; A,B register testpoint to see lradc api value accuracy with DC supply.
+                              798         ; nop
+P:0026 45F400 00000A  3   85  799     move    #>SPEED_MAX,x1 
+P:0028 0AF080 rrrrrr  6   91  800     jmp     _setTheBootSpeed
+                              807 _trySpeedBoot
+                              808         ; For parts with minimum VDDD settings (3501, 3502), accelerate startup a little less than other parts. 
+                              809         ; (60MHz (SPEED_WMA) may be highest guaranteed by future 3502 qualification)
+P:002A 47F400 rrrrrr  3   94  810         move    #>Const_000000,y1
+P:002C 5EF000 rrrrrr  3   97  811         move    y:Fg_bLimitedVDDD,a
+P:002E 200075         2   99  812         cmp             y1,a
+P:002F 0AF0AA rrrrrr  6  105  813         jeq             _SSBNonLimited
+P:0031 45F400 00000B  3  108  815     move    #>SPEED_WMA,x1       ; for vddd limited parts, ceil
+P:0033 0AF080 rrrrrr  6  114  820         jmp     _setTheBootSpeed     ; set to 60MHz since this is the limited vddd part's max rated speed. eg 3501 or 3502
+                              821 _SSBNonLimited
+P:0035 45F400 00000C  3  117  824     move    #>SPEED_MP3ENCODE,x1  ; Change to fastest player proven speed w/ time in the field.
+                              832 _setTheBootSpeed
+                              833     ; input param in x1
+                              834     ;move    x1,y:g_wBootSpeedIndex ; record the selected boot speed here during profiling only.
+P:0037 0BF080 rrrrrr  6  123  835     jsr     SysSetSpeed           ; return previous speed in A.
+P:0039 00000C         4  127  837     rts    
+                              839     
+                              840 ;///////////////////////////////////////////////////////////////////////////////
+                              841 ;>  Name:           SysSpeedSysShutDown
+                              842 ;   Type:           API Function
+                              843 ;   Description:    Should only be called one time at system shutdown. 
+                              844 ;   Inputs:         None
+                              845 ;   Outputs:        None
+                              846 ;   Notes:          C or Asm callable.
+                              847 ;<
+                              848 ;///////////////////////////////////////////////////////////////////////////////
+                              849 FSysSpeedSysShutDown  ; C entry point
+                              850 SysSpeedSysShutDown
+P:003A 45F400 00000A  3  130  851     move    #>SPEED_MAX,x1               ; Change to SPEED_MAX
+P:003C 0BF080 rrrrrr  6  136  852     jsr     SysSetSpeed
+P:003E 00000C         4  140  853     rts    
+                              854     
+                              855 ;///////////////////////////////////////////////////////////////////////////////
+                              856 ; > Name:       retCode SysSpeedIncrease(int SpeedIndex, int clockUserId)
+                              857 ;
+                              858 ;   Type:       API function
+                              859 ;
+                              860 ;   Description: Sets one of multibit binary semaphore speed client bits and moves  
+                              861 ;               the system to requested CLK freq if faster than current speed. 
+                              862 ;               If client ID is valid, sets client active bit & saves requested 
+                              863 ;               speed in a table enabling SysSpeedClockFree() to conditionally 
+                              864 ;               restore it later.
+                              865 ;
+                              866 ;   Inputs:     C:   SpeedIndex and clockUserId parameter described below.
+                              867 ;                    Module global y:clockUserFlag and y:SavedClientSpeedIndeces
+                              868 ;
+                              869 ;               ASM: 
+                              870 ;               x1 = SpeedIndex value desired such as: 
+                              871 ;                                    SPEED_IDLE, SPEED_MP3, SPEED_MAX, SPEED_WMA
+                              872 ;               y0= System Speed API client identifier constant from sysspeed.inc 
+                              873 ;               y:clockUserFlag module global 
+                              874 ;
+                              875 ;   Outputs:    y:clockUserFlag module global: requesting client's bit set.
+                              876 ;               y:SavedClientSpeedIndeces module global: table entry written with 
+                              877 ;                                                  client's requested SpeedIndex
+                              878 ;
+                              879 ;               Returns resulting speed index in register A1
+                              880 ;
+                              881 ;   Note:       Function helps prevent unwanted speed reductions. C or asm callable.
+                              882 ;               Each caller must have a speed client bit reserved in sysspeed.inc.
+                              883 ;               Must be used with SysSpeedClockFree(). 
+                              884 ;               In all cases, requested speed is still saved and used 
+                              885 ;               until SysSpeedClockFree() is called.
+                              886 ;               Unit & system asm tests on clockUserFlag & master SpeedIndex passed.
+                              887 ; <
+                              888 ;///////////////////////////////////////////////////////////////////////////////
+                              889 FSysSpeedIncrease
+P:003F 218500         2  142  890         move    a1,x1                       ; SpeedIndex requested
+P:0040 21A600         2  144  891         move    b1,y0                       ; Speed Client ID
+                              893 SysSpeedIncrease
+                              894 ;  testpoint1
+                              895     ;int retCode = -1; default
+P:0041 4FF000 rrrrrr  3  147  896     move    y:Const_ffffff,y1           ; return code in y1 defaults to -1
+                              898     ; if  SPEED_CLIENT_HIGHEST_USER (b1) >= client id param (a1), ok, else return error.
+P:0043 57F400 000012  3  150  899     move    #>SPEED_CLIENT_HIGHEST_USER,B
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0045 20CE00         2  152  900     move    y0,A            ; client id parameter in A1
+P:0046 20000D         2  154  901     cmp     A,B
+P:0047 0AF0A1 rrrrrr  6  160  902     jge     _IdMaxPassed
+P:0049 0AF080 rrrrrr  6  166  903     jmp     _NoFreqChange   ; return with error. Undefined client id parameter.
+                              905 _IdMaxPassed
+                              906     ; API client ID min check
+P:004B 20001B         2  168  907     clr     B
+P:004C 20000D         2  170  908     cmp     A,B     ; if 0 (in B) <= client id param (a1), ok, else return error
+P:004D 0AF0AF rrrrrr  6  176  909     jle     _IdMinPassed
+P:004F 0AF080 rrrrrr  6  182  910     jmp     _NoFreqChange   ; return with error
+                              912 _IdMinPassed ; Speed Client ID valid (y0)
+                              914     ; Speed Index (x1) verification:
+                              915     push    a1                          ; save valid client id param
+P:0051 5C5F00         2  184  915     move    a1,y:(r7)+
+                              916     push    x1                          ; save desired speed index
+P:0052 4D5F00         2  186  916     move    x1,y:(r7)+
+P:0053 0BF080 rrrrrr  6  192  917     jsr     SysGetSpeed                 
+                              918     ; Current SpeedIndex in x1 after SysGetSpeed
+                              919     pop     B                           ; Desired speed index in B1
+P:0055 5FFF00         4  196  919     move    y:-(r7),B
+                              920     pop     x0                          ; valid client id param in x0
+P:0056 4CFF00         4  200  920     move    y:-(r7),x0
+P:0057 4EF000 rrrrrr  3  203  922     move    y:Const_000000,y0 ;y0 will be non zero if desired speed <= current
+P:0059 20AE00         2  205  924     move    x1,A                        ; Current SpeedIndex from SysGetSpeed   
+P:005A 20000D         2  207  925     cmp     A,B
+                              926     ;if desired (b1) < current (a1), don't increase speed, indicated as y0==2
+P:005B 0AF0A9 rrrrrr  6  213  927     jlt     _DesiredBelowCurrent 
+                              928     ;if desired (b1) > current (a1), speed us. Indicated as: y0==0
+P:005D 0AF0A7 rrrrrr  6  219  929     jgt     _SpeedCheckDone      
+                              930     ; desired (b1) == current (a1), don't increase speed, indicate as y0==1
+P:005F 4EF000 rrrrrr  3  222  931     move    y:Const_000001,y0      
+P:0061 0AF080 rrrrrr  6  228  932     jmp     _SpeedCheckDone
+                              934 _DesiredBelowCurrent
+P:0063 4EF000 rrrrrr  3  231  935     move    y:Const_000002,y0
+                              937 _SpeedCheckDone
+                              938     push    b1            ; Save Desired SpeedIndex. Arg to pass to SysSetSpeed.
+P:0065 5D5F00         2  233  938     move    b1,y:(r7)+
+                              940     ; Client id (x0) is valid so set that bit in the private multi binary semaphore
+P:0066 5FF000 rrrrrr  3  236  941     move    y:Const_000001,b
+P:0068 200013         2  238  942     clr     a
+P:0069 200045         2  240  943     cmp     x0,a
+P:006A 0AF0AA rrrrrr  6  246  944     jeq     _ShiftsDone         ; Never allow 'rep 0' instruction
+P:006C 06C420         4  250  946     rep     x0            ; client bit id param in x0. Convert bit id to bitmask
+P:006D 20003B         2  252  947      lsl     b1
+                              949 _ShiftsDone
+P:006E 21A700         2  254  950     move    b1,y1
+                              951     ; y1 has mask with only the requesting client's bit set, to set y:clockUserFlag
+                              952     pop     x1          ; Restore Desired SpeedIndex arg for call to SysSetSpeed
+P:006F 4DFF00         4  258  952     move    y:-(r7),x1
+                              953 ;  testpoint2
+P:0070 5FF000 rrrrrr  3  261  954     move    y:clockUserFlag,B
+P:0072 20007A         2  263  955     OR      y1,B           ; Set client's speed client's active bit as requested
+P:0073 5D7000 rrrrrr  3  266  956     move    b1,y:clockUserFlag
+                              958     ; Desired SpeedIndex is in x1. Save copy to allow possible restore later.    <<<Verified SpeedIndex save.
+P:0075 60F400 rrrrrr  3  269  959     move    #>SavedClientSpeedIndeces,r0    ; base addr
+P:0077 209800         2  271  960     move    x0,n0 ; client ID param= table offset to save this client's SpeedIndex
+P:0078 000000         2  273  961     nop                                     ; Setup pipeline. KEEP.
+P:0079 4D6800         4  277  962     move    x1,y:(r0+n0)                    ; Save client's SpeedIndex
+                              964     ; If we're already at or above desired speed (indicated by y0) skip the speed call   
+P:007A 20CE00         2  279  965     move    y0,a
+P:007B 200003         2  281  966     tst     a
+P:007C 0AF0A2 rrrrrr  6  287  967     jne     _AlreadyThere    ; if y0 != 0, desired speed <= actual so just exit.
+                              968     
+P:007E 0BF080 rrrrrr  6  293  969     jsr     SysSetSpeed                     ; Input Param: SpeedIndex in x1
+                              970     ; DCLK speed increased.
+                              971     
+                              972 _AlreadyThere
+                              973 _NoFreqChange 
+                              974     ; Return in A1 the current active SpeedIndex setting
+P:0080 0BF080 rrrrrr  6  299  975     jsr     SysGetSpeed
+P:0082 20AE00         2  301  976     move    x1,A
+P:0083 00000C         4  305  978     rts
+                              981 ;///////////////////////////////////////////////////////////////////////////////
+                              982 ; > Name:       retCode SysSpeedClockFree(int clockUserId)
+                              983 ;
+                              984 ;   Type:       API function
+                              985 ;
+                              986 ;   Description: Clears a clock user's active bit and sets the system DCLK to 
+                              987 ;               lowest active client's saved SpeedIndex or SPEED_IDLE 
+                              988 ;               iff all clock API user bits are inactive. 
+                              989 ;               Used with SysSpeedIncrease().
+                              990 ;
+                              991 ;   Inputs:     C:   clockUserId parameter is a constant from sysspeed.inc. 
+                              992 ;                    Module global y:clockUserFlag and y:SavedClientSpeedIndeces
+                              993 ;
+                              994 ;               ASM: y0= clockUserId constant from sysspeed.inc. 
+                              995 ;                    Module globals y:clockUserFlag and y:SavedClientSpeedIndeces
+                              996 ; 
+                              997 ;   Outputs:    Returns in a1=  Current SpeedIndex from SysGetSpeed
+                              998 ;               y:clockUserFlag module global: client's bit is cleared.
+                              999 ;               y:SavedClientSpeedIndeces module global: read 
+                             1000 ;
+                             1001 ;   Note:       Function prevents unwanted speed reductions. C or asm callable.
+                             1002 ;               Each caller must have a speed client bit reserved in sysspeed.inc.
+                             1003 ;               Unit & system tests on clockUserFlag & speed manipulation passed.
+                             1004 ; <
+                             1005 ;///////////////////////////////////////////////////////////////////////////////
+                             1006 FSysSpeedClockFree
+P:0084 218600         2  307 1007     move    a1,y0
+                             1009 SysSpeedClockFree
+                             1010 ;  testpoint1
+                             1011     ;int retCode = -1; default
+P:0085 4FF000 rrrrrr  3  310 1012     move    y:Const_ffffff,y1           ; return code in y1 defaults to -1
+                             1014     ; if  SPEED_CLIENT_HIGHEST_USER (b1) >= client id param (a1), ok, else return error.
+P:0087 57F400 000012  3  313 1015     move    #>SPEED_CLIENT_HIGHEST_USER,B
+P:0089 20CE00         2  315 1016     move    y0,A                        ; client id parameter in A1
+P:008A 20000D         2  317 1017     cmp     A,B
+P:008B 0AF0A1 rrrrrr  6  323 1018     jge     _IdMaxPassed
+P:008D 0AF080 rrrrrr  6  329 1019     jmp     _ExitClockFree    ; return with error. Undefined client id parameter.
+                             1021 _IdMaxPassed
+                             1022     ; API client ID min check
+P:008F 20001B         2  331 1023     clr     B
+P:0090 20000D         2  333 1024     cmp     A,B     ; if 0 (in B) <= client id param (a1), ok, else return error
+P:0091 0AF0AF rrrrrr  6  339 1025     jle     _IdMinPassed
+P:0093 0AF080 rrrrrr  6  345 1026     jmp     _ExitClockFree    ; return with error. Undefined client id parameter.
+                             1028 _IdMinPassed
+P:0095 218400         2  347 1029     move    a1,x0                     
+                             1030     
+                             1031     ; Client id bit (x0) is valid so clear that bit in the private multi binary-semaphore
+P:0096 5FF000 rrrrrr  3  350 1032     move    y:Const_000001,b
+P:0098 200013         2  352 1033     clr     a
+P:0099 200045         2  354 1034     cmp     x0,a
+P:009A 0AF0AA rrrrrr  6  360 1035     jeq     _ShiftingDone      ; avoids 'rep 0'
+                             1036     
+P:009C 06C420         4  364 1037     rep     x0                 ; client id param (x0). Convert bit id to bitmask
+P:009D 20003B         2  366 1038      lsl     b1
+                             1040 _ShiftingDone
+                             1041     ; b1 has mask with only the requesting client's bit set. Invert it for a bit clear.
+P:009E 20003E         2  368 1042     neg     B               
+P:009F 21A900         2  370 1043     move    b1,b0
+P:00A0 00000B         2  372 1044     dec     B  ; neg op gives 2's comp which is '1's  comp+1'. Sub 1 to get one's comp.
+P:00A1 212700         2  374 1045     move    b0,y1
+                             1046     ; Example after above: xx00010 bitpos becomes xx11101 mask in b1. 
+                             1048 ;  testpoint2
+                             1049     ; use y1 value as mask for AND op to clear the single requested bit in y:clockUserFlag.
+P:00A2 5EF000 rrrrrr  3  377 1050     move    y:clockUserFlag,A
+P:00A4 200076         2  379 1051     AND     y1,A                    ; Clear client's binary sem bit as requested              
+P:00A5 5C7000 rrrrrr  3  382 1052     move    a1,y:clockUserFlag
+                             1054     ; If no clients, set speed to IDLE and return.
+P:00A7 218F00         2  384 1055     move    a1,B
+P:00A8 20000B         2  386 1056     tst     B
+P:00A9 0AF0A2 rrrrrr  6  392 1057     jne     _ClientActive ;if no clock API user bits set, Reduce DCLK freq to IDLE. 
+                             1058     ; else slow the system to IDLE
+P:00AB 45F400 000000  3  395 1059         move    #>SPEED_IDLE,x1             ; Set DCLK speed back to idle.
+P:00AD 0BF080 rrrrrr  6  401 1060         jsr     SysSetSpeed
+P:00AF 4FF000 rrrrrr  3  404 1061     move    y:Const_000000,y1           ; Success
+P:00B1 0AF080 rrrrrr  6  410 1062     jmp     _ExitClockFree              ; Exit at idle speed
+                             1063 _ClientActive
+                             1065     ;-------------------
+                             1066     ; Reduce speed to highest remaining active client's saved SpeedIndex
+                             1068     ; Find highest active client's SpeedIndex in the SavedClientSpeedIndeces table.
+                             1069     ; Offset into SpeedIndeces table==bitpos of clockUserFlag's highest active client bit
+P:00B3 60F400 rrrrrr  3  413 1070     move    #>SavedClientSpeedIndeces,r0   
+P:00B5 70F400 000012  3  416 1071     move    #>SPEED_CLIENT_HIGHEST_USER,n0  ; All of this must remain 0 based. 
+                             1072     ; Start at highest speedclient bitpos, use first found to be active 
+                             1074 _SearchForHighestBitSet                     ; loop start
+P:00B7 56F400 000001  3  419 1075     move    #>1,A
+P:00B9 230600         2  421 1076     move    n0,y0                           ; next lower bitpos in y0
+P:00BA 2F0000         2  423 1078     move    #0,B                            ; y0 mirrors n0
+P:00BB 20005D         2  425 1079     cmp     y0,B
+P:00BC 0AF0AA rrrrrr  6  431 1080     jeq     _NoRep                          ;avoid 'rep 0' since LC maxes
+P:00BE 06C620         4  435 1081     rep     y0
+P:00BF 200032         2  437 1082      asl     A         
+                             1083 _NoRep
+                             1085     ; a1 has 2^n0. Bitmask for associated bitpos. n0=clientId (0 based)
+P:00C0 218500         2  439 1086     move    a1,x1
+P:00C1 5FF000 rrrrrr  3  442 1087     move    y:clockUserFlag,B   
+P:00C3 20006E         2  444 1088     and     x1,B                             ; (2^n0 mask & clockUserFlag) in B  
+P:00C4 20000D         2  446 1089     cmp     A,B    
+                             1090     ; First found active client bitpos? If so use bit id in n0 as table offset.
+P:00C5 0AF0AA rrrrrr  6  452 1091     jeq     _DoneSearchingClientTable 
+P:00C7 230E00         2  454 1093     move    n0,a                            ; if(bitpos==0) exit without a find
+P:00C8 200003         2  456 1094     tst     a
+P:00C9 0AF0AA rrrrrr  6  462 1095     jeq     _ExitClockFree     
+P:00CB 230900         2  464 1097     move    n0,b0                           ; Decrement n0 which is bitposition
+P:00CC 00000B         2  466 1098     dec     B          
+P:00CD 213800         2  468 1099     move    b0,n0 ; This and 2 instr above can be replaced with another way to decrement n0
+P:00CE 0AF080 rrrrrr  6  474 1101     jmp     _SearchForHighestBitSet ; again
+                             1103 _DoneSearchingClientTable   ; Only here if we found an active clock client.
+P:00D0 4DE800         4  478 1104     move    y:(r0+n0),x1    ; Restore the Speed of this highest remaining client
+                             1106 ;  testpoint3
+                             1107     ; Check for and trap on invalid saved SpeedIndex (x1).
+P:00D1 56F400 00000D  3  481 1108     move    #>SPEED_LAST,a
+P:00D3 200065         2  483 1109     cmp     x1,a                
+P:00D4 0AF0A1 rrrrrr  6  489 1110     jge     _ValidCheckPassed
+                             1111     ; Invalid speed index value
+                             1112     error  ; RETAIL build could skip the SysSetSpeed call on invalid speed index 
+P:00D6 000200         4  493 1112     debug
+                             1113            ; by using debugOrContinue macro followed by jmp _ExitClockFree.
+P:00D7 000000         2  495 1114     nop
+                             1115 _ValidCheckPassed
+                             1116     
+P:00D8 0BF080 rrrrrr  6  501 1117     jsr     SysSetSpeed     ; Input Param: requested SpeedIndex in x1
+                             1118     ; DCLK speed reduced to highest remaining client's SpeedIndex
+                             1119     ;-------------------
+                             1120     
+                             1121 _ExitClockFree
+                             1122     ; Return in A1 the current SpeedIndex setting
+P:00DA 0BF080 rrrrrr  6  507 1123     jsr     SysGetSpeed
+P:00DC 20AE00         2  509 1124     move    x1,A
+P:00DD 00000C         4  513 1125     rts
+                             1127 ;///////////////////////////////////////////////////////////////////////////////
+                             1128 ; Name:    SysSpeedGetClockUserFlag 
+                             1129 ; Type:    Final client helper function 
+                             1130 ; Purpose: Used only by the Executive. Indicates if other clock API clients remain.
+                             1131 ; Input:   Reads global y:clockUserFlag
+                             1132 ; Output:  a1 returns 0 if there are zero non-Executive speed clients remaining. 
+                             1133 ;          a1 returns non-0 if non-Exec speed clients remain active.
+                             1134 ; Example: Exec caller tests return for 0:  tst a    jeq or jne
+                             1135 ;///////////////////////////////////////////////////////////////////////////////
+                             1136 FSysSpeedGetClockUserFlag    
+                             1137 SysSpeedGetClockUserFlag    
+P:00DE 5EF000 rrrrrr  3  516 1138     move    y:clockUserFlag,a
+P:00E0 46F400 FFFFFF  3  519 1139     move    #>$FFFFFF,y0
+P:00E2 0AC640         4  523 1140     bclr    #>SPEED_CLIENT_EXECUTIVE,y0
+P:00E3 200056         2  525 1141     and     y0,a    
+P:00E4 00000C         4  529 1142     rts
+                             1144     endsec
+                             1145         

@@ -1,0 +1,2917 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfcc89b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;      waveenc.c:
+                               96 ; 1    |/*;;***********************************************************************
+                               97 ; 2    |;SigmaTel, Inc
+                               98 ; 3    |;$Archive: $
+                               99 ; 4    |;$Revision:  $
+                              100 ; 5    |;$Date: $
+                              101 ; 6    |;Description: 
+                              102 ; 7    |;***********************************************************************/
+                              103 ; 8    |
+                              104 ; 9    |#ifdef ADPCMTEST
+                              105 ; 10   |#include <stdio.h>
+                              106 ; 11   |#endif
+                              107 ; 12   |#include "defs.h"
+                              108 
+                              110 
+                              111 ; 1    |typedef long DWORD;
+                              112 ; 2    |typedef int WORD;
+                              113 ; 3    |typedef int BYTE;
+                              114 ; 4    |
+                              115 
+                              117 
+                              118 ; 13   |#include "wavedefs.h"
+                              119 
+                              121 
+                              122 ; 1    |// Supported algorithms
+                              123 ; 2    |#define         WAVE_FORMAT_PCM             0x01
+                              124 ; 3    |#define         WAVE_FORMAT_ADPCM               0x02
+                              125 ; 4    |#define         WAVE_FORMAT_IMA_ADPCM   0x11
+                              126 ; 5    |#define         WAVE_FORMAT_G721_ADPCM  0x40
+                              127 ; 6    |
+                              128 ; 7    |// Supported chunk types
+                              129 ; 8    |#define         RIFF_CKID               0
+                              130 ; 9    |#define         WAVE_CKID               1
+                              131 ; 10   |#define         FMT_CKID                2
+                              132 ; 11   |#define         FACT_CKID               3
+                              133 ; 12   |#define         DATA_CKID               4
+                              134 ; 13   |// Add more Ckids here
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              135 ; 14   |
+                              136 ; 15   |#define         UNKNOWN_CKID    5
+                              137 ; 16   |#define         TOTAL_CKID              5
+                              138 ; 17   |
+                              139 ; 18   |
+                              140 ; 19   |#define     ADPCM_SOURCE_BUF_SIZE    2048
+                              141 
+                              143 
+                              144 ; 14   |#include "bitstreamwave.h"
+                              145 
+                              147 
+                              148 ; 1    |
+                              149 ; 2    |#ifndef ADPCMTEST
+                              150 ; 3    |
+                              151 ; 4    |extern _asmfunc char GetByte(void);
+                              152 ; 5    |extern _asmfunc int GetWord();
+                              153 ; 6    |extern _asmfunc int GetSWord();
+                              154 ; 7    |extern _asmfunc long GetDWord();
+                              155 ; 8    |extern _asmfunc void WriteByte(char byte);
+                              156 ; 9    |extern _asmfunc void WriteWord(int word);
+                              157 ; 10   |extern _asmfunc void WriteDWord(long int word);
+                              158 ; 11   |extern _asmfunc void Wave_Fill_Input_Bitstream_Buffer(int size);
+                              159 ; 12   |extern _asmfunc void Wave_Flush_Encoded_Bitstream_Buffer();
+                              160 ; 13   |extern _asmfunc long Get_file_offset();
+                              161 ; 14   |extern _asmfunc void Seek_data_offset(long offset);
+                              162 ; 15   |extern _asmfunc void Seek_to_zero();
+                              163 ; 16   |extern _asmfunc void SkipData(long amount);
+                              164 ; 17   |
+                              165 ; 18   |#else
+                              166 ; 19   |
+                              167 ; 20   |char GetByte();
+                              168 ; 21   |int GetWord();
+                              169 ; 22   |int GetSWord();
+                              170 ; 23   |long GetDWord();
+                              171 ; 24   |void WriteByte(char byte);
+                              172 ; 25   |void WriteWord(int word);
+                              173 ; 26   |void WriteDWord(long int word);
+                              174 ; 27   |void Wave_Fill_Input_Bitstream_Buffer(int size);
+                              175 ; 28   |void Wave_Flush_Encoded_Bitstream_Buffer();
+                              176 ; 29   |long int Get_file_offset();
+                              177 ; 30   |void Seek_data_offset(long int offset);
+                              178 ; 31   |void Seek_to_zero();
+                              179 ; 32   |void SkipData(long int amount);
+                              180 ; 33   |
+                              181 ; 34   |#endif
+                              182 
+                              184 
+                              185 ; 15   |#include "wavedata.h"
+                              186 
+                              189 
+                              190 ; 1    |extern DWORD g_Wave_dwWavDuration;
+                              191 
+                              193 
+                              194 ; 2    |extern WORD  g_Wave_wFormatTag;         
+                              195 ; 3    |extern WORD  g_Wave_wChannels;          
+                              196 ; 4    |extern DWORD g_Wave_dwSamplesPerSec;
+                              197 ; 5    |extern DWORD g_Wave_dwAvgBytesPerSec;
+                              198 ; 6    |extern WORD  g_Wave_wBlockAlign;        
+                              199 ; 7    |extern DWORD g_Wave_wMegicWord; 
+                              200 ; 8    |extern long int g_Wave_datachunksize;
+                              201 ; 9    |extern long int g_Wave_riffsize;
+                              202 ; 10   |extern long int g_Wave_wavesize;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              203 ; 11   |extern long int g_Wave_datasize;
+                              204 ; 12   |extern long int g_Wave_data_offset;
+                              205 ; 13   |extern long int ckidlist[TOTAL_CKID];
+                              206 ; 14   |extern long int DataSize[5];            // Stores Nested Chunk sizes. Upto 5 levels allowe
+                                  d
+                              207 ; 15   |extern WORD TotalSamplesPerBlock;
+                              208 ; 16   |extern int riff_file_flag;
+                              209 ; 17   |extern WORD  g_Wave_wBitsPerSample;
+                              210 ; 18   |extern WORD  g_Wave_wnSamplesPerBlock;
+                              211 ; 19   |#ifdef MS_ADPCM
+                              212 ; 20   |extern WORD  g_Wave_wcbSize;
+                              213 ; 21   |extern WORD  g_Wave_wnNumCoef;
+                              214 ; 22   |extern short  g_Wave_wCoef1[10];                // Provision for 10 coefficient sets. Sign
+                                  ed data.
+                              215 ; 23   |extern short  g_Wave_wCoef2[10];
+                              216 ; 24   |// Keep these constants separate, from above buffer
+                              217 ; 25   |extern short g_Wave_iCoef1Array[7];
+                              218 ; 26   |extern short g_Wave_iCoef2Array[7]; 
+                              219 ; 27   |#endif
+                              220 ; 28   |
+                              221 ; 29   |extern long int list_ckid;
+                              222 ; 30   |extern long int info_ckid;
+                              223 ; 31   |extern long int isft_ckid;
+                              224 ; 32   |extern short int sigmatel[5];
+                              225 ; 33   |
+                              226 ; 34   |
+                              227 ; 35   |#ifdef IMA_ADPCM
+                              228 ; 36   |extern WORD  g_Wave_wcbSize;
+                              229 ; 37   |#endif
+                              230 ; 38   |
+                              231 ; 39   |// Function Declarations
+                              232 ; 40   |extern int Initialize_Wave_Header(int formattag, int num_channels, int SamplingRate,int Nu
+                                  mberOfBits);
+                              233 ; 41   |void Write_Wave_Header(void);
+                              234 ; 42   |void Decode_ADPCM(int FormatTag);
+                              235 ; 43   |void Encode_ADPCM(int FormatTag, int numChannels);
+                              236 ; 44   |extern void Init_IMA_ADPCM_States(void);
+                              237 
+                              239 
+                              240 ; 16   |#include "FileSystem.h"
+                              241 
+                              243 
+                              244 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              245 ; 2    |//  Copyright(C) SigmaTel, Inc. 2001
+                              246 ; 3    |//
+                              247 ; 4    |//  File        : FileSystem.h
+                              248 ; 5    |//  Description : Header File for File System
+                              249 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              250 ; 7    |
+                              251 ; 8    |#ifndef _FILESYSTEM_H
+                              252 ; 9    |#define _FILESYSTEM_H
+                              253 ; 10   |
+                              254 ; 11   |#include "types.h"
+                              255 
+                              257 
+                              258 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              259 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              260 ; 3    |//
+                              261 ; 4    |// Filename: types.h
+                              262 ; 5    |// Description: Standard data types
+                              263 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              264 ; 7    |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              265 ; 8    |#ifndef _TYPES_H
+                              266 ; 9    |#define _TYPES_H
+                              267 ; 10   |
+                              268 ; 11   |// TODO:  move this outta here!
+                              269 ; 12   |#if !defined(NOERROR)
+                              270 ; 13   |#define NOERROR 0
+                              271 ; 14   |#define SUCCESS 0
+                              272 ; 15   |#endif 
+                              273 ; 16   |#if !defined(SUCCESS)
+                              274 ; 17   |#define SUCCESS  0
+                              275 ; 18   |#endif
+                              276 ; 19   |#if !defined(ERROR)
+                              277 ; 20   |#define ERROR   -1
+                              278 ; 21   |#endif
+                              279 ; 22   |#if !defined(FALSE)
+                              280 ; 23   |#define FALSE 0
+                              281 ; 24   |#endif
+                              282 ; 25   |#if !defined(TRUE)
+                              283 ; 26   |#define TRUE  1
+                              284 ; 27   |#endif
+                              285 ; 28   |
+                              286 ; 29   |#if !defined(NULL)
+                              287 ; 30   |#define NULL 0
+                              288 ; 31   |#endif
+                              289 ; 32   |
+                              290 ; 33   |#define MAX_INT     0x7FFFFF
+                              291 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              292 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              293 ; 36   |#define MAX_ULONG   (-1) 
+                              294 ; 37   |
+                              295 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              296 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              297 ; 40   |
+                              298 ; 41   |
+                              299 ; 42   |#define BYTE    unsigned char       // btVarName
+                              300 ; 43   |#define CHAR    signed char         // cVarName
+                              301 ; 44   |#define USHORT  unsigned short      // usVarName
+                              302 ; 45   |#define SHORT   unsigned short      // sVarName
+                              303 ; 46   |#define WORD    unsigned int        // wVarName
+                              304 ; 47   |#define INT     signed int          // iVarName
+                              305 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              306 ; 49   |#define LONG    signed long         // lVarName
+                              307 ; 50   |#define BOOL    unsigned int        // bVarName
+                              308 ; 51   |#define FRACT   _fract              // frVarName
+                              309 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              310 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              311 ; 54   |#define FLOAT   float               // fVarName
+                              312 ; 55   |#define DBL     double              // dVarName
+                              313 ; 56   |#define ENUM    enum                // eVarName
+                              314 ; 57   |#define CMX     _complex            // cmxVarName
+                              315 ; 58   |typedef WORD UCS3;                   // 
+                              316 ; 59   |
+                              317 ; 60   |#define UINT16  unsigned short
+                              318 ; 61   |#define UINT8   unsigned char   
+                              319 ; 62   |#define UINT32  unsigned long
+                              320 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              321 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              322 ; 65   |#define WCHAR   UINT16
+                              323 ; 66   |
+                              324 ; 67   |//UINT128 is 16 bytes or 6 words
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              325 ; 68   |typedef struct UINT128_3500 {   
+                              326 ; 69   |    int val[6];     
+                              327 ; 70   |} UINT128_3500;
+                              328 ; 71   |
+                              329 ; 72   |#define UINT128   UINT128_3500
+                              330 ; 73   |
+                              331 ; 74   |// Little endian word packed byte strings:   
+                              332 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              333 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              334 ; 77   |// Little endian word packed byte strings:   
+                              335 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              336 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              337 ; 80   |
+                              338 ; 81   |// Declare Memory Spaces To Use When Coding
+                              339 ; 82   |// A. Sector Buffers
+                              340 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              341 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              342 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              343 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              344 
+                              346 
+                              347 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              348 ; 88   |// B. Media DDI Memory
+                              349 ; 89   |#define MEDIA_DDI_MEM _Y
+                              350 ; 90   |
+                              351 ; 91   |
+                              352 ; 92   |
+                              353 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              354 ; 94   |// Examples of circular pointers:
+                              355 ; 95   |//    INT CIRC cpiVarName
+                              356 ; 96   |//    DWORD CIRC cpdwVarName
+                              357 ; 97   |
+                              358 ; 98   |#define RETCODE INT                 // rcVarName
+                              359 ; 99   |
+                              360 ; 100  |// generic bitfield structure
+                              361 ; 101  |struct Bitfield {
+                              362 ; 102  |    unsigned int B0  :1;
+                              363 ; 103  |    unsigned int B1  :1;
+                              364 ; 104  |    unsigned int B2  :1;
+                              365 ; 105  |    unsigned int B3  :1;
+                              366 ; 106  |    unsigned int B4  :1;
+                              367 ; 107  |    unsigned int B5  :1;
+                              368 ; 108  |    unsigned int B6  :1;
+                              369 ; 109  |    unsigned int B7  :1;
+                              370 ; 110  |    unsigned int B8  :1;
+                              371 ; 111  |    unsigned int B9  :1;
+                              372 ; 112  |    unsigned int B10 :1;
+                              373 ; 113  |    unsigned int B11 :1;
+                              374 ; 114  |    unsigned int B12 :1;
+                              375 ; 115  |    unsigned int B13 :1;
+                              376 ; 116  |    unsigned int B14 :1;
+                              377 ; 117  |    unsigned int B15 :1;
+                              378 ; 118  |    unsigned int B16 :1;
+                              379 ; 119  |    unsigned int B17 :1;
+                              380 ; 120  |    unsigned int B18 :1;
+                              381 ; 121  |    unsigned int B19 :1;
+                              382 ; 122  |    unsigned int B20 :1;
+                              383 ; 123  |    unsigned int B21 :1;
+                              384 ; 124  |    unsigned int B22 :1;
+                              385 ; 125  |    unsigned int B23 :1;
+                              386 ; 126  |};
+                              387 ; 127  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              388 ; 128  |union BitInt {
+                              389 ; 129  |        struct Bitfield B;
+                              390 ; 130  |        int        I;
+                              391 ; 131  |};
+                              392 ; 132  |
+                              393 ; 133  |#define MAX_MSG_LENGTH 10
+                              394 ; 134  |struct CMessage
+                              395 ; 135  |{
+                              396 ; 136  |        unsigned int m_uLength;
+                              397 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              398 ; 138  |};
+                              399 ; 139  |
+                              400 ; 140  |typedef struct {
+                              401 ; 141  |    WORD m_wLength;
+                              402 ; 142  |    WORD m_wMessage;
+                              403 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              404 ; 144  |} Message;
+                              405 ; 145  |
+                              406 ; 146  |struct MessageQueueDescriptor
+                              407 ; 147  |{
+                              408 ; 148  |        int *m_pBase;
+                              409 ; 149  |        int m_iModulo;
+                              410 ; 150  |        int m_iSize;
+                              411 ; 151  |        int *m_pHead;
+                              412 ; 152  |        int *m_pTail;
+                              413 ; 153  |};
+                              414 ; 154  |
+                              415 ; 155  |struct ModuleEntry
+                              416 ; 156  |{
+                              417 ; 157  |    int m_iSignaledEventMask;
+                              418 ; 158  |    int m_iWaitEventMask;
+                              419 ; 159  |    int m_iResourceOfCode;
+                              420 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              421 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              422 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              423 ; 163  |    int m_uTimeOutHigh;
+                              424 ; 164  |    int m_uTimeOutLow;
+                              425 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              426 ; 166  |};
+                              427 ; 167  |
+                              428 ; 168  |union WaitMask{
+                              429 ; 169  |    struct B{
+                              430 ; 170  |        unsigned int m_bNone     :1;
+                              431 ; 171  |        unsigned int m_bMessage  :1;
+                              432 ; 172  |        unsigned int m_bTimer    :1;
+                              433 ; 173  |        unsigned int m_bButton   :1;
+                              434 ; 174  |    } B;
+                              435 ; 175  |    int I;
+                              436 ; 176  |} ;
+                              437 ; 177  |
+                              438 ; 178  |
+                              439 ; 179  |struct Button {
+                              440 ; 180  |        WORD wButtonEvent;
+                              441 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              442 ; 182  |};
+                              443 ; 183  |
+                              444 ; 184  |struct Message {
+                              445 ; 185  |        WORD wMsgLength;
+                              446 ; 186  |        WORD wMsgCommand;
+                              447 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              448 ; 188  |};
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              449 ; 189  |
+                              450 ; 190  |union EventTypes {
+                              451 ; 191  |        struct CMessage msg;
+                              452 ; 192  |        struct Button Button ;
+                              453 ; 193  |        struct Message Message;
+                              454 ; 194  |};
+                              455 ; 195  |
+                              456 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              457 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              458 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              459 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              460 ; 200  |
+                              461 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              462 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              463 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              464 ; 204  |
+                              465 ; 205  |#if DEBUG
+                              466 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              467 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              468 ; 208  |#else 
+                              469 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              470 ; 210  |#define DebugBuildAssert(x)    
+                              471 ; 211  |#endif
+                              472 ; 212  |
+                              473 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              474 ; 214  |//  #pragma asm
+                              475 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              476 ; 216  |//  #pragma endasm
+                              477 ; 217  |
+                              478 ; 218  |
+                              479 ; 219  |#ifdef COLOR_262K
+                              480 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              481 ; 221  |#elif defined(COLOR_65K)
+                              482 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              483 ; 223  |#else
+                              484 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              485 ; 225  |#endif
+                              486 ; 226  |    
+                              487 ; 227  |#endif // #ifndef _TYPES_H
+                              488 
+                              490 
+                              491 ; 12   |
+                              492 ; 13   |
+                              493 ; 14   |// File attributes
+                              494 ; 15   |#ifndef _FS_ATTRIBUTES
+                              495 ; 16   |#define _FS_ATTRIBUTES
+                              496 ; 17   |#define READ        1
+                              497 ; 18   |#define WRITE       2
+                              498 ; 19   |#define WRITE_PLUS  3
+                              499 ; 20   |#define APPEND      4
+                              500 ; 21   |#define TRUNCATE    8
+                              501 ; 22   |#define CREATE      16
+                              502 ; 23   |#endif
+                              503 ; 24   |
+                              504 ; 25   |//#ifndef FAT12
+                              505 ; 26   |//#define FAT12   1
+                              506 ; 27   |//#endif
+                              507 ; 28   |//
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              508 ; 29   |#ifndef FAT16
+                              509 ; 30   |#define FAT16   2
+                              510 ; 31   |#endif
+                              511 ; 32   |
+                              512 ; 33   |#define MEM_SPACE_P 0x100000
+                              513 ; 34   |#define MEM_SPACE_Y 0x400000
+                              514 ; 35   |#define MEM_SPACE_X 0x800000
+                              515 ; 36   |
+                              516 ; 37   |#define FILE_SYS_MODE_READ  0
+                              517 ; 38   |#define FILE_SYS_MODE_WRITE 1
+                              518 ; 39   | 
+                              519 ; 40   |#define ATTR_READ_ONLY      0x01
+                              520 ; 41   |#define ATTR_HIDDEN         0x02
+                              521 ; 42   |#define ATTR_SYSTEM         0x04
+                              522 ; 43   |#define ATTR_VOLUME_ID      0x08
+                              523 ; 44   |#define ATTR_DIRECTORY      0x10
+                              524 ; 45   |#define ATTR_ARCHIVE        0x20
+                              525 ; 46   |#define ATTR_LONG_NAME      ATTR_READ_ONLY|ATTR_HIDDEN|ATTR_SYSTEM|ATTR_VOLUME_ID
+                              526 ; 47   |
+                              527 ; 48   |#define SEEK_SET           -1
+                              528 ; 49   |#define SEEK_CUR            0
+                              529 ; 50   |#define SEEK_END            1
+                              530 ; 51   |
+                              531 ; 52   |#define DEVICE_INSTALLED              (WORD)(0)
+                              532 ; 53   |#define DEVICE_NOT_FOUND              (WORD)(2)
+                              533 ; 54   |#define INVALID_FILESYSTEM                        (WORD)(3)
+                              534 ; 55   |#define DEVICE_INVALID                (WORD)(-1)
+                              535 ; 56   |#define DEVICE_ERROR_WRITE_PROTECTED  (WORD)(-2)
+                              536 ; 57   |
+                              537 ; 58   |#define MEDIA_SIZE_TOTAL_SECTORS    0
+                              538 ; 59   |#define MEDIA_SIZE_TOTAL_BYTES      1
+                              539 ; 60   |#define MEDIA_SIZE_BYTES_PER_SECTOR 2
+                              540 ; 61   |#define MEDIA_SIZE_IN_MEGABYTES     3     
+                              541 ; 62   |
+                              542 ; 63   |#define READ_TYPE_NORMAL            0
+                              543 ; 64   |#define READ_TYPE_FAT               1
+                              544 ; 65   |#define READ_TYPE_RAW               2
+                              545 ; 66   |
+                              546 ; 67   |
+                              547 ; 68   |#ifdef MEDIA_DDI_PARTIAL_SEQ_ENABLE
+                              548 ; 69   |    #define WRITE_TYPE_RANDOM                   0
+                              549 ; 70   |    #define WRITE_TYPE_SEQ_FIRST                1
+                              550 ; 71   |    #define WRITE_TYPE_SEQ_NEXT                 2
+                              551 ; 72   |    #define WRITE_TYPE_RESET_CLEAN_UP           3
+                              552 ; 73   |    #define WRITE_TYPE_PARTIAL_SEQ_FIRST        4
+                              553 ; 74   |    #define WRITE_TYPE_PARTIAL_SEQ_NEXT         5
+                              554 ; 75   |    #define WRITE_TYPE_PARTIAL_SEQ_LAST         6
+                              555 ; 76   |    #ifdef MEDIA_DDI_RAW_SECTOR_SERVER_ENABLE
+                              556 ; 77   |        #define WRITE_TYPE_RANDOM_RAW               7
+                              557 ; 78   |        #define WRITE_TYPE_SEQ_FIRST_RAW            8
+                              558 ; 79   |        #define WRITE_TYPE_SEQ_NEXT_RAW             9
+                              559 ; 80   |        #define WRITE_TYPE_PARTIAL_SEQ_FIRST_RAW    10
+                              560 ; 81   |        #define WRITE_TYPE_PARTIAL_SEQ_NEXT_RAW     11
+                              561 ; 82   |        #define WRITE_TYPE_PARTIAL_SEQ_LAST_RAW     12
+                              562 ; 83   |    #endif
+                              563 ; 84   |#else
+                              564 ; 85   |    #define WRITE_TYPE_RANDOM                   0
+                              565 ; 86   |    #define WRITE_TYPE_SEQ_FIRST                1
+                              566 ; 87   |    #define WRITE_TYPE_SEQ_NEXT                 2
+                              567 ; 88   |    #ifdef MEDIA_DDI_RAW_SECTOR_SERVER_ENABLE
+                              568 ; 89   |        #define WRITE_TYPE_RANDOM_RAW               3
+                              569 ; 90   |        #define WRITE_TYPE_SEQ_FIRST_RAW            4
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              570 ; 91   |        #define WRITE_TYPE_SEQ_NEXT_RAW             5
+                              571 ; 92   |    #endif
+                              572 ; 93   |#endif
+                              573 ; 94   |    #define WRITE_TYPE_UNDEFINED 0xFFFFFF
+                              574 ; 95   |
+                              575 ; 96   |
+                              576 ; 97   |#ifndef MAX_FILENAME_LENGTH
+                              577 ; 98   |#define MAX_FILENAME_LENGTH 256
+                              578 ; 99   |#endif
+                              579 ; 100  |
+                              580 ; 101  |typedef struct {
+                              581 ; 102  |    WORD wNumberOfZones;
+                              582 ; 103  |    WORD wSizeInMegaBytes;
+                              583 ; 104  |} SMARTMEDIA_CHIP_INFO;
+                              584 ; 105  |
+                              585 ; 106  |typedef struct {
+                              586 ; 107  |    WORD wBootIdentification;
+                              587 ; 108  |    WORD wStartHeadNumber;
+                              588 ; 109  |    WORD wStartSectorNumber;
+                              589 ; 110  |    WORD wStartCylinderNumber;
+                              590 ; 111  |    WORD wSystemIdentification;
+                              591 ; 112  |    WORD wEndHeadNumber;
+                              592 ; 113  |    WORD wEndSectorNumber;
+                              593 ; 114  |    WORD wEndCylinderNumber;
+                              594 ; 115  |    WORD wStartLogicalSectorNumberHigh;
+                              595 ; 116  |    WORD wStartLogicalSectorNumberLow;
+                              596 ; 117  |    WORD wPartitionSizeHigh;
+                              597 ; 118  |    WORD wPartitionSizeLow;
+                              598 ; 119  |} SMARTMEDIA_PARTITION_TABLE;
+                              599 ; 120  |
+                              600 ; 121  |typedef struct {
+                              601 ; 122  |    WORD wWord0;
+                              602 ; 123  |    WORD wWord1;
+                              603 ; 124  |    WORD wWord2;
+                              604 ; 125  |} SMARTMEDIA_CIS_IDI_MANUFACTURER_NAME;
+                              605 ; 126  |
+                              606 ; 127  |typedef struct {
+                              607 ; 128  |    WORD wWord0;
+                              608 ; 129  |    WORD wWord1;
+                              609 ; 130  |} SMARTMEDIA_CIS_IDI_PRODUCT_NAME;
+                              610 ; 131  |
+                              611 ; 132  |typedef struct {
+                              612 ; 133  |    WORD wWord0;
+                              613 ; 134  |    WORD wWord1;
+                              614 ; 135  |} SMARTMEDIA_CIS_IDI_PRODUCT_VERSION;
+                              615 ; 136  |
+                              616 ; 137  |typedef struct {
+                              617 ; 138  |    WORD wWord0;
+                              618 ; 139  |    WORD wWord1;
+                              619 ; 140  |    WORD wWord2;
+                              620 ; 141  |    WORD wWord3;
+                              621 ; 142  |} SMARTMEDIA_CIS_IDI_SERIAL_NUMBER;
+                              622 ; 143  |
+                              623 ; 144  |typedef struct {
+                              624 ; 145  |    WORD wWord0;
+                              625 ; 146  |} SMARTMEDIA_CIS_IDI_MODEL_NUMBER;
+                              626 
+                              649 
+                              650 ; 147  |
+                              651 ; 148  |typedef struct {
+                              652 ; 149  |    SMARTMEDIA_CIS_IDI_MANUFACTURER_NAME ManufacturerName;
+                              653 ; 150  |    SMARTMEDIA_CIS_IDI_PRODUCT_NAME ProductName;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              654 ; 151  |    SMARTMEDIA_CIS_IDI_PRODUCT_VERSION ProductVersion;
+                              655 ; 152  |    SMARTMEDIA_CIS_IDI_SERIAL_NUMBER SerialNumber;
+                              656 ; 153  |    SMARTMEDIA_CIS_IDI_MODEL_NUMBER ModelNumber;
+                              657 ; 154  |} SMARTMEDIA_CIS_IDI_TABLE;
+                              658 
+                              680 
+                              681 ; 155  |   
+                              682 ; 156  |typedef struct {
+                              683 ; 157  |    WORD wPageSizeInBytes;
+                              684 ; 158  |    WORD wRedundantAreaSizeInBytes;
+                              685 ; 159  |    WORD wNumberOfPagesPerBlock;
+                              686 ; 160  |    WORD wNumberOfBlocksPerZone;
+                              687 ; 161  |    WORD wNumberOfZonesInMedia;
+                              688 ; 162  |    WORD wMediaSizeInMBytes;
+                              689 ; 163  |    SMARTMEDIA_PARTITION_TABLE * pPartitionTable;
+                              690 ; 164  |    SMARTMEDIA_CIS_IDI_TABLE * pCisIdiTable;
+                              691 ; 165  |    WORD wMediaFlagStatus;
+                              692 ; 166  |    WORD wNumberOfBlocksToTheCisIdiBlock;
+                              693 ; 167  |    WORD wTotalNumberOfPhysicalBlocks;
+                              694 ; 168  |    WORD wNumberOfSystemBlocks;
+                              695 ; 169  |} SMARTMEDIA_ENTRY_TABLE;
+                              696 ; 170  |
+                              697 ; 171  |typedef struct {
+                              698 ; 172  |    WORD wDevice;        
+                              699 ; 173  |    WORD wDirtyBlockFlag;
+                              700 ; 174  |    WORD wCleanTailFlag; 
+                              701 ; 175  |    WORD wLogDOSPage;    
+                              702 ; 176  |    WORD wSrcLogBlock;   
+                              703 ; 177  |    WORD wSrcPhyBlock;   
+                              704 ; 178  |    WORD wDestPhyBlock;  
+                              705 ; 179  |    WORD wStartSrcPage;  
+                              706 ; 180  |    WORD wStartDestPage; 
+                              707 ; 181  |    WORD wPagesToCopy;   
+                              708 ; 182  |    WORD wReplaceBuff;   
+                              709 ; 183  |    WORD wReplaceRdnt;
+                              710 ; 184  |    #ifdef MEDIA_DDI_PARTIAL_SEQ_ENABLE
+                              711 ; 185  |        WORD wFirstCount;
+                              712 ; 186  |        WORD wNextCount;
+                              713 ; 187  |        WORD wLastCount;
+                              714 ; 188  |    #endif
+                              715 ; 189  |} SMARTMEDIA_FWPPS_TABLE;
+                              716 ; 190  |
+                              717 ; 191  |typedef struct {
+                              718 ; 192  |    WORD wWord0;
+                              719 ; 193  |    WORD wWord1;
+                              720 ; 194  |    WORD wWord2;
+                              721 ; 195  |    WORD wWord3;
+                              722 ; 196  |} DIRECTORY_NAME;
+                              723 ; 197  |
+                              724 ; 198  |typedef struct {
+                              725 ; 199  |    WORD wWord0;
+                              726 ; 200  |    WORD wWord1;
+                              727 ; 201  |} DIRECTORY_EXTENSION;
+                              728 ; 202  |
+                              729 ; 203  |typedef struct {
+                              730 ; 204  |    WORD wWord0;
+                              731 ; 205  |    WORD wWord1;
+                              732 ; 206  |} DIRECTORY_SIZE;
+                              733 
+                              748 
+                              749 ; 207  |
+                              750 ; 208  |typedef struct {
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              751 ; 209  |    DIRECTORY_NAME Name;
+                              752 ; 210  |    DIRECTORY_EXTENSION Extension;
+                              753 ; 211  |    WORD wAttribute;
+                              754 ; 212  |    WORD wReserved[4];
+                              755 ; 213  |    WORD wCreationTime;
+                              756 ; 214  |    WORD wCreationData;
+                              757 ; 215  |    WORD wFirstCluster;
+                              758 ; 216  |    DIRECTORY_SIZE Size;
+                              759 ; 217  |    WORD wCurrentCluster;
+                              760 ; 218  |    WORD wPointer;
+                              761 ; 219  |    WORD wRecord;
+                              762 ; 220  |    WORD wRd;
+                              763 ; 221  |} DIRECTORY_FILE_CONTROL_BLOCK;
+                              764 ; 222  |
+                              765 ; 223  |// TODO:  clean this up.  There are two versions.
+                              766 ; 224  |struct FCB
+                              767 ; 225  |{
+                              768 ; 226  |    _packed BYTE m_szFileName[9];       //0-2
+                              769 ; 227  |    int     m_wReserved;                //3
+                              770 ; 228  |    _packed BYTE m_szExt[4];            //4-5
+                              771 ; 229  |    int     m_wAttributes;              //6
+                              772 ; 230  |    int     m_wReserved2[4];            //7,8,9,a
+                              773 ; 231  |    int     m_wTimeofCreation;          //b
+                              774 ; 232  |    int     m_wDateofCreation;          //c
+                              775 ; 233  |    int     m_wFirstCluster;            //d
+                              776 ; 234  |    int     m_wFileSizeHigh;            //e
+                              777 ; 235  |    int     m_wFileSizeLow;             //f
+                              778 ; 236  |};
+                              779 
+                              795 
+                              796 ; 237  |
+                              797 ; 238  |
+                              798 ; 239  |typedef struct {
+                              799 ; 240  |    WORD wFirstClusterCurrentDirectory;
+                              800 ; 241  |    WORD wFirstClusterParentDirectory;
+                              801 ; 242  |    WORD wAbsSectorCurrentlyCached;
+                              802 ; 243  |    WORD wCurrentRelativeSector;
+                              803 ; 244  |    WORD wNumberOfSectors;
+                              804 ; 245  |    WORD wCurrentRecordLoadedInDcb;
+                              805 ; 246  |    WORD wBufferedRecord;
+                              806 ; 247  |    WORD wMaxNumberRecordsCurrentDirectory;
+                              807 ; 248  |    WORD * pwPointerToBuffer;
+                              808 ; 249  |    WORD * pwPointerToPath;
+                              809 ; 250  |    DIRECTORY_FILE_CONTROL_BLOCK * pDirFcb;
+                              810 ; 251  |} DIRECTORY_CONTROL_BLOCK;
+                              811 ; 252  |
+                              812 ; 253  |typedef struct {
+                              813 ; 254  |    WORD wWord0;
+                              814 ; 255  |    WORD wWord1;
+                              815 ; 256  |    WORD wWord2;
+                              816 ; 257  |    WORD wWord3;
+                              817 ; 258  |} FILE_NAME;
+                              818 ; 259  |
+                              819 ; 260  |typedef struct {
+                              820 ; 261  |    WORD wWord0;
+                              821 ; 262  |    WORD wWord1;
+                              822 ; 263  |} FILE_EXTENSION;
+                              823 ; 264  |
+                              824 ; 265  |typedef struct {
+                              825 ; 266  |    WORD wWord0;
+                              826 ; 267  |    WORD wWord1;
+                              827 ; 268  |} FILE_SIZE;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              828 ; 269  |
+                              829 ; 270  |typedef union {
+                              830 ; 271  |    struct {
+                              831 ; 272  |        int Read        :1;
+                              832 ; 273  |        int Write       :1;
+                              833 ; 274  |        int Append      :1;
+                              834 ; 275  |        int Truncate    :1;
+                              835 ; 276  |        int Create      :1;
+                              836 ; 277  |        int Rsrv        :3;
+                              837 ; 278  |        int Mode        :8;
+                              838 ; 279  |        int Device      :8;
+                              839 ; 280  |    } B;
+                              840 ; 281  |    int I;
+                              841 ; 282  |} FILE_FLAGS;
+                              842 ; 283  |
+                              843 ; 284  |typedef struct {
+                              844 ; 285  |    WORD wWord0;
+                              845 ; 286  |    WORD wWord1;
+                              846 ; 287  |} FILE_BYTE_CURRENT;
+                              847 
+                              887 
+                              888 ; 288  |
+                              889 ; 289  |typedef struct {
+                              890 ; 290  |    FILE_NAME Name;
+                              891 ; 291  |    FILE_EXTENSION Extension;
+                              892 ; 292  |    WORD wAttributes;
+                              893 ; 293  |    WORD wReserved[4];
+                              894 ; 294  |    WORD wCreationTime;
+                              895 ; 295  |    WORD wCreationData;
+                              896 ; 296  |    WORD wFirstCluster;
+                              897 ; 297  |    FILE_SIZE Size;
+                              898 ; 298  |    WORD wCurrentCluster;
+                              899 ; 299  |    WORD wPointer;
+                              900 ; 300  |    WORD wRecord;
+                              901 ; 301  |    WORD wRd;
+                              902 ; 302  |    FILE_FLAGS Flags;
+                              903 ; 303  |    FILE_BYTE_CURRENT FcbByteCurrent;
+                              904 ; 304  |    WORD wFcbFlagEndOfCx;
+                              905 ; 305  |} FILE_CONTROL_BLOCK;    
+                              906 ; 306  |
+                              907 ; 307  |typedef struct {
+                              908 ; 308  |    WORD wWord0;
+                              909 ; 309  |    WORD wWord1;
+                              910 ; 310  |    WORD wWord2;
+                              911 ; 311  |    WORD wWord3;
+                              912 ; 312  |} VOLUME_LABEL;
+                              913 ; 313  |
+                              914 ; 314  |typedef struct {
+                              915 ; 315  |    WORD wFATPhysicalBlock1;
+                              916 ; 316  |    WORD wFATPhysicalBlock2;
+                              917 ; 317  |    WORD wFATPhysicalBlock3;
+                              918 ; 318  |    WORD wFATPhysicalBlock4;
+                              919 ; 319  |} FAT_PHYSICAL_BLOCK_LIST;
+                              920 
+                              927 
+                              928 ; 320  |
+                              929 ; 321  |typedef struct {
+                              930 ; 322  |    WORD wFATSectorInCache;
+                              931 ; 323  |    WORD wLastClusterFree;
+                              932 ; 324  |    WORD wNumberOfUsedClusters;
+                              933 ; 325  |    WORD wNumberOfFreeClusters;
+                              934 ; 326  |    WORD wNumberOfBadClusters;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              935 ; 327  |    WORD wNumberOfReservedClusters;
+                              936 ; 328  |    WORD wControl;
+                              937 ; 329  |    WORD * pwSectorCache;
+                              938 ; 330  |    FAT_PHYSICAL_BLOCK_LIST FATPhysicalLocationList;
+                              939 ; 331  |} FAT_TABLE;
+                              940 
+                              947 
+                              948 ; 332  |
+                              949 ; 333  |typedef struct {
+                              950 ; 334  |    WORD wStateMediaTable;
+                              951 ; 335  |    WORD wTypeFs;
+                              952 ; 336  |    WORD wBytesPerSector;
+                              953 ; 337  |    WORD wSectorsPerCluster;
+                              954 ; 338  |    WORD wNumberOfReservedSectors;
+                              955 ; 339  |    WORD wMaximumNumberOfFATs;
+                              956 ; 340  |    WORD wMaxRootDirectoryEntries;
+                              957 ; 341  |    WORD wTotalSectors;
+                              958 ; 342  |    WORD wNumberOfFATSectors;
+                              959 ; 343  |    WORD wNumberOfSectorsPerTrack;
+                              960 ; 344  |    WORD wNumberOfHeads;
+                              961 ; 345  |    WORD wNumberOfHiddenSectorsMSB;
+                              962 ; 346  |    WORD wNumberOfHiddenSectorsLSB;
+                              963 ; 347  |    WORD wTotalSectors32MSB;
+                              964 ; 348  |    WORD wTotalSectors32LSB;
+                              965 ; 349  |    WORD wDriverNumber;
+                              966 ; 350  |    WORD wExtendedBootSignature;
+                              967 ; 351  |    WORD wVolumeIDMSB;
+                              968 ; 352  |    WORD wVolumeIDLSB;
+                              969 ; 353  |    VOLUME_LABEL VolumeLabel;
+                              970 ; 354  |    WORD * pwWriteBuffer;
+                              971 ; 355  |    WORD wPrimaryFATRelativeSector;
+                              972 ; 356  |    WORD wSecondaryFATRelativeSector;
+                              973 ; 357  |    WORD wRootDirectoryRelativeSector;
+                              974 ; 358  |    WORD wFirstSectorNumberDataZone;
+                              975 ; 359  |    WORD wMaxNumberOfFATEntries;
+                              976 ; 360  |    WORD wRootDirectorySizeInSectors;
+                              977 ; 361  |    WORD wDataAreaSizeInSectors;
+                              978 ; 362  |} MEDIA_TABLE;
+                              979 
+                             1038 
+                             1039 ; 363  |
+                             1040 ; 364  |typedef struct {
+                             1041 ; 365  |    MEDIA_TABLE * pMediaTable;
+                             1042 ; 366  |    DIRECTORY_CONTROL_BLOCK * pDirectoryControlBlock;
+                             1043 ; 367  |    FAT_TABLE * pFATTable;
+                             1044 ; 368  |} DEVICE_CONTROL_TABLE;
+                             1045 ; 369  |    
+                             1046 ; 370  |typedef struct {
+                             1047 ; 371  |    WORD dwTotalSizeInMegaBytes;        // dwTotalSizeInMegaBytes is limited
+                             1048 ; 372  |                                        //  to 2-bytes for compatibility with
+                             1049 ; 373  |                                        //  older host drivers.
+                             1050 ; 374  |    DWORD dwTotalNumberOfSectors;
+                             1051 ; 375  |    DWORD dwTotalNumberOfBytes;
+                             1052 ; 376  |    WORD wSectorSizeInBytes;
+                             1053 ; 377  |} MEDIA_SIZE;
+                             1054 ; 378  |
+                             1055 ; 379  |typedef struct {
+                             1056 ; 380  |    BOOL    bInstalled;
+                             1057 ; 381  |    INT     iPbsSectorOffset;   // from the beginning of the data drive 
+                             1058 ; 382  |    DWORD   dwSize;
+                             1059 ; 383  |} DATA_DRIVE_PBS_LOC;
+                             1060 ; 384  |extern  INT _reentrant FSFileOpen(_packed BYTE *fname,INT attribute, INT DeviceNumber);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1061 ; 385  |extern  INT _reentrant FSFastOpen(DWORD Key, INT attribute);
+                             1062 ; 386  |extern  INT FSFileDelete(_packed BYTE *fname,INT DeviceNumber);
+                             1063 ; 387  |extern  INT FSFileCreate(_packed BYTE *fname,INT DeviceNumber);
+                             1064 ; 388  |extern  INT _reentrant FSChangeDir(_packed BYTE *dirname,INT DeviceNumber);
+                             1065 ; 389  |extern  INT _reentrant FSCreateDir(_packed BYTE *dirname,INT DeviceNumber);
+                             1066 ; 390  |extern  INT _reentrant FSDeleteDir(_packed BYTE *dirname,INT DeviceNumber);
+                             1067 ; 391  |extern  INT _reentrant FSFileAppend(_packed BYTE *fname,INT DeviceNumber);
+                             1068 ; 392  |extern  INT _reentrant FSFileRead(INT BytestoRead, INT Handle, INT memory_type, INT modulo
+                                  , WORD *buffer);
+                             1069 ; 393  |extern  INT _reentrant FSFileWrite(INT wNumberBytes, INT Handle, INT memory_type, INT iMod
+                                  ulo, WORD *buffer);
+                             1070 ; 394  |extern  INT _reentrant FSFileClose(INT Handle);
+                             1071 ; 395  |extern  LONG _reentrant FSFileSize(INT HandleNumber);
+                             1072 ; 396  |extern  LONG  FSSize(INT DeviceNum, INT TYPE);   
+                             1073 ; 397  |extern  INT FSFreeClusters(INT Device);
+                             1074 ; 398  |extern  INT BytesPerCluster(INT Device);
+                             1075 ; 399  |
+                             1076 ; 400  |
+                             1077 ; 401  |
+                             1078 ; 402  |//extern  INT FSFileCreate(_packed BYTE *pbFileName, BYTE bDevice);
+                             1079 ; 403  |//extern  INT FSFileDelete(_packed BYTE *pbFileName, BYTE bDevice);
+                             1080 ; 404  |extern  INT FSFileRename(_packed BYTE *pbCurFilename, _packed BYTE *pbNewFilename, BYTE bD
+                                  evice);
+                             1081 ; 405  |//extern  INT _reentrant FSFileAttribute(_packed BYTE *pbFilename, WORD wAttributes, BYTE 
+                                  bDevice);
+                             1082 ; 406  |//extern  INT FSFileAppend(_packed BYTE *pbFileName, BYTE bDevice);
+                             1083 ; 407  |//extern  INT FSFileOpen(_packed BYTE *pbFileName, WORD wAttributes, BYTE bDevice);
+                             1084 ; 408  |//extern  INT FSFileClose(INT bHandle);
+                             1085 ; 409  |//extern  INT FSFileRead(WORD wNumberBytes, BYTE bHandle, WORD wMemSpace, INT iModulo, WOR
+                                  D *pwBuffer);
+                             1086 ; 410  |//extern  INT FSFileWrite(WORD wNumberBytes, BYTE bHandle, WORD wMemSpace, INT iModulo, WO
+                                  RD *pwBuffer);
+                             1087 ; 411  |extern  INT _reentrant fseek( INT handle , LONG offset, INT iOrigin );
+                             1088 ; 412  |extern  INT _reentrant FSFileEof(INT Handle);
+                             1089 ; 413  |extern INT _reentrant FSFileAttribute(INT Attributes, _packed BYTE *fname, INT DeviceNumbe
+                                  r);
+                             1090 ; 414  |extern INT _reentrant FSFileAttributeClear(INT Attributes, _packed BYTE *fname, INT Device
+                                  Number);
+                             1091 ; 415  |//extern  LONG FSFileSize(INT bHandle);
+                             1092 ; 416  |extern _asmfunc INT FSPresent(BYTE bDevice);
+                             1093 ; 417  |extern _asmfunc INT FSType(BYTE bDevice);
+                             1094 ; 418  |//extern LONG FSSize(WORD wDevice, WORD wReturnType);
+                             1095 ; 419  |//extern INT FSChangeDir(_packed BYTE *pbDirName, BYTE bDevice);
+                             1096 ; 420  |//extern INT FSCreateDir(_packed BYTE *pbDirName, BYTE bDevice);
+                             1097 ; 421  |//extern INT FSDeleteDir(_packed BYTE *pbDirName, BYTE bDevice);
+                             1098 ; 422  |extern _asmfunc void SysLoadFATWrite(void);
+                             1099 ; 423  |extern _asmfunc INT SysUnLoadFATWrite(void);
+                             1100 ; 424  |extern LONG _reentrant ftell(INT iHandle);
+                             1101 ; 425  |extern _asmfunc struct FCB * ReadDirectory(int iDevice, int iEntry);
+                             1102 ; 426  |
+                             1103 ; 427  |#endif
+                             1104 
+                             1106 
+                             1107 ; 17   |
+                             1108 ; 18   |
+                             1109 ; 19   |#ifdef ADPCMTEST
+                             1110 ; 20   |extern int _X BitBuf[];
+                             1111 ; 21   |extern int _Y SampleBuf[];
+                             1112 ; 22   |extern FILE *in,*out;
+                             1113 ; 23   |#endif
+                             1114 ; 24   |
+                             1115 ; 25   |void ClearSourceBuffer(void);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1116 ; 26   |void Reset_ADPCM_States(void);
+                             1117 ; 27   |void Increment_Counters(void);
+                             1118 ; 28   |extern WORD _X  EncoderSinkBuf[];
+                             1119 ; 29   |extern WORD _Y  EncoderSourceBuf[];
+                             1120 ; 30   |
+                             1121 ; 31   |
+                             1122 ; 32   |#ifdef MS_ADPCM
+                             1123 ; 33   |extern int _Y first_block_flag;
+                             1124 ; 34   |extern int _Y iDeltaEnc[];
+                             1125 ; 35   |void Encode_MS_ADPCM_header(void);
+                             1126 ; 36   |extern _asmfunc void Encode_MS_ADPCM_Block(int num_channels, WORD _X *EncoderSinkBuf, WORD
+                                   _Y *EncoderSourceBuf);
+                             1127 ; 37   |#endif
+                             1128 ; 38   |
+                             1129 ; 39   |#ifdef IMA_ADPCM
+                             1130 ; 40   |void Encode_IMA_ADPCM_header(void);
+                             1131 ; 41   |extern _asmfunc void Encode_IMA_ADPCM_Block(int num_channels, WORD _X *EncoderSinkBuf, WOR
+                                  D _Y *EncoderSourceBuf);
+                             1132 ; 42   |#endif
+                             1133 ; 43   |
+                             1134 ; 44   |#ifdef WINDOWS_PCM
+                             1135 ; 45   |void Encode_PCM_header(void);
+                             1136 ; 46   |extern _asmfunc void Encode_PCM_Block(int num_channels, WORD _X *EncoderSinkBuf, WORD _Y *
+                                  EncoderSourceBuf);
+                             1137 ; 47   |#endif
+                             1138 ; 48   |
+                             1139 ; 49   |
+                             1140 ; 50   |void Reset_ADPCM_States()
+                             1141 ; 51   |{
+                             1142 
+P:0000                       1143         org     p,".ptextwaveenc":
+                             1148 FReset_ADPCM_States:
+P:0000 05707C rrrrrr  4    4 1149         movec   ssh,y:ss_Reset_ADPCM_States
+                             1153 
+                             1154 ; 52   |   int i;
+                             1155 ; 53   |#ifdef IMA_ADPCM
+                             1156 ; 54   |    Init_IMA_ADPCM_States();
+                             1157 
+P:0002 0BF080 rrrrrr  6   10 1159         jsr     FInit_IMA_ADPCM_States
+                             1161 
+                             1162 ; 55   |#endif
+                             1163 ; 56   |#ifdef MS_ADPCM
+                             1164 ; 57   |    for(i = 0; i<2; i++)
+                             1165 
+P:0004 66F400 rrrrrr  3   13 1167         move    #FiDeltaEnc,r6
+P:0006 20001B         2   15 1168         clr     b   
+P:0007 060280 rrrrrr  6   21 1170         do      #2,L4
+                             1172 
+                             1173 ; 58   |        iDeltaEnc[i] = 0;
+                             1174 
+P:0009 5D5E00         2   23 1176         move    b1,y:(r6)+
+P:000A 000000         2   25 1178         nop
+                         (4) 1179 L4:
+                             1181 
+                             1182 ; 59   |#endif    
+                             1183 ; 60   |}
+                             1184 
+P:000B 05F07C rrrrrr  4   29 1186         movec   y:ss_Reset_ADPCM_States,ssh
+P:000D 000000         2   31 1188         nop
+P:000E 00000C         4   35 1189         rts
+                             1190 
+Y:0000                       1191         org     y,".yovlwaveenc@Reset_ADPCM_States",overlay:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1192 ss_Reset_ADPCM_States:
+Y:0000 RESERVED              1193         ds      1
+Y:0000
+                             1194 
+P:000F                       1195         org     p,".ptextwaveenc":
+                             1197 
+                             1198 ; 61   |
+                             1199 ; 62   |
+                             1200 ; 63   |void ClearSourceBuffer()
+                             1201 ; 64   |{
+                             1202 
+                             1207 FClearSourceBuffer:
+                             1211 
+                             1212 ; 65   |    int j;
+                             1213 ; 66   |    for (j = 0; j < ADPCM_SOURCE_BUF_SIZE; j++)
+                             1214 
+P:000F 66F400 rrrrrr  3   38 1216         move    #FEncoderSourceBuf,r6
+P:0011 20001B         2   40 1217         clr     b   
+P:0012 060088 rrrrrr  6   46 1219         do      #2048,L6
+                             1221 
+                             1222 ; 67   |        EncoderSourceBuf[j] = 0;
+                             1223 
+P:0014 5D5E00         2   48 1225         move    b1,y:(r6)+
+P:0015 000000         2   50 1227         nop
+                         (4) 1228 L6:
+                             1230 
+                             1231 ; 68   |}
+                             1232 
+P:0016 00000C         4   54 1234         rts
+                             1236 
+                             1237 ; 69   |
+                             1238 ; 70   |
+                             1239 ; 71   |
+                             1240 ; 72   |
+                             1241 ; 73   |/* 
+                             1242 ; 74   |;///////////////////////////////////////////////////////////////////////////////
+                             1243 ; 75   |;
+                             1244 ; 76   |;>   Name:  Write_Wave_Header
+                             1245 ; 77   |;
+                             1246 ; 78   |;    Type:      Function
+                             1247 ; 79   |;
+                             1248 ; 80   |;       void Write_Wave_Header()
+                             1249 ; 81   |;
+                             1250 ; 82   |;    Description:       Writes the Wave header to the file.
+                             1251 ; 83   |;
+                             1252 ; 84   |;    Inputs:            
+                             1253 ; 85   |;               void
+                             1254 ; 86   |;           
+                             1255 ; 87   |;    Outputs: void
+                             1256 ; 88   |;    Notes: Used to write the wave header at the beginning and end of encoding
+                             1257 ; 89   |;////////////////////////////////////////////////////////////////////////////// 
+                             1258 ; 90   |*/
+                             1259 ; 91   |void Write_Wave_Header()
+                             1260 ; 92   |{
+                             1261 
+                             1266 FWrite_Wave_Header:
+P:0017 05707C rrrrrr  4   58 1267         movec   ssh,y:ss_Write_Wave_Header
+                             1273 
+                             1274 ; 93   |    int i;
+                             1275 ; 94   |        int ret_val;
+                             1276 ; 95   |        WriteDWord(ckidlist[RIFF_CKID]);
+                             1277 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0019 5EF000 rrrrrr  3   61 1279         move    y:Fckidlist+1,a
+P:001B 58F000 rrrrrr  3   64 1280         move    y:Fckidlist,a0
+P:001D 0BF080 rrrrrr  6   70 1281         jsr     WriteDWord
+                             1282 
+                             1283 ; 96   |
+                             1284 ; 97   |        WriteDWord(g_Wave_riffsize);
+                             1285 
+P:001F 5EF000 rrrrrr  3   73 1287         move    y:Fg_Wave_riffsize+1,a
+P:0021 58F000 rrrrrr  3   76 1288         move    y:Fg_Wave_riffsize,a0
+P:0023 0BF080 rrrrrr  6   82 1289         jsr     WriteDWord
+                             1290 
+                             1291 ; 98   |
+                             1292 ; 99   |        WriteDWord(ckidlist[WAVE_CKID]);
+                             1293 
+P:0025 5EF000 rrrrrr  3   85 1295         move    y:Fckidlist+3,a
+P:0027 58F000 rrrrrr  3   88 1296         move    y:Fckidlist+2,a0
+P:0029 0BF080 rrrrrr  6   94 1297         jsr     WriteDWord
+                             1298 
+                             1299 ; 100  |
+                             1300 ; 101  |        WriteDWord(ckidlist[FMT_CKID]);
+                             1301 
+P:002B 5EF000 rrrrrr  3   97 1303         move    y:Fckidlist+5,a
+P:002D 58F000 rrrrrr  3  100 1304         move    y:Fckidlist+4,a0
+P:002F 0BF080 rrrrrr  6  106 1305         jsr     WriteDWord
+                             1306 
+                             1307 ; 102  |
+                             1308 ; 103  |        WriteDWord(g_Wave_wavesize);
+                             1309 
+P:0031 5EF000 rrrrrr  3  109 1311         move    y:Fg_Wave_wavesize+1,a
+P:0033 58F000 rrrrrr  3  112 1312         move    y:Fg_Wave_wavesize,a0
+P:0035 0BF080 rrrrrr  6  118 1313         jsr     WriteDWord
+                             1314 
+                             1315 ; 104  |
+                             1316 ; 105  |        WriteWord(g_Wave_wFormatTag);
+                             1317 
+P:0037 5EF000 rrrrrr  3  121 1319         move    y:Fg_Wave_wFormatTag,a
+P:0039 0BF080 rrrrrr  6  127 1320         jsr     WriteWord
+                             1321 
+                             1322 ; 106  |        
+                             1323 ; 107  |        WriteWord(g_Wave_wChannels);
+                             1324 
+P:003B 5EF000 rrrrrr  3  130 1326         move    y:Fg_Wave_wChannels,a
+P:003D 0BF080 rrrrrr  6  136 1327         jsr     WriteWord
+                             1328 
+                             1329 ; 108  |        
+                             1330 ; 109  |        WriteDWord(g_Wave_dwSamplesPerSec);
+                             1331 
+P:003F 5EF000 rrrrrr  3  139 1333         move    y:Fg_Wave_dwSamplesPerSec+1,a
+P:0041 58F000 rrrrrr  3  142 1334         move    y:Fg_Wave_dwSamplesPerSec,a0
+P:0043 0BF080 rrrrrr  6  148 1335         jsr     WriteDWord
+                             1336 
+                             1337 ; 110  |        
+                             1338 ; 111  |        WriteDWord(g_Wave_dwAvgBytesPerSec);
+                             1339 
+P:0045 5EF000 rrrrrr  3  151 1341         move    y:Fg_Wave_dwAvgBytesPerSec+1,a
+P:0047 58F000 rrrrrr  3  154 1342         move    y:Fg_Wave_dwAvgBytesPerSec,a0
+P:0049 0BF080 rrrrrr  6  160 1343         jsr     WriteDWord
+                             1344 
+                             1345 ; 112  |if (g_Wave_wFormatTag != WAVE_FORMAT_PCM)
+                             1346 
+P:004B 5FF000 rrrrrr  3  163 1348         move    y:Fg_Wave_wFormatTag,b
+P:004D 56F400 000001  3  166 1349         move    #>1,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:004F 20000D         2  168 1350         cmp     a,b
+P:0050 0AF0AA rrrrrr  6  174 1351         jeq     L17
+                             1352 
+                             1353 ; 113  |        WriteWord(g_Wave_wBlockAlign);
+                             1354 
+P:0052 5EF000 rrrrrr  3  177 1356         move    y:Fg_Wave_wBlockAlign,a
+P:0054 0AF080 rrrrrr  6  183 1357         jmp     L18
+                             1358 
+                             1359 ; 114  |else
+                             1360 ; 115  |    WriteWord((g_Wave_wBitsPerSample*g_Wave_wChannels) >> 3); 
+                             1361 
+P:0056 4EF000 rrrrrr  3  186 1363 L17:    move    y:Fg_Wave_wBitsPerSample,y0
+P:0058 4FF000 rrrrrr  3  189 1364         move    y:Fg_Wave_wChannels,y1
+P:005A 2000B0         2  191 1365         mpy     y0,y1,a
+P:005B 200022         2  193 1366         asr     a
+P:005C 210400         2  195 1367         move    a0,x0
+P:005D 0103D0         2  197 1368         mpy     x0,#3,a
+P:005E 218E00         2  199 1369         move    a1,a
+P:005F 0BF080 rrrrrr  6  205 1370 L18:    jsr     WriteWord
+                             1371 
+                             1372 ; 116  |
+                             1373 ; 117  |#ifdef MS_ADPCM
+                             1374 ; 118  |                if (g_Wave_wFormatTag == WAVE_FORMAT_ADPCM)
+                             1375 
+P:0061 5FF000 rrrrrr  3  208 1377         move    y:Fg_Wave_wFormatTag,b
+P:0063 47F400 000002  3  211 1378         move    #>2,y1
+P:0065 20007D         2  213 1379         cmp     y1,b
+P:0066 0AF0A2 rrrrrr  6  219 1380         jne     L19
+                             1381 
+                             1382 ; 119  |                        Encode_MS_ADPCM_header();
+                             1383 
+P:0068 0BF080 rrrrrr  6  225 1385         jsr     FEncode_MS_ADPCM_header
+P:006A 0AF080 rrrrrr  6  231 1386         jmp     L23
+                             1387 
+                             1388 ; 120  |                else
+                             1389 ; 121  |#endif
+                             1390 ; 122  |#ifdef IMA_ADPCM
+                             1391 ; 123  |                if (g_Wave_wFormatTag == WAVE_FORMAT_IMA_ADPCM)
+                             1392 
+P:006C 5FF000 rrrrrr  3  234 1394 L19:    move    y:Fg_Wave_wFormatTag,b
+P:006E 45F400 000011  3  237 1395         move    #>17,x1
+P:0070 20006D         2  239 1396         cmp     x1,b
+P:0071 0AF0A2 rrrrrr  6  245 1397         jne     L20
+                             1398 
+                             1399 ; 124  |                        Encode_IMA_ADPCM_header();
+                             1400 
+P:0073 0BF080 rrrrrr  6  251 1402         jsr     FEncode_IMA_ADPCM_header
+P:0075 0AF080 rrrrrr  6  257 1403         jmp     L23
+                             1404 
+                             1405 ; 125  |                else
+                             1406 ; 126  |#endif
+                             1407 ; 127  |#ifdef G721_ADPCM
+                             1408 ; 128  |                if (g_Wave_wFormatTag == WAVE_FORMAT_G721_ADPCM)
+                             1409 ; 129  |                        Encode_G721_ADPCM_header();
+                             1410 ; 130  |                else
+                             1411 ; 131  |#endif
+                             1412 ; 132  |#ifdef WINDOWS_PCM
+                             1413 ; 133  |                if (g_Wave_wFormatTag == WAVE_FORMAT_PCM)
+                             1414 
+P:0077 5FF000 rrrrrr  3  260 1416 L20:    move    y:Fg_Wave_wFormatTag,b
+P:0079 44F400 000001  3  263 1417         move    #>1,x0
+P:007B 20004D         2  265 1418         cmp     x0,b
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1419 
+                             1420 ; 134  |                        Encode_PCM_header();
+                             1421 
+P:007C 0BF0AA rrrrrr  6  271 1423         jseq    FEncode_PCM_header
+                             1424 
+                             1425 ; 135  |                else
+                             1426 ; 136  |#endif
+                             1427 ; 137  |                        ret_val = -1;   // Unknown algo.
+                             1428 ; 138  |    if (g_Wave_wFormatTag != WAVE_FORMAT_PCM)
+                             1429 
+P:007E 5EF000 rrrrrr  3  274 1431 L23:    move    y:Fg_Wave_wFormatTag,a
+P:0080 46F400 000001  3  277 1432         move    #>1,y0
+P:0082 200055         2  279 1433         cmp     y0,a
+P:0083 0AF0AA rrrrrr  6  285 1434         jeq     L24
+                             1435 
+                             1436 ; 139  |    {
+                             1437 ; 140  |        // No fact chunk for Windows PCM
+                             1438 ; 141  |        WriteDWord(ckidlist[FACT_CKID]);
+                             1439 
+P:0085 5EF000 rrrrrr  3  288 1441         move    y:Fckidlist+7,a
+P:0087 58F000 rrrrrr  3  291 1442         move    y:Fckidlist+6,a0
+P:0089 0BF080 rrrrrr  6  297 1443         jsr     WriteDWord
+                             1444 
+                             1445 ; 142  |        WriteDWord(4);                  // Size of Fact chunk is fixed
+                             1446 
+P:008B 200013         2  299 1448         clr     a   
+P:008C 280400         2  301 1449         move    #4,a0
+P:008D 0BF080 rrrrrr  6  307 1450         jsr     WriteDWord
+                             1451 
+                             1452 ; 143  |        WriteDWord(g_Wave_dwWavDuration);
+                             1453 
+P:008F 5EF000 rrrrrr  3  310 1455         move    y:Fg_Wave_dwWavDuration+1,a
+P:0091 58F000 rrrrrr  3  313 1456         move    y:Fg_Wave_dwWavDuration,a0
+P:0093 0BF080 rrrrrr  6  319 1457         jsr     WriteDWord
+                             1458 
+                             1459 ; 144  |    }
+                             1460 ; 145  |    // Now add Sigmatel LIST chunk.
+                             1461 ; 146  |/*
+                             1462 ; 147  |;       "LIST"              4 bytes
+                             1463 ; 148  |;       chunk size          4 bytes
+                             1464 ; 149  |;       "INFO"              4 bytes
+                             1465 ; 150  |;       "ISFT"              4 bytes
+                             1466 ; 151  |;       chunk size          4 bytes
+                             1467 ; 152  |;       "SIGMATEL",0,0      10 bytes
+                             1468 ; 153  |*/
+                             1469 ; 154  |    WriteDWord(list_ckid);
+                             1470 
+P:0095 5EF000 rrrrrr  3  322 1472 L24:    move    y:Flist_ckid+1,a
+P:0097 58F000 rrrrrr  3  325 1473         move    y:Flist_ckid,a0
+P:0099 0BF080 rrrrrr  6  331 1474         jsr     WriteDWord
+                             1475 
+                             1476 ; 155  |    WriteDWord(22); // Size of LIST chubk
+                             1477 
+P:009B 200013         2  333 1479         clr     a   
+P:009C 281600         2  335 1480         move    #22,a0
+P:009D 0BF080 rrrrrr  6  341 1481         jsr     WriteDWord
+                             1482 
+                             1483 ; 156  |    WriteDWord(info_ckid); 
+                             1484 
+P:009F 5EF000 rrrrrr  3  344 1486         move    y:Finfo_ckid+1,a
+P:00A1 58F000 rrrrrr  3  347 1487         move    y:Finfo_ckid,a0
+P:00A3 0BF080 rrrrrr  6  353 1488         jsr     WriteDWord
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1489 
+                             1490 ; 157  |    WriteDWord(isft_ckid);
+                             1491 
+P:00A5 5EF000 rrrrrr  3  356 1493         move    y:Fisft_ckid+1,a
+P:00A7 58F000 rrrrrr  3  359 1494         move    y:Fisft_ckid,a0
+P:00A9 0BF080 rrrrrr  6  365 1495         jsr     WriteDWord
+                             1496 
+                             1497 ; 158  |    WriteDWord(10); // Size of ISFT chunk
+                             1498 
+P:00AB 200013         2  367 1500         clr     a   
+P:00AC 280A00         2  369 1501         move    #10,a0
+P:00AD 0BF080 rrrrrr  6  375 1502         jsr     WriteDWord
+                             1503 
+                             1504 ; 159  |    for(i = 0; i < 5; i++)
+                             1505 
+P:00AF 66F400 rrrrrr  3  378 1507         move    #Fsigmatel,r6
+P:00B1 76F400 rrrrrr  3  381 1508         move    #Fsigmatel+5,n6
+P:00B3 7E7000 rrrrrr  3  384 1509         move    n6,y:ss_Write_Wave_Header+2
+                             1510 
+                             1511 ; 160  |        WriteWord(sigmatel[i]);
+                             1512 
+P:00B5 6E7000 rrrrrr  3  387 1514 L25:    move    r6,y:ss_Write_Wave_Header+1
+P:00B7 5EE600         2  389 1515         move    y:(r6),a
+P:00B8 0BF080 rrrrrr  6  395 1516         jsr     WriteWord
+P:00BA 6EF000 rrrrrr  3  398 1518         move    y:ss_Write_Wave_Header+1,r6
+P:00BC 000000         2  400 1519         nop
+P:00BD 205E00         2  402 1520         move    (r6)+
+P:00BE 22CF00         2  404 1521         move    r6,b
+P:00BF 5EF000 rrrrrr  3  407 1522         move    y:ss_Write_Wave_Header+2,a
+P:00C1 2A0000         2  409 1523         move    #0,a2
+P:00C2 20000D         2  411 1524         cmp     a,b
+P:00C3 0AF0A9 rrrrrr  6  417 1525         jlt     L25
+                             1526 
+                             1527 ; 161  |    
+                             1528 ; 162  |
+                             1529 ; 163  |        // Prepare Data chunk prior to encoding.
+                             1530 ; 164  |        WriteDWord(ckidlist[DATA_CKID]);
+                             1531 
+P:00C5 5EF000 rrrrrr  3  420 1533         move    y:Fckidlist+9,a
+P:00C7 58F000 rrrrrr  3  423 1534         move    y:Fckidlist+8,a0
+P:00C9 0BF080 rrrrrr  6  429 1535         jsr     WriteDWord
+                             1536 
+                             1537 ; 165  |        WriteDWord(g_Wave_datasize);
+                             1538 
+P:00CB 5EF000 rrrrrr  3  432 1540         move    y:Fg_Wave_datasize+1,a
+P:00CD 58F000 rrrrrr  3  435 1541         move    y:Fg_Wave_datasize,a0
+P:00CF 0BF080 rrrrrr  6  441 1542         jsr     WriteDWord
+                             1543 
+                             1544 ; 166  |}
+                             1545 
+P:00D1 05F07C rrrrrr  4  445 1547         movec   y:ss_Write_Wave_Header,ssh
+P:00D3 000000         2  447 1549         nop
+P:00D4 00000C         4  451 1550         rts
+                             1551 
+Y:0000                       1552         org     y,".yovlwaveenc@Write_Wave_Header",overlay:
+                             1553 ss_Write_Wave_Header:
+Y:0000                       1554         ds      3
+   |   RESERVED                   
+Y:0002
+                             1555 
+P:00D5                       1556         org     p,".ptextwaveenc":
+                             1558 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1559 ; 167  |
+                             1560 ; 168  |/* 
+                             1561 ; 169  |;///////////////////////////////////////////////////////////////////////////////
+                             1562 ; 170  |;
+                             1563 ; 171  |;>   Name:  Encode_MS_ADPCM_header
+                             1564 ; 172  |;
+                             1565 ; 173  |;    Type:      Function
+                             1566 ; 174  |;
+                             1567 ; 175  |;       void Encode_MS_ADPCM_header()
+                             1568 ; 176  |;
+                             1569 ; 177  |;    Description:       
+                             1570 ; 178  |;
+                             1571 ; 179  |;    Inputs:            
+                             1572 ; 180  |;               void
+                             1573 ; 181  |;           
+                             1574 ; 182  |;    Outputs: void
+                             1575 ; 183  |;    Notes: 
+                             1576 ; 184  |;////////////////////////////////////////////////////////////////////////////// 
+                             1577 ; 185  |*/
+                             1578 ; 186  |#ifdef MS_ADPCM
+                             1579 ; 187  |void Encode_MS_ADPCM_header()
+                             1580 ; 188  |{
+                             1581 
+                             1586 FEncode_MS_ADPCM_header:
+P:00D5 05707C rrrrrr  4  455 1587         movec   ssh,y:ss_Encode_MS_ADPCM_header
+                             1591 
+                             1592 ; 189  |        int i;
+                             1593 ; 190  |        WriteWord(g_Wave_wBitsPerSample);
+                             1594 
+P:00D7 5EF000 rrrrrr  3  458 1596         move    y:Fg_Wave_wBitsPerSample,a
+P:00D9 0BF080 rrrrrr  6  464 1597         jsr     WriteWord
+                             1598 
+                             1599 ; 191  |        WriteWord(g_Wave_wcbSize);
+                             1600 
+P:00DB 5EF000 rrrrrr  3  467 1602         move    y:Fg_Wave_wcbSize,a
+P:00DD 0BF080 rrrrrr  6  473 1603         jsr     WriteWord
+                             1604 
+                             1605 ; 192  |        WriteWord(g_Wave_wnSamplesPerBlock);
+                             1606 
+P:00DF 5EF000 rrrrrr  3  476 1608         move    y:Fg_Wave_wnSamplesPerBlock,a
+P:00E1 0BF080 rrrrrr  6  482 1609         jsr     WriteWord
+                             1610 
+                             1611 ; 193  |        WriteWord(g_Wave_wnNumCoef);
+                             1612 
+P:00E3 5EF000 rrrrrr  3  485 1614         move    y:Fg_Wave_wnNumCoef,a
+P:00E5 0BF080 rrrrrr  6  491 1615         jsr     WriteWord
+                             1616 
+                             1617 ; 194  |        for (i = 0; i < g_Wave_wnNumCoef; i++)
+                             1618 
+P:00E7 20001B         2  493 1620         clr     b   
+P:00E8 65F400 rrrrrr  3  496 1622         move    #Fg_Wave_iCoef1Array,r5
+P:00EA 66F400 rrrrrr  3  499 1623         move    #Fg_Wave_iCoef2Array,r6
+P:00EC 46F400 000001  3  502 1624         move    #>1,y0
+P:00EE 0AF080 rrrrrr  6  508 1625         jmp     L28
+P:00F0 6E7000 rrrrrr  3  511 1626 L27:    move    r6,y:ss_Encode_MS_ADPCM_header+3
+P:00F2 5D7000 rrrrrr  3  514 1627         move    b1,y:ss_Encode_MS_ADPCM_header+1
+                             1630 
+                             1631 ; 195  |        {
+                             1632 ; 196  |                WriteWord(g_Wave_iCoef1Array[i]);
+                             1633 
+P:00F4 6D7000 rrrrrr  3  517 1635         move    r5,y:ss_Encode_MS_ADPCM_header+2
+P:00F6 5EE500         2  519 1636         move    y:(r5),a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00F7 0BF080 rrrrrr  6  525 1637         jsr     WriteWord
+                             1638 
+                             1639 ; 197  |                WriteWord(g_Wave_iCoef2Array[i]);
+                             1640 
+P:00F9 6EF000 rrrrrr  3  528 1642         move    y:ss_Encode_MS_ADPCM_header+3,r6
+P:00FB 000000         2  530 1643         nop
+P:00FC 5EE600         2  532 1644         move    y:(r6),a
+P:00FD 0BF080 rrrrrr  6  538 1645         jsr     WriteWord
+P:00FF 46F400 000001  3  541 1647         move    #>1,y0
+P:0101 6EF000 rrrrrr  3  544 1648         move    y:ss_Encode_MS_ADPCM_header+3,r6
+P:0103 000000         2  546 1649         nop
+P:0104 205E00         2  548 1650         move    (r6)+
+P:0105 6DF000 rrrrrr  3  551 1651         move    y:ss_Encode_MS_ADPCM_header+2,r5
+P:0107 000000         2  553 1652         nop
+P:0108 205D00         2  555 1653         move    (r5)+
+P:0109 5FF000 rrrrrr  3  558 1654         move    y:ss_Encode_MS_ADPCM_header+1,b
+P:010B 200058         2  560 1655         add     y0,b
+P:010C 4FF000 rrrrrr  3  563 1658 L28:    move    y:Fg_Wave_wnNumCoef,y1
+P:010E 20007D         2  565 1659         cmp     y1,b
+P:010F 0AF0A9 rrrrrr  6  571 1660         jlt     L27
+                             1661 
+                             1662 ; 198  |        }
+                             1663 ; 199  |    first_block_flag = 1;       // For first block we need to estimate Delta.
+                             1664 
+P:0111 4E7000 rrrrrr  3  574 1666         move    y0,y:Ffirst_block_flag
+                             1667 
+                             1668 ; 200  |}
+                             1669 
+P:0113 05F07C rrrrrr  4  578 1671         movec   y:ss_Encode_MS_ADPCM_header,ssh
+P:0115 000000         2  580 1673         nop
+P:0116 00000C         4  584 1674         rts
+                             1676 
+Y:0000                       1677         org     y,".yovlwaveenc@Encode_MS_ADPCM_header",overlay:
+                             1678 ss_Encode_MS_ADPCM_header:
+Y:0000                       1679         ds      5
+   |   RESERVED                   
+Y:0004
+                             1680 
+P:0117                       1681         org     p,".ptextwaveenc":
+                             1683 
+                             1684 ; 201  |#endif
+                             1685 ; 202  |
+                             1686 ; 203  |
+                             1687 ; 204  |/* 
+                             1688 ; 205  |;///////////////////////////////////////////////////////////////////////////////
+                             1689 ; 206  |;
+                             1690 ; 207  |;>   Name:  Encode_IMA_ADPCM_header
+                             1691 ; 208  |;
+                             1692 ; 209  |;    Type:      Function
+                             1693 ; 210  |;
+                             1694 ; 211  |;       void Encode_IMA_ADPCM_header()
+                             1695 ; 212  |;
+                             1696 ; 213  |;    Description:       
+                             1697 ; 214  |;
+                             1698 ; 215  |;    Inputs:            
+                             1699 ; 216  |;               void
+                             1700 ; 217  |;           
+                             1701 ; 218  |;    Outputs: void
+                             1702 ; 219  |;    Notes: 
+                             1703 ; 220  |;////////////////////////////////////////////////////////////////////////////// 
+                             1704 ; 221  |*/
+                             1705 ; 222  |#ifdef IMA_ADPCM
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1706 ; 223  |void Encode_IMA_ADPCM_header()
+                             1707 ; 224  |{
+                             1708 
+                             1713 FEncode_IMA_ADPCM_header:
+P:0117 05707C rrrrrr  4  588 1714         movec   ssh,y:ss_Encode_IMA_ADPCM_header
+                             1716 
+                             1717 ; 225  |        WriteWord(g_Wave_wBitsPerSample);
+                             1718 
+P:0119 5EF000 rrrrrr  3  591 1720         move    y:Fg_Wave_wBitsPerSample,a
+P:011B 0BF080 rrrrrr  6  597 1721         jsr     WriteWord
+                             1722 
+                             1723 ; 226  |        WriteWord(g_Wave_wcbSize);
+                             1724 
+P:011D 5EF000 rrrrrr  3  600 1726         move    y:Fg_Wave_wcbSize,a
+P:011F 0BF080 rrrrrr  6  606 1727         jsr     WriteWord
+                             1728 
+                             1729 ; 227  |        WriteWord(g_Wave_wnSamplesPerBlock);
+                             1730 
+P:0121 5EF000 rrrrrr  3  609 1732         move    y:Fg_Wave_wnSamplesPerBlock,a
+P:0123 0BF080 rrrrrr  6  615 1733         jsr     WriteWord
+                             1734 
+                             1735 ; 228  |}
+                             1736 
+P:0125 05F07C rrrrrr  4  619 1738         movec   y:ss_Encode_IMA_ADPCM_header,ssh
+P:0127 000000         2  621 1740         nop
+P:0128 00000C         4  625 1741         rts
+                             1742 
+Y:0000                       1743         org     y,".yovlwaveenc@Encode_IMA_ADPCM_header",overlay:
+                             1744 ss_Encode_IMA_ADPCM_header:
+Y:0000 RESERVED              1745         ds      1
+Y:0000
+                             1746 
+P:0129                       1747         org     p,".ptextwaveenc":
+                             1749 
+                             1750 ; 229  |#endif
+                             1751 ; 230  |
+                             1752 ; 231  |/* 
+                             1753 ; 232  |;///////////////////////////////////////////////////////////////////////////////
+                             1754 ; 233  |;
+                             1755 ; 234  |;>   Name:  Encode_PCM_header
+                             1756 ; 235  |;
+                             1757 ; 236  |;    Type:      Function
+                             1758 ; 237  |;
+                             1759 ; 238  |;       void Encode_PCM_header()
+                             1760 ; 239  |;
+                             1761 ; 240  |;    Description:       
+                             1762 ; 241  |;
+                             1763 ; 242  |;    Inputs:            
+                             1764 ; 243  |;               void
+                             1765 ; 244  |;           
+                             1766 ; 245  |;    Outputs: void
+                             1767 ; 246  |;    Notes: 
+                             1768 ; 247  |;////////////////////////////////////////////////////////////////////////////// 
+                             1769 ; 248  |*/
+                             1770 ; 249  |#ifdef WINDOWS_PCM
+                             1771 ; 250  |void Encode_PCM_header()
+                             1772 ; 251  |{
+                             1773 
+                             1778 FEncode_PCM_header:
+P:0129 05707C rrrrrr  4  629 1779         movec   ssh,y:ss_Encode_PCM_header
+                             1781 
+                             1782 ; 252  |        WriteWord(g_Wave_wBitsPerSample);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1783 
+P:012B 5EF000 rrrrrr  3  632 1785         move    y:Fg_Wave_wBitsPerSample,a
+P:012D 0BF080 rrrrrr  6  638 1786         jsr     WriteWord
+                             1787 
+                             1788 ; 253  |}
+                             1789 
+P:012F 05F07C rrrrrr  4  642 1791         movec   y:ss_Encode_PCM_header,ssh
+P:0131 000000         2  644 1793         nop
+P:0132 00000C         4  648 1794         rts
+                             1795 
+Y:0000                       1796         org     y,".yovlwaveenc@Encode_PCM_header",overlay:
+                             1797 ss_Encode_PCM_header:
+Y:0000 RESERVED              1798         ds      1
+Y:0000
+                             1799 
+P:0133                       1800         org     p,".ptextwaveenc":
+                             1802 
+                             1803 ; 254  |#endif
+                             1804 ; 255  |
+                             1805 ; 256  |
+                             1806 ; 257  |/* 
+                             1807 ; 258  |;///////////////////////////////////////////////////////////////////////////////
+                             1808 ; 259  |;
+                             1809 ; 260  |;>   Name:  Initialize_Wave_Header
+                             1810 ; 261  |;
+                             1811 ; 262  |;    Type:      Function
+                             1812 ; 263  |;
+                             1813 ; 264  |;       int Initialize_Wave_Header()
+                             1814 ; 265  |;
+                             1815 ; 266  |;    Description:       
+                             1816 ; 267  |;       Called at the beginning of Encoding to prepare the wave header
+                             1817 ; 268  |;    Inputs:            
+                             1818 ; 269  |;               void
+                             1819 ; 270  |;           
+                             1820 ; 271  |;    Outputs: returns 0 on Success. -1 or non zero on Failure
+                             1821 ; 272  |;    Notes: 
+                             1822 ; 273  |;////////////////////////////////////////////////////////////////////////////// 
+                             1823 ; 274  |*/
+                             1824 ; 275  |int Initialize_Wave_Header(int formattag, int num_channels, int SamplingRate,int NumberOfB
+                                  its)
+                             1825 ; 276  |{
+                             1826 
+                             1831 FInitialize_Wave_Header:
+P:0133 05707C rrrrrr  4  652 1832         movec   ssh,y:ss_Initialize_Wave_Header
+                             1844 
+                             1845 ; 277  |        int ret_val = 0;
+                             1846 
+P:0135 4E7000 rrrrrr  3  655 1848         move    y0,y:ss_Initialize_Wave_Header+3
+P:0137 260000         2  657 1851         move    #0,y0
+P:0138 4E7000 rrrrrr  3  660 1853         move    y0,y:ss_Initialize_Wave_Header+4
+                             1856 
+                             1857 ; 278  |        g_Wave_dwWavDuration = 0;
+                             1858 
+P:013A 270000         2  662 1860         move    #0,y1
+P:013B 4F7000 rrrrrr  3  665 1861         move    y1,y:Fg_Wave_dwWavDuration+1
+P:013D 4E7000 rrrrrr  3  668 1862         move    y0,y:Fg_Wave_dwWavDuration
+                             1863 
+                             1864 ; 279  |        g_Wave_wChannels = num_channels;                
+                             1865 
+P:013F 5D7000 rrrrrr  3  671 1867         move    b1,y:ss_Initialize_Wave_Header+1
+P:0141 5D7000 rrrrrr  3  674 1868         move    b1,y:Fg_Wave_wChannels
+                             1871 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1872 ; 280  |        g_Wave_dwSamplesPerSec = SamplingRate;
+                             1873 
+P:0143 200049         2  676 1875         tfr     x0,b
+P:0144 5F7000 rrrrrr  3  679 1876         move    b,y:ss_Initialize_Wave_Header+2
+P:0146 21A600         2  681 1877         move    b1,y0
+P:0147 216700         2  683 1878         move    b2,y1
+P:0148 4F7000 rrrrrr  3  686 1881         move    y1,y:Fg_Wave_dwSamplesPerSec+1
+P:014A 4E7000 rrrrrr  3  689 1882         move    y0,y:Fg_Wave_dwSamplesPerSec
+                             1883 
+                             1884 ; 281  |        g_Wave_wFormatTag = formattag;
+                             1885 
+P:014C 5C7000 rrrrrr  3  692 1887         move    a1,y:Fg_Wave_wFormatTag
+                             1888 
+                             1889 ; 282  |    g_Wave_datasize = 0;
+                             1890 
+P:014E 270000         2  694 1892         move    #0,y1
+P:014F 260000         2  696 1893         move    #0,y0
+P:0150 4F7000 rrrrrr  3  699 1894         move    y1,y:Fg_Wave_datasize+1
+P:0152 4E7000 rrrrrr  3  702 1895         move    y0,y:Fg_Wave_datasize
+                             1896 
+                             1897 ; 283  |    
+                             1898 ; 284  |    ClearSourceBuffer();
+                             1899 
+P:0154 0BF080 rrrrrr  6  708 1901         jsr     FClearSourceBuffer
+                             1903 
+                             1904 ; 285  |    
+                             1905 ; 286  |    // If you add more chunks change this.
+                             1906 ; 287  |if (g_Wave_wFormatTag == WAVE_FORMAT_PCM)
+                             1907 
+P:0156 5EF000 rrrrrr  3  711 1909         move    y:Fg_Wave_wFormatTag,a
+P:0158 46F400 000001  3  714 1910         move    #>1,y0
+P:015A 200055         2  716 1911         cmp     y0,a
+P:015B 0AF0A2 rrrrrr  6  722 1912         jne     L29
+                             1913 
+                             1914 ; 288  |    g_Wave_riffsize = 20+30; // WAVE(4)+fmt (4)+cksize(4)+data(4)+cksize(4)
+                             1915 
+P:015D 250000         2  724 1917         move    #0,x1
+P:015E 44F400 000032  3  727 1918         move    #>50,x0
+P:0160 0AF080 rrrrrr  6  733 1919         jmp     L30
+                             1920 
+                             1921 ; 289  |else
+                             1922 ; 290  |    g_Wave_riffsize = 32+30; // WAVE(4)+fmt (4)+cksize(4)+fact(4)+cksize(4)+factdata(4)+da
+                                  ta(4)+cksize(4)
+                             1923 
+P:0162 250000         2  735 1925 L29:    move    #0,x1
+P:0163 44F400 00003E  3  738 1926         move    #>$3E,x0
+P:0165 4D7000 rrrrrr  3  741 1927 L30:    move    x1,y:Fg_Wave_riffsize+1
+P:0167 4C7000 rrrrrr  3  744 1928         move    x0,y:Fg_Wave_riffsize
+                             1929 
+                             1930 ; 291  |// Additional 30 for "Sigmatel" info chunk.
+                             1931 ; 292  |/*
+                             1932 ; 293  |;       "LIST"              4 bytes
+                             1933 ; 294  |;       chunk size          4 bytes
+                             1934 ; 295  |;       "INFO"              4 bytes
+                             1935 ; 296  |;       "ISFT"              4 bytes
+                             1936 ; 297  |;       chunk size          4 bytes
+                             1937 ; 298  |;       "SIGMATEL",0,0      10 bytes
+                             1938 ; 299  |*/
+                             1939 ; 300  |
+                             1940 ; 301  |#ifdef MS_ADPCM
+                             1941 ; 302  |                if (g_Wave_wFormatTag == WAVE_FORMAT_ADPCM)
+                             1942 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0169 45F400 000002  3  747 1944         move    #>2,x1
+P:016B 200065         2  749 1945         cmp     x1,a
+P:016C 0AF0A2 rrrrrr  6  755 1946         jne     L33
+                             1947 
+                             1948 ; 303  |        {
+                             1949 ; 304  |                g_Wave_wBlockAlign = 512; // Hardcode this, because we allocate buffers be
+                                  forehand.
+                             1950 
+P:016E 45F400 000200  3  758 1952         move    #$200,x1
+P:0170 4D7000 rrrrrr  3  761 1953         move    x1,y:Fg_Wave_wBlockAlign
+                             1954 
+                             1955 ; 305  |            if (num_channels == 1)
+                             1956 
+P:0172 5FF000 rrrrrr  3  764 1958         move    y:ss_Initialize_Wave_Header+1,b
+P:0174 20005D         2  766 1959         cmp     y0,b
+P:0175 0AF0A2 rrrrrr  6  772 1960         jne     L31
+                             1961 
+                             1962 ; 306  |                g_Wave_wnSamplesPerBlock = 1012; // Based on Hard-code block align
+                             1963 
+P:0177 50F400 0003F4  3  775 1965         move    #1012,a0
+P:0179 587000 rrrrrr  3  778 1966         move    a0,y:Fg_Wave_wnSamplesPerBlock
+P:017B 0AF080 rrrrrr  6  784 1967         jmp     L32
+                             1968 
+                             1969 ; 307  |            else 
+                             1970 ; 308  |                g_Wave_wnSamplesPerBlock = 500;
+                             1971 
+P:017D 46F400 0001F4  3  787 1973 L31:    move    #500,y0
+P:017F 4E7000 rrrrrr  3  790 1974         move    y0,y:Fg_Wave_wnSamplesPerBlock
+                             1975 
+                             1976 ; 309  |            g_Wave_dwAvgBytesPerSec = (int)((long)SamplingRate*g_Wave_wBlockAlign/g_Wave_w
+                                  nSamplesPerBlock);
+                             1977 
+P:0181 5EF000 rrrrrr  3  793 1979 L32:    move    y:ss_Initialize_Wave_Header+2,a
+P:0183 060F80 rrrrrr  6  799 1980         do      #15,L46
+P:0185 200022         2  801 1982         asr     a
+P:0186 000000         2  803 1983         nop
+                         (4) 1984 L46:
+P:0187 5FF000 rrrrrr  3  806 1989         move    y:Fg_Wave_wnSamplesPerBlock,b
+P:0189 21A900         2  808 1990         move    b1,b0
+P:018A 216D00         2  810 1991         move    b2,b1
+P:018B 0BF080 rrrrrr  6  816 1992         jsr     Rdiv_lll
+P:018D 210E00         2  818 1993         move    a0,a
+P:018E 218800         2  820 1994         move    a1,a0
+P:018F 214C00         2  822 1995         move    a2,a1
+P:0190 5C7000 rrrrrr  3  825 1996         move    a1,y:Fg_Wave_dwAvgBytesPerSec+1
+P:0192 587000 rrrrrr  3  828 1997         move    a0,y:Fg_Wave_dwAvgBytesPerSec
+                             1998 
+                             1999 ; 310  |            g_Wave_wBitsPerSample = 4; // Fix this to four. Our algo will support 4 bits p
+                                  er sample only.
+                             2000 
+P:0194 290400         2  830 2002         move    #4,b0
+P:0195 597000 rrrrrr  3  833 2003         move    b0,y:Fg_Wave_wBitsPerSample
+                             2004 
+                             2005 ; 311  |            g_Wave_wcbSize = 32; // We will standard structure
+                             2006 
+P:0197 282000         2  835 2008         move    #$20,a0
+P:0198 587000 rrrrrr  3  838 2009         move    a0,y:Fg_Wave_wcbSize
+                             2010 
+                             2011 ; 312  |            g_Wave_wnNumCoef = 7; // We support standard number of coefficients
+                             2012 
+P:019A 46F400 000007  3  841 2014         move    #>7,y0
+P:019C 4E7000 rrrrrr  3  844 2015         move    y0,y:Fg_Wave_wnNumCoef
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2016 
+                             2017 ; 313  |            g_Wave_wavesize =  50; // All of the above structure.
+                             2018 
+P:019E 200013         2  846 2020         clr     a   
+P:019F 283200         2  848 2021         move    #50,a0
+P:01A0 5C7000 rrrrrr  3  851 2022         move    a1,y:Fg_Wave_wavesize+1
+P:01A2 587000 rrrrrr  3  854 2023         move    a0,y:Fg_Wave_wavesize
+                             2024 
+                             2025 ; 314  |            g_Wave_riffsize += 50;
+                             2026 
+P:01A4 5FF000 rrrrrr  3  857 2028         move    y:Fg_Wave_riffsize+1,b
+P:01A6 59F000 rrrrrr  3  860 2029         move    y:Fg_Wave_riffsize,b0
+P:01A8 200018         2  862 2030         add     a,b
+P:01A9 5D7000 rrrrrr  3  865 2031         move    b1,y:Fg_Wave_riffsize+1
+P:01AB 597000 rrrrrr  3  868 2032         move    b0,y:Fg_Wave_riffsize
+                             2033 
+                             2034 ; 315  |        }
+                             2035 
+P:01AD 0AF080 rrrrrr  6  874 2037         jmp     L44
+                             2038 
+                             2039 ; 316  |        else 
+                             2040 ; 317  |#endif
+                             2041 ; 318  |#ifdef IMA_ADPCM
+                             2042 ; 319  |                if (g_Wave_wFormatTag == WAVE_FORMAT_IMA_ADPCM)
+                             2043 
+                             2045 L33:
+P:01AF 47F400 000011  3  877 2047         move    #>17,y1
+P:01B1 200075         2  879 2048         cmp     y1,a
+P:01B2 0AF0A2 rrrrrr  6  885 2049         jne     L36
+                             2050 
+                             2051 ; 320  |        {
+                             2052 ; 321  |            g_Wave_wBlockAlign = 512; // Hardcode this, because we allocate buffers before
+                                  hand.
+                             2053 
+P:01B4 47F400 000200  3  888 2055         move    #$200,y1
+P:01B6 4F7000 rrrrrr  3  891 2056         move    y1,y:Fg_Wave_wBlockAlign
+                             2057 
+                             2058 ; 322  |            if (num_channels == 1)
+                             2059 
+P:01B8 5FF000 rrrrrr  3  894 2061         move    y:ss_Initialize_Wave_Header+1,b
+P:01BA 20005D         2  896 2062         cmp     y0,b
+P:01BB 0AF0A2 rrrrrr  6  902 2063         jne     L34
+                             2064 
+                             2065 ; 323  |                g_Wave_wnSamplesPerBlock = 1017; // Based on Hard-code block align
+                             2066 
+P:01BD 55F400 0003F9  3  905 2068         move    #$3F9,b1
+P:01BF 5D7000 rrrrrr  3  908 2069         move    b1,y:Fg_Wave_wnSamplesPerBlock
+P:01C1 0AF080 rrrrrr  6  914 2070         jmp     L35
+                             2071 
+                             2072 ; 324  |            else 
+                             2073 ; 325  |                g_Wave_wnSamplesPerBlock = 505;
+                             2074 
+P:01C3 54F400 0001F9  3  917 2076 L34:    move    #$1F9,a1
+P:01C5 5C7000 rrrrrr  3  920 2077         move    a1,y:Fg_Wave_wnSamplesPerBlock
+                             2078 
+                             2079 ; 326  |            g_Wave_dwAvgBytesPerSec = (int)((long)SamplingRate*g_Wave_wBlockAlign/g_Wave_w
+                                  nSamplesPerBlock);
+                             2080 
+P:01C7 5EF000 rrrrrr  3  923 2082 L35:    move    y:ss_Initialize_Wave_Header+2,a
+P:01C9 060F80 rrrrrr  6  929 2083         do      #15,L47
+P:01CB 200022         2  931 2085         asr     a
+P:01CC 000000         2  933 2086         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                         (4) 2087 L47:
+P:01CD 5FF000 rrrrrr  3  936 2092         move    y:Fg_Wave_wnSamplesPerBlock,b
+P:01CF 21A900         2  938 2093         move    b1,b0
+P:01D0 216D00         2  940 2094         move    b2,b1
+P:01D1 0BF080 rrrrrr  6  946 2095         jsr     Rdiv_lll
+P:01D3 210E00         2  948 2096         move    a0,a
+P:01D4 218800         2  950 2097         move    a1,a0
+P:01D5 214C00         2  952 2098         move    a2,a1
+P:01D6 5C7000 rrrrrr  3  955 2099         move    a1,y:Fg_Wave_dwAvgBytesPerSec+1
+P:01D8 587000 rrrrrr  3  958 2100         move    a0,y:Fg_Wave_dwAvgBytesPerSec
+                             2101 
+                             2102 ; 327  |            g_Wave_wBitsPerSample = 4; // Fix this to four. Our algo will support this onl
+                                  y.
+                             2103 
+P:01DA 47F400 000004  3  961 2105         move    #>4,y1
+P:01DC 4F7000 rrrrrr  3  964 2106         move    y1,y:Fg_Wave_wBitsPerSample
+                             2107 
+                             2108 ; 328  |            g_Wave_wcbSize = 2; 
+                             2109 
+P:01DE 290200         2  966 2111         move    #2,b0
+P:01DF 597000 rrrrrr  3  969 2112         move    b0,y:Fg_Wave_wcbSize
+                             2113 
+                             2114 ; 329  |            g_Wave_wavesize =  20; // All of the above structure.
+                             2115 
+P:01E1 200013         2  971 2117         clr     a   
+P:01E2 281400         2  973 2118         move    #20,a0
+P:01E3 5C7000 rrrrrr  3  976 2119         move    a1,y:Fg_Wave_wavesize+1
+P:01E5 587000 rrrrrr  3  979 2120         move    a0,y:Fg_Wave_wavesize
+                             2121 
+                             2122 ; 330  |            g_Wave_riffsize += 20;
+                             2123 
+P:01E7 5FF000 rrrrrr  3  982 2125         move    y:Fg_Wave_riffsize+1,b
+P:01E9 59F000 rrrrrr  3  985 2126         move    y:Fg_Wave_riffsize,b0
+P:01EB 200018         2  987 2127         add     a,b
+P:01EC 5D7000 rrrrrr  3  990 2128         move    b1,y:Fg_Wave_riffsize+1
+P:01EE 597000 rrrrrr  3  993 2129         move    b0,y:Fg_Wave_riffsize
+                             2130 
+                             2131 ; 331  |        }
+                             2132 
+P:01F0 0AF080 rrrrrr  6  999 2134         jmp     L44
+                             2135 
+                             2136 ; 332  |                else 
+                             2137 ; 333  |#endif
+                             2138 ; 334  |#ifdef WINDOWS_PCM
+                             2139 ; 335  |                if (g_Wave_wFormatTag == WAVE_FORMAT_PCM)
+                             2140 
+                             2142 L36:
+P:01F2 200055         2 1001 2144         cmp     y0,a
+P:01F3 0AF0A2 rrrrrr  6 1007 2145         jne     L41
+                             2146 
+                             2147 ; 336  |        {
+                             2148 ; 337  |            // The following is the correct value of wBlockAlign
+                             2149 ; 338  |            // g_Wave_wBlockAlign = (num_channels*NumberOfBits) >> 3; 
+                             2150 ; 339  |            // But we process large blocks, so fudge it temporarily
+                             2151 ; 340  |            g_Wave_wBlockAlign = 504; 
+                             2152 
+P:01F5 54F400 0001F8  3 1010 2154         move    #$1F8,a1
+P:01F7 5C7000 rrrrrr  3 1013 2155         move    a1,y:Fg_Wave_wBlockAlign
+                             2156 
+                             2157 ; 341  |
+                             2158 ; 342  |            g_Wave_dwAvgBytesPerSec = (SamplingRate*g_Wave_wChannels*NumberOfBits)>>3;
+                             2159 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01F9 4CF000 rrrrrr  3 1016 2161         move    y:ss_Initialize_Wave_Header+2,x0
+P:01FB 4FF000 rrrrrr  3 1019 2162         move    y:Fg_Wave_wChannels,y1
+P:01FD 2000C0         2 1021 2163         mpy     x0,y1,a
+P:01FE 200022         2 1023 2164         asr     a
+P:01FF 4DF000 rrrrrr  3 1026 2167         move    y:ss_Initialize_Wave_Header+3,x1
+P:0201 210700         2 1028 2168         move    a0,y1
+P:0202 2000F0         2 1030 2169         mpy     y1,x1,a
+P:0203 200022         2 1032 2170         asr     a
+P:0204 210400         2 1034 2173         move    a0,x0
+P:0205 0103D0         2 1036 2174         mpy     x0,#3,a
+P:0206 218E00         2 1038 2176         move    a1,a
+P:0207 218800         2 1040 2177         move    a1,a0
+P:0208 214C00         2 1042 2178         move    a2,a1
+P:0209 5C7000 rrrrrr  3 1045 2179         move    a1,y:ss_Initialize_Wave_Header+6
+P:020B 587000 rrrrrr  3 1048 2180         move    a0,y:ss_Initialize_Wave_Header+5
+P:020D 5C7000 rrrrrr  3 1051 2181         move    a1,y:Fg_Wave_dwAvgBytesPerSec+1
+P:020F 587000 rrrrrr  3 1054 2182         move    a0,y:Fg_Wave_dwAvgBytesPerSec
+                             2183 
+                             2184 ; 343  |            g_Wave_wBitsPerSample = NumberOfBits; 
+                             2185 
+P:0211 4D7000 rrrrrr  3 1057 2187         move    x1,y:Fg_Wave_wBitsPerSample
+                             2188 
+                             2189 ; 344  |            if (g_Wave_wBitsPerSample == 16)
+                             2190 
+P:0213 200061         2 1059 2192         tfr     x1,a
+P:0214 57F400 000010  3 1062 2193         move    #>16,b
+P:0216 200005         2 1064 2194         cmp     b,a
+P:0217 0AF0A2 rrrrrr  6 1070 2195         jne     L37
+                             2196 
+                             2197 ; 345  |                g_Wave_wnSamplesPerBlock        = (252>>(g_Wave_wChannels-1));
+                             2198 
+P:0219 5FF000 rrrrrr  3 1073 2200         move    y:Fg_Wave_wChannels,b
+P:021B 20005C         2 1075 2201         sub     y0,b
+P:021C 56F400 0000FC  3 1078 2202         move    #>$FC,a
+P:021E 0AF0AF rrrrrr  6 1084 2203         jle     L48
+P:0220 06CD00 rrrrrr  6 1090 2204         do      b1,L48
+P:0222 200022         2 1092 2206         asr     a
+P:0223 000000         2 1094 2207         nop
+                         (4) 2208 L48:
+P:0224 5C7000 rrrrrr  3 1097 2210         move    a1,y:Fg_Wave_wnSamplesPerBlock
+P:0226 0AF080 rrrrrr  6 1103 2211         jmp     L40
+                             2212 
+                             2213 ; 346  |            else if (g_Wave_wBitsPerSample == 24)
+                             2214 
+P:0228 200069         2 1105 2216 L37:    tfr     x1,b
+P:0229 47F400 000018  3 1108 2217         move    #>24,y1
+P:022B 20007D         2 1110 2218         cmp     y1,b
+P:022C 0AF0A2 rrrrrr  6 1116 2221         jne     L38
+                             2222 
+                             2223 ; 347  |                g_Wave_wnSamplesPerBlock        = (168>>(g_Wave_wChannels-1));
+                             2224 
+P:022E 5FF000 rrrrrr  3 1119 2226         move    y:Fg_Wave_wChannels,b
+P:0230 20005C         2 1121 2227         sub     y0,b
+P:0231 56F400 0000A8  3 1124 2229         move    #>168,a
+P:0233 0AF0AF rrrrrr  6 1130 2230         jle     L49
+P:0235 06CD00 rrrrrr  6 1136 2231         do      b1,L49
+P:0237 200022         2 1138 2233         asr     a
+P:0238 000000         2 1140 2234         nop
+                         (4) 2235 L49:
+P:0239 5C7000 rrrrrr  3 1143 2237         move    a1,y:Fg_Wave_wnSamplesPerBlock
+P:023B 0AF080 rrrrrr  6 1149 2238         jmp     L40
+                             2239 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  31
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2240 ; 348  |            else
+                             2241 ; 349  |                g_Wave_wnSamplesPerBlock        = (504>>(g_Wave_wChannels-1)); // Got to b
+                                  e 8 bit PCM
+                             2242 
+P:023D 5FF000 rrrrrr  3 1152 2244 L38:    move    y:Fg_Wave_wChannels,b
+P:023F 20005C         2 1154 2245         sub     y0,b
+P:0240 56F400 0001F8  3 1157 2246         move    #$1F8,a
+P:0242 0AF0AF rrrrrr  6 1163 2247         jle     L50
+P:0244 06CD00 rrrrrr  6 1169 2248         do      b1,L50
+P:0246 200022         2 1171 2250         asr     a
+P:0247 000000         2 1173 2251         nop
+                         (4) 2252 L50:
+P:0248 5C7000 rrrrrr  3 1176 2254         move    a1,y:Fg_Wave_wnSamplesPerBlock
+                             2255 
+                             2256 ; 350  |            g_Wave_wavesize =  16; // All of the above structure.
+                             2257 
+P:024A 200013         2 1178 2259 L40:    clr     a   
+P:024B 281000         2 1180 2260         move    #16,a0
+P:024C 5C7000 rrrrrr  3 1183 2261         move    a1,y:Fg_Wave_wavesize+1
+P:024E 587000 rrrrrr  3 1186 2262         move    a0,y:Fg_Wave_wavesize
+                             2263 
+                             2264 ; 351  |            g_Wave_riffsize += 16;
+                             2265 
+P:0250 5FF000 rrrrrr  3 1189 2267         move    y:Fg_Wave_riffsize+1,b
+P:0252 59F000 rrrrrr  3 1192 2268         move    y:Fg_Wave_riffsize,b0
+P:0254 200018         2 1194 2269         add     a,b
+P:0255 5D7000 rrrrrr  3 1197 2270         move    b1,y:Fg_Wave_riffsize+1
+P:0257 597000 rrrrrr  3 1200 2271         move    b0,y:Fg_Wave_riffsize
+                             2272 
+                             2273 ; 352  |            // Not supported high data rates.
+                             2274 ; 353  |            g_Wave_wMegicWord = ((g_Wave_dwAvgBytesPerSec) >> 1) + ((g_Wave_dwSamplesPerSe
+                                  c) << 1);
+                             2275 
+P:0259 5FF000 rrrrrr  3 1203 2277         move    y:ss_Initialize_Wave_Header+6,b
+P:025B 59F000 rrrrrr  3 1206 2278         move    y:ss_Initialize_Wave_Header+5,b0
+P:025D 20002A         2 1208 2279         asr     b
+P:025E 5EF000 rrrrrr  3 1211 2280         move    y:Fg_Wave_dwSamplesPerSec+1,a
+P:0260 58F000 rrrrrr  3 1214 2281         move    y:Fg_Wave_dwSamplesPerSec,a0
+P:0262 200032         2 1216 2282         asl     a
+P:0263 200018         2 1218 2283         add     a,b
+P:0264 5D7000 rrrrrr  3 1221 2284         move    b1,y:Fg_Wave_wMegicWord+1
+P:0266 597000 rrrrrr  3 1224 2285         move    b0,y:Fg_Wave_wMegicWord
+                             2286 
+                             2287 ; 354  |            if(g_Wave_wMegicWord > 190000)
+                             2288 
+P:0268 200013         2 1226 2290         clr     a   
+P:0269 50F400 02E630  3 1229 2291         move    #190000,a0
+P:026B 2B0000         2 1231 2292         move    #0,b2
+P:026C 0ACD17 rrrrrr  6 1237 2293         jclr    #23,b1,L51
+P:026E 044BA0         2 1239 2294         movec   m0,b2
+P:026F 20000D         2 1241 2295 L51:    cmp     a,b
+P:0270 0AF0AF rrrrrr  6 1247 2296         jle     L44
+                             2297 
+                             2298 ; 355  |                return -1;
+                             2299 
+P:0272 56F400 FFFFFF  3 1250 2301         move    #>-1,a
+P:0274 0AF080 rrrrrr  6 1256 2302         jmp     L45
+                             2303 
+                             2304 ; 356  |            
+                             2305 ; 357  |        }
+                             2306 ; 358  |                else 
+                             2307 ; 359  |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  32
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2308 ; 360  |#ifdef G721_ADPCM
+                             2309 ; 361  |        if (g_Wave_wFormatTag == WAVE_FORMAT_G721_ADPCM)
+                             2310 ; 362  |        {
+                             2311 ; 363  |        // To be done latter.
+                             2312 ; 364  |        }
+                             2313 ; 365  |                else
+                             2314 ; 366  |#endif
+                             2315 ; 367  |                        ret_val = -1;   // Unknown algo.
+                             2316 
+P:0276 46F400 FFFFFF  3 1259 2318 L41:    move    #>-1,y0
+P:0278 4E7000 rrrrrr  3 1262 2321         move    y0,y:ss_Initialize_Wave_Header+4
+                             2324 
+                             2325 ; 368  |
+                             2326 ; 369  |        TotalSamplesPerBlock = g_Wave_wnSamplesPerBlock*num_channels;
+                             2327 
+P:027A 4EF000 rrrrrr  3 1265 2329 L44:    move    y:Fg_Wave_wnSamplesPerBlock,y0
+P:027C 4FF000 rrrrrr  3 1268 2330         move    y:ss_Initialize_Wave_Header+1,y1
+P:027E 2000B8         2 1270 2331         mpy     y0,y1,b
+P:027F 20002A         2 1272 2332         asr     b
+P:0280 597000 rrrrrr  3 1275 2335         move    b0,y:FTotalSamplesPerBlock
+                             2336 
+                             2337 ; 370  |                return ret_val;
+                             2338 
+P:0282 5EF000 rrrrrr  3 1278 2340         move    y:ss_Initialize_Wave_Header+4,a
+                             2343 
+                             2344 ; 371  |}
+                             2345 
+P:0284 05F07C rrrrrr  4 1282 2347 L45:    movec   y:ss_Initialize_Wave_Header,ssh
+P:0286 000000         2 1284 2349         nop
+P:0287 00000C         4 1288 2350         rts
+                             2353 
+Y:0000                       2354         org     y,".yovlwaveenc@Initialize_Wave_Header",overlay:
+                             2355 ss_Initialize_Wave_Header:
+Y:0000                       2356         ds      8
+   |   RESERVED                   
+Y:0007
+                             2357 
+P:0288                       2358         org     p,".ptextwaveenc":
+                             2360 
+                             2361 ; 372  |
+                             2362 ; 373  |/* 
+                             2363 ; 374  |;///////////////////////////////////////////////////////////////////////////////
+                             2364 ; 375  |;
+                             2365 ; 376  |;>   Name:  Increment_Counters
+                             2366 ; 377  |;
+                             2367 ; 378  |;    Type:      Function
+                             2368 ; 379  |;
+                             2369 ; 380  |;       void Increment_Counters()
+                             2370 ; 381  |;
+                             2371 ; 382  |;    Description:       
+                             2372 ; 383  |;       Called after every block to set the appropriate counters
+                             2373 ; 384  |;    Inputs:            
+                             2374 ; 385  |                
+                             2375 ; 386  |;               void
+                             2376 ; 387  |;           
+                             2377 ; 388  |;    Outputs: void
+                             2378 ; 389  |;    Notes: 
+                             2379 ; 390  |;////////////////////////////////////////////////////////////////////////////// 
+                             2380 ; 391  |*/
+                             2381 ; 392  |void Increment_Counters()
+                             2382 ; 393  |{
+                             2383 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  33
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2388 FIncrement_Counters:
+                             2389 
+                             2390 ; 394  |    // Set the following data. Fact chunk duration, Riff chunk size, Data chunk size
+                             2391 ; 395  |    g_Wave_riffsize += g_Wave_wBlockAlign;
+                             2392 
+P:0288 5FF000 rrrrrr  3 1291 2394         move    y:Fg_Wave_riffsize+1,b
+P:028A 59F000 rrrrrr  3 1294 2395         move    y:Fg_Wave_riffsize,b0
+P:028C 5EF000 rrrrrr  3 1297 2396         move    y:Fg_Wave_wBlockAlign,a
+P:028E 218600         2 1299 2397         move    a1,y0
+P:028F 214700         2 1301 2398         move    a2,y1
+P:0290 200038         2 1303 2399         add     y,b
+P:0291 5D7000 rrrrrr  3 1306 2400         move    b1,y:Fg_Wave_riffsize+1
+P:0293 597000 rrrrrr  3 1309 2401         move    b0,y:Fg_Wave_riffsize
+                             2402 
+                             2403 ; 396  |    g_Wave_datasize += g_Wave_wBlockAlign;
+                             2404 
+P:0295 5FF000 rrrrrr  3 1312 2406         move    y:Fg_Wave_datasize+1,b
+P:0297 59F000 rrrrrr  3 1315 2407         move    y:Fg_Wave_datasize,b0
+P:0299 200038         2 1317 2408         add     y,b
+P:029A 5D7000 rrrrrr  3 1320 2409         move    b1,y:Fg_Wave_datasize+1
+P:029C 597000 rrrrrr  3 1323 2410         move    b0,y:Fg_Wave_datasize
+                             2411 
+                             2412 ; 397  |    g_Wave_dwWavDuration += TotalSamplesPerBlock;
+                             2413 
+P:029E 5FF000 rrrrrr  3 1326 2415         move    y:Fg_Wave_dwWavDuration+1,b
+P:02A0 59F000 rrrrrr  3 1329 2416         move    y:Fg_Wave_dwWavDuration,b0
+P:02A2 5EF000 rrrrrr  3 1332 2417         move    y:FTotalSamplesPerBlock,a
+P:02A4 218600         2 1334 2418         move    a1,y0
+P:02A5 214700         2 1336 2419         move    a2,y1
+P:02A6 200038         2 1338 2420         add     y,b
+P:02A7 5D7000 rrrrrr  3 1341 2421         move    b1,y:Fg_Wave_dwWavDuration+1
+P:02A9 597000 rrrrrr  3 1344 2422         move    b0,y:Fg_Wave_dwWavDuration
+                             2423 
+                             2424 ; 398  |}
+                             2425 
+P:02AB 00000C         4 1348 2427         rts
+                             2429 
+                             2430 ; 399  |                                  
+                             2431 ; 400  |
+                             2432 ; 401  |
+                             2433 ; 402  |int EncodeADPCMFrame(int num_channels, WORD _X *EncoderSinkBuf, WORD _Y *EncoderSourceBuf,
+                                   int handle)
+                             2434 ; 403  |{
+                             2435 
+                             2442 FEncodeADPCMFrame:
+P:02AC 05707C rrrrrr  4 1352 2443         movec   ssh,y:ss_EncodeADPCMFrame
+P:02AE 5D7000 rrrrrr  3 1355 2453         move    b1,y:ss_EncodeADPCMFrame+2
+                             2456 
+                             2457 ; 404  |#ifdef MS_ADPCM
+                             2458 ; 405  |        if (g_Wave_wFormatTag == WAVE_FORMAT_ADPCM)
+                             2459 
+P:02B0 5FF000 rrrrrr  3 1358 2461         move    y:Fg_Wave_wFormatTag,b
+P:02B2 46F400 000002  3 1361 2462         move    #>2,y0
+P:02B4 20005D         2 1363 2463         cmp     y0,b
+P:02B5 0AF0A2 rrrrrr  6 1369 2464         jne     L52
+P:02B7 687000 rrrrrr  3 1372 2465         move    r0,y:ss_EncodeADPCMFrame+1
+                             2470 
+                             2471 ; 406  |                Encode_MS_ADPCM_Block(num_channels, EncoderSinkBuf, EncoderSourceBuf);
+                             2472 
+P:02B9 0BF080 rrrrrr  6 1378 2474         jsr     Encode_MS_ADPCM_Block
+P:02BB 0AF080 rrrrrr  6 1384 2479         jmp     L56
+                             2480 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  34
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2481 ; 407  |        else 
+                             2482 ; 408  |#endif
+                             2483 ; 409  |#ifdef IMA_ADPCM
+                             2484 ; 410  |        if (g_Wave_wFormatTag == WAVE_FORMAT_IMA_ADPCM)
+                             2485 
+                             2487 L52:
+P:02BD 5FF000 rrrrrr  3 1387 2492         move    y:Fg_Wave_wFormatTag,b
+P:02BF 44F400 000011  3 1390 2493         move    #>17,x0
+P:02C1 20004D         2 1392 2494         cmp     x0,b
+P:02C2 0AF0A2 rrrrrr  6 1398 2495         jne     L53
+                             2496 
+                             2497 ; 411  |                Encode_IMA_ADPCM_Block(num_channels, EncoderSinkBuf, EncoderSourceBuf);
+                             2498 
+P:02C4 687000 rrrrrr  3 1401 2500         move    r0,y:ss_EncodeADPCMFrame+1
+P:02C6 0BF080 rrrrrr  6 1407 2505         jsr     Encode_IMA_ADPCM_Block
+P:02C8 0AF080 rrrrrr  6 1413 2510         jmp     L56
+                             2511 
+                             2512 ; 412  |        else
+                             2513 ; 413  |#endif
+                             2514 ; 414  |#ifdef WINDOWS_PCM
+                             2515 ; 415  |        if (g_Wave_wFormatTag == WAVE_FORMAT_PCM)
+                             2516 
+                             2518 L53:
+P:02CA 5FF000 rrrrrr  3 1416 2523         move    y:Fg_Wave_wFormatTag,b
+P:02CC 46F400 000001  3 1419 2524         move    #>1,y0
+P:02CE 20005D         2 1421 2525         cmp     y0,b
+P:02CF 0AF0AA rrrrrr  6 1427 2526         jeq     L54
+                             2527 
+                             2528 ; 416  |                Encode_PCM_Block(num_channels, EncoderSinkBuf, EncoderSourceBuf);
+                             2529 ; 417  |        else
+                             2530 ; 418  |#endif
+                             2531 ; 419  |        return -1;
+                             2532 
+P:02D1 56F400 FFFFFF  3 1430 2534         move    #>-1,a
+P:02D3 0AF080 rrrrrr  6 1436 2536         jmp     L57
+                             2538 L54:
+P:02D5 687000 rrrrrr  3 1439 2540         move    r0,y:ss_EncodeADPCMFrame+1
+P:02D7 0BF080 rrrrrr  6 1445 2545         jsr     Encode_PCM_Block
+                             2550 
+                             2551 ; 420  |    FSFileWrite(g_Wave_wBlockAlign, handle, MEM_SPACE_X, (INT)(-1),(WORD * _X)EncoderSinkB
+                                  uf);         
+                             2552 
+P:02D9 5EF000 rrrrrr  3 1448 2554 L56:    move    y:Fg_Wave_wBlockAlign,a
+P:02DB 68F000 rrrrrr  3 1451 2555         move    y:ss_EncodeADPCMFrame+1,r0
+P:02DD 248000         2 1453 2559         move    #<$80,x0
+P:02DE 5FF000 rrrrrr  3 1456 2560         move    y:ss_EncodeADPCMFrame+2,b
+P:02E0 46F400 FFFFFF  3 1459 2561         move    #>-1,y0
+P:02E2 0BF080 rrrrrr  6 1465 2562         jsr     FFSFileWrite
+                             2566 
+                             2567 ; 421  |    return 0;
+                             2568 
+P:02E4 200013         2 1467 2570         clr     a   
+                             2571 
+                             2572 ; 422  |}
+                             2573 
+P:02E5 05F07C rrrrrr  4 1471 2575 L57:    movec   y:ss_EncodeADPCMFrame,ssh
+P:02E7 000000         2 1473 2577         nop
+P:02E8 00000C         4 1477 2578         rts
+                             2579 
+Y:0000                       2580         org     y,".yovlwaveenc@EncodeADPCMFrame",overlay:
+                             2581 ss_EncodeADPCMFrame:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  35
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0000                       2582         ds      3
+   |   RESERVED                   
+Y:0002
+                             2583 
+P:02E9                       2584         org     p,".ptextwaveenc":
+                             2586 
+                             2587 ; 423  |
+                             2588 ; 424  |
+                             2589 ; 425  |void GetSamplestoFade(int handle, WORD *sample, int ch)
+                             2590 ; 426  |{
+                             2591 
+                             2596 FGetSamplestoFade:
+P:02E9 05707C rrrrrr  4 1481 2597         movec   ssh,y:ss_GetSamplestoFade
+                             2609 
+                             2610 ; 427  |int i;
+                             2611 ; 428  |WORD temp[2];
+                             2612 
+P:02EB 5C7000 rrrrrr  3 1484 2614         move    a1,y:ss_GetSamplestoFade+3
+P:02ED 5D7000 rrrrrr  3 1487 2617         move    b1,y:ss_GetSamplestoFade+5
+P:02EF 687000 rrrrrr  3 1490 2620         move    r0,y:ss_GetSamplestoFade+4
+                             2623 
+                             2624 ; 429  |
+                             2625 ; 430  |#ifdef MS_ADPCM
+                             2626 ; 431  |        if (g_Wave_wFormatTag == WAVE_FORMAT_ADPCM)
+                             2627 
+P:02F1 5FF000 rrrrrr  3 1493 2629         move    y:Fg_Wave_wFormatTag,b
+P:02F3 45F400 000002  3 1496 2630         move    #>2,x1
+P:02F5 20006D         2 1498 2631         cmp     x1,b
+P:02F6 0AF0A2 rrrrrr  6 1504 2632         jne     L65
+                             2633 
+                             2634 ; 432  |        {
+                             2635 ; 433  |            // Skip predictor
+                             2636 ; 434  |            FSFileRead(1*ch, handle, MEM_SPACE_Y, (INT)(-1), &temp[0]);
+                             2637 
+P:02F8 5FF000 rrrrrr  3 1507 2639         move    y:ss_GetSamplestoFade+3,b
+P:02FA 5EF000 rrrrrr  3 1510 2642         move    y:ss_GetSamplestoFade+5,a
+P:02FC 244000         2 1512 2645         move    #<$40,x0
+P:02FD 46F400 FFFFFF  3 1515 2646         move    #>-1,y0
+P:02FF 60F400 rrrrrr  3 1518 2647         move    #ss_GetSamplestoFade+1,r0
+P:0301 0BF080 rrrrrr  6 1524 2648         jsr     FFSFileRead
+                             2653 
+                             2654 ; 435  |            // Skip Delta
+                             2655 ; 436  |            FSFileRead(2*ch, handle, MEM_SPACE_Y, (INT)(-1), &temp[0]);
+                             2656 
+P:0303 5EF000 rrrrrr  3 1527 2658         move    y:ss_GetSamplestoFade+5,a
+P:0305 200033         2 1529 2659         lsl     a
+P:0306 5FF000 rrrrrr  3 1532 2663         move    y:ss_GetSamplestoFade+3,b
+P:0308 244000         2 1534 2666         move    #<$40,x0
+P:0309 46F400 FFFFFF  3 1537 2667         move    #>-1,y0
+P:030B 60F400 rrrrrr  3 1540 2668         move    #ss_GetSamplestoFade+1,r0
+P:030D 218E00         2 1542 2669         move    a1,a
+P:030E 0BF080 rrrrrr  6 1548 2670         jsr     FFSFileRead
+P:0310 5FF000 rrrrrr  3 1551 2673         move    y:ss_GetSamplestoFade+3,b
+P:0312 68F000 rrrrrr  3 1554 2676         move    y:ss_GetSamplestoFade+4,r0
+P:0314 244000         2 1556 2679         move    #<$40,x0
+P:0315 46F400 FFFFFF  3 1559 2680         move    #>-1,y0
+P:0317 56F400 000002  3 1562 2681         move    #>2,a
+                             2682 
+                             2683 ; 437  |            // Read Samples
+                             2684 ; 438  |            FSFileRead(2, handle, MEM_SPACE_Y, (INT)(-1), &sample[0]);
+                             2685 
+P:0319 0BF080 rrrrrr  6 1568 2687         jsr     FFSFileRead
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  36
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2692 
+                             2693 ; 439  |            FSFileRead(2, handle, MEM_SPACE_Y, (INT)(-1), &sample[1]);
+                             2694 
+P:031B 6EF000 rrrrrr  3 1571 2696         move    y:ss_GetSamplestoFade+4,r6
+P:031D 000000         2 1573 2697         nop
+P:031E 045E10         4 1577 2698         lua     (r6)+,r0
+P:031F 5FF000 rrrrrr  3 1580 2699         move    y:ss_GetSamplestoFade+3,b
+P:0321 244000         2 1582 2700         move    #<$40,x0
+P:0322 46F400 FFFFFF  3 1585 2701         move    #>-1,y0
+P:0324 56F400 000002  3 1588 2702         move    #>2,a
+P:0326 0BF080 rrrrrr  6 1594 2703         jsr     FFSFileRead
+                             2707 
+                             2708 ; 440  |            sample[0] = sample[0]<<8;
+                             2709 
+P:0328 0AF080 rrrrrr  6 1600 2711         jmp     L68
+                             2712 
+                             2713 ; 441  |            sample[1] = sample[1]<<8;
+                             2714 ; 442  |        }       
+                             2715 ; 443  |        else 
+                             2716 ; 444  |#endif
+                             2717 ; 445  |#ifdef IMA_ADPCM
+                             2718 ; 446  |        if (g_Wave_wFormatTag == WAVE_FORMAT_IMA_ADPCM)
+                             2719 
+                             2721 L65:
+P:032A 5FF000 rrrrrr  3 1603 2724         move    y:Fg_Wave_wFormatTag,b
+P:032C 44F400 000011  3 1606 2725         move    #>17,x0
+P:032E 20004D         2 1608 2726         cmp     x0,b
+P:032F 0AF0A2 rrrrrr  6 1614 2727         jne     L69
+                             2728 
+                             2729 ; 447  |        {
+                             2730 ; 448  |            for (i = 0; i < ch; i++)
+                             2731 
+P:0331 20001B         2 1616 2733         clr     b   
+P:0332 47F400 000001  3 1619 2735         move    #>1,y1
+P:0334 0AF080 rrrrrr  6 1625 2736         jmp     L67
+                             2737 
+                             2738 ; 449  |            {
+                             2739 ; 450  |                FSFileRead(2, handle, MEM_SPACE_Y, (INT)(-1), &sample[i]);// Samle
+                             2740 
+P:0336 5D7000 rrrrrr  3 1628 2742 L66:    move    b1,y:ss_GetSamplestoFade+6
+P:0338 21BE00         2 1630 2743         move    b1,n6
+P:0339 6EF000 rrrrrr  3 1633 2746         move    y:ss_GetSamplestoFade+4,r6
+P:033B 000000         2 1635 2747         nop
+P:033C 044E10         4 1639 2748         lua     (r6)+n6,r0
+P:033D 5FF000 rrrrrr  3 1642 2749         move    y:ss_GetSamplestoFade+3,b
+P:033F 244000         2 1644 2752         move    #<$40,x0
+P:0340 56F400 000002  3 1647 2753         move    #>2,a
+P:0342 46F400 FFFFFF  3 1650 2754         move    #>-1,y0
+P:0344 0BF080 rrrrrr  6 1656 2755         jsr     FFSFileRead
+                             2758 
+                             2759 ; 451  |                FSFileRead(1, handle, MEM_SPACE_Y, (INT)(-1), &temp[0]); // Skip index
+                             2760 
+P:0346 5FF000 rrrrrr  3 1659 2762         move    y:ss_GetSamplestoFade+3,b
+P:0348 60F400 rrrrrr  3 1662 2765         move    #ss_GetSamplestoFade+1,r0
+P:034A 56F400 000001  3 1665 2766         move    #>1,a
+P:034C 244000         2 1667 2767         move    #<$40,x0
+P:034D 46F400 FFFFFF  3 1670 2768         move    #>-1,y0
+P:034F 0BF080 rrrrrr  6 1676 2769         jsr     FFSFileRead
+P:0351 46F400 FFFFFF  3 1679 2772         move    #>-1,y0
+P:0353 244000         2 1681 2773         move    #<$40,x0
+P:0354 60F400 rrrrrr  3 1684 2774         move    #ss_GetSamplestoFade+1,r0
+P:0356 5FF000 rrrrrr  3 1687 2775         move    y:ss_GetSamplestoFade+3,b
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  37
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0358 56F400 000001  3 1690 2778         move    #>1,a
+                             2779 
+                             2780 ; 452  |                FSFileRead(1, handle, MEM_SPACE_Y, (INT)(-1), &temp[0]); // Skip reserved
+                             2781 
+P:035A 0BF080 rrrrrr  6 1696 2783         jsr     FFSFileRead
+P:035C 5FF000 rrrrrr  3 1699 2787         move    y:ss_GetSamplestoFade+6,b
+P:035E 47F400 000001  3 1702 2788         move    #>1,y1
+P:0360 200078         2 1704 2789         add     y1,b
+P:0361 4EF000 rrrrrr  3 1707 2792 L67:    move    y:ss_GetSamplestoFade+5,y0
+P:0363 20005D         2 1709 2793         cmp     y0,b
+P:0364 0AF0A9 rrrrrr  6 1715 2794         jlt     L66
+                             2795 
+                             2796 ; 453  |            }
+                             2797 ; 454  |            sample[0] = sample[0]<<8;
+                             2798 
+P:0366 6EF000 rrrrrr  3 1718 2800 L68:    move    y:ss_GetSamplestoFade+4,r6
+P:0368 000000         2 1720 2801         nop
+P:0369 4EE600         2 1722 2802         move    y:(r6),y0
+P:036A 0110E8         2 1724 2805         mpy     y0,#16,b
+P:036B 595E00         2 1726 2807         move    b0,y:(r6)+
+                             2809 
+                             2810 ; 455  |            sample[1] = sample[1]<<8;
+                             2811 
+P:036C 4EE600         2 1728 2813         move    y:(r6),y0
+P:036D 0110E0         2 1730 2814         mpy     y0,#16,a
+P:036E 586600         2 1732 2815         move    a0,y:(r6)
+                             2816 
+                             2817 ; 456  |        }
+                             2818 
+P:036F 0AF080 rrrrrr  6 1738 2820         jmp     L71
+                             2821 
+                             2822 ; 457  |        else
+                             2823 ; 458  |#endif
+                             2824 ; 459  |#ifdef WINDOWS_PCM
+                             2825 ; 460  |        if (g_Wave_wFormatTag == WAVE_FORMAT_PCM)
+                             2826 
+                             2828 L69:
+P:0371 5FF000 rrrrrr  3 1741 2830         move    y:Fg_Wave_wFormatTag,b
+P:0373 46F400 000001  3 1744 2831         move    #>1,y0
+P:0375 20005D         2 1746 2832         cmp     y0,b
+P:0376 0AF0A2 rrrrrr  6 1752 2833         jne     L71
+                             2834 
+                             2835 ; 461  |        {
+                             2836 ; 462  |            sample[0] = 0;
+                             2837 
+P:0378 6EF000 rrrrrr  3 1755 2839         move    y:ss_GetSamplestoFade+4,r6
+P:037A 20001B         2 1757 2840         clr     b   
+P:037B 5D5E00         2 1759 2841         move    b1,y:(r6)+
+                             2845 
+                             2846 ; 463  |            sample[1] = 0;
+                             2847 
+P:037C 5D6600         2 1761 2849         move    b1,y:(r6)
+                             2850 
+                             2851 ; 464  |        }
+                             2852 ; 465  |        else
+                             2853 ; 466  |#endif
+                             2854 ; 467  |        return;
+                             2855 ; 468  |}
+                             2856 
+P:037D 05F07C rrrrrr  4 1765 2858 L71:    movec   y:ss_GetSamplestoFade,ssh
+P:037F 000000         2 1767 2860         nop
+P:0380 00000C         4 1771 2861         rts
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  38
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2864 
+Y:0000                       2865         org     y,".yovlwaveenc@GetSamplestoFade",overlay:
+                             2866 ss_GetSamplestoFade:
+Y:0000                       2867         ds      8
+   |   RESERVED                   
+Y:0007
+                             2868 
+P:0381                       2869         org     p,".ptextwaveenc":
+                             2871 
+                             2872 ; 469  |
+                             2873 ; 470  |
+                             2874 ; 471  |int FadeoutPreviousFrames(int _Y *phandle, _packed BYTE *pname, int devicenum)
+                             2875 ; 472  |{
+                             2876 
+                             2885 FFadeoutPreviousFrames:
+P:0381 05707C rrrrrr  4 1775 2886         movec   ssh,y:ss_FadeoutPreviousFrames
+                             2896 
+                             2897 ; 473  |    int handle = *phandle;
+                             2898 
+P:0383 5C7000 rrrrrr  3 1778 2900         move    a1,y:ss_FadeoutPreviousFrames+5
+P:0385 6C7000 rrrrrr  3 1781 2903         move    r4,y:ss_FadeoutPreviousFrames+4
+P:0387 687000 rrrrrr  3 1784 2906         move    r0,y:ss_FadeoutPreviousFrames+3
+P:0389 4EE000         2 1786 2907         move    y:(r0),y0
+P:038A 4E7000 rrrrrr  3 1789 2910         move    y0,y:ss_FadeoutPreviousFrames+6
+                             2929 
+                             2930 ; 474  |    DWORD fposition;
+                             2931 ; 475  |    int bytestorewind, blockstoskip;
+                             2932 ; 476  |    DWORD bytestoskip, newposition;
+                             2933 ; 477  |    WORD sample[2];
+                             2934 ; 478  |    int i,j,ch;
+                             2935 ; 479  |
+                             2936 ; 480  |    Reset_ADPCM_States();
+                             2937 
+P:038C 0BF080 rrrrrr  6 1795 2939         jsr     FReset_ADPCM_States
+                             2940 
+                             2941 ; 481  |
+                             2942 ; 482  |    FSFileClose(handle);
+                             2943 
+P:038E 5EF000 rrrrrr  3 1798 2945         move    y:ss_FadeoutPreviousFrames+6,a
+P:0390 0BF080 rrrrrr  6 1804 2946         jsr     FFSFileClose
+                             2950 
+                             2951 ; 483  |
+                             2952 ; 484  |
+                             2953 ; 485  |    handle = FSFileOpen(pname,READ,devicenum);
+                             2954 
+P:0392 68F000 rrrrrr  3 1807 2956         move    y:ss_FadeoutPreviousFrames+4,r0
+P:0394 5FF000 rrrrrr  3 1810 2959         move    y:ss_FadeoutPreviousFrames+5,b
+P:0396 56F400 000001  3 1813 2962         move    #>1,a
+P:0398 0BF080 rrrrrr  6 1819 2963         jsr     FFSFileOpen
+P:039A 5E7000 rrrrrr  3 1822 2969         move    a,y:ss_FadeoutPreviousFrames+6
+                             2972 
+                             2973 ; 486  |
+                             2974 ; 487  |    fposition = FSFileSize(handle);
+                             2975 
+P:039C 0BF080 rrrrrr  6 1828 2977         jsr     FFSFileSize
+P:039E 5C7000 rrrrrr  3 1831 2978         move    a1,y:ss_FadeoutPreviousFrames+8
+P:03A0 587000 rrrrrr  3 1834 2979         move    a0,y:ss_FadeoutPreviousFrames+7
+                             2981 
+                             2982 ; 488  |
+                             2983 ; 489  |    // Find bytes to rewind.    
+                             2984 ; 490  |    bytestorewind = g_Wave_dwAvgBytesPerSec/10;
+                             2985 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  39
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:03A2 5EF000 rrrrrr  3 1837 2987         move    y:Fg_Wave_dwAvgBytesPerSec+1,a
+P:03A4 58F000 rrrrrr  3 1840 2988         move    y:Fg_Wave_dwAvgBytesPerSec,a0
+P:03A6 20001B         2 1842 2989         clr     b   
+P:03A7 290A00         2 1844 2990         move    #10,b0
+P:03A8 0BF080 rrrrrr  6 1850 2991         jsr     Rdiv_lll
+                             2993 
+                             2994 ; 491  |    
+                             2995 ; 492  |    blockstoskip = bytestorewind/g_Wave_wBlockAlign;
+                             2996 
+P:03AA 4CF000 rrrrrr  3 1853 2998         move    y:Fg_Wave_wBlockAlign,x0
+P:03AC 210E00         2 1855 2999         move    a0,a
+P:03AD 0BF080 rrrrrr  6 1861 3000         jsr     Rdiv_iii
+P:03AF 21C600         2 1863 3002         move    a,y0
+                             3004 
+                             3005 ; 493  |    
+                             3006 ; 494  |    if (blockstoskip == 0)
+                             3007 
+P:03B0 200003         2 1865 3009         tst     a
+P:03B1 0AF0A2 rrrrrr  6 1871 3010         jne     L82
+                             3011 
+                             3012 ; 495  |        blockstoskip = 1;
+                             3013 
+P:03B3 46F400 000001  3 1874 3015         move    #>1,y0
+                             3016 
+                             3017 ; 496  |        
+                             3018 ; 497  |    bytestoskip = blockstoskip*g_Wave_wBlockAlign;
+                             3019 
+P:03B5 4E7000 rrrrrr  3 1877 3021 L82:    move    y0,y:ss_FadeoutPreviousFrames+9
+P:03B7 2000D8         2 1879 3022         mpy     y0,x0,b
+P:03B8 20002A         2 1881 3023         asr     b
+P:03B9 212600         2 1883 3026         move    b0,y0
+P:03BA 270000         2 1885 3027         move    #0,y1
+                             3029 
+                             3030 ; 498  |    
+                             3031 ; 499  |    if ( (newposition = (fposition - bytestoskip) ) <= 0)
+                             3032 
+P:03BB 5FF000 rrrrrr  3 1888 3034         move    y:ss_FadeoutPreviousFrames+8,b
+P:03BD 59F000 rrrrrr  3 1891 3035         move    y:ss_FadeoutPreviousFrames+7,b0
+P:03BF 20003C         2 1893 3036         sub     y,b
+P:03C0 200001         2 1895 3040         tfr     b,a
+P:03C1 2A0000         2 1897 3042         move    #0,a2
+P:03C2 200003         2 1899 3043         tst     a
+P:03C3 0AF0AF rrrrrr  6 1905 3044         jle     L90
+                             3045 
+                             3046 ; 500  |        return 0;
+                             3047 ; 501  |    
+                             3048 ; 502  |    fseek(handle,newposition,SEEK_SET);
+                             3049 
+P:03C5 200001         2 1907 3051         tfr     b,a
+P:03C6 5C7000 rrrrrr  3 1910 3052         move    a1,y:ss_FadeoutPreviousFrames+11
+P:03C8 587000 rrrrrr  3 1913 3053         move    a0,y:ss_FadeoutPreviousFrames+10
+P:03CA 44F400 FFFFFF  3 1916 3055         move    #>-1,x0
+P:03CC 5FF000 rrrrrr  3 1919 3056         move    y:ss_FadeoutPreviousFrames+6,b
+P:03CE 0BF080 rrrrrr  6 1925 3057         jsr     Ffseek
+                             3059 
+                             3060 ; 503  |    
+                             3061 ; 504  |    GetSamplestoFade(handle,&sample[0],g_Wave_wChannels);
+                             3062 
+P:03D0 5FF000 rrrrrr  3 1928 3064         move    y:Fg_Wave_wChannels,b
+P:03D2 60F400 rrrrrr  3 1931 3065         move    #ss_FadeoutPreviousFrames+1,r0
+P:03D4 5EF000 rrrrrr  3 1934 3066         move    y:ss_FadeoutPreviousFrames+6,a
+P:03D6 0BF080 rrrrrr  6 1940 3067         jsr     FGetSamplestoFade
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  40
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             3068 
+                             3069 ; 505  |    
+                             3070 ; 506  |    FSFileClose(handle);
+                             3071 
+P:03D8 5EF000 rrrrrr  3 1943 3073         move    y:ss_FadeoutPreviousFrames+6,a
+P:03DA 0BF080 rrrrrr  6 1949 3074         jsr     FFSFileClose
+                             3078 
+                             3079 ; 507  |    
+                             3080 ; 508  |    handle = FSFileOpen(pname,WRITE,devicenum);
+                             3081 
+P:03DC 68F000 rrrrrr  3 1952 3083         move    y:ss_FadeoutPreviousFrames+4,r0
+P:03DE 5FF000 rrrrrr  3 1955 3086         move    y:ss_FadeoutPreviousFrames+5,b
+P:03E0 56F400 000002  3 1958 3089         move    #>2,a
+P:03E2 0BF080 rrrrrr  6 1964 3090         jsr     FFSFileOpen
+P:03E4 200009         2 1966 3095         tfr     a,b
+                             3097 
+                             3098 ; 509  |    
+                             3099 ; 510  |    fseek(handle,newposition,SEEK_SET);
+                             3100 
+P:03E5 5F7000 rrrrrr  3 1969 3102         move    b,y:ss_FadeoutPreviousFrames+12
+P:03E7 5EF000 rrrrrr  3 1972 3107         move    y:ss_FadeoutPreviousFrames+11,a
+P:03E9 58F000 rrrrrr  3 1975 3108         move    y:ss_FadeoutPreviousFrames+10,a0
+P:03EB 44F400 FFFFFF  3 1978 3109         move    #>-1,x0
+P:03ED 0BF080 rrrrrr  6 1984 3110         jsr     Ffseek
+                             3113 
+                             3114 ; 511  |
+                             3115 ; 512  |    j = 0;
+                             3116 
+P:03EF 250000         2 1986 3118         move    #0,x1
+P:03F0 240000         2 1988 3119         move    #0,x0
+                             3121 
+                             3122 ; 513  |
+                             3123 ; 514  |    for ( i = 0; i < 24; i++)
+                             3124 
+P:03F1 61F400 rrrrrr  3 1991 3126         move    #ss_FadeoutPreviousFrames+1,r1
+P:03F3 061880 rrrrrr  6 1997 3127         do      #24,L91
+                             3129 
+                             3130 ; 515  |    {
+                             3131 ; 516  |        for (ch = 0; ch < g_Wave_wChannels; ch++)
+                             3132 
+P:03F5 200069         2 1999 3134         tfr     x1,b
+P:03F6 223600         2 2001 3136         move    r1,r6
+P:03F7 73F400 rrrrrr  3 2004 3137         move    #FEncoderSourceBuf,n3
+P:03F9 5EF000 rrrrrr  3 2007 3138         move    y:Fg_Wave_wChannels,a
+P:03FB 0AF080 rrrrrr  6 2013 3139         jmp     L85
+                             3140 
+                             3141 ; 517  |        {
+                             3142 ; 518  |            EncoderSourceBuf[j] = sample[ch];
+                             3143 
+                             3145 L84:
+P:03FD 4EE600         2 2015 3148         move    y:(r6),y0
+P:03FE 209300         2 2017 3149         move    x0,r3
+P:03FF 000000         2 2019 3150         nop
+P:0400 044B15         4 2023 3151         lua     (r3)+n3,r5
+P:0401 000000         2 2025 3152         nop
+P:0402 4E6500         2 2027 3153         move    y0,y:(r5)
+                             3154 
+                             3155 ; 519  |            sample[ch] = sample[ch] >> 1;
+                             3156 
+P:0403 5FE600         2 2029 3158         move    y:(r6),b
+P:0404 46F400 000001  3 2032 3159         move    #>1,y0
+P:0406 20002B         2 2034 3160         lsr     b
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  41
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0407 5D5E00         2 2036 3161         move    b1,y:(r6)+
+                             3162 
+                             3163 ; 520  |            j++;
+                             3164 
+P:0408 200049         2 2038 3166         tfr     x0,b
+P:0409 200058         2 2040 3167         add     y0,b
+P:040A 21A400         2 2042 3170         move    b1,x0
+P:040B 200079         2 2044 3174         tfr     y1,b
+P:040C 200058         2 2046 3175         add     y0,b
+P:040D 21A700         2 2048 3178 L85:    move    b1,y1
+P:040E 20000D         2 2050 3179         cmp     a,b
+P:040F 0AF0A9 rrrrrr  6 2056 3182         jlt     L84
+P:0411 000000         2 2058 3184         nop
+                        (61) 3185 L91:
+                             3187 
+                             3188 ; 521  |        }
+                             3189 ; 522  |    }
+                             3190 ; 523  |    
+                             3191 ; 524  |    // Clear rest of the buffer    
+                             3192 ; 525  |    for (j = 24*g_Wave_wChannels; j < 2*g_Wave_wBlockAlign; j++)
+                             3193 
+P:0412 44F400 000018  3 2061 3195         move    #>24,x0
+P:0414 218700         2 2063 3196         move    a1,y1
+P:0415 2000C8         2 2065 3197         mpy     y1,x0,b
+P:0416 20002A         2 2067 3198         asr     b
+P:0417 212600         2 2069 3200         move    b0,y0
+P:0418 20C400         2 2071 3201         move    y0,x0
+P:0419 20D300         2 2073 3203         move    y0,r3
+P:041A 000000         2 2075 3204         nop
+P:041B 044B16         4 2079 3205         lua     (r3)+n3,r6
+P:041C 5FF000 rrrrrr  3 2082 3206         move    y:Fg_Wave_wBlockAlign,b
+P:041E 20003B         2 2084 3207         lsl     b
+P:041F 21A600         2 2086 3208         move    b1,y0
+P:0420 0AF080 rrrrrr  6 2092 3209         jmp     L87
+                             3210 
+                             3211 ; 526  |        EncoderSourceBuf[j] = 0;
+                             3212 
+                             3214 L86:
+P:0422 4D5E00         2 2094 3217         move    x1,y:(r6)+
+P:0423 47F400 000001  3 2097 3219         move    #>1,y1
+P:0425 200078         2 2099 3221         add     y1,b
+P:0426 21A400         2 2101 3222         move    b1,x0
+P:0427 200049         2 2103 3225 L87:    tfr     x0,b
+P:0428 20005D         2 2105 3226         cmp     y0,b
+P:0429 0AF0A9 rrrrrr  6 2111 3229         jlt     L86
+                             3230 
+                             3231 ; 527  |    
+                             3232 ; 528  |    EncodeADPCMFrame(g_Wave_wChannels, EncoderSinkBuf, EncoderSourceBuf, handle);
+                             3233 
+P:042B 5FF000 rrrrrr  3 2114 3235         move    y:ss_FadeoutPreviousFrames+12,b
+P:042D 237400         2 2116 3239         move    n3,r4
+P:042E 60F400 rrrrrr  3 2119 3240         move    #FEncoderSinkBuf,r0
+P:0430 0BF080 rrrrrr  6 2125 3241         jsr     FEncodeADPCMFrame
+                             3244 
+                             3245 ; 529  |    
+                             3246 ; 530  |    Reset_ADPCM_States();    
+                             3247 
+P:0432 0BF080 rrrrrr  6 2131 3249         jsr     FReset_ADPCM_States
+                             3250 
+                             3251 ; 531  |
+                             3252 ; 532  |    ClearSourceBuffer();
+                             3253 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  42
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0434 0BF080 rrrrrr  6 2137 3255         jsr     FClearSourceBuffer
+                             3256 
+                             3257 ; 533  |    
+                             3258 ; 534  |    blockstoskip--;    
+                             3259 
+P:0436 5FF000 rrrrrr  3 2140 3261         move    y:ss_FadeoutPreviousFrames+9,b
+P:0438 44F400 000001  3 2143 3262         move    #>1,x0
+P:043A 20004C         2 2145 3263         sub     x0,b
+P:043B 5D7000 rrrrrr  3 2148 3266         move    b1,y:ss_FadeoutPreviousFrames+13
+                             3269 
+                             3270 ; 535  |    
+                             3271 ; 536  |    for (i = 0; i < blockstoskip; i++)
+                             3272 
+P:043D 20001B         2 2150 3274         clr     b   
+P:043E 0AF080 rrrrrr  6 2156 3276         jmp     L89
+P:0440 5D7000 rrrrrr  3 2159 3277 L88:    move    b1,y:ss_FadeoutPreviousFrames+14
+                             3280 
+                             3281 ; 537  |    {
+                             3282 ; 538  |        EncodeADPCMFrame(g_Wave_wChannels, EncoderSinkBuf, EncoderSourceBuf, handle);
+                             3283 
+P:0442 5EF000 rrrrrr  3 2162 3285         move    y:Fg_Wave_wChannels,a
+P:0444 5FF000 rrrrrr  3 2165 3286         move    y:ss_FadeoutPreviousFrames+12,b
+P:0446 64F400 rrrrrr  3 2168 3289         move    #FEncoderSourceBuf,r4
+P:0448 60F400 rrrrrr  3 2171 3290         move    #FEncoderSinkBuf,r0
+P:044A 0BF080 rrrrrr  6 2177 3291         jsr     FEncodeADPCMFrame
+P:044C 5FF000 rrrrrr  3 2180 3295         move    y:ss_FadeoutPreviousFrames+14,b
+P:044E 46F400 000001  3 2183 3296         move    #>1,y0
+P:0450 200058         2 2185 3297         add     y0,b
+P:0451 5EF000 rrrrrr  3 2188 3300 L89:    move    y:ss_FadeoutPreviousFrames+13,a
+P:0453 20000D         2 2190 3301         cmp     a,b
+P:0454 0AF0A9 rrrrrr  6 2196 3302         jlt     L88
+                             3303 
+                             3304 ; 539  |    }
+                             3305 ; 540  |    
+                             3306 ; 541  |    FSFileClose(handle);
+                             3307 
+P:0456 5EF000 rrrrrr  3 2199 3309         move    y:ss_FadeoutPreviousFrames+12,a
+P:0458 0BF080 rrrrrr  6 2205 3310         jsr     FFSFileClose
+                             3315 
+                             3316 ; 542  |    
+                             3317 ; 543  |    Reset_ADPCM_States();    
+                             3318 
+P:045A 0BF080 rrrrrr  6 2211 3320         jsr     FReset_ADPCM_States
+                             3321 
+                             3322 ; 544  |    
+                             3323 ; 545  |    handle = FSFileAppend(pname,devicenum);
+                             3324 
+P:045C 68F000 rrrrrr  3 2214 3326         move    y:ss_FadeoutPreviousFrames+4,r0
+P:045E 5EF000 rrrrrr  3 2217 3327         move    y:ss_FadeoutPreviousFrames+5,a
+P:0460 0BF080 rrrrrr  6 2223 3328         jsr     FFSFileAppend
+                             3336 
+                             3337 ; 546  |    
+                             3338 ; 547  |    //fseek(handle,fposition,SEEK_SET);
+                             3339 ; 548  |    
+                             3340 ; 549  |    *phandle = handle;
+                             3341 
+P:0462 6EF000 rrrrrr  3 2226 3343         move    y:ss_FadeoutPreviousFrames+3,r6
+P:0464 000000         2 2228 3344         nop
+P:0465 5E6600         2 2230 3345         move    a,y:(r6)
+                             3348 
+                             3349 ; 550  |    
+                             3350 ; 551  |    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  43
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             3351 ; 552  |    return 0;
+                             3352 
+P:0466 200013         2 2232 3354 L90:    clr     a   
+                             3356 
+                             3357 ; 553  |}
+                             3358 
+P:0467 05F07C rrrrrr  4 2236 3360         movec   y:ss_FadeoutPreviousFrames,ssh
+P:0469 000000         2 2238 3362         nop
+P:046A 00000C         4 2242 3363         rts
+                             3366 
+Y:0000                       3367         org     y,".yovlwaveenc@FadeoutPreviousFrames",overlay:
+                             3368 ss_FadeoutPreviousFrames:
+Y:0000                       3369         ds      16
+   |   RESERVED                   
+Y:000F
+                             3370 
+P:046B                       3371         org     p,".ptextwaveenc":
+                             3373 
+                             3374 ; 554  |    
+                             3375 ; 555  |        
+                             3376 ; 556  |
+                             3377 ; 557  |                                  
+                             3378 ; 558  |
+                             3379 ; 559  |#ifdef ADPCMTEST
+                             3380 ; 560  |int Fill_input_PCM_buffer(int numsamples)
+                             3381 ; 561  |{
+                             3382 ; 562  |        return fread(SampleBuf,1,numsamples,in);
+                             3383 ; 563  |}
+                             3384 ; 564  |
+                             3385 ; 565  |/* 
+                             3386 ; 566  |;///////////////////////////////////////////////////////////////////////////////
+                             3387 ; 567  |;
+                             3388 ; 568  |;>   Name:  Increment_Counters
+                             3389 ; 569  |;
+                             3390 ; 570  |;    Type:      Function
+                             3391 ; 571  |;
+                             3392 ; 572  |;       void Encode_ADPCM(int FormatTag, int num_channels)
+                             3393 ; 573  |;
+                             3394 ; 574  |;    Description:       
+                             3395 ; 575  |;       Used by test code. Equivalent of module ISR.
+                             3396 ; 576  |;    Inputs:            
+                             3397 ; 577  |;               void
+                             3398 ; 578  |;           
+                             3399 ; 579  |;    Outputs: void
+                             3400 ; 580  |;    Notes: 
+                             3401 ; 581  |;////////////////////////////////////////////////////////////////////////////// 
+                             3402 ; 582  |*/
+                             3403 ; 583  |void Encode_ADPCM(int FormatTag, int num_channels)
+                             3404 ; 584  |{
+                             3405 ; 585  |#ifdef IMA_ADPCM
+                             3406 ; 586  |    Init_IMA_ADPCM_States();
+                             3407 ; 587  |#endif
+                             3408 ; 588  |        while(Fill_input_PCM_buffer(TotalSamplesPerBlock)== TotalSamplesPerBlock)
+                             3409 ; 589  |        {
+                             3410 ; 590  |#ifdef MS_ADPCM
+                             3411 ; 591  |        if (FormatTag == WAVE_FORMAT_ADPCM)
+                             3412 ; 592  |                Encode_MS_ADPCM_Block(num_channels);
+                             3413 ; 593  |        else 
+                             3414 ; 594  |#endif
+                             3415 ; 595  |#ifdef IMA_ADPCM
+                             3416 ; 596  |        if (FormatTag == WAVE_FORMAT_IMA_ADPCM)
+                             3417 ; 597  |                Encode_IMA_ADPCM_Block(num_channels);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  44
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             3418 ; 598  |        else
+                             3419 ; 599  |#endif
+                             3420 ; 600  |#ifdef WINDOWS_PCM
+                             3421 ; 601  |        if (FormatTag == WAVE_FORMAT_PCM)
+                             3422 ; 602  |                Encode_PCM_Block(num_channels);
+                             3423 ; 603  |        else
+                             3424 ; 604  |#endif
+                             3425 ; 605  |        return;
+                             3426 ; 606  |
+                             3427 ; 607  |                Wave_Flush_Encoded_Bitstream_Buffer(g_Wave_wBlockAlign);
+                             3428 ; 608  |        Increment_Counters();
+                             3429 ; 609  |        }
+                             3430 ; 610  |}
+                             3431 ; 611  |
+                             3432 ; 612  |
+                             3433 ; 613  |#endif
+                             3434 ; 614  |
+                             3435 
+                             3484 
+                             3485         extern  Encode_IMA_ADPCM_Block, Encode_MS_ADPCM_Block
+                             3486         extern  Encode_PCM_Block, Rdiv_iii, Rdiv_lll, WriteDWord
+                             3487         extern  WriteWord, x:FEncoderSinkBuf, y:FEncoderSourceBuf
+                             3488         extern  FFSFileAppend, FFSFileClose, FFSFileOpen, FFSFileRead
+                             3489         extern  FFSFileSize, FFSFileWrite, FInit_IMA_ADPCM_States
+                             3490         extern  y:FTotalSamplesPerBlock, y:Fckidlist, y:Ffirst_block_flag
+                             3491         extern  Ffseek, y:Fg_Wave_datasize, y:Fg_Wave_dwAvgBytesPerSec
+                             3492         extern  y:Fg_Wave_dwSamplesPerSec, y:Fg_Wave_dwWavDuration
+                             3493         extern  y:Fg_Wave_iCoef1Array, y:Fg_Wave_iCoef2Array
+                             3494         extern  y:Fg_Wave_riffsize, y:Fg_Wave_wBitsPerSample
+                             3495         extern  y:Fg_Wave_wBlockAlign, y:Fg_Wave_wChannels
+                             3496         extern  y:Fg_Wave_wFormatTag, y:Fg_Wave_wMegicWord
+                             3497         extern  y:Fg_Wave_wavesize, y:Fg_Wave_wcbSize, y:Fg_Wave_wnNumCoef
+                             3498         extern  y:Fg_Wave_wnSamplesPerBlock, y:FiDeltaEnc, y:Finfo_ckid
+                             3499         extern  y:Fisft_ckid, y:Flist_ckid, y:Fsigmatel
+                             3500 
+                             3501         global  FClearSourceBuffer, FEncodeADPCMFrame
+                             3502         global  FEncode_IMA_ADPCM_header, FEncode_MS_ADPCM_header
+                             3503         global  FEncode_PCM_header, FFadeoutPreviousFrames
+                             3504         global  FGetSamplestoFade, FIncrement_Counters
+                             3505         global  FInitialize_Wave_Header, FReset_ADPCM_States
+                             3506         global  FWrite_Wave_Header
+                             3507 
+                             3508         local   L4, L6, L17, L18, L19, L20, L23, L24, L25, L27, L28, L29
+                             3509         local   L30, L31, L32, L33, L34, L35, L36, L37, L38, L40, L41, L44
+                             3510         local   L45, L46, L47, L48, L49, L50, L51, L52, L53, L54, L56, L57
+                             3511         local   L65, L66, L67, L68, L69, L71, L82, L84, L85, L86, L87, L88
+                             3512         local   L89, L90, L91, ss_EncodeADPCMFrame
+                             3513         local   ss_Encode_IMA_ADPCM_header, ss_Encode_MS_ADPCM_header
+                             3514         local   ss_Encode_PCM_header, ss_FadeoutPreviousFrames
+                             3515         local   ss_GetSamplestoFade, ss_Initialize_Wave_Header
+                             3516         local   ss_Reset_ADPCM_States, ss_Write_Wave_Header
+                             3517 
+                             3518         calls   "EncodeADPCMFrame", "Encode_IMA_ADPCM_Block"
+                             3519         calls   "EncodeADPCMFrame", "Encode_MS_ADPCM_Block"
+                             3520         calls   "EncodeADPCMFrame", "Encode_PCM_Block", "FSFileWrite"
+                             3521         calls   "Encode_IMA_ADPCM_header", "WriteWord"
+                             3522         calls   "Encode_MS_ADPCM_header", "WriteWord"
+                             3523         calls   "Encode_PCM_header", "WriteWord"
+                             3524         calls   "FadeoutPreviousFrames", "ClearSourceBuffer"
+                             3525         calls   "FadeoutPreviousFrames", "EncodeADPCMFrame", "FSFileAppend"
+                             3526         calls   "FadeoutPreviousFrames", "FSFileClose", "FSFileOpen"
+                             3527         calls   "FadeoutPreviousFrames", "FSFileSize", "GetSamplestoFade"
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  45
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             3528         calls   "FadeoutPreviousFrames", "Rdiv_iii", "Rdiv_lll"
+                             3529         calls   "FadeoutPreviousFrames", "Reset_ADPCM_States", "fseek"
+                             3530         calls   "GetSamplestoFade", "FSFileRead"
+                             3531         calls   "Initialize_Wave_Header", "ClearSourceBuffer", "Rdiv_lll"
+                             3532         calls   "Reset_ADPCM_States", "Init_IMA_ADPCM_States"
+                             3533         calls   "Write_Wave_Header", "Encode_IMA_ADPCM_header"
+                             3534         calls   "Write_Wave_Header", "Encode_MS_ADPCM_header"
+                             3535         calls   "Write_Wave_Header", "Encode_PCM_header", "WriteDWord"
+                             3536         calls   "Write_Wave_Header", "WriteWord"
+                             3537 

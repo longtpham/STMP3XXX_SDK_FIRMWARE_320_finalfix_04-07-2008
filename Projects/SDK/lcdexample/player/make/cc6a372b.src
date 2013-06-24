@@ -1,0 +1,3890 @@
+; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00099544
+; options: -OG -si -DPLAYER -DALL -DNAND4 -DDRM -DJANUS -DC_LCD -DJPG_TOOL
+;          -DLYRIC_TOOL -DSMV_TOOL -DALBUMART_TOOLexit -DSTMP_BUILD_PLAYER
+;          -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD -DFULL_PLAYER_KERNEL
+;          -DDCDC_POWER_TRANSFER -DREVB_ENGR_BD -DCLCD -DCOLOR_65K
+;          -DS6B33B0A_LCD -DBACKLIGHT -DSYNC_LYRICS -DJPEG_DECODER -DJPEG_APP
+;          -DMOTION_VIDEO -DPLAYLIST2_MULTIMEDIA -DTUNER_STFM1000
+;          -DSD_USE_100KHZ_TUNING_GRID -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+;          -DCHKDSK -DJANUS_BUILD -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400
+;          -DENGR_BD -DUSE_PLAYLIST3 -DBATTERY_TYPE_ALKALINE -w68 -w66
+;          -I..\output_3500\include
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+;          -I..\..\..\..\..\System\Common\symbols
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+;          -I..\..\..\..\..\FileSystem\Fat32\h
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+;          -I..\..\..\..\..\Algorithms\Decoders\Jpeg
+;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\FileSystem\Fat32\h
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+;          -I..\..\..\..\..\devicedriver\media\include
+;          -I..\..\..\..\..\devicedriver\media\ddildl
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\DeviceDriver\Media\include
+;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+;          -I..\..\..\..\..\devicedriver\media\ddildl
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\libsource\sysserialnumber
+;          -I..\..\..\..\..\FileSystem\Fat32\h
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+;          -I..\..\..\..\..\System\Common\rtcaccess
+;          -I..\..\..\..\..\System\Common\playlist3
+;          -I..\..\..\..\..\System\Common\record
+;          -I..\..\..\..\..\devicedriver\display\samsung_s6b33b0a
+;          -I..\..\..\..\..\System\MsgModules\Hardware\Display\SAL\colorlcdsal
+;          -I..\..\..\..\..\System\Common\mp3filename
+;          -I..\..\..\..\..\FileSystem\chkdsk\include
+;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_ALKALINE -Dk_opt_single_fat
+;          -g -O2 -R -Cs -DMS_ADPCM -DSMV_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+;          -I..\..\..\..\..\devicedriver\display
+;          -I..\..\..\..\..\System\MsgModules\Hardware\Display
+;          -I..\..\..\..\..\devicedriver\display\samsung_s6b33b0a -MmyL
+
+	page	132
+	opt	nops,now109,noop,opjmp,norp,w139,noopspeed,oprep
+	SYMB	MODP, 52, 31, 387
+	SYMB	NAME, "sysdisplay"
+	SYMB	TOOL, "TASKING DSP2410 C compiler v1.5", 1
+	SYMB	TYPE, 256, "bit", 'g', 0, 1
+	SYMB	FILE, "..\\..\\..\\..\\..\\projects\\sdk\\lcdexample\\player\\display\\sysdisplay.c"
+
+;   sysdisplay.c:
+; 1    |#include "types.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\inc\\types.h"
+
+; 1    |////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+; 3    |//
+; 4    |// Filename: types.h
+; 5    |// Description: Standard data types
+; 6    |////////////////////////////////////////////////////////////////////////////////
+; 7    |
+; 8    |#ifndef _TYPES_H
+; 9    |#define _TYPES_H
+; 10   |
+; 11   |// TODO:  move this outta here!
+; 12   |#if !defined(NOERROR)
+; 13   |#define NOERROR 0
+; 14   |#define SUCCESS 0
+; 15   |#endif 
+; 16   |#if !defined(SUCCESS)
+; 17   |#define SUCCESS  0
+; 18   |#endif
+; 19   |#if !defined(ERROR)
+; 20   |#define ERROR   -1
+; 21   |#endif
+; 22   |#if !defined(FALSE)
+; 23   |#define FALSE 0
+; 24   |#endif
+; 25   |#if !defined(TRUE)
+; 26   |#define TRUE  1
+; 27   |#endif
+; 28   |
+; 29   |#if !defined(NULL)
+; 30   |#define NULL 0
+; 31   |#endif
+; 32   |
+; 33   |#define MAX_INT     0x7FFFFF
+; 34   |#define MAX_LONG    0x7FFFFFffffff
+; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+; 36   |#define MAX_ULONG   (-1) 
+; 37   |
+; 38   |//#define WORD_SIZE   24              // word size in bits
+; 39   |//#define BYTES_PER_WORD 3            // 8 bit bytes
+; 40   |
+; 41   |#define WORD_SIZE   24              // word size in bits
+; 42   |#define BYTES_PER_WORD 3            // 8 bit bytes
+; 43   |
+; 44   |
+; 45   |#define BYTE    unsigned char       // btVarName
+; 46   |#define CHAR    signed char         // cVarName
+; 47   |#define USHORT  unsigned short      // usVarName
+; 48   |#define SHORT   unsigned short      // sVarName
+; 49   |#define WORD    unsigned int        // wVarName
+; 50   |#define INT     signed int          // iVarName
+; 51   |#define DWORD   unsigned long       // dwVarName
+; 52   |#define LONG    signed long         // lVarName
+; 53   |#define BOOL    unsigned int        // bVarName
+; 54   |#define FRACT   _fract              // frVarName
+; 55   |#define LFRACT  long _fract         // lfrVarName
+; 56   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+; 57   |#define FLOAT   float               // fVarName
+; 58   |#define DBL     double              // dVarName
+; 59   |#define ENUM    enum                // eVarName
+; 60   |#define CMX     _complex            // cmxVarName
+; 61   |typedef WORD UCS3;                   // 
+; 62   |
+; 63   |#define UINT16  unsigned short
+; 64   |#define UINT8   unsigned char	
+; 65   |#define UINT32  unsigned long
+; 66   |#define UINT64  unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 67   |#define INT64   unsigned long	// need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+; 68   |#define WCHAR   UINT16
+; 69   |
+; 70   |//UINT128 is 16 bytes or 6 words
+; 71   |typedef struct UINT128_3500 {   
+; 72   |    int val[6];     
+; 73   |} UINT128_3500;
+; 74   |
+; 75   |#define UINT128   UINT128_3500
+; 76   |
+; 77   |// Little endian word packed byte strings:   
+; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 80   |// Little endian word packed byte strings:   
+; 81   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+; 82   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+; 83   |
+; 84   |// Declare Memory Spaces To Use When Coding
+; 85   |// A. Sector Buffers
+; 86   |#define SECTOR_BUFFER_MEM_X _X
+; 87   |#define SECTOR_BUFFER_MEM_Y _Y
+; 88   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+; 89   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+
+	SYMB	TYPE, 257, "SECTOR_BUFFER", 'T', #18
+
+; 90   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+; 91   |// B. Media DDI Memory
+; 92   |#define MEDIA_DDI_MEM _Y
+; 93   |
+; 94   |
+; 95   |
+; 96   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+; 97   |// Examples of circular pointers:
+; 98   |//    INT CIRC cpiVarName
+; 99   |//    DWORD CIRC cpdwVarName
+; 100  |
+; 101  |#define RETCODE INT                 // rcVarName
+; 102  |
+; 103  |// generic bitfield structure
+; 104  |struct Bitfield {
+; 105  |    unsigned int B0  :1;
+; 106  |    unsigned int B1  :1;
+; 107  |    unsigned int B2  :1;
+; 108  |    unsigned int B3  :1;
+; 109  |    unsigned int B4  :1;
+; 110  |    unsigned int B5  :1;
+; 111  |    unsigned int B6  :1;
+; 112  |    unsigned int B7  :1;
+; 113  |    unsigned int B8  :1;
+; 114  |    unsigned int B9  :1;
+; 115  |    unsigned int B10 :1;
+; 116  |    unsigned int B11 :1;
+; 117  |    unsigned int B12 :1;
+; 118  |    unsigned int B13 :1;
+; 119  |    unsigned int B14 :1;
+; 120  |    unsigned int B15 :1;
+; 121  |    unsigned int B16 :1;
+; 122  |    unsigned int B17 :1;
+; 123  |    unsigned int B18 :1;
+; 124  |    unsigned int B19 :1;
+; 125  |    unsigned int B20 :1;
+; 126  |    unsigned int B21 :1;
+; 127  |    unsigned int B22 :1;
+; 128  |    unsigned int B23 :1;
+; 129  |};
+; 130  |
+; 131  |union BitInt {
+; 132  |	struct Bitfield B;
+; 133  |	int	   I;
+; 134  |};
+; 135  |
+; 136  |#define MAX_MSG_LENGTH 10
+; 137  |struct CMessage
+; 138  |{
+; 139  |	unsigned int m_uLength;
+; 140  |	unsigned int m_uMsg[MAX_MSG_LENGTH];
+; 141  |};
+; 142  |
+; 143  |typedef struct {
+; 144  |    WORD m_wLength;
+; 145  |    WORD m_wMessage;
+; 146  |    WORD m_wParams[MAX_MSG_LENGTH];
+; 147  |} Message;
+; 148  |
+; 149  |struct MessageQueueDescriptor
+; 150  |{
+; 151  |	int *m_pBase;
+; 152  |	int m_iModulo;
+; 153  |	int m_iSize;
+; 154  |	int *m_pHead;
+; 155  |	int *m_pTail;
+; 156  |};
+; 157  |
+; 158  |struct ModuleEntry
+; 159  |{
+; 160  |    int m_iSignaledEventMask;
+; 161  |    int m_iWaitEventMask;
+; 162  |    int m_iResourceOfCode;
+; 163  |    struct MessageQueueDescriptor *m_pMessageQueue;
+; 164  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+; 165  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+; 166  |    int m_uTimeOutHigh;
+; 167  |    int m_uTimeOutLow;
+; 168  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+; 169  |};
+; 170  |
+; 171  |union WaitMask{
+; 172  |    struct B{
+; 173  |        unsigned int m_bNone     :1;
+; 174  |        unsigned int m_bMessage  :1;
+; 175  |        unsigned int m_bTimer    :1;
+; 176  |        unsigned int m_bButton   :1;
+; 177  |    } B;
+; 178  |    int I;
+; 179  |} ;
+; 180  |
+; 181  |
+; 182  |struct Button {
+; 183  |	WORD wButtonEvent;
+; 184  |	WORD wUnused[MAX_MSG_LENGTH];	
+; 185  |};
+; 186  |
+; 187  |struct Message {
+; 188  |	WORD wMsgLength;
+; 189  |	WORD wMsgCommand;
+; 190  |	WORD wMsgParms[MAX_MSG_LENGTH-1];
+; 191  |};
+; 192  |
+; 193  |union EventTypes {
+; 194  |	struct CMessage msg;
+; 195  |	struct Button Button ;
+; 196  |	struct Message Message;
+; 197  |};
+; 198  |
+; 199  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+; 200  |#define BUILD_TYPE_UPDATER  0x100
+; 201  |#define BUILD_TYPE_HOSTLINK 0x101
+; 202  |#define BUILD_TYPE_PLAYER   0x102
+; 203  |
+; 204  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+; 205  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+; 206  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+; 207  |
+; 208  |#if DEBUG
+; 209  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+; 210  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+; 211  |#else 
+; 212  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+; 213  |#define DebugBuildAssert(x)    
+; 214  |#endif
+; 215  |
+; 216  |// Do this in your C files to make a reminder that's displayed during the build.
+; 217  |//  #pragma asm
+; 218  |//  WARN 'Note to builder: reminder to do this after verifying that'
+; 219  |//  #pragma endasm
+; 220  |
+; 221  |
+; 222  |#ifdef COLOR_262K
+; 223  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+; 224  |#elif defined(COLOR_65K)
+; 225  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+; 226  |#else
+; 227  |#define RGB(r,g,b) 	 ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+; 228  |#endif
+; 229  |    
+; 230  |#endif // #ifndef _TYPES_H
+
+	SYMB	ENDF
+
+; 2    |#include "exec.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\inc\\exec.h"
+
+; 1    |#ifndef EXEC_H
+; 2    |#define EXEC_H
+; 3    |
+; 4    |
+; 5    |void _reentrant SysPostMessage(int iLength,...);
+; 6    |int _asmfunc GetMessage(struct MessageQueueDescriptor*,struct CMessage * );
+; 7    |long _asmfunc SysGetCurrentTime(void);
+; 8    |
+; 9    |
+; 10   |#endif
+
+	SYMB	ENDF
+
+; 3    |#include "display.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\projects\\sdk\\lcdexample\\player\\display\\display.h"
+
+; 1    |#ifndef _DISPLAY_H
+; 2    |#define _DISPLAY_H
+; 3    |
+; 4    |// display bits
+; 5    |#define DISPLAY_CLEAR_DISPLAY_BITPOS        0
+; 6    |
+; 7    |#define DISPLAY_ENCODER_TRACK_TIME_BITPOS   1
+; 8    |#define DISPLAY_ENCODER_TRACK_NAME_BITPOS   2
+; 9    |#define DISPLAY_RECORD_MODE_BITPOS          3
+; 10   |
+; 11   |//This bit (DISPLAY_MISC_BITPOS) is set to allow DisplayHints to be non zero, but does not map
+; 12   |//to anything in UpdateDisplay();  (meant to be used to indicate that specific
+; 13   |//things that are specific for that menu.
+; 14   |#define DISPLAY_MISC_BITPOS                 4
+; 15   |
+; 16   |#define DISPLAY_FMTUNER_FREQUENCY           5
+; 17   |#define DISPLAY_FMTUNER_PRESET              6
+; 18   |#define DISPLAY_FMTUNER_STRENGTH            7
+; 19   |
+; 20   |#define DISPLAY_PLAYSTATE_BITPOS             9
+; 21   |#define DISPLAY_AB_ICON_BITPOS              10
+; 22   |#define DISPLAY_PLAYMODE_BITPOS             11
+; 23   |#define DISPLAY_PLAYSET_BITPOS              12
+; 24   |
+; 25   |//Playback info
+; 26   |#define DISPLAY_EQ_BITPOS                   13
+; 27   |#define DISPLAY_VOLUME_BITPOS               14
+; 28   |
+; 29   |//Track Info
+; 30   |#define DISPLAY_SONGARTISTALBUM_BITPOS      15
+; 31   |#define DISPLAY_SONGTITLE_BITPOS            16
+; 32   |#define DISPLAY_CURRENTTRACK_BITPOS         17
+; 33   |#define DISPLAY_TRACKTIME_BITPOS            18
+; 34   |#define DISPLAY_TOTALTRACKTIME_BITPOS        8
+; 35   |#define DISPLAY_BITRATE_BITPOS              19 
+; 36   |
+; 37   |//Device status info
+; 38   |#define DISPLAY_LOCK_BITPOS                 20
+; 39   |#define DISPLAY_DISK_BITPOS                 21
+; 40   |#define DISPLAY_BATTERY_BITPOS              22
+; 41   |#define DISPLAY_ALBUMART_BITPOS				23
+; 42   |
+; 43   |union DisplayHints
+; 44   |{
+; 45   |    struct {
+; 46   |        int ClearDisplay        :1;//0
+; 47   |        int EncoderTrackTime    :1;//1
+; 48   |        int EncoderTrackName    :1;//2
+; 49   |        int RecordMode          :1;//3
+; 50   |        int Misc                :1;//4      
+; 51   |        int FMTunerFrequency    :1;//5
+; 52   |        int FMTunerPreset       :1;//6
+; 53   |        int FMTunerStrength     :1;//7
+; 54   |        int TotalTrackTime      :1;//8
+; 55   |        int PlayState           :1;//9
+; 56   |        int ABIcon              :1;//10
+; 57   |        int PlayMode            :1;//11
+; 58   |        int PlaySet             :1;//12
+; 59   |        int EQ                  :1;//13
+; 60   |        int Volume              :1;//14
+; 61   |        int SongArtistAlbum     :1;//15
+; 62   |        int SongTitle           :1;//16
+; 63   |        int CurrentTrack        :1;//17
+; 64   |        int TrackTime           :1;//18
+; 65   |        int Bitrate             :1;//19
+; 66   |        int LockIcon            :1;//20
+; 67   |        int Disk                :1;//21
+; 68   |        int Battery             :1;//22
+; 69   |		int AlbumArt			:1;//23
+; 70   |    } bits;
+; 71   |    WORD I;
+; 72   |};
+; 73   |
+; 74   |// setup default display for all menus
+; 75   |// can be adjusted in each menus as required.
+; 76   |#define COMMON_DISPLAY_ALL  (\ 
+; 77   |                                (1<<DISPLAY_BATTERY_BITPOS)|\ 
+; 78   |                                (1<<DISPLAY_LOCK_BITPOS)|\ 
+; 79   |                                (1<<DISPLAY_DISK_BITPOS)|\ 
+; 80   |                                (1<<DISPLAY_PLAYSET_BITPOS)|\ 
+; 81   |                                (1<<DISPLAY_AB_ICON_BITPOS)|\ 
+; 82   |                                (1<<DISPLAY_EQ_BITPOS)|\ 
+; 83   |                                (1<<DISPLAY_PLAYMODE_BITPOS)|\ 
+; 84   |                                (1<<DISPLAY_PLAYSTATE_BITPOS)\ 
+; 85   |                                )
+; 86   |                                
+; 87   |
+; 88   |
+; 89   |
+; 90   |#define SPECTROGRAM_MENU_DISPLAY_ALL  (\ 
+; 91   |                                (1<<DISPLAY_LOCK_BITPOS)|\ 
+; 92   |                                (1<<DISPLAY_DISK_BITPOS)|\ 
+; 93   |                                (1<<DISPLAY_PLAYSET_BITPOS)|\ 
+; 94   |                                (1<<DISPLAY_AB_ICON_BITPOS)|\ 
+; 95   |                                (1<<DISPLAY_EQ_BITPOS)|\ 
+; 96   |                                (1<<DISPLAY_PLAYMODE_BITPOS)|\ 
+; 97   |                                (1<<DISPLAY_PLAYSTATE_BITPOS)\ 
+; 98   |                                )
+; 99   |                                
+; 100  |
+; 101  |#ifndef JPEG_ALBUM_ART
+; 102  |#define MUSIC_MENU_DISPLAY_ALL  (\ 
+; 103  |                                COMMON_DISPLAY_ALL|\ 
+; 104  |                                (1<<DISPLAY_PLAYSTATE_BITPOS)|\ 
+; 105  |                                (1<<DISPLAY_VOLUME_BITPOS)|\ 
+; 106  |                                (1<<DISPLAY_SONGARTISTALBUM_BITPOS)|\ 
+; 107  |                                (1<<DISPLAY_SONGTITLE_BITPOS)|\ 
+; 108  |                                (1<<DISPLAY_CURRENTTRACK_BITPOS)|\ 
+; 109  |                                (1<<DISPLAY_TRACKTIME_BITPOS)|\ 
+; 110  |                                (1<<DISPLAY_TOTALTRACKTIME_BITPOS)\ 
+; 111  |                                )
+; 112  |#else
+; 113  |#define MUSIC_MENU_DISPLAY_ALL  (\ 
+; 114  |                                COMMON_DISPLAY_ALL|\ 
+; 115  |                                (1<<DISPLAY_ALBUMART_BITPOS)|\ 
+; 116  |                                (1<<DISPLAY_PLAYSTATE_BITPOS)|\ 
+; 117  |                                (1<<DISPLAY_VOLUME_BITPOS)|\ 
+; 118  |                                (1<<DISPLAY_SONGARTISTALBUM_BITPOS)|\ 
+; 119  |                                (1<<DISPLAY_SONGTITLE_BITPOS)|\ 
+; 120  |                                (1<<DISPLAY_CURRENTTRACK_BITPOS)|\ 
+; 121  |                                (1<<DISPLAY_TRACKTIME_BITPOS)|\ 
+; 122  |                                (1<<DISPLAY_TOTALTRACKTIME_BITPOS)\ 
+; 123  |                                )
+; 124  |#endif
+; 125  |
+; 126  |#ifndef JPEG_ALBUM_ART
+; 127  |#define MUSIC_MENU_DISPLAY_NEW_TRACK (\ 
+; 128  |                                (1<<DISPLAY_SONGARTISTALBUM_BITPOS)|\ 
+; 129  |                                (1<<DISPLAY_SONGTITLE_BITPOS)|\ 
+; 130  |                                (1<<DISPLAY_CURRENTTRACK_BITPOS)|\ 
+; 131  |                                (1<<DISPLAY_TRACKTIME_BITPOS)|\ 
+; 132  |                                (1<<DISPLAY_TOTALTRACKTIME_BITPOS)|\ 
+; 133  |                                (1<<DISPLAY_AB_ICON_BITPOS)|\ 
+; 134  |                                (1<<DISPLAY_PLAYSTATE_BITPOS)\ 
+; 135  |                                )
+; 136  |#else
+; 137  |#define MUSIC_MENU_DISPLAY_NEW_TRACK (\ 
+; 138  |                                (1<<DISPLAY_ALBUMART_BITPOS)|\ 
+; 139  |                                (1<<DISPLAY_SONGARTISTALBUM_BITPOS)|\ 
+; 140  |                                (1<<DISPLAY_SONGTITLE_BITPOS)|\ 
+; 141  |                                (1<<DISPLAY_CURRENTTRACK_BITPOS)|\ 
+; 142  |                                (1<<DISPLAY_TRACKTIME_BITPOS)|\ 
+; 143  |                                (1<<DISPLAY_TOTALTRACKTIME_BITPOS)|\ 
+; 144  |                                (1<<DISPLAY_AB_ICON_BITPOS)|\ 
+; 145  |                                (1<<DISPLAY_PLAYSTATE_BITPOS)\ 
+; 146  |                                )
+; 147  |#endif
+; 148  |
+; 149  |
+; 150  |#define MVIDEO_MENU_DISPLAY_ALL ((1<<DISPLAY_CURRENTTRACK_BITPOS)|(1<<DISPLAY_SONGTITLE_BITPOS))
+; 151  |
+; 152  |
+; 153  |#define VOICE_MENU_DISPLAY_ALL  (\ 
+; 154  |                                COMMON_DISPLAY_ALL|\ 
+; 155  |                                (1<<DISPLAY_PLAYMODE_BITPOS)|\ 
+; 156  |                                (1<<DISPLAY_PLAYSTATE_BITPOS)|\ 
+; 157  |                                (1<<DISPLAY_VOLUME_BITPOS)|\ 
+; 158  |                                (1<<DISPLAY_SONGARTISTALBUM_BITPOS)|\ 
+; 159  |                                (1<<DISPLAY_SONGTITLE_BITPOS)|\ 
+; 160  |                                (1<<DISPLAY_CURRENTTRACK_BITPOS)|\ 
+; 161  |                                (1<<DISPLAY_TOTALTRACKTIME_BITPOS)|\ 
+; 162  |                                (1<<DISPLAY_TRACKTIME_BITPOS)\ 
+; 163  |                                )
+; 164  |
+; 165  |
+; 166  |#define RECORDING_DISPLAY_ALL   (\ 
+; 167  |                                COMMON_DISPLAY_ALL|\ 
+; 168  |                                (1<<DISPLAY_ENCODER_TRACK_TIME_BITPOS)|\ 
+; 169  |                                (1<<DISPLAY_ENCODER_TRACK_NAME_BITPOS)|\ 
+; 170  |                                (1<<DISPLAY_PLAYSTATE_BITPOS)|\ 
+; 171  |                                (1<<DISPLAY_VOLUME_BITPOS)|\ 
+; 172  |                                (1<<DISPLAY_RECORD_MODE_BITPOS)\ 
+; 173  |                                )
+; 174  |
+; 175  |#define BROWSE_MENU_DISPLAY_ALL  (\ 
+; 176  |                                (1<<DISPLAY_BATTERY_BITPOS)|\ 
+; 177  |                                (1<<DISPLAY_LOCK_BITPOS)|\ 
+; 178  |                                (1<<DISPLAY_DISK_BITPOS)|\ 
+; 179  |                                (1<<DISPLAY_PLAYSET_BITPOS)|\ 
+; 180  |                                (1<<DISPLAY_MISC_BITPOS)\ 
+; 181  |                                )
+; 182  |
+; 183  |#define MAIN_MENU_DISPLAY_ALL           (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 184  |
+; 185  |#define EQ_MENU_DISPLAY_ALL             (\ 
+; 186  |                                        COMMON_DISPLAY_ALL|\ 
+; 187  |                                        (1<<DISPLAY_EQ_BITPOS)|\ 
+; 188  |                                        (1<<DISPLAY_VOLUME_BITPOS)\ 
+; 189  |                                        )     // (SDK2.520)
+; 190  |
+; 191  |#define PM_MENU_DISPLAY_ALL             (COMMON_DISPLAY_ALL|(1<<DISPLAY_PLAYMODE_BITPOS)|(1<<DISPLAY_MISC_BITPOS))
+; 192  |#define PWR_MENU_DISPLAY_ALL            (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 193  |#define SETTINGS_MENU_DISPLAY_ALL       (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 194  |#define JPEG_DISPLAY_MENU_DISPLAY_ALL       (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 195  |#define DELETE_MENU_DISPLAY_ALL         (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 196  |#define ABOUT_MENU_DISPLAY_ALL          (COMMON_DISPLAY_ALL)
+; 197  |#define ERASE_MENU_DISPLAY_ALL          ((1<<DISPLAY_BATTERY_BITPOS)|(1<<DISPLAY_LOCK_BITPOS))
+; 198  |
+; 199  |#define CONTRAST_MENU_DISPLAY_ALL       (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 200  |
+; 201  |#define TIME_DATE_MENU_DISPLAY_ALL		(COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 202  |
+; 203  |
+; 204  |#define RECORDTEST_DISPLAY_ALL       (\ 
+; 205  |	                                (1<<DISPLAY_ENCODER_TRACK_TIME_BITPOS)|\ 
+; 206  |									(1<<DISPLAY_ENCODER_TRACK_NAME_BITPOS)|\ 
+; 207  |									(1<<DISPLAY_PLAYSTATE_BITPOS)|\ 
+; 208  |	                                (1<<DISPLAY_RECORD_MODE_BITPOS)|\ 
+; 209  |                                    (1<<DISPLAY_MISC_BITPOS)\ 
+; 210  |									)
+; 211  |
+; 212  |#define SPLASH_MENU_DISPLAY_ALL         (COMMON_DISPLAY_ALL|(1<<DISPLAY_MISC_BITPOS))
+; 213  |// used during track update to force total time update
+; 214  |#define AUTOUPDATE		FALSE
+; 215  |#define FORCEUPDATE		TRUE
+; 216  |
+; 217  |
+; 218  |// based on font used for title/artist display
+; 219  |#define DEFAULT_CHAR_WIDTH  5
+; 220  |
+; 221  |
+; 222  |// LCD dimensions
+; 223  |#ifdef LDS514_LCD
+; 224  |#define   LCD_SIZE_X       96
+; 225  |#define   LCD_SIZE_Y       64
+; 226  |#endif
+; 227  |
+; 228  |#ifdef ILI814_LCD
+; 229  |#define   LCD_SIZE_X       96
+; 230  |#define   LCD_SIZE_Y       64
+; 231  |#endif
+; 232  |
+; 233  |#ifdef ML9341_LCD
+; 234  |#define   LCD_SIZE_X       96
+; 235  |#define   LCD_SIZE_Y       96
+; 236  |#endif
+; 237  |
+; 238  |#ifdef SSD1332_LCD
+; 239  |#define   LCD_SIZE_X       96
+; 240  |#define   LCD_SIZE_Y       64
+; 241  |#endif
+; 242  |
+; 243  |#ifdef S6B33B0A_LCD
+; 244  |#define   LCD_SIZE_X       128
+; 245  |#define   LCD_SIZE_Y       159
+; 246  |#endif
+; 247  |
+; 248  |#ifdef SED15XX_LCD
+; 249  |#define LCD_SIZE_X                      98
+; 250  |#define LCD_SIZE_Y                      64
+; 251  |#endif
+; 252  |
+; 253  |#define LCD_SIZE_ROW                     8
+; 254  |
+; 255  |#define TOP_OF_SCREEN           0
+; 256  |#define LEFT_OF_SCREEN          0
+; 257  |
+; 258  |#ifdef LDS514_LCD
+; 259  |#define   SCREEN_WIDTH       96
+; 260  |#define   SCREEN_HEIGHT       64
+; 261  |#endif
+; 262  |
+; 263  |#ifdef ILI814_LCD
+; 264  |#define   SCREEN_WIDTH       96
+; 265  |#define   SCREEN_HEIGHT       64
+; 266  |#endif
+; 267  |
+; 268  |#ifdef ML9341_LCD
+; 269  |#define   SCREEN_WIDTH       96
+; 270  |#define   SCREEN_HEIGHT       96
+; 271  |#endif
+; 272  |
+; 273  |#ifdef SSD1332_LCD
+; 274  |#define   SCREEN_WIDTH       96
+; 275  |#define   SCREEN_HEIGHT       64
+; 276  |#endif
+; 277  |
+; 278  |#ifdef S6B33B0A_LCD
+; 279  |#define   SCREEN_WIDTH       128
+; 280  |#define   SCREEN_HEIGHT       159
+; 281  |#endif
+; 282  |
+; 283  |#ifdef SED15XX_LCD
+; 284  |#define SCREEN_WIDTH            98
+; 285  |#define SCREEN_HEIGHT           64
+; 286  |#endif
+; 287  |
+; 288  |#define CHAR_SIZE_X             6
+; 289  |#define CHAR_SIZE_Y             8
+; 290  |
+; 291  |// Physical rows are numbered from 0 to LCD_SIZE_Y/LCD_SIZE_ROW
+; 292  |#define LCD_FIRST_ROW_NUM                1
+; 293  |#define LCD_FIRST_ROW_POS_Y=LCD_FIRST_ROW_NUM*LCD_SIZE_ROW  // skipping the first row
+; 294  |
+; 295  |// top row in order from left to right
+; 296  |#define PLAY_STATE_ICON_X_POS   LEFT_OF_SCREEN+0
+; 297  |#define PLAY_STATE_ICON_Y_POS   TOP_OF_SCREEN+0
+; 298  |#define PLAY_STATE_ICON_X_SIZE  12
+; 299  |#define PLAY_STATE_ICON_Y_SIZE  8
+; 300  |
+; 301  |#define REPEAT_ICON_X_POS       LEFT_OF_SCREEN+13
+; 302  |#define REPEAT_ICON_Y_POS       TOP_OF_SCREEN+0
+; 303  |#define REPEAT_ICON_X_SIZE      12
+; 304  |#define REPEAT_ICON_Y_SIZE      8
+; 305  |
+; 306  |#define SHUFFLE_ICON_X_POS      LEFT_OF_SCREEN+25
+; 307  |#define SHUFFLE_ICON_Y_POS      TOP_OF_SCREEN+0
+; 308  |#define SHUFFLE_ICON_X_SIZE     5     // includes white space on left side of .bmp
+; 309  |#define SHUFFLE_ICON_Y_SIZE     8
+; 310  |
+; 311  |#define AB_ICON_X_POS           LEFT_OF_SCREEN+31
+; 312  |#define AB_ICON_Y_POS           TOP_OF_SCREEN+0
+; 313  |#define AB_ICON_X_SIZE          12
+; 314  |#define AB_ICON_Y_SIZE          8
+; 315  |
+; 316  |#ifdef	AUDIBLE
+; 317  |#define SECNAV_ICON_X_POS       LEFT_OF_SCREEN+31
+; 318  |#define SECNAV_ICON_Y_POS       TOP_OF_SCREEN+0
+; 319  |#define SECNAV_ICON_X_SIZE      12
+; 320  |#define SECNAV_ICON_Y_SIZE      8
+; 321  |#endif
+; 322  |
+; 323  |#define EQ_ICON_X_POS           LEFT_OF_SCREEN+44
+; 324  |#define EQ_ICON_Y_POS           TOP_OF_SCREEN+0
+; 325  |#define EQ_ICON_X_SIZE          22
+; 326  |#define EQ_ICON_Y_SIZE          8
+; 327  |
+; 328  |#ifdef WOW
+; 329  |#define WOW_X_POS               EQ_ICON_X_POS
+; 330  |#define WOW_Y_POS               EQ_ICON_Y_POS
+; 331  |#endif
+; 332  |
+; 333  |
+; 334  |// media icon
+; 335  |#define DISK_X_POS              LEFT_OF_SCREEN+66
+; 336  |#define DISK_Y_POS              TOP_OF_SCREEN
+; 337  |#define DISK_X_SIZE             8
+; 338  |#define DISK_Y_SIZE             8
+; 339  |
+; 340  |// hold icon
+; 341  |#define LOCK_ICON_X_POS         LEFT_OF_SCREEN+73
+; 342  |#define LOCK_ICON_Y_POS         TOP_OF_SCREEN
+; 343  |#define LOCK_ICON_X_SIZE        8
+; 344  |#define LOCK_ICON_Y_SIZE        8
+; 345  |
+; 346  |#define BATTERY_ICON_X_POS      LEFT_OF_SCREEN+80
+; 347  |#define BATTERY_ICON_Y_POS      TOP_OF_SCREEN+0
+; 348  |#define BATTERY_ICON_X_SIZE     16
+; 349  |#define BATTERY_ICON_Y_SIZE     8
+; 350  |#define BATTERY_RESOURCE        RSRC_BATTERY_00
+; 351  |
+; 352  |// second row from left to right
+; 353  |#define VOLUME_ICON_X_POS       LEFT_OF_SCREEN+0
+; 354  |#define VOLUME_ICON_Y_POS       TOP_OF_SCREEN+8
+; 355  |#define VOLUME_ICON_X_SIZE      48
+; 356  |#define VOLUME_ICON_Y_SIZE      8
+; 357  |#define VOLUME_RESOURCE         RSRC_ICON_VOL_00
+; 358  |#define VOLUME_NUM_ICONS        27
+; 359  |
+; 360  |#define PLAYSET_X_POS           SCREEN_WIDTH-8
+; 361  |#define PLAYSET_Y_POS           TOP_OF_SCREEN+8
+; 362  |
+; 363  |// music menu
+; 364  |#define SONG_TITLE_X_POS        LEFT_OF_SCREEN+0
+; 365  |#define SONG_TITLE_Y_POS        TOP_OF_SCREEN+24
+; 366  |#define SONG_TITLE_X_SIZE       SCREEN_WIDTH
+; 367  |#define SONG_TITLE_Y_SIZE       8
+; 368  |
+; 369  |#define SONG_ARTIST_X_POS       LEFT_OF_SCREEN
+; 370  |#define SONG_ARTIST_Y_POS       TOP_OF_SCREEN+32
+; 371  |#define SONG_ARTIST_X_SIZE      SCREEN_WIDTH
+; 372  |#define SONG_ARTIST_Y_SIZE      8
+; 373  |
+; 374  |#define SONG_ALBUM_X_POS       LEFT_OF_SCREEN
+; 375  |#define SONG_ALBUM_Y_POS       TOP_OF_SCREEN+40
+; 376  |#define SONG_ALBUM_X_SIZE      SCREEN_WIDTH
+; 377  |#define SONG_ALBUM_Y_SIZE      8
+; 378  |
+; 379  |
+; 380  |#define TRACK_NUMBER_X_POS      LEFT_OF_SCREEN+40
+; 381  |#define TRACK_NUMBER_Y_POS      TOP_OF_SCREEN+56
+; 382  |#define TRACK_NUMBER_X_SIZE     6*3
+; 383  |#define TRACK_NUMBER_Y_SIZE     8
+; 384  |
+; 385  |#define TRACK_COUNT_X_POS       TRACK_NUMBER_X_POS+TRACK_NUMBER_X_SIZE+6
+; 386  |#define TRACK_COUNT_Y_POS       TOP_OF_SCREEN+56
+; 387  |#define TRACK_COUNT_X_SIZE      6*3
+; 388  |#define TRACK_COUNT_Y_SIZE      8
+; 389  |
+; 390  |#define TRACK_CURR_TIME_X_POS       LEFT_OF_SCREEN+28
+; 391  |#define TRACK_CURR_TIME_Y_POS       TOP_OF_SCREEN+48
+; 392  |#define TRACK_CURR_TIME_X_SIZE      25
+; 393  |#define TRACK_CURR_TIME_Y_SIZE      8
+; 394  |
+; 395  |#define TRACK_SLASH_X_SIZE          5
+; 396  |#define TRACK_SLASH_X_POS           TRACK_TOTAL_TIME_X_POS-TRACK_SLASH_X_SIZE
+; 397  |#define TRACK_SLASH_Y_POS           TRACK_CURR_TIME_Y_POS
+; 398  |
+; 399  |#define TRACK_TOTAL_TIME_X_POS      LEFT_OF_SCREEN+60
+; 400  |#define TRACK_TOTAL_TIME_Y_POS      TRACK_CURR_TIME_Y_POS
+; 401  |#define TRACK_TOTAL_TIME_X_SIZE     28
+; 402  |#define TRACK_TOTAL_TIME_Y_SIZE     8
+; 403  |
+; 404  |#define VBR_FLAG_X_POS      LEFT_OF_SCREEN
+; 405  |#define VBR_FLAG_Y_POS      TRACK_CURR_TIME_Y_POS
+; 406  |#define VBR_FLAG_X_SIZE     20
+; 407  |#define VBR_FLAG_Y_SIZE     8
+; 408  |#ifdef JPEG_ALBUM_ART
+; 409  |// Album art display parameters:
+; 410  |#define	ALBUM_ART_X_POS		TOP_OF_SCREEN
+; 411  |#define	ALBUM_ART_Y_POS		80
+; 412  |#define	ALBUM_ART_X_SIZE	SCREEN_WIDTH
+; 413  |#define	ALBUM_ART_Y_SIZE	(SCREEN_HEIGHT-ALBUM_ART_Y_POS)
+; 414  |#endif
+; 415  |// recording display
+; 416  |// recording display
+; 417  |#define REC_CURR_TIME_X_POS       LEFT_OF_SCREEN
+; 418  |#define REC_CURR_TIME_Y_POS       TOP_OF_SCREEN+48
+; 419  |#define REC_CURR_TIME_X_SIZE      12
+; 420  |#define REC_CURR_TIME_Y_SIZE      8
+; 421  |
+; 422  |#define REC_TOTAL_TIME_X_POS      LEFT_OF_SCREEN+45
+; 423  |#define REC_TOTAL_TIME_Y_POS      TOP_OF_SCREEN+48
+; 424  |#define REC_TOTAL_TIME_X_SIZE     28
+; 425  |#define REC_TOTAL_TIME_Y_SIZE     8
+; 426  |
+; 427  |// Playback Display with hours added.
+; 428  |#ifdef LDS514_LCD
+; 429  |#define HR_TRACK_CURR_TIME_X_POS  	LEFT_OF_SCREEN+18
+; 430  |#endif
+; 431  |
+; 432  |#ifdef ILI814_LCD
+; 433  |#define HR_TRACK_CURR_TIME_X_POS  	LEFT_OF_SCREEN+18
+; 434  |#endif
+; 435  |
+; 436  |#ifdef ML9341_LCD
+; 437  |#define HR_TRACK_CURR_TIME_X_POS  	LEFT_OF_SCREEN+18
+; 438  |#endif
+; 439  |
+; 440  |#ifdef SSD1332_LCD
+; 441  |#define HR_TRACK_CURR_TIME_X_POS  	LEFT_OF_SCREEN+18
+; 442  |#endif
+; 443  |
+; 444  |#ifdef S6B33B0A_LCD
+; 445  |#define HR_TRACK_CURR_TIME_X_POS  	LEFT_OF_SCREEN+18
+; 446  |#endif
+; 447  |
+; 448  |#ifdef SED15XX_LCD
+; 449  |#define HR_TRACK_CURR_TIME_X_POS  	LEFT_OF_SCREEN+24
+; 450  |#endif
+; 451  |
+; 452  |#define HR_TRACK_CURR_TIME_Y_POS 	TOP_OF_SCREEN+48
+; 453  |#define HR_TRACK_CURR_TIME_X_SIZE 	28
+; 454  |#define HR_TRACK_CURR_TIME_Y_SIZE 	8
+; 455  |
+; 456  |#define HR_TRACK_TOTAL_TIME_X_POS 	LEFT_OF_SCREEN+62
+; 457  |#define HR_TRACK_TOTAL_TIME_Y_POS  	TRACK_CURR_TIME_Y_POS
+; 458  |#define HR_TRACK_TOTAL_TIME_X_SIZE 	28
+; 459  |#define HR_TRACK_TOTAL_TIME_Y_SIZE 	8
+; 460  |
+; 461  |//Clear entire Track Time when song changes.
+; 462  |#define CLR_TRACK_TIME_X_POS 		LEFT_OF_SCREEN
+; 463  |#define CLR_TRACK_TIME_Y_POS  		TRACK_CURR_TIME_Y_POS
+; 464  |#define CLR_TRACK_TIME_X_SIZE 		SCREEN_WIDTH
+; 465  |#define CLR_TRACK_TIME_Y_SIZE 		8
+; 466  |
+; 467  |#define HR_TRACK_SLASH_X_SIZE 		4
+; 468  |#define HR_TRACK_SLASH_X_POS    	HR_TRACK_TOTAL_TIME_X_POS-HR_TRACK_SLASH_X_SIZE
+; 469  |#define HR_TRACK_SLASH_Y_POS      	HR_TRACK_CURR_TIME_Y_POS
+; 470  |
+; 471  |                                    // DVRWARN
+; 472  |#define VOICE_SPACE_WARN_X_POS      LEFT_OF_SCREEN 
+; 473  |#define VOICE_SPACE_WARN_Y_POS      SONG_TITLE_Y_POS
+; 474  |#define VOICE_SPACE_WARN_X_SIZE     93
+; 475  |#define VOICE_SPACE_WARN_Y_SIZE     16
+; 476  |
+; 477  |// shutdown
+; 478  |#define SHUTDOWN_PROGRESS_X_POS     LEFT_OF_SCREEN+24
+; 479  |#define SHUTDOWN_PROGRESS_Y_POS     TOP_OF_SCREEN+32
+; 480  |#define SHUTDOWN_PROGRESS_X_SIZE    59
+; 481  |#define SHUTDOWN_PROGRESS_Y_SIZE    16
+; 482  |#define SHUTDOWN_PROGRESS_RESOURCE  RSRC_PDOWN_STATUS_0
+; 483  |
+; 484  |#define SHUTDOWN_STRING_X_POS       LEFT_OF_SCREEN+10
+; 485  |#define SHUTDOWN_STRING_Y_POS       TOP_OF_SCREEN+16
+; 486  |#define SHUTDOWN_STRING_X_SIZE      59
+; 487  |#define SHUTDOWN_STRING_Y_SIZE      16
+; 488  |#define SHUTDOWN_STRING_RESOURCE    RSRC_PDOWN_HOLD_STRING
+; 489  |
+; 490  |#define DEFRAGMENT_STRING_X_POS       LEFT_OF_SCREEN+0
+; 491  |#define DEFRAGMENT_STRING_Y_POS       TOP_OF_SCREEN+16
+; 492  |#define DEFRAGMENT_STRING_X_SIZE      59
+; 493  |#define DEFRAGMENT_STRING_Y_SIZE      16
+; 494  |#define DEFRAGMENT_STRING_RESOURCE    RSRC_DEFRAGMENT_STORE_STRING
+; 495  |
+; 496  |
+; 497  |//contrast display
+; 498  |#define CONTRAST_TITLE_X_POS        LEFT_OF_SCREEN+0
+; 499  |#define CONTRAST_TITLE_Y_POS        TOP_OF_SCREEN+16
+; 500  |
+; 501  |#define CONTRAST_X_POS              LEFT_OF_SCREEN+8
+; 502  |#define CONTRAST_Y_POS              TOP_OF_SCREEN+32
+; 503  |#define CONTRAST_X_SIZE             96
+; 504  |#define CONTRAST_Y_SIZE             8
+; 505  |#define CONTRAST_RESOURCE           RSRC_CONTRAST_LEVEL_0
+; 506  |
+; 507  |//backlight display
+; 508  |#define BACKLIGHT_TITLE_X_POS        LEFT_OF_SCREEN+0
+; 509  |#define BACKLIGHT_TITLE_Y_POS        TOP_OF_SCREEN+24
+; 510  |#define BACKLIGHT_STATE_X_POS        LEFT_OF_SCREEN+0
+; 511  |#define BACKLIGHT_STATE_Y_POS        (LCD_FIRST_ROW_NUM+4)*LCD_SIZE_ROW
+; 512  |
+; 513  |//settings title display
+; 514  |#define SETTINGS_TITLE_X_POS        LEFT_OF_SCREEN+0
+; 515  |#define SETTINGS_TITLE_Y_POS        TOP_OF_SCREEN+8
+; 516  |//jpeg display title display
+; 517  |#define JPEG_DISPLAY_TITLE_X_POS        LEFT_OF_SCREEN+0
+; 518  |#define JPEG_DISPLAY_TITLE_Y_POS        TOP_OF_SCREEN+8
+; 519  |//erase files title display
+; 520  |#define ERASE_TITLE_X_POS           LEFT_OF_SCREEN+0
+; 521  |#define ERASE_TITLE_Y_POS           TOP_OF_SCREEN+8
+; 522  |
+; 523  |// splashscreen
+; 524  |#ifdef LDS514_LCD
+; 525  |#define SPLASH_SCREEN_X_POS         LEFT_OF_SCREEN
+; 526  |#define SPLASH_SCREEN_Y_POS         TOP_OF_SCREEN
+; 527  |#define SPLASH_SCREEN_X_SIZE        96
+; 528  |#define SPLASH_SCREEN_Y_SIZE        64
+; 529  |#define LOCKED_SCREEN_X_POS         LEFT_OF_SCREEN+8
+; 530  |#define LOCKED_SCREEN_Y_POS         TOP_OF_SCREEN+24
+; 531  |#endif
+; 532  |
+; 533  |#ifdef ILI814_LCD
+; 534  |#define SPLASH_SCREEN_X_POS         LEFT_OF_SCREEN
+; 535  |#define SPLASH_SCREEN_Y_POS         TOP_OF_SCREEN
+; 536  |#define SPLASH_SCREEN_X_SIZE        96
+; 537  |#define SPLASH_SCREEN_Y_SIZE        64
+; 538  |#define LOCKED_SCREEN_X_POS         LEFT_OF_SCREEN+8
+; 539  |#define LOCKED_SCREEN_Y_POS         TOP_OF_SCREEN+24
+; 540  |#endif
+; 541  |
+; 542  |#ifdef ML9341_LCD
+; 543  |#define SPLASH_SCREEN_X_POS         LEFT_OF_SCREEN
+; 544  |#define SPLASH_SCREEN_Y_POS         TOP_OF_SCREEN
+; 545  |#define SPLASH_SCREEN_X_SIZE        96
+; 546  |#define SPLASH_SCREEN_Y_SIZE        96
+; 547  |#define LOCKED_SCREEN_X_POS         LEFT_OF_SCREEN+8
+; 548  |#define LOCKED_SCREEN_Y_POS         TOP_OF_SCREEN+24
+; 549  |#endif
+; 550  |
+; 551  |#ifdef SSD1332_LCD
+; 552  |#define SPLASH_SCREEN_X_POS         LEFT_OF_SCREEN
+; 553  |#define SPLASH_SCREEN_Y_POS         TOP_OF_SCREEN
+; 554  |#define SPLASH_SCREEN_X_SIZE        96
+; 555  |#define SPLASH_SCREEN_Y_SIZE        64
+; 556  |#define LOCKED_SCREEN_X_POS         LEFT_OF_SCREEN+8
+; 557  |#define LOCKED_SCREEN_Y_POS         TOP_OF_SCREEN+24
+; 558  |#endif
+; 559  |
+; 560  |#ifdef S6B33B0A_LCD
+; 561  |#define SPLASH_SCREEN_X_POS         LEFT_OF_SCREEN
+; 562  |#define SPLASH_SCREEN_Y_POS         TOP_OF_SCREEN + 16
+; 563  |#define SPLASH_SCREEN_X_SIZE        80
+; 564  |#define SPLASH_SCREEN_Y_SIZE        48    
+; 565  |#define LOCKED_SCREEN_X_POS         LEFT_OF_SCREEN+8
+; 566  |#define LOCKED_SCREEN_Y_POS         TOP_OF_SCREEN+24
+; 567  |#endif
+; 568  |
+; 569  |#ifdef SED15XX_LCD
+; 570  |#define SPLASH_SCREEN_X_POS         LEFT_OF_SCREEN
+; 571  |#define SPLASH_SCREEN_Y_POS         TOP_OF_SCREEN + 16
+; 572  |#define SPLASH_SCREEN_X_SIZE        80
+; 573  |#define SPLASH_SCREEN_Y_SIZE        48    
+; 574  |#define LOCKED_SCREEN_X_POS         LEFT_OF_SCREEN+8
+; 575  |#define LOCKED_SCREEN_Y_POS         TOP_OF_SCREEN+24
+; 576  |#endif
+; 577  |
+; 578  |// FM tuner 
+; 579  |#define FM_TUNER_FREQUENCY_X_POS    LEFT_OF_SCREEN+30
+; 580  |#define FM_TUNER_FREQUENCY_Y_POS    TOP_OF_SCREEN+24
+; 581  |#define FM_TUNER_FREQUENCY_X_SIZE   CHAR_SIZE_X*10
+; 582  |#define FM_TUNER_FREQUENCY_Y_SIZE   CHAR_SIZE_Y
+; 583  |#define FM_TUNER_FREQUENCY_DOT_X_POS    FM_TUNER_FREQUENCY_X_POS+CHAR_SIZE_X*3
+; 584  |#define FM_TUNER_FRAC_FREQUENCY_X_POS    FM_TUNER_FREQUENCY_DOT_X_POS+3
+; 585  |
+; 586  |#define FM_TUNER_PRESET_X_POS       LEFT_OF_SCREEN+30
+; 587  |#define FM_TUNER_PRESET_Y_POS       TOP_OF_SCREEN+34
+; 588  |#define FM_TUNER_PRESET_X_SIZE      CHAR_SIZE_X*5
+; 589  |#define FM_TUNER_PRESET_Y_SIZE      CHAR_SIZE_Y
+; 590  |
+; 591  |#define FM_TUNER_PILOT_X_POS       LEFT_OF_SCREEN+30
+; 592  |#define FM_TUNER_PILOT_Y_POS       TOP_OF_SCREEN+44
+; 593  |
+; 594  |// About menu
+; 595  |#define ABOUT_TITLE_X_POS           LEFT_OF_SCREEN+0
+; 596  |#define ABOUT_TITLE_Y_POS           TOP_OF_SCREEN+LCD_SIZE_ROW
+; 597  |// starting row -- use offsets for the rest
+; 598  |#define ABOUT_LINE_LABEL_X_POS      LEFT_OF_SCREEN+0
+; 599  |#define ABOUT_LINE_LABEL_Y_POS      ABOUT_TITLE_Y_POS+(2*LCD_SIZE_ROW)
+; 600  |
+; 601  |// Delete Menu
+; 602  |#define WARNING_MSG_LINE1_X         LEFT_OF_SCREEN
+; 603  |#define WARNING_MSG_LINE1_Y         (LCD_FIRST_ROW_NUM+1)*LCD_SIZE_ROW
+; 604  |#define WARNING_MSG_LINE2_X         LEFT_OF_SCREEN
+; 605  |#define WARNING_MSG_LINE2_Y         (LCD_FIRST_ROW_NUM+2)*LCD_SIZE_ROW
+; 606  |#define WARNING_MSG_FILE_X          LEFT_OF_SCREEN
+; 607  |#define WARNING_MSG_FILE_Y          (LCD_FIRST_ROW_NUM+4)*LCD_SIZE_ROW
+; 608  |#define WARNING_MSG_YES_X           LEFT_OF_SCREEN
+; 609  |#define WARNING_MSG_YES_Y           (LCD_FIRST_ROW_NUM+6)*LCD_SIZE_ROW
+; 610  |#define DELETE_FAIL_MSG_X           LEFT_OF_SCREEN
+; 611  |#define DELETE_FAIL_MSG_Y           (LCD_FIRST_ROW_NUM+6)*LCD_SIZE_ROW
+; 612  |
+; 613  |_reentrant void DisplayClear (void);
+; 614  |_reentrant void DisplayLowBattery (void);
+; 615  |
+; 616  |_reentrant int DisplayContrast( int bDisplay, int iIgnored1, void *pPtr);
+; 617  |
+; 618  |_reentrant int DisplayBacklight( int bDisplay, int iIgnored1, void *pPtr);
+; 619  |#ifdef WOW
+; 620  |_reentrant int DisplayBar( int bDisplay, int step, void *pPtr);
+; 621  |#endif
+; 622  |extern _X BOOL g_bSongStringScroll;                               
+; 623  |extern _X INT  g_iSongStringOffset;
+; 624  |extern _X INT  g_iSongStringLength;
+; 625  |
+; 626  |extern _X BOOL g_bArtistStringScroll;                               
+; 627  |extern _X INT  g_iArtistStringOffset;
+; 628  |extern _X INT  g_iArtistStringLength;
+; 629  |
+; 630  |
+; 631  |extern _X BOOL g_bAlbumStringScroll;                               
+; 632  |extern _X INT  g_iAlbumStringOffset;
+; 633  |extern _X INT  g_iAlbumStringLength;
+; 634  |
+; 635  |
+; 636  |#endif //_DISPLAY_H
+
+	SYMB	ENDF
+
+; 4    |#include "messages.h"
+
+	SYMB	FILE, "..\\output_3500\\include\\messages.h"
+
+; 1    |/////////////////////////////////////////////////////////////////////////////////
+; 2    |// Copyright(C) SigmaTel, Inc. 2000
+; 3    |// Message defs
+; 4    |/////////////////////////////////////////////////////////////////////////////////
+; 5    |
+; 6    |#if (!defined(MSGEQU_INC))
+; 7    |#define MSGEQU_INC 1
+; 8    |
+; 9    |
+; 10   |#define MAX_MODULE_SIZE   (lc_u_eP_Module_overlay-lc_u_bP_Module_overlay)*3
+; 11   |
+; 12   |
+; 13   |#define MSG_TYPE_DECODER 0x000000
+; 14   |#define MSG_TYPE_ENCODER 0x010000
+; 15   |#define MSG_TYPE_PARSER 0x020000
+; 16   |#define MSG_TYPE_LCD 0x030000
+; 17   |#define MSG_TYPE_MIXER 0x040000
+; 18   |#define MSG_TYPE_SYSTEM 0x050000
+; 19   |#define MSG_TYPE_MENU 0x060000
+; 20   |#define MSG_TYPE_LED 0x070000
+; 21   |#define MSG_TYPE_TUNER 0x080000
+; 22   |#define MSG_TYPE_CHARLCD 0x030000
+; 23   |#define MSG_TYPE_SOFT_TIMER 0x090000
+; 24   |// Equalizer and other effects   
+; 25   |#define MSG_TYPE_GEQ 0x0a0000             
+; 26   |#if (defined(USE_PLAYLIST3))
+; 27   |#define MSG_TYPE_MUSICLIB_PLAY 0x0b0000
+; 28   |#define MSG_TYPE_MUSICLIB_BROWSE 0x0c0000
+; 29   |#define MSG_TYPE_MUSICLIB_PLAYALLNEXT 0x0d0000
+; 30   |#define MSG_TYPE_MUSICLIB_PLAYALLPREV 0x0e0000
+; 31   |#define MSG_TYPE_MUSICLIB_SHUFFLE 0x0f0000
+; 32   |#define MSG_TYPE_MUSICLIB_VOICE 0x100000
+; 33   |#define MSG_TYPE_MUSICLIB_VOICEPLAY 0x110000
+; 34   |#define MSG_TYPE_MUSICLIB_MERGE 0x120000
+; 35   |#endif // IF (@def(USE_PLAYLIST3))
+; 36   |
+; 37   |// Message Structure Offsets
+; 38   |#define MSG_Length 0
+; 39   |#define MSG_ID 1
+; 40   |#define MSG_Argument1 2
+; 41   |#define MSG_Argument2 3
+; 42   |#define MSG_Argument3 4
+; 43   |#define MSG_Argument4 5
+; 44   |#define MSG_Argument5 6
+; 45   |#define MSG_Argument6 7
+; 46   |
+; 47   |
+; 48   |
+; 49   |// LCD Message IDs
+; 50   |#define LCD_FIRST_MSG_ID MSG_TYPE_LCD+0
+; 51   |#define LCD_CLEAR_RANGE MSG_TYPE_LCD+0
+; 52   |#define LCD_PRINT_RANGE_RSRC MSG_TYPE_LCD+1
+; 53   |#define LCD_PRINT_RANGE_ADDR MSG_TYPE_LCD+2
+; 54   |#define LCD_PRINT_RANGE_INV_RSRC MSG_TYPE_LCD+3
+; 55   |#define LCD_PRINT_RANGE_INV_ADDR MSG_TYPE_LCD+4
+; 56   |#define LCD_PRINT_STRING_RSRC MSG_TYPE_LCD+5
+; 57   |#define LCD_PRINT_STRING_ADDR MSG_TYPE_LCD+6
+; 58   |#define LCD_PRINT_STRING_INV_RSRC MSG_TYPE_LCD+7
+; 59   |#define LCD_PRINT_STRING_INV_ADDR MSG_TYPE_LCD+8
+; 60   |#define LCD_SCROLL_DISPLAY MSG_TYPE_LCD+9
+; 61   |#define LCD_READ_LCD_ADDR MSG_TYPE_LCD+10
+; 62   |#define LCD_SET_CONTRAST MSG_TYPE_LCD+11
+; 63   |#define LCD_INC_CONTRAST MSG_TYPE_LCD+12
+; 64   |#define LCD_DEC_CONTRAST MSG_TYPE_LCD+13
+; 65   |#define LCD_BACKLIGHT_ON MSG_TYPE_LCD+14
+; 66   |#define LCD_BACKLIGHT_OFF MSG_TYPE_LCD+15
+; 67   |#define LCD_SET_FONT MSG_TYPE_LCD+16
+; 68   |#define LCD_PRINT_NUMBER MSG_TYPE_LCD+17
+; 69   |#define LCD_PRINT_TIME MSG_TYPE_LCD+18
+; 70   |#define LCD_PRINT_TIME_LONG MSG_TYPE_LCD+19
+; 71   |#define LCD_PRINT_STRING_UNICODE_INV_ADDR MSG_TYPE_LCD+20
+; 72   |#define LCD_PRINT_STRING_UNICODE_ADDR MSG_TYPE_LCD+21
+; 73   |#define LCD_PRINT_STRING_UNICODE_INV_RSRC MSG_TYPE_LCD+22
+; 74   |#define LCD_PRINT_STRING_UNICODE_RSRC MSG_TYPE_LCD+23
+; 75   |#define LCD_BEGIN_FRAME MSG_TYPE_LCD+24
+; 76   |#define LCD_END_FRAME MSG_TYPE_LCD+25
+; 77   |#define LCD_PRINT_NUMBER_INV MSG_TYPE_LCD+26
+; 78   |#define LCD_PRINT_TIME_INV MSG_TYPE_LCD+27
+; 79   |#define LCD_PRINT_TIME_LONG_INV MSG_TYPE_LCD+28
+; 80   |#define LCD_SET_FRAMEBUFFER MSG_TYPE_LCD+29
+; 81   |//send a NULL as Param1 to return to root frame buffer
+; 82   |#define LCD_PUSH_MASK MSG_TYPE_LCD+30
+; 83   |//Param1 = left
+; 84   |//Param2 = top
+; 85   |//Param3 = right
+; 86   |//Param4 = bottom
+; 87   |#define LCD_POP_MASK MSG_TYPE_LCD+31
+; 88   |#define LCD_PRINT_UNICODE_CHAR MSG_TYPE_LCD+32
+; 89   |#define LCD_PRINT_UNICODE_CHAR_INV MSG_TYPE_LCD+33
+; 90   |#define LCD_DISPLAY_HISTOGRAM MSG_TYPE_LCD+34
+; 91   |#define LCD_PRINT_TIME_L_1DIG_HR MSG_TYPE_LCD+35
+; 92   |#define LCD_SET_ICON MSG_TYPE_LCD+36
+; 93   |#define LCD_TEMP_CONTRAST MSG_TYPE_LCD+37
+; 94   |
+; 95   |#define LCD_CLEAR_RANGE_BUFFER MSG_TYPE_LCD+38
+; 96   |#define LCD_PRINT_RANGE_RSRC_BUFFER MSG_TYPE_LCD+39
+; 97   |#define LCD_PRINT_RANGE_INV_RSRC_BUFFER MSG_TYPE_LCD+40
+; 98   |#define LCD_PRINT_RANGE_ADDR_BUFFER MSG_TYPE_LCD+41
+; 99   |#define LCD_PRINT_RANGE_INV_ADDR_BUFFER MSG_TYPE_LCD+42
+; 100  |#define LCD_PRINT_STRING_RSRC_BUFFER MSG_TYPE_LCD+43
+; 101  |#define LCD_PRINT_STRING_INV_RSRC_BUFFER MSG_TYPE_LCD+44
+; 102  |#define LCD_PRINT_STRING_ADDR_BUFFER MSG_TYPE_LCD+45
+; 103  |#define LCD_PRINT_STRING_INV_ADDR_BUFFER MSG_TYPE_LCD+46
+; 104  |#define LCD_PRINT_NUMBER_BUFFER MSG_TYPE_LCD+47
+; 105  |#define LCD_PRINT_NUMBER_INV_BUFFER MSG_TYPE_LCD+48
+; 106  |#define LCD_PRINT_TIME_BUFFER MSG_TYPE_LCD+49
+; 107  |#define LCD_PRINT_TIME_INV_BUFFER MSG_TYPE_LCD+50
+; 108  |#define LCD_PRINT_TIME_LONG_BUFFER MSG_TYPE_LCD+51
+; 109  |#define LCD_PRINT_TIME_LONG_INV_BUFFER MSG_TYPE_LCD+52
+; 110  |#define LCD_PRINT_STRING_UNICODE_ADDR_BUFFER MSG_TYPE_LCD+53
+; 111  |#define LCD_PRINT_STRING_UNICODE_INV_ADDR_BUFFER MSG_TYPE_LCD+54
+; 112  |#define LCD_PRINT_STRING_UNICODE_RSRC_BUFFER MSG_TYPE_LCD+55
+; 113  |#define LCD_PRINT_STRING_UNICODE_INV_RSRC_BUFFER MSG_TYPE_LCD+56
+; 114  |#define LCD_PRINT_UNICODE_CHAR_BUFFER MSG_TYPE_LCD+57
+; 115  |#define LCD_PRINT_UNICODE_CHAR_INV_BUFFER MSG_TYPE_LCD+58
+; 116  |#define LCD_PRINT_TIME_L_1DIG_HR_BUFFER MSG_TYPE_LCD+59
+; 117  |#define LCD_SET_BUFFER_COLOR MSG_TYPE_LCD+60
+; 118  |#define LCD_FORCE_BUFFER_UPDATE MSG_TYPE_LCD+61
+; 119  |#define LCD_SET_BUFFER_WINDOW MSG_TYPE_LCD+62
+; 120  |#define LCD_SET_COLOR MSG_TYPE_LCD+63
+; 121  |#define LCD_SET_BUFFER_POSITION MSG_TYPE_LCD+64
+; 122  |
+; 123  |#define LCD_LAST_MSG_ID MSG_TYPE_LCD+64
+; 124  |
+; 125  |// If you change the LCD message ID's then you must
+; 126  |// also change the jump table in lcdapi.asm
+; 127  |
+; 128  |// Character LCD Message IDs
+; 129  |#define CHARLCD_FIRST_MSG_ID MSG_TYPE_CHARLCD+0
+; 130  |#define CHARLCD_CLEAR_RANGE MSG_TYPE_CHARLCD+0
+; 131  |#define CHARLCD_PRINT_RSRC MSG_TYPE_CHARLCD+1
+; 132  |#define CHARLCD_PRINT_INV_RSRC MSG_TYPE_CHARLCD+2
+; 133  |#define CHARLCD_PRINT_ASCII_CHAR MSG_TYPE_CHARLCD+3
+; 134  |#define CHARLCD_PRINT_ASCII_INV_CHAR MSG_TYPE_CHARLCD+4
+; 135  |#define CHARLCD_PRINT_STRING_RSRC MSG_TYPE_CHARLCD+5
+; 136  |#define CHARLCD_PRINT_STRING_INV_RSRC MSG_TYPE_CHARLCD+6
+; 137  |#define CHARLCD_PRINT_STRING_ADDR MSG_TYPE_CHARLCD+7
+; 138  |#define CHARLCD_PRINT_STRING_INV_ADDR MSG_TYPE_CHARLCD+8
+; 139  |#define CHARLCD_SCROLL_DISPLAY MSG_TYPE_CHARLCD+9
+; 140  |#define CHARLCD_READ_LCD_ADDR MSG_TYPE_CHARLCD+10
+; 141  |#define CHARLCD_SET_CURSOR MSG_TYPE_CHARLCD+11
+; 142  |#define CHARLCD_SET_FONT MSG_TYPE_CHARLCD+12
+; 143  |#define CHARLCD_PRINT_NUMBER MSG_TYPE_CHARLCD+13
+; 144  |#define CHARLCD_PRINT_TIME MSG_TYPE_CHARLCD+14
+; 145  |#define CHARLCD_SET_BATTERY MSG_TYPE_CHARLCD+15
+; 146  |#define CHARLCD_SET_EQ MSG_TYPE_CHARLCD+16
+; 147  |#define CHARLCD_SET_ICON MSG_TYPE_CHARLCD+17
+; 148  |#define CHARLCD_SET_PLAYMODE MSG_TYPE_CHARLCD+18
+; 149  |#define CHARLCD_SET_PLAYSTATE MSG_TYPE_CHARLCD+19
+; 150  |#define CHARLCD_SET_VOLUME MSG_TYPE_CHARLCD+20
+; 151  |#define CHARLCD_CLEAR_DISPLAY MSG_TYPE_CHARLCD+21
+; 152  |#define CHARLCD_LAST_MSG_ID MSG_TYPE_CHARLCD+21
+; 153  |// If you change the cHARACTER LCD message ID's then you must
+; 154  |// also change the jump table in lcdapi.asm
+; 155  |
+; 156  |// Decoder Message IDs
+; 157  |#define DECODER_FIRST_MSG_ID MSG_TYPE_DECODER+0
+; 158  |#define DECODER_RESET MSG_TYPE_DECODER+0
+; 159  |#define DECODER_SET_DIR MSG_TYPE_DECODER+1
+; 160  |#define DECODER_PLAY MSG_TYPE_DECODER+2
+; 161  |#define DECODER_STOP MSG_TYPE_DECODER+3
+; 162  |#define DECODER_FFWD MSG_TYPE_DECODER+4
+; 163  |#define DECODER_RWND MSG_TYPE_DECODER+5
+; 164  |#define DECODER_NEXT_SONG MSG_TYPE_DECODER+6
+; 165  |#define DECODER_PREV_SONG MSG_TYPE_DECODER+7
+; 166  |#define DECODER_TIME_MODE MSG_TYPE_DECODER+8
+; 167  |#define DECODER_AB_MODE MSG_TYPE_DECODER+9
+; 168  |#define DECODER_SET_EQ MSG_TYPE_DECODER+10
+; 169  |#define DECODER_GET_SONG_INFO MSG_TYPE_DECODER+11
+; 170  |#define DECODER_NEXT_CHAPTER MSG_TYPE_DECODER+12
+; 171  |#define DECODER_PREV_CHAPTER MSG_TYPE_DECODER+13
+; 172  |#define DECODER_LAST_MSG_ID MSG_TYPE_DECODER+13
+; 173  |// If you change the Decoder message ID's, then you must
+; 174  |// also change the jump table in decoder_overlay.asm
+; 175  |// and in dec_adpcm_overlay.asm.
+; 176  |
+; 177  |// Encoder Message IDs
+; 178  |#define ENCODER_FIRST_MSG_ID MSG_TYPE_ENCODER+0
+; 179  |#define ENCODER_RECORD MSG_TYPE_ENCODER+0
+; 180  |#define ENCODER_STOP MSG_TYPE_ENCODER+1
+; 181  |#define ENCODER_TIME_MODE MSG_TYPE_ENCODER+2
+; 182  |#define ENCODER_LAST_MSG_ID MSG_TYPE_ENCODER+3
+; 183  |// If you change the Encoder message ID's, then you must
+; 184  |// also change the jump table in all encoder overlay modules.
+; 185  |
+; 186  |// Parser Message IDs
+; 187  |#define PARSER_FIRST_MSG_ID MSG_TYPE_PARSER+0
+; 188  |#define PARSER_NEXT_SONG MSG_TYPE_PARSER+0
+; 189  |#define PARSER_PREV_SONG MSG_TYPE_PARSER+1
+; 190  |#define PARSER_REPEAT MSG_TYPE_PARSER+2
+; 191  |#define PARSER_RANDOM MSG_TYPE_PARSER+3
+; 192  |#define PARSER_STOP MSG_TYPE_PARSER+4
+; 193  |#define PARSER_DEVICE_ENUMERATE MSG_TYPE_PARSER+5
+; 194  |#define PARSER_SET_CURRENT_SONG MSG_TYPE_PARSER+6
+; 195  |#define PARSER_LAST_MSG_ID MSG_TYPE_PARSER+6
+; 196  |// If you change the Parser message ID's, then you must
+; 197  |// also change the jump table in parser.asm
+; 198  |
+; 199  |// Button Message IDs
+; 200  |//BUTTON_FIRST_MSG_ID      equ     MSG_TYPE_BUTTON+0
+; 201  |//BUTTON_BUTTONS_ON        equ     MSG_TYPE_BUTTON+0
+; 202  |//BUTTON_BUTTONS_OFF       equ     MSG_TYPE_BUTTON+1
+; 203  |//BUTTON_HOLD              equ     MSG_TYPE_BUTTON+2
+; 204  |//BUTTON_HOLD_RELEASE      equ     MSG_TYPE_BUTTON+3
+; 205  |//BUTTON_LAST_MSG_ID       equ     MSG_TYPE_BUTTON+3
+; 206  |
+; 207  |// Mixer Message IDs
+; 208  |#define MIXER_FIRST_MSG_ID MSG_TYPE_MIXER+0
+; 209  |#define MIXER_MASTER_INCR MSG_TYPE_MIXER+0
+; 210  |#define MIXER_MASTER_DECR MSG_TYPE_MIXER+1
+; 211  |#define MIXER_MASTER_SETLVL MSG_TYPE_MIXER+2
+; 212  |#define MIXER_MASTER_MUTE MSG_TYPE_MIXER+3
+; 213  |#define MIXER_MASTER_UNMUTE MSG_TYPE_MIXER+4
+; 214  |#define MIXER_MASTER_FADE_OUT MSG_TYPE_MIXER+5
+; 215  |#define MIXER_MASTER_FADE_IN MSG_TYPE_MIXER+6
+; 216  |#define MIXER_MASTER_BAL_RIGHT MSG_TYPE_MIXER+7
+; 217  |#define MIXER_MASTER_BAL_LEFT MSG_TYPE_MIXER+8
+; 218  |#define MIXER_MIC_INCR MSG_TYPE_MIXER+9
+; 219  |#define MIXER_MIC_DECR MSG_TYPE_MIXER+10
+; 220  |#define MIXER_MIC_SETLVL MSG_TYPE_MIXER+11
+; 221  |#define MIXER_MIC_MUTE MSG_TYPE_MIXER+12
+; 222  |#define MIXER_MIC_UNMUTE MSG_TYPE_MIXER+13
+; 223  |#define MIXER_MIC_BOOST MSG_TYPE_MIXER+14
+; 224  |#define MIXER_MIC_UNBOOST MSG_TYPE_MIXER+15
+; 225  |#define MIXER_LINE_INCR MSG_TYPE_MIXER+16
+; 226  |#define MIXER_LINE_DECR MSG_TYPE_MIXER+17
+; 227  |#define MIXER_LINE_SETLVL MSG_TYPE_MIXER+18
+; 228  |#define MIXER_LINE_MUTE MSG_TYPE_MIXER+19
+; 229  |#define MIXER_LINE_UNMUTE MSG_TYPE_MIXER+20
+; 230  |#define MIXER_FM_INCR MSG_TYPE_MIXER+21
+; 231  |#define MIXER_FM_DECR MSG_TYPE_MIXER+22
+; 232  |#define MIXER_FM_SETLVL MSG_TYPE_MIXER+23
+; 233  |#define MIXER_FM_MUTE MSG_TYPE_MIXER+24
+; 234  |#define MIXER_FM_UNMUTE MSG_TYPE_MIXER+25
+; 235  |#define MIXER_DAC_INCR MSG_TYPE_MIXER+26
+; 236  |#define MIXER_DAC_DECR MSG_TYPE_MIXER+27
+; 237  |#define MIXER_DAC_SETLVL MSG_TYPE_MIXER+28
+; 238  |#define MIXER_DAC_MUTE MSG_TYPE_MIXER+29
+; 239  |#define MIXER_DAC_UNMUTE MSG_TYPE_MIXER+30
+; 240  |#define MIXER_ADC_SELECT MSG_TYPE_MIXER+31
+; 241  |#define MIXER_ADC_INCR MSG_TYPE_MIXER+32
+; 242  |#define MIXER_ADC_DECR MSG_TYPE_MIXER+33
+; 243  |#define MIXER_ADC_SETLVL MSG_TYPE_MIXER+34
+; 244  |#define MIXER_ADC_MUTE MSG_TYPE_MIXER+35
+; 245  |#define MIXER_ADC_UNMUTE MSG_TYPE_MIXER+36
+; 246  |#define MIXER_REC_SELECT MSG_TYPE_MIXER+37
+; 247  |#define MIXER_POWER_DOWN MSG_TYPE_MIXER+38
+; 248  |#define ENABLE_RIGHT_CH MSG_TYPE_MIXER+39
+; 249  |#define DISABLE_RIGHT_CH MSG_TYPE_MIXER+40
+; 250  |#define MIXER_LAST_MSG_ID MSG_TYPE_MIXER+40
+; 251  |// If you change the mixer message ID's then you must
+; 252  |// also change the jump table in mixer.asm
+; 253  |#define MIXER_ON 0
+; 254  |#define MIXER_OFF 1
+; 255  |
+; 256  |
+; 257  |// System Message IDs
+; 258  |#define SYSTEM_FIRST_MSG_ID MSG_TYPE_SYSTEM+0
+; 259  |#define SYSTEM_SHUTDOWN MSG_TYPE_SYSTEM+0
+; 260  |#define SYSTEM_SHUTDOWN_FALSE MSG_TYPE_SYSTEM+1
+; 261  |#define SYSTEM_SHUTDOWN_FINAL MSG_TYPE_SYSTEM+2
+; 262  |#define SYSTEM_LAST_MSG_ID MSG_TYPE_SYSTEM+2
+; 263  |// If you change the system message ID's then you must
+; 264  |// also change the jump table in systemapi.asm
+; 265  |
+; 266  |// Menu IDs
+; 267  |#define MENU_FIRST_MSG_ID MSG_TYPE_MENU+0
+; 268  |#define MENU_BUTTON_EVENT MSG_TYPE_MENU+0
+; 269  |#define MENU_DECODER_STATE_CHNG MSG_TYPE_MENU+1
+; 270  |#define MENU_RECORDER_STATE_CHNG MSG_TYPE_MENU+2
+; 271  |//sub parameters for this message:
+; 272  |#define RECORDER_START 0
+; 273  |#define RECORDER_PAUSE 0x2000
+; 274  |#define RECORDER_RESUME 0x4000
+; 275  |#define RECORDER_STOP_NORMAL 0x8000
+; 276  |#define RECORDER_STOP_FILE_ERROR 0x8001
+; 277  |#define RECORDER_STOP_OUT_OF_SPACE 0x8002
+; 278  |#define RECORDER_STOP_LOW_BATTERY 0x8003    
+; 279  |#define MENU_SONG_TIME_CHNG MSG_TYPE_MENU+3
+; 280  |#define MENU_AB_MODE_OFF MSG_TYPE_MENU+4
+; 281  |#define MENU_BATTERY_CHNG MSG_TYPE_MENU+5
+; 282  |#define MENU_SCROLL_TITLE MSG_TYPE_MENU+6
+; 283  |#define MENU_AUTO_SHUTDOWN MSG_TYPE_MENU+7
+; 284  |#define MENU_MSG_MEDIA_CHANGED MSG_TYPE_MENU+8
+; 285  |#define MENU_MSG_MEDIA_OVER_CUR MSG_TYPE_MENU+9
+; 286  |#define MENU_TUNER_TUNED MSG_TYPE_MENU+10
+; 287  |#define MENU_MSG_ENC_LOW_SPACE MSG_TYPE_MENU+11
+; 288  |#define MENU_MSG_EQ_SETTINGS MSG_TYPE_MENU+12
+; 289  |#define MENU_RECORDER_WRITE_DATA MSG_TYPE_MENU+13
+; 290  |#define MENU_SONG_TRACK_CHNG MSG_TYPE_MENU+14
+; 291  |#define MENU_SET_SONG_POSITION MSG_TYPE_MENU+15
+; 292  |#define MENU_UPDATE_CHAPTER_INFO MSG_TYPE_MENU+16
+; 293  |#define MENU_USB_CONNECTED MSG_TYPE_MENU+17
+; 294  |#define MENU_MSG_LYRICS_SYNC_AB MSG_TYPE_MENU+18
+; 295  |#define MENU_MSG_LYRICS_UPDATE MSG_TYPE_MENU+19
+; 296  |#define MENU_LAST_MSG_ID MSG_TYPE_MENU+19
+; 297  |
+; 298  |// Note that other versions of this file have different msg equates.
+; 299  |// If you change the system message ID's then you must
+; 300  |// also change the jump table in all menu *.asm
+; 301  |
+; 302  |// LED Message IDs
+; 303  |#define LED_FIRST_MSG_ID MSG_TYPE_LED+0
+; 304  |#define LED_CONTROL MSG_TYPE_LED+0
+; 305  |#define LED_RESET MSG_TYPE_LED+1
+; 306  |#define LED_DLY_ON_CONTROL MSG_TYPE_LED+2
+; 307  |#define LED_LAST_MSG_ID MSG_TYPE_LED+2
+; 308  |// If you change the LeD message ID's then you must
+; 309  |// also change the jump table in ledapi.asm
+; 310  |
+; 311  |// FM Tuner Message IDs
+; 312  |#define TUNER_FIRST_MSG_ID MSG_TYPE_TUNER+0
+; 313  |#define TUNER_TUNE_FREQUENCY MSG_TYPE_TUNER+0
+; 314  |#define TUNER_TUNE_MANUAL_UP MSG_TYPE_TUNER+1
+; 315  |#define TUNER_TUNE_MANUAL_DOWN MSG_TYPE_TUNER+2
+; 316  |#define TUNER_TUNE_SEARCH_UP MSG_TYPE_TUNER+3
+; 317  |#define TUNER_TUNE_SEARCH_DOWN MSG_TYPE_TUNER+4
+; 318  |#define TUNER_FORCED_MONO MSG_TYPE_TUNER+5
+; 319  |#define TUNER_RESET MSG_TYPE_TUNER+6
+; 320  |#define TUNER_POWER_ON MSG_TYPE_TUNER+7
+; 321  |#define TUNER_POWER_OFF MSG_TYPE_TUNER+8
+; 322  |#define TUNER_SET_SENSITIVITY MSG_TYPE_TUNER+9
+; 323  |//one parameter--the sensitivity in uV
+; 324  |#define TUNER_GET_STATES MSG_TYPE_TUNER+10
+; 325  |#define TUNER_MUTE_OUTPUTS MSG_TYPE_TUNER+11
+; 326  |#define TUNER_PRESET_STATION MSG_TYPE_TUNER+12
+; 327  |#define TUNER_TUNE_TO_PRESET MSG_TYPE_TUNER+13
+; 328  |#define TUNER_SET_PRESET MSG_TYPE_TUNER+14
+; 329  |#define TUNER_ERASE_PRESET MSG_TYPE_TUNER+15
+; 330  |#define TUNER_LAST_MSG_ID MSG_TYPE_TUNER+15
+; 331  |
+; 332  |#define SOFT_TIMER_FIRST_MSG_ID MSG_TYPE_SOFT_TIMER+0
+; 333  |#define SOFT_TIMER_SET_TIMER MSG_TYPE_SOFT_TIMER+1
+; 334  |#define SOFT_TIMER_KILL_TIMER MSG_TYPE_SOFT_TIMER+2
+; 335  |#define SOFT_TIMER_LAST_MSG_ID MSG_TYPE_SOFT_TIMER+2
+; 336  |
+; 337  |
+; 338  |#define GEQ_FIRST_MSG_ID MSG_TYPE_GEQ+0
+; 339  |#define GEQ_SET_EQ MSG_TYPE_GEQ+0
+; 340  |#define GEQ_SET_EQ_LEGACY MSG_TYPE_GEQ+1
+; 341  |#define GEQ_SET_ALL_BAND_GAINS MSG_TYPE_GEQ+2
+; 342  |#define GEQ_SET_GAIN MSG_TYPE_GEQ+3
+; 343  |#define GEQ_SET_COEFFICIENTS MSG_TYPE_GEQ+4
+; 344  |#define GEQ_SET_PARAM MSG_TYPE_GEQ+5
+; 345  |#define GEQ_GET_SETTINGS MSG_TYPE_GEQ+6
+; 346  |#define GEQ_LAST_MSG_ID MSG_TYPE_GEQ+6
+; 347  |
+; 348  |#if (defined(USE_PLAYLIST3))
+; 349  |// Music Library
+; 350  |#define MUSICLIB_PLAY_FIRST_MSG_ID MSG_TYPE_MUSICLIB_PLAY+0
+; 351  |#define MUSICLIB_START_PLAY_SONG MSG_TYPE_MUSICLIB_PLAY+0
+; 352  |#define MUSICLIB_START_PLAY_ALL_SONG MSG_TYPE_MUSICLIB_PLAY+1
+; 353  |#define MUSICLIB_PLAY_SETSHUFFLE MSG_TYPE_MUSICLIB_PLAY+2
+; 354  |#define MUSICLIB_PLAY_RESUME MSG_TYPE_MUSICLIB_PLAY+3
+; 355  |#define MUSICLIB_PLAY_CURRENT_SIZE MSG_TYPE_MUSICLIB_PLAY+4
+; 356  |#define MUSICLIB_PLAY_LAST_MSG_ID MSG_TYPE_MUSICLIB_PLAY+4
+; 357  |
+; 358  |#define MUSICLIB_BROWSE_FIRST_MSG_ID MSG_TYPE_MUSICLIB_BROWSE+0
+; 359  |#define MUSICLIB_BROWSE_SETROOT MSG_TYPE_MUSICLIB_BROWSE+0
+; 360  |#define MUSICLIB_BROWSE_BROWSEMENU MSG_TYPE_MUSICLIB_BROWSE+1
+; 361  |#define MUSICLIB_BROWSE_DOWNLIST MSG_TYPE_MUSICLIB_BROWSE+2
+; 362  |#define MUSICLIB_BROWSE_UPLIST MSG_TYPE_MUSICLIB_BROWSE+3
+; 363  |#define MUSICLIB_BROWSE_UPMENU MSG_TYPE_MUSICLIB_BROWSE+4
+; 364  |#define MUSICLIB_BROWSE_SONGNUMBER MSG_TYPE_MUSICLIB_BROWSE+5
+; 365  |#define MUSICLIB_BROWSE_ON_THE_FLY_GET_STATUS MSG_TYPE_MUSICLIB_BROWSE+6
+; 366  |#define MUSICLIB_BROWSE_ON_THE_FLY_ADD_ITEM MSG_TYPE_MUSICLIB_BROWSE+7
+; 367  |#define MUSICLIB_BROWSE_ON_THE_FLY_DELETE_ITEM MSG_TYPE_MUSICLIB_BROWSE+8
+; 368  |#define MUSICLIB_BROWSE_ON_THE_FLY_DELETE_ALL MSG_TYPE_MUSICLIB_BROWSE+9
+; 369  |#define MUSICLIB_BROWSE_LAST_MSG_ID MSG_TYPE_MUSICLIB_BROWSE+9
+; 370  |
+; 371  |#define MUSICLIB_PLAYALLNEXT_FIRST_MSG_ID MSG_TYPE_MUSICLIB_PLAYALLNEXT+0
+; 372  |#define MUSICLIB_PLAYNEXTSONG MSG_TYPE_MUSICLIB_PLAYALLNEXT+0
+; 373  |#define MUSICLIB_PLAYALLNEXT_LAST_MSG_ID MSG_TYPE_MUSICLIB_PLAYALLNEXT+0
+; 374  |
+; 375  |#define MUSICLIB_PLAYALLPREV_FIRST_MSG_ID MSG_TYPE_MUSICLIB_PLAYALLPREV+0
+; 376  |#define MUSICLIB_PLAYPREVIOUSSONG MSG_TYPE_MUSICLIB_PLAYALLPREV+0
+; 377  |#define MUSICLIB_PLAYALLPREV_LAST_MSG_ID MSG_TYPE_MUSICLIB_PLAYALLPREV+0
+; 378  |
+; 379  |#define MUSICLIB_SHUFFLE_FIRST_MSG_ID MSG_TYPE_MUSICLIB_SHUFFLE+0
+; 380  |#define MUSICLIB_SHUFFLE_NEXT MSG_TYPE_MUSICLIB_SHUFFLE+0
+; 381  |#define MUSICLIB_SHUFFLE_LAST_MSG_ID MSG_TYPE_MUSICLIB_SHUFFLE+0
+; 382  |
+; 383  |#define MUSICLIB_VOICE_FIRST_MSG_ID MSG_TYPE_MUSICLIB_VOICE+0
+; 384  |#define MUSICLIB_VOICE_BROWSEMENU MSG_TYPE_MUSICLIB_VOICE+0
+; 385  |#define MUSICLIB_VOICE_DOWNLIST MSG_TYPE_MUSICLIB_VOICE+1
+; 386  |#define MUSICLIB_VOICE_UPLIST MSG_TYPE_MUSICLIB_VOICE+2
+; 387  |#define MUSICLIB_VOICE_UPMENU MSG_TYPE_MUSICLIB_VOICE+3
+; 388  |#define MUSICLIB_VOICE_VOICENUMBER MSG_TYPE_MUSICLIB_VOICE+4
+; 389  |#define MUSICLIB_VOICE_LAST_MSG_ID MSG_TYPE_MUSICLIB_VOICE+4
+; 390  |
+; 391  |#define MUSICLIB_VOICEPLAY_FIRST_MSG_ID MSG_TYPE_MUSICLIB_VOICEPLAY+0
+; 392  |#define MUSICLIB_START_PLAY_VOICE MSG_TYPE_MUSICLIB_VOICEPLAY+0
+; 393  |#define MUSICLIB_VOICEPLAY_LAST_MSG_ID MSG_TYPE_MUSICLIB_VOICEPLAY+0
+; 394  |
+; 395  |#define MUSICLIB_MERGE_FIRST_MSG_ID MSG_TYPE_MUSICLIB_MERGE+0
+; 396  |#define MUSICLIB_MERGE_SONG MSG_TYPE_MUSICLIB_MERGE+0
+; 397  |#define MUSICLIB_MERGE_ALL_SONG MSG_TYPE_MUSICLIB_MERGE+1
+; 398  |#define MUSICLIB_MERGE_RESUME MSG_TYPE_MUSICLIB_MERGE+2
+; 399  |#define MUSICLIB_MERGE_LAST_MSG_ID MSG_TYPE_MUSICLIB_MERGE+2
+; 400  |#endif // IF (@def(USE_PLAYLIST3))
+; 401  |// Events
+; 402  |// No event
+; 403  |#define EVENT_NONE 0x000001   
+; 404  |// A message has been posted
+; 405  |#define EVENT_MESSAGE 0x000002   
+; 406  |// Run if wait time elapsed
+; 407  |#define EVENT_TIMER 0x000004   
+; 408  |// Run if a button event occured
+; 409  |#define EVENT_BUTTON 0x000008   
+; 410  |// Run if a background event occured
+; 411  |#define EVENT_BACKGROUND 0x000010   
+; 412  |// The executive should immediately repeat this module
+; 413  |#define EVENT_REPEAT 0x000020   
+; 414  |// Run the module's init routine
+; 415  |#define EVENT_INIT 0x800000   
+; 416  |
+; 417  |#define EVENT_NONE_BITPOS 0
+; 418  |#define EVENT_MESSAGE_BITPOS 1
+; 419  |#define EVENT_TIMER_BITPOS 2
+; 420  |#define EVENT_BUTTON_BITPOS 3
+; 421  |#define EVENT_BACKGROUND_BITPOS 4
+; 422  |#define EVENT_REPEAT_BITPOS 5
+; 423  |#define EVENT_INIT_BITPOS 23
+; 424  |
+; 425  |// Parser Message Buffers
+; 426  |#define ParserPlayBit 0
+; 427  |#define ButtonPressBit 1
+; 428  |#define ParserRwndBit 1
+; 429  |#define ParserFfwdBit 2
+; 430  |
+; 431  |//NextSong Message Parameters
+; 432  |// ButtonPressBit1 set to denote button was pressed.
+; 433  |#define NEXT_SONG 2		
+; 434  |// ButtonPressBit1 cleared
+; 435  |#define NEXT_SONG_PLAY_EOF 1          
+; 436  |// ButtonPressBit1 set
+; 437  |#define NEXT_SONG_PLAY_BUTTON 3          
+; 438  |// NextSong + Ffwd
+; 439  |#define NEXT_SONG_FFWD 4          
+; 440  |
+; 441  |//PrevSong Message Parameters
+; 442  |// PrevSong + Stopped
+; 443  |#define PREV_SONG 0          
+; 444  |// PrevSong + Play
+; 445  |#define PREV_SONG_PLAY 1          
+; 446  |// PrevSong + Rwnd
+; 447  |#define PREV_SONG_RWND 2          
+; 448  |
+; 449  |
+; 450  |
+; 451  |
+; 452  |#endif // IF (!@def(MSGEQU_INC))
+; 453  |
+; 454  |
+
+	SYMB	ENDF
+
+; 5    |#include "resource.h"
+
+	SYMB	FILE, "..\\output_3500\\include\\resource.h"
+
+; 1    |//  NOTE: This file was generated automatically by rscrenum.pl
+; 2    |//  Do not edit it directly.
+; 3    |//  Created on Wed Feb  1 16:57:29 2006 using resource.inc as input.
+; 4    |
+; 5    |
+; 6    |
+; 7    |//  NOTE: This file was generated automatically by rscrenum.pl
+; 8    |//  Do not edit it directly.
+; 9    |//  Created on Wed Feb  1 16:47:09 2006 using resource.tmp as input.
+; 10   |
+; 11   |
+; 12   |
+; 13   |//  NOTE: This file was generated automatically by rscrenum.pl
+; 14   |//  Do not edit it directly.
+; 15   |//  Created on Thu Aug 18 08:08:10 2005 using resource.inc as input.
+; 16   |
+; 17   |/////////////////////////////////////////////////////////////////////////////////
+; 18   |// Copyright(C) SigmaTel, Inc. 2001-2006
+; 19   |// LCD example resource listing
+; 20   |/////////////////////////////////////////////////////////////////////////////////
+; 21   |
+; 22   |#if (!defined(resources))
+; 23   |#define resources 1
+; 24   |
+; 25   |/////////////////////////////////////////////////////////////////////////////////
+; 26   |//  Player version number  no leading zeros in version number!!!!!
+; 27   |/////////////////////////////////////////////////////////////////////////////////
+; 28   |
+; 29   |#define VERSION_MAJOR 3
+; 30   |#define VERSION_MIDDLE 110
+; 31   |#define VERSION_MINOR 101
+; 32   |
+; 33   |#define LCD_SEG_OFFSET 0x000000 
+; 34   |#define NUMBER_OF_PRESETS 10
+; 35   |
+; 36   |
+; 37   |/////////////////////////////////////////////////////////////////////////////////
+; 38   |//  High usage resource. These have been moved here to take maximum advantage of
+; 39   |//  the resource index cache if it was added. 
+; 40   |//  This block is sorted by frequency of use while loading a new song.
+; 41   |/////////////////////////////////////////////////////////////////////////////////
+; 42   |
+; 43   |//$FILENAME searchdirectory.src
+; 44   |#define RSRC_FUNCLET_SEARCHDIRECTORY 1    
+; 45   |//$FILENAME shortdirmatch.src
+; 46   |#define RSRC_FUNCLET_SHORTDIRMATCH 2    
+; 47   |//$FILENAME fopen.src
+; 48   |#define RSRC_FUNCLET_FOPEN 3    
+; 49   |//$FILENAME musicmenu.src
+; 50   |#define RSRC_MUSIC_MENU_CODE_BANK 4    
+; 51   |//$FILENAME changepath.src
+; 52   |#define RSRC_FUNCLET_CHANGEPATH 5    
+; 53   |//$FILENAME _openandverifyslot.src
+; 54   |#define RSRC_FUNCLET__OPENANDVERIFYSLOT 6    
+; 55   |//$FILENAME _loadslot.src
+; 56   |#define RSRC_FUNCLET__LOADSLOT 7    
+; 57   |//$FILENAME getname.src
+; 58   |#define RSRC_FUNCLET_GETNAME 8    
+; 59   |//$FILENAME Funclet_SteppingVoltageSet.src
+; 60   |#define RSRC_FUNCLET_STEPPINGVOLTAGESET 9    
+; 61   |//$FILENAME sethandleforsearch.src
+; 62   |#define RSRC_FUNCLET_SETHANDLEFORSEARCH 10    
+; 63   |//$FILENAME wmaWrap.src
+; 64   |#define RSRC_WMADEC_CODE 11    
+; 65   |//$FILENAME extractfilename.src
+; 66   |#define RSRC_FUNCLET_EXTRACTFILENAME 12    
+; 67   |//$FILENAME oem_getgroupcertprivatekey.src
+; 68   |#define RSRC_FUNCLET_OEM_GETGROUPCERTPRIVATEKEY 13    
+; 69   |//$FILENAME SoftTimerMod.src
+; 70   |#define RSRC_SOFT_TIMER_MODULE_CODE 14    
+; 71   |//$FILENAME GetShortfilename.src 
+; 72   |#define RSRC_FUNCLET_GETSHORTFILENAME 15    
+; 73   |//$FILENAME drm_dcp_loadpropertiescache.src
+; 74   |#define RSRC_FUNCLET_DRM_DCP_LOADPROPERTIESCACHE 16    
+; 75   |//$FILENAME playerstatemachine.src
+; 76   |#define RSRC_PLAY_STATE_MACHINE_CODE_BANK 17    
+; 77   |//$FILENAME SysMod.src
+; 78   |#define RSRC_SYSMOD_CODE 18    
+; 79   |//$FILENAME drm_b64_decodew.src
+; 80   |#define RSRC_FUNCLET_DRM_B64_DECODEW 19    
+; 81   |//$FILENAME discardtrailigperiods.src
+; 82   |#define RSRC_FUNCLET_DISCARDTRAILIGPERIODS 20    
+; 83   |//$FILENAME uppercase.src
+; 84   |#define RSRC_FUNCLET_UPPERCASE 21    
+; 85   |//$FILENAME strlength.src
+; 86   |#define RSRC_FUNCLET_STRLENGTH 22    
+; 87   |//$FILENAME ConverToShortname.src
+; 88   |#define RSRC_FUNCLET_CONVERTOSHORTNAME 23    
+; 89   |//$FILENAME drm_bbx_hashvalue.src
+; 90   |#define RSRC_FUNCLET_DRM_BBX_HASHVALUE 24    
+; 91   |//$FILENAME drm_expr_evaluateexpression.src
+; 92   |#define RSRC_FUNCLET_DRM_EXPR_EVALUATEEXPRESSION 25    
+; 93   |//$FILENAME drm_sst_closekey.src
+; 94   |#define RSRC_FUNCLET_DRM_SST_CLOSEKEY 26    
+; 95   |//$FILENAME Funclet_SysSetSpeed.src   
+; 96   |#define RSRC_FUNCLET_SYSSETSPEED 27    
+; 97   |//$FILENAME freehandle.src
+; 98   |#define RSRC_FUNCLET_FREEHANDLE 28    
+; 99   |//$FILENAME searchfreehandleallocate.src
+; 100  |#define RSRC_FUNCLET_SEARCHFREEHANDLEALLOCATE 29    
+; 101  |//$FILENAME _parselicenseattributes.src
+; 102  |#define RSRC_FUNCLET__PARSELICENSEATTRIBUTES 30    
+; 103  |//$FILENAME variablesecstategetorset.src
+; 104  |#define RSRC_FUNCLET_VARIABLESECSTATEGETORSET 31    
+; 105  |//$FILENAME _setuplicevalobjecttoshare.src
+; 106  |#define RSRC_FUNCLET__SETUPLICEVALOBJECTTOSHARE 32    
+; 107  |//$FILENAME drm_mgr_initialize.src
+; 108  |#define RSRC_FUNCLET_DRM_MGR_INITIALIZE 33    
+; 109  |//$FILENAME display.src
+; 110  |#define RSRC_DISPLAY_CODE_BANK 34    
+; 111  |//$FILENAME DisplayModule.src
+; 112  |#define RSRC_DISPLAY_MODULE 35    
+; 113  |//$FILENAME extractpath.src
+; 114  |#define RSRC_FUNCLET_EXTRACTPATH 36    
+; 115  |//$FILENAME drm_sst_createglobalstorepassword.src
+; 116  |#define RSRC_FUNCLET_DRM_SST_CREATEGLOBALSTOREPASSWORD 37    
+; 117  |//$FILENAME _getprivatekey.src
+; 118  |#define RSRC_FUNCLET__GETPRIVATEKEY 38    
+; 119  |//$FILENAME drm_hds_opennamespace.src
+; 120  |#define RSRC_FUNCLET_DRM_HDS_OPENNAMESPACE 39    
+; 121  |//$FILENAME drm_hds_openslot.src
+; 122  |#define RSRC_FUNCLET_DRM_HDS_OPENSLOT 40    
+; 123  |//$FILENAME fclose.src
+; 124  |#define RSRC_FUNCLET_FCLOSE 41    
+; 125  |//$FILENAME drm_cphr_init.src
+; 126  |#define RSRC_FUNCLET_DRM_CPHR_INIT 42    
+; 127  |//$FILENAME drm_pk_symmetriccrypt.src
+; 128  |#define RSRC_FUNCLET_DRM_PK_SYMMETRICCRYPT 43    
+; 129  |//$FILENAME drm_mgr_bind.src
+; 130  |#define RSRC_FUNCLET_DRM_MGR_BIND 44    
+; 131  |//$FILENAME _decryptcontentkey.src
+; 132  |#define RSRC_FUNCLET__DECRYPTCONTENTKEY 45    
+; 133  |//$FILENAME drm_mac_inv32.src
+; 134  |#define RSRC_FUNCLET_DRM_MAC_INV32 46    
+; 135  |//$FILENAME drm_lic_getattribute.src
+; 136  |#define RSRC_FUNCLET_DRM_LIC_GETATTRIBUTE 47    
+; 137  |//$FILENAME drm_utl_getversionasstring.src
+; 138  |#define RSRC_FUNCLET_DRM_UTL_GETVERSIONASSTRING 48    
+; 139  |//$FILENAME drm_dcp_getattribute.src
+; 140  |#define RSRC_FUNCLET_DRM_DCP_GETATTRIBUTE 49    
+; 141  |//$FILENAME effectsmodules.src
+; 142  |#define RSRC_EFFECTS_MODULES_P 50    
+; 143  |//$FILENAME janusx.src
+; 144  |#define RSRC_JANUSX_CODE 51    
+; 145  |//$FILENAME drm_sst_openkeytokens.src
+; 146  |#define RSRC_FUNCLET_DRM_SST_OPENKEYTOKENS 52    
+; 147  |//$FILENAME eval.src
+; 148  |#define RSRC_FUNCLET_EVAL 53    
+; 149  |//$FILENAME _verifyslothash.src
+; 150  |#define RSRC_FUNCLET__VERIFYSLOTHASH 54    
+; 151  |//$FILENAME januscommon.src
+; 152  |#define RSRC_JANUS_COMMON 55    
+; 153  |//$FILENAME changecase.src
+; 154  |#define RSRC_FUNCLET_CHANGECASE 56    
+; 155  |//$FILENAME drm_bbx_symmetricverify.src
+; 156  |#define RSRC_FUNCLET_DRM_BBX_SYMMETRICVERIFY 57    
+; 157  |//$FILENAME _loadlicenseattributes.src
+; 158  |#define RSRC_FUNCLET__LOADLICENSEATTRIBUTES 58    
+; 159  |//$FILENAME drm_hds_slotseek.src
+; 160  |#define RSRC_FUNCLET_DRM_HDS_SLOTSEEK 59    
+; 161  |//$FILENAME drm_hds_slotwrite.src
+; 162  |#define RSRC_FUNCLET_DRM_HDS_SLOTWRITE 60    
+; 163  |//$FILENAME drm_levl_performoperations.src
+; 164  |#define RSRC_FUNCLET_DRM_LEVL_PERFORMOPERATIONS 61    
+; 165  |//$FILENAME drm_lic_verifysignature.src
+; 166  |#define RSRC_FUNCLET_DRM_LIC_VERIFYSIGNATURE 62    
+; 167  |//$FILENAME drm_lst_getlicense.src
+; 168  |#define RSRC_FUNCLET_DRM_LST_GETLICENSE 63    
+; 169  |//$FILENAME drm_utl_numbertostring.src
+; 170  |#define RSRC_FUNCLET_DRM_UTL_NUMBERTOSTRING 64    
+; 171  |//$FILENAME oem_writefile.src
+; 172  |#define RSRC_FUNCLET_OEM_WRITEFILE 65    
+; 173  |//$FILENAME drm_sst_getdata.src
+; 174  |#define RSRC_FUNCLET_DRM_SST_GETDATA 66    
+; 175  |//$FILENAME updatehandlemode.src
+; 176  |#define RSRC_FUNCLET_UPDATEHANDLEMODE 67    
+; 177  |//$FILENAME _getlicenseinfoandsetup.src
+; 178  |#define RSRC_FUNCLET__GETLICENSEINFOANDSETUP 68    
+; 179  |//$FILENAME drm_lic_completelicensechain.src
+; 180  |#define RSRC_FUNCLET_DRM_LIC_COMPLETELICENSECHAIN 69    
+; 181  |//$FILENAME doplay_p.src
+; 182  |#define RSRC_DOPLAY_P 70    
+; 183  |//$FILENAME fatwritep.src
+; 184  |#define RSRC_FATWRITE_P_CODE 71    
+; 185  |//$FILENAME Funclet_SysLoadFatWrite.src
+; 186  |#define RSRC_FUNCLET_SYSLOADFATWRITE 72    
+; 187  |//$FILENAME changetorootdirectory.src
+; 188  |#define RSRC_FUNCLET_CHANGETOROOTDIRECTORY 73    
+; 189  |//$FILENAME _findkeypair.src
+; 190  |#define RSRC_FUNCLET__FINDKEYPAIR 74    
+; 191  |//$FILENAME variablemachinegetorset.src
+; 192  |#define RSRC_FUNCLET_VARIABLEMACHINEGETORSET 75    
+; 193  |//$FILENAME _hdsslotenumnext.src
+; 194  |#define RSRC_FUNCLET__HDSSLOTENUMNEXT 76    
+; 195  |//$FILENAME getlspubkey.src
+; 196  |#define RSRC_FUNCLET_GETLSPUBKEY 77    
+; 197  |//$FILENAME drm_sst_gettokenvalue.src
+; 198  |#define RSRC_FUNCLET_DRM_SST_GETTOKENVALUE 78    
+; 199  |//$FILENAME drm_utl_decodekid.src
+; 200  |#define RSRC_FUNCLET_DRM_UTL_DECODEKID 79    
+; 201  |//$FILENAME drm_xml_getnodecdata.src
+; 202  |#define RSRC_FUNCLET_DRM_XML_GETNODECDATA 80    
+; 203  |//$FILENAME _freedrmmanagerinternalcontexts.src
+; 204  |#define RSRC_FUNCLET__FREEDRMMANAGERINTERNALCONTEXTS 81    
+; 205  |//$FILENAME drm_clk_initchecksecureclock.src
+; 206  |#define RSRC_FUNCLET_DRM_CLK_INITCHECKSECURECLOCK 82    
+; 207  |//$FILENAME drm_sst_openandlockslot.src
+; 208  |#define RSRC_FUNCLET_DRM_SST_OPENANDLOCKSLOT 83    
+; 209  |//$FILENAME aes_enc.src
+; 210  |#define RSRC_AES_ENC 84    
+; 211  |//$FILENAME getprivkey.src
+; 212  |#define RSRC_FUNCLET_GETPRIVKEY 85    
+; 213  |//$FILENAME Funclet_GetUnicodeCharacterBitmap.src
+; 214  |#define RSRC_FUNCLET_GET_UNICODE_CHARACTER_BITMAP 86    
+; 215  |//$FILENAME playlist_codebank.src
+; 216  |#define RSRC_PLAYLIST_CODEBANK 87    
+; 217  |//$FILENAME drm_lic_getenablingbits.src
+; 218  |#define RSRC_FUNCLET_DRM_LIC_GETENABLINGBITS 88    
+; 219  |//$FILENAME drm_mgr_uninitialize.src
+; 220  |#define RSRC_FUNCLET_DRM_MGR_UNINITIALIZE 89    
+; 221  |//$FILENAME _getdevicecert.src
+; 222  |#define RSRC_FUNCLET__GETDEVICECERT 90    
+; 223  |//$FILENAME drm_lic_reportactions.src
+; 224  |#define RSRC_FUNCLET_DRM_LIC_REPORTACTIONS 91    
+; 225  |//$FILENAME drmcrt_wcsntol.src
+; 226  |#define RSRC_FUNCLET_DRMCRT_WCSNTOL 92    
+; 227  |//$FILENAME _basicheaderchecks.src
+; 228  |#define RSRC_FUNCLET__BASICHEADERCHECKS 93    
+; 229  |//$FILENAME drm_hdr_getattribute.src
+; 230  |#define RSRC_FUNCLET_DRM_HDR_GETATTRIBUTE 94    
+; 231  |//$FILENAME drm_hds_slotenumnext.src
+; 232  |#define RSRC_FUNCLET_DRM_HDS_SLOTENUMNEXT 95    
+; 233  |//$FILENAME drm_levl_evaluateexpression.src
+; 234  |#define RSRC_FUNCLET_DRM_LEVL_EVALUATEEXPRESSION 96    
+; 235  |//$FILENAME drm_lst_open.src
+; 236  |#define RSRC_FUNCLET_DRM_LST_OPEN 97    
+; 237  |//$FILENAME drm_xml_getnodeattribute.src
+; 238  |#define RSRC_FUNCLET_DRM_XML_GETNODEATTRIBUTE 98    
+; 239  |//$FILENAME _verifysymmerticsignature.src
+; 240  |#define RSRC_FUNCLET__VERIFYSYMMERTICSIGNATURE 99    
+; 241  |//$FILENAME oem_openfile.src
+; 242  |#define RSRC_FUNCLET_OEM_OPENFILE 100    
+; 243  |//$FILENAME _getdrmfullpathname.src
+; 244  |#define RSRC_FUNCLET__GETDRMFULLPATHNAME 101    
+; 245  |//$FILENAME oem_getsecurestoreglobalpasswordseed.src
+; 246  |#define RSRC_FUNCLET_OEM_GETSECURESTOREGLOBALPASSWORDSEED 102    
+; 247  |//$FILENAME _applydiffstostore.src
+; 248  |#define RSRC_FUNCLET__APPLYDIFFSTOSTORE 103    
+; 249  |//$FILENAME drm_sst_setdata.src
+; 250  |#define RSRC_FUNCLET_DRM_SST_SETDATA 104    
+; 251  |//$FILENAME drm_sst_getlockeddata.src
+; 252  |#define RSRC_FUNCLET_DRM_SST_GETLOCKEDDATA 105    
+; 253  |//$FILENAME drm_sst_setlockeddata.src
+; 254  |#define RSRC_FUNCLET_DRM_SST_SETLOCKEDDATA 106    
+; 255  |//$FILENAME playerlib_extra.src
+; 256  |#define RSRC_PLAYERLIB_EXTRA_CODE_BANK 107    
+; 257  |//$FILENAME wmaCommon.src
+; 258  |#define RSRC_WMA_COMMON 108    
+; 259  |//$FILENAME wmainit.src
+; 260  |#define RSRC_WMA_INIT 109    
+; 261  |//$FILENAME playlist2traverse_codebank.src
+; 262  |#define RSRC_PLAYLIST2TRAVERSE_CODEBANK 110    
+; 263  |//$FILENAME drm_bbx_cipherkeysetup.src
+; 264  |#define RSRC_FUNCLET_DRM_BBX_CIPHERKEYSETUP 111    
+; 265  |//$FILENAME drm_lic_checkclockrollback.src
+; 266  |#define RSRC_FUNCLET_DRM_LIC_CHECKCLOCKROLLBACK 112    
+; 267  |//$FILENAME drm_hds_closestore.src
+; 268  |#define RSRC_FUNCLET_DRM_HDS_CLOSESTORE 113    
+; 269  |//$FILENAME _hdsloadsrn.src
+; 270  |#define RSRC_FUNCLET__HDSLOADSRN 114    
+; 271  |//$FILENAME _loadproritizedlist.src
+; 272  |#define RSRC_FUNCLET__LOADPRORITIZEDLIST 115    
+; 273  |//$FILENAME drm_lst_initenum.src
+; 274  |#define RSRC_FUNCLET_DRM_LST_INITENUM 116    
+; 275  |//$FILENAME _loadattributesintocache.src
+; 276  |#define RSRC_FUNCLET__LOADATTRIBUTESINTOCACHE 117    
+; 277  |//$FILENAME drm_pk_symmetricverify.src
+; 278  |#define RSRC_FUNCLET_DRM_PK_SYMMETRICVERIFY 118    
+; 279  |
+; 280  |/////////////////////////////////////////////////////////////////////////////////
+; 281  |//  Menu Modules (codebanks)
+; 282  |/////////////////////////////////////////////////////////////////////////////////
+; 283  |//$FILENAME mainmenu.src
+; 284  |#define RSRC_MAIN_MENU_CODE_BANK 119    
+; 285  |//$FILENAME displaylists.src
+; 286  |#define RSRC_DISPLAY_LISTS_CODE_BANK 120    
+; 287  |
+; 288  |//$FILENAME voicemenu.src
+; 289  |#define RSRC_VOICE_MENU_CODE_BANK 121    
+; 290  |//$FILENAME fmtunermenu.src
+; 291  |#define RSRC_FMTUNER_MENU_CODE_BANK 122    
+; 292  |//$FILENAME recorderstatemachine.src
+; 293  |#define RSRC_RECORDER_STATE_MACHINE_CODE_BANK 123    
+; 294  |
+; 295  |//$FILENAME eqmenu.src
+; 296  |#define RSRC_EQ_MENU_CODE_BANK 124    
+; 297  |//$FILENAME playmodemenu.src
+; 298  |#define RSRC_PLAYMODE_MENU_CODE_BANK 125    
+; 299  |//$FILENAME contrastmenu.src
+; 300  |#define RSRC_CONTRAST_MENU_CODE_BANK 126    
+; 301  |//$FILENAME pwrsettingsmenu.src
+; 302  |#define RSRC_PWRSETTINGS_MENU_CODE_BANK 127    
+; 303  |//$FILENAME timedatemenu.src
+; 304  |#define RSRC_TIMEDATE_MENU_CODE_BANK 128    
+; 305  |//$FILENAME settimemenu.src
+; 306  |#define RSRC_SETTIME_MENU_CODE_BANK 129    
+; 307  |//$FILENAME setdatemenu.src
+; 308  |#define RSRC_SETDATE_MENU_CODE_BANK 130    
+; 309  |//$FILENAME settingsmenu.src
+; 310  |#define RSRC_SETTINGS_MENU_CODE_BANK 131    
+; 311  |//$FILENAME string_system_menu.src
+; 312  |#define RSRC_SYSTEM_MENU_CODE_BANK 132    
+; 313  |//$FILENAME deletemenu.src
+; 314  |#define RSRC_DELETE_MENU_CODE_BANK 133    
+; 315  |//$FILENAME aboutmenu.src
+; 316  |#define RSRC_ABOUT_MENU_CODE_BANK 134    
+; 317  |
+; 318  |//$FILENAME spectrogram.src
+; 319  |#define RSRC_SPECTROGRAM_MENU_CODE_BANK 135    
+; 320  |
+; 321  |//$FILENAME motionvideomenu.src
+; 322  |#define RSRC_MOTION_VIDEO_MENU_CODE_BANK 136    
+; 323  |//$FILENAME motionvideomenuinitstate.src
+; 324  |#define RSRC_MOTION_VIDEO_MENU_INITSTATE_CODE_BANK 137    
+; 325  |//$FILENAME jpegdisplaymenu.src
+; 326  |#define RSRC_JPEG_DISPLAY_MENU_CODE_BANK 138    
+; 327  |//$FILENAME jpegmanualmenu.src
+; 328  |#define RSRC_JPEG_MANUAL_MENU_CODE_BANK 139    
+; 329  |//$FILENAME jpegthumbnailmenu.src
+; 330  |#define RSRC_JPEG_THUMBNAIL_MENU_CODE_BANK 140    
+; 331  |//$FILENAME jpegslideshowmenu.src
+; 332  |#define RSRC_JPEG_SLIDESHOW_MENU_CODE_BANK 141    
+; 333  |//$FILENAME albumartmenu.src
+; 334  |#define RSRC_ALBUM_ART_MENU_CODE_BANK 142    
+; 335  |//$FILENAME jpegfileutil.src
+; 336  |#define RSRC_JPEG_FILEUTIL_MENU_CODE_BANK 143    
+; 337  |
+; 338  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 339  |// General Modules
+; 340  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 341  |//$FILENAME MixMod.src
+; 342  |#define RSRC_MIXMOD_CODE 144    
+; 343  |//$FILENAME TunerModule.src
+; 344  |#define RSRC_TUNER_MODULE 145    
+; 345  |//$FILENAME geqoverlay.src
+; 346  |#define RSRC_GEQOVERLAY_CODE 146    
+; 347  |
+; 348  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 349  |// Decoders/Encoders
+; 350  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 351  |//$FILENAME DecMod.src
+; 352  |#define RSRC_DECMOD_CODE 147    
+; 353  |//$FILENAME mp3p.src
+; 354  |#define RSRC_MP3P_CODE 148    
+; 355  |//$FILENAME mp3x.src
+; 356  |#define RSRC_MP3X_CODE 149    
+; 357  |//$FILENAME mp3y.src
+; 358  |#define RSRC_MP3Y_CODE 150    
+; 359  |//$FILENAME janusp.src
+; 360  |#define RSRC_JANUSP_CODE 151    
+; 361  |//RSRC_JANUSY_CODE        equ       29    ;$FILENAME janusy.src
+; 362  |
+; 363  |//$FILENAME decadpcmimamod.src
+; 364  |#define RSRC_DEC_ADPCM_MOD_CODE 152    
+; 365  |//$FILENAME dec_adpcmp.src
+; 366  |#define RSRC_DEC_ADPCMP_CODE 153    
+; 367  |//$FILENAME dec_adpcmx.src
+; 368  |#define RSRC_DEC_ADPCMX_CODE 154    
+; 369  |//$FILENAME dec_adpcmy.src
+; 370  |#define RSRC_DEC_ADPCMY_CODE 155    
+; 371  |
+; 372  |//$FILENAME decadpcmsmvmod.src
+; 373  |#define RSRC_DEC_SMVADPCM_MOD_CODE 156    
+; 374  |//$FILENAME dec_smvadpcmp.src
+; 375  |#define RSRC_DEC_SMVADPCMP_CODE 157    
+; 376  |//$FILENAME dec_smvadpcmx.src
+; 377  |#define RSRC_DEC_SMVADPCMX_CODE 158    
+; 378  |//$FILENAME dec_smvadpcmy.src
+; 379  |#define RSRC_DEC_SMVADPCMY_CODE 159    
+; 380  |
+; 381  |//$FILENAME encadpcmimamod.src
+; 382  |#define RSRC_ENC_ADPCM_MOD_CODE 160    
+; 383  |//$FILENAME enc_adpcmp.src
+; 384  |#define RSRC_ENC_ADPCMP_CODE 161    
+; 385  |//$FILENAME enc_adpcmx.src
+; 386  |#define RSRC_ENC_ADPCMX_CODE 162    
+; 387  |//$FILENAME enc_adpcmy.src
+; 388  |#define RSRC_ENC_ADPCMY_CODE 163    
+; 389  |
+; 390  |//$FILENAME jpeg_p.src
+; 391  |#define RSRC_JPEG_DECODER_P 164    
+; 392  |//$FILENAME jpeg_x.src
+; 393  |#define RSRC_JPEG_DECODER_X 165    
+; 394  |//$FILENAME jpeg_y.src
+; 395  |#define RSRC_JPEG_DECODER_Y 166    
+; 396  |//$FILENAME jpeg2_y.src
+; 397  |#define RSRC_JPEG_DECODER_Y_2 167    
+; 398  |//$FILENAME bmp2_y.src
+; 399  |#define RSRC_BMP_DECODER_Y_2 168    
+; 400  |//$FILENAME bmp_p.src
+; 401  |#define RSRC_BMP_DECODER_P 169    
+; 402  |
+; 403  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 404  |// System Settings
+; 405  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 406  |//$FILENAME settings.src
+; 407  |#define RSRC_SETTINGS_COMMANDS 170    
+; 408  |
+; 409  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 410  |// Media Device Drivers
+; 411  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 412  |//This resource is filled with garbage unless it is the MMC build
+; 413  |//$FILENAME null.src
+; 414  |#define RSRC_MMCDD_CODE 171    
+; 415  |//$FILENAME null.src
+; 416  |#define RSRC_SMDD_HIGH_CODE 172    
+; 417  |
+; 418  |/////////////////////////////////////////////////////////////////////////////////
+; 419  |//  PlayState resources
+; 420  |/////////////////////////////////////////////////////////////////////////////////
+; 421  |//$FILENAME play_icon_with_border.src
+; 422  |#define RSRC_PLAY_ICON_WITH_BORDER 173    
+; 423  |//$FILENAME pause_icon_with_border.src
+; 424  |#define RSRC_PAUSE_ICON_WITH_BORDER 174    
+; 425  |//$FILENAME stop_icon_with_border.src
+; 426  |#define RSRC_STOP_ICON_WITH_BORDER 175    
+; 427  |//$FILENAME record_icon_with_border.src
+; 428  |#define RSRC_RECORD_ICON_WITH_BORDER 176    
+; 429  |//$FILENAME paused_record_icon_with_border.src
+; 430  |#define RSRC_PAUSED_RECORD_ICON_BORDER 177    
+; 431  |//$FILENAME ffwd_icon_with_border.src
+; 432  |#define RSRC_FFWD_ICON_WITH_BORDER 178    
+; 433  |//$FILENAME rwnd_icon_with_border.src
+; 434  |#define RSRC_RWND_ICON_WITH_BORDER 179    
+; 435  |
+; 436  |/////////////////////////////////////////////////////////////////////////////////
+; 437  |//  PlayMode resources
+; 438  |/////////////////////////////////////////////////////////////////////////////////
+; 439  |//$FILENAME repeatall_icon.src
+; 440  |#define RSRC_REPEAT_ALL_ICON 180    
+; 441  |//$FILENAME repeatsong_icon.src
+; 442  |#define RSRC_REPEAT_SONG_ICON 181    
+; 443  |//$FILENAME shuffle_icon.src
+; 444  |#define RSRC_SHUFFLE_ICON 182    
+; 445  |//$FILENAME repeatallclear_icon.src
+; 446  |#define RSRC_REPEAT_ALL_CLEAR_ICON 183    
+; 447  |//$FILENAME repeatsongclear_icon.src
+; 448  |#define RSRC_REPEAT_SONG_CLEAR_ICON 184    
+; 449  |//$FILENAME shuffleclear_icon.src
+; 450  |#define RSRC_SHUFFLE_CLEAR_ICON 185    
+; 451  |
+; 452  |/////////////////////////////////////////////////////////////////////////////////
+; 453  |//  Battery Status
+; 454  |/////////////////////////////////////////////////////////////////////////////////
+; 455  |//$FILENAME battery_00.src
+; 456  |#define RSRC_BATTERY_00 186    
+; 457  |//$FILENAME battery_01.src
+; 458  |#define RSRC_BATTERY_01 187    
+; 459  |//$FILENAME battery_02.src
+; 460  |#define RSRC_BATTERY_02 188    
+; 461  |//$FILENAME battery_03.src
+; 462  |#define RSRC_BATTERY_03 189    
+; 463  |//$FILENAME battery_04.src
+; 464  |#define RSRC_BATTERY_04 190    
+; 465  |//$FILENAME battery_05.src
+; 466  |#define RSRC_BATTERY_05 191    
+; 467  |//$FILENAME battery_06.src
+; 468  |#define RSRC_BATTERY_06 192    
+; 469  |//$FILENAME battery_07.src
+; 470  |#define RSRC_BATTERY_07 193    
+; 471  |//$FILENAME battery_08.src
+; 472  |#define RSRC_BATTERY_08 194    
+; 473  |//$FILENAME battery_09.src
+; 474  |#define RSRC_BATTERY_09 195    
+; 475  |//$FILENAME battery_10.src
+; 476  |#define RSRC_BATTERY_10 196    
+; 477  |
+; 478  |/////////////////////////////////////////////////////////////////////////////////
+; 479  |//  System Icons
+; 480  |/////////////////////////////////////////////////////////////////////////////////
+; 481  |//$FILENAME disk_small.src
+; 482  |#define RSRC_DISK_ICON 197    
+; 483  |//$FILENAME lock_small.src
+; 484  |#define RSRC_LOCK_ICON 198    
+; 485  |//$FILENAME icon_music_mode.src
+; 486  |#define RSRC_MUSIC_MODE_ICON 199    
+; 487  |//$FILENAME icon_voice_mode.src
+; 488  |#define RSRC_VOICE_MODE_ICON 200    
+; 489  |
+; 490  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 491  |// Volume Bitmaps
+; 492  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 493  |//$FILENAME icon_vol_00.src
+; 494  |#define RSRC_ICON_VOL_00 201    
+; 495  |//$FILENAME icon_vol_01.src
+; 496  |#define RSRC_ICON_VOL_01 202    
+; 497  |//$FILENAME icon_vol_02.src
+; 498  |#define RSRC_ICON_VOL_02 203    
+; 499  |//$FILENAME icon_vol_03.src
+; 500  |#define RSRC_ICON_VOL_03 204    
+; 501  |//$FILENAME icon_vol_04.src
+; 502  |#define RSRC_ICON_VOL_04 205    
+; 503  |//$FILENAME icon_vol_05.src
+; 504  |#define RSRC_ICON_VOL_05 206    
+; 505  |//$FILENAME icon_vol_06.src
+; 506  |#define RSRC_ICON_VOL_06 207    
+; 507  |//$FILENAME icon_vol_07.src
+; 508  |#define RSRC_ICON_VOL_07 208    
+; 509  |//$FILENAME icon_vol_08.src
+; 510  |#define RSRC_ICON_VOL_08 209    
+; 511  |//$FILENAME icon_vol_09.src
+; 512  |#define RSRC_ICON_VOL_09 210    
+; 513  |//$FILENAME icon_vol_10.src
+; 514  |#define RSRC_ICON_VOL_10 211    
+; 515  |//$FILENAME icon_vol_11.src
+; 516  |#define RSRC_ICON_VOL_11 212    
+; 517  |//$FILENAME icon_vol_12.src
+; 518  |#define RSRC_ICON_VOL_12 213    
+; 519  |//$FILENAME icon_vol_13.src
+; 520  |#define RSRC_ICON_VOL_13 214    
+; 521  |//$FILENAME icon_vol_14.src
+; 522  |#define RSRC_ICON_VOL_14 215    
+; 523  |//$FILENAME icon_vol_15.src
+; 524  |#define RSRC_ICON_VOL_15 216    
+; 525  |//$FILENAME icon_vol_16.src
+; 526  |#define RSRC_ICON_VOL_16 217    
+; 527  |//$FILENAME icon_vol_17.src
+; 528  |#define RSRC_ICON_VOL_17 218    
+; 529  |//$FILENAME icon_vol_18.src
+; 530  |#define RSRC_ICON_VOL_18 219    
+; 531  |//$FILENAME icon_vol_19.src
+; 532  |#define RSRC_ICON_VOL_19 220    
+; 533  |//$FILENAME icon_vol_20.src
+; 534  |#define RSRC_ICON_VOL_20 221    
+; 535  |//$FILENAME icon_vol_21.src
+; 536  |#define RSRC_ICON_VOL_21 222    
+; 537  |//$FILENAME icon_vol_22.src
+; 538  |#define RSRC_ICON_VOL_22 223    
+; 539  |//$FILENAME icon_vol_23.src
+; 540  |#define RSRC_ICON_VOL_23 224    
+; 541  |//$FILENAME icon_vol_24.src
+; 542  |#define RSRC_ICON_VOL_24 225    
+; 543  |//$FILENAME icon_vol_25.src
+; 544  |#define RSRC_ICON_VOL_25 226    
+; 545  |//$FILENAME icon_vol_26.src
+; 546  |#define RSRC_ICON_VOL_26 227    
+; 547  |//$FILENAME icon_vol_27.src
+; 548  |#define RSRC_ICON_VOL_27 228    
+; 549  |//$FILENAME icon_vol_28.src
+; 550  |#define RSRC_ICON_VOL_28 229    
+; 551  |//$FILENAME icon_vol_29.src
+; 552  |#define RSRC_ICON_VOL_29 230    
+; 553  |//$FILENAME icon_vol_30.src
+; 554  |#define RSRC_ICON_VOL_30 231    
+; 555  |//$FILENAME icon_vol_31.src
+; 556  |#define RSRC_ICON_VOL_31 232    
+; 557  |
+; 558  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 559  |// Splash Screen Stuff
+; 560  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 561  |//$FILENAME st_bw1.src
+; 562  |#define RSRC_SPLASH_SCREEN 233    
+; 563  |//$FILENAME siglogo1.src
+; 564  |#define RSRC_SPLASH_SCREEN_1 234    
+; 565  |//$FILENAME siglogo2.src
+; 566  |#define RSRC_SPLASH_SCREEN_2 235    
+; 567  |//$FILENAME siglogo3.src
+; 568  |#define RSRC_SPLASH_SCREEN_3 236    
+; 569  |//$FILENAME siglogo4.src
+; 570  |#define RSRC_SPLASH_SCREEN_4 237    
+; 571  |//$FILENAME siglogo5.src
+; 572  |#define RSRC_SPLASH_SCREEN_5 238    
+; 573  |//$FILENAME siglogo6.src
+; 574  |#define RSRC_SPLASH_SCREEN_6 239    
+; 575  |//$FILENAME siglogo7.src
+; 576  |#define RSRC_SPLASH_SCREEN_7 240    
+; 577  |//$FILENAME siglogo8.src
+; 578  |#define RSRC_SPLASH_SCREEN_8 241    
+; 579  |//$FILENAME siglogo9.src
+; 580  |#define RSRC_SPLASH_SCREEN_9 242    
+; 581  |//$FILENAME siglogo10.src
+; 582  |#define RSRC_SPLASH_SCREEN_10 243    
+; 583  |//$FILENAME siglogo11.src
+; 584  |#define RSRC_SPLASH_SCREEN_11 244    
+; 585  |//$FILENAME siglogo12.src
+; 586  |#define RSRC_SPLASH_SCREEN_12 245    
+; 587  |//$FILENAME siglogo13.src
+; 588  |#define RSRC_SPLASH_SCREEN_13 246    
+; 589  |//$FILENAME siglogo.src
+; 590  |#define RSRC_SPLASH_SCREEN_ALL 247    
+; 591  |
+; 592  |//$FILENAME locked.src
+; 593  |#define RSRC_LOCKED_SCREEN 248    
+; 594  |
+; 595  |/////////////////////////////////////////////////////////////////////////////////
+; 596  |//  Shutdown
+; 597  |/////////////////////////////////////////////////////////////////////////////////
+; 598  |//$FILENAME string_arial_8_continue_holding_to_power_off.src
+; 599  |#define RSRC_PDOWN_HOLD_STRING 249    
+; 600  |//$FILENAME status_16_6_steps_0.src
+; 601  |#define RSRC_PDOWN_STATUS_0 250    
+; 602  |//$FILENAME status_16_6_steps_1.src
+; 603  |#define RSRC_PDOWN_STATUS_1 251    
+; 604  |//$FILENAME status_16_6_steps_2.src
+; 605  |#define RSRC_PDOWN_STATUS_2 252    
+; 606  |//$FILENAME status_16_6_steps_3.src
+; 607  |#define RSRC_PDOWN_STATUS_3 253    
+; 608  |//$FILENAME status_16_6_steps_4.src
+; 609  |#define RSRC_PDOWN_STATUS_4 254    
+; 610  |//$FILENAME status_16_6_steps_5.src
+; 611  |#define RSRC_PDOWN_STATUS_5 255    
+; 612  |//$FILENAME status_16_6_steps_6.src
+; 613  |#define RSRC_PDOWN_STATUS_6 256    
+; 614  |
+; 615  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 616  |// EQ
+; 617  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 618  |//$FILENAME eq_clear_icon.src
+; 619  |#define RSRC_EQ_CLEAR_ICON 257    
+; 620  |//$FILENAME rock_icon.src
+; 621  |#define RSRC_ROCK_ICON 258    
+; 622  |//$FILENAME jazz_icon.src
+; 623  |#define RSRC_JAZZ_ICON 259    
+; 624  |//$FILENAME classic_icon.src
+; 625  |#define RSRC_CLASSIC_ICON 260    
+; 626  |//$FILENAME pop_icon.src
+; 627  |#define RSRC_POP_ICON 261    
+; 628  |//$FILENAME custom_icon.src
+; 629  |#define RSRC_CUSTOM_ICON 262    
+; 630  |
+; 631  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 632  |// AB
+; 633  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 634  |//$FILENAME ab_mark_a.src
+; 635  |#define RSRC_AB_MARK_A_ICON 263    
+; 636  |//$FILENAME ab_mark_b.src
+; 637  |#define RSRC_AB_MARK_B_ICON 264    
+; 638  |
+; 639  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 640  |// Menu Display Resources
+; 641  |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 642  |//$FILENAME string_music_menu.src
+; 643  |#define RSRC_STRING_MUSIC_MENU 265    
+; 644  |//$FILENAME string_mvideo_menu.src
+; 645  |#define RSRC_STRING_MVIDEO_MENU 266    
+; 646  |//$FILENAME string_jpeg_display_menu.src
+; 647  |#define RSRC_STRING_JPEG_DISPLAY_MENU 267    
+; 648  |//$FILENAME string_jpeg_manual_menu.src
+; 649  |#define RSRC_STRING_JPEG_MANUAL_MENU 268    
+; 650  |//$FILENAME string_jpeg_slideshow_menu.src
+; 651  |#define RSRC_STRING_JPEG_SLIDESHOW_MENU 269    
+; 652  |//$FILENAME string_jpeg_thumbnail_menu.src
+; 653  |#define RSRC_STRING_JPEG_THUMBNAIL_MENU 270    
+; 654  |//$FILENAME string_voice_menu.src
+; 655  |#define RSRC_STRING_VOICE_MENU 271    
+; 656  |//$FILENAME string_fmtuner_menu.src
+; 657  |#define RSRC_STRING_FMTUNER_MENU 272    
+; 658  |//$FILENAME string_settings_menu.src
+; 659  |#define RSRC_STRING_SETTINGS_MENU 273    
+; 660  |//$FILENAME string_eq_menu.src
+; 661  |#define RSRC_STRING_EQ_MENU 274    
+; 662  |//$FILENAME string_playmode_menu.src
+; 663  |#define RSRC_STRING_PLAYMODE_MENU 275    
+; 664  |//$FILENAME string_contrast_menu.src
+; 665  |#define RSRC_STRING_CONTRAST_MENU 276    
+; 666  |//$FILENAME string_pwrsavings_menu.src
+; 667  |#define RSRC_STRING_PWRSAVINGS_MENU 277    
+; 668  |//$FILENAME string_time_date_menu.src
+; 669  |#define RSRC_STRING_TIME_DATE_MENU 278    
+; 670  |//$FILENAME string_set_time_menu.src
+; 671  |#define RSRC_STRING_SET_TIME_MENU 279    
+; 672  |//$FILENAME string_set_date_menu.src
+; 673  |#define RSRC_STRING_SET_DATE_MENU 280    
+; 674  |//$FILENAME string_exit_menu.src
+; 675  |#define RSRC_STRING_EXIT_MENU 281    
+; 676  |//$FILENAME string_rock_menu.src
+; 677  |#define RSRC_STRING_ROCK_MENU 282    
+; 678  |//$FILENAME string_pop_menu.src
+; 679  |#define RSRC_STRING_POP_MENU 283    
+; 680  |//$FILENAME string_classic_menu.src
+; 681  |#define RSRC_STRING_CLASSIC_MENU 284    
+; 682  |//$FILENAME string_normal_menu.src
+; 683  |#define RSRC_STRING_NORMAL_MENU 285    
+; 684  |//$FILENAME string_jazz_menu.src
+; 685  |#define RSRC_STRING_JAZZ_MENU 286    
+; 686  |//$FILENAME string_repeat1_menu.src
+; 687  |#define RSRC_STRING_REPEAT1_MENU 287    
+; 688  |//$FILENAME string_repeatall_menu.src
+; 689  |#define RSRC_STRING_REPEATALL_MENU 288    
+; 690  |//$FILENAME string_shuffle_menu.src
+; 691  |#define RSRC_STRING_SHUFFLE_MENU 289    
+; 692  |//$FILENAME string_repeatshuffle_menu.src
+; 693  |#define RSRC_STRING_SHUFFLEREPEAT_MENU 290    
+; 694  |//$FILENAME string_disable_menu.src
+; 695  |#define RSRC_STRING_DISABLE_MENU 291    
+; 696  |//$FILENAME string_1min_menu.src
+; 697  |#define RSRC_STRING_1MIN_MENU 292    
+; 698  |//$FILENAME string_2min_menu.src
+; 699  |#define RSRC_STRING_2MIN_MENU 293    
+; 700  |//$FILENAME string_5min_menu.src
+; 701  |#define RSRC_STRING_5MIN_MENU 294    
+; 702  |//$FILENAME string_10min_menu.src
+; 703  |#define RSRC_STRING_10MIN_MENU 295    
+; 704  |//$FILENAME string_system_menu.src
+; 705  |#define RSRC_STRING_SYSTEM_MENU 296    
+; 706  |//$FILENAME string_about_menu.src
+; 707  |#define RSRC_STRING_ABOUT_MENU 297    
+; 708  |//$FILENAME string_delete_menu.src
+; 709  |#define RSRC_STRING_DELETE_MENU 298    
+; 710  |//$FILENAME string_record_menu.src
+; 711  |#define RSRC_STRING_RECORD_MENU 299    
+; 712  |//$FILENAME string_spectrogram_menu.src
+; 713  |#define RSRC_STRING_SPECTROGRAM_MENU 300    
+; 714  |
+; 715  |//$FILENAME string_end_of_slide_show.src
+; 716  |#define RSRC_STRING_END_OF_SLIDE_SHOW 301    
+; 717  |
+; 718  |//$FILENAME string_mb.src
+; 719  |#define RSRC_STRING_MB 302    
+; 720  |
+; 721  |//$FILENAME internal_media.src
+; 722  |#define RSRC_INT_MEDIA 303    
+; 723  |//$FILENAME external_media.src
+; 724  |#define RSRC_EXT_MEDIA 304    
+; 725  |
+; 726  |//$FILENAME about_title.src
+; 727  |#define RSRC_ABOUT_TITLE 305    
+; 728  |//$FILENAME player_name.src
+; 729  |#define RSRC_PLAYER_NAME_VER 306    
+; 730  |
+; 731  |//$FILENAME settings_title.src
+; 732  |#define RSRC_SETTINGS_TITLE 307    
+; 733  |//$FILENAME jpeg_display_title.src
+; 734  |#define RSRC_JPEG_DISPLAY_TITLE 308    
+; 735  |//$FILENAME erase_title.src
+; 736  |#define RSRC_ERASE_TITLE 309    
+; 737  |
+; 738  |//$FILENAME del_warning_no.src
+; 739  |#define RSRC_DELETE_NO 310    
+; 740  |//$FILENAME del_warning_yes.src
+; 741  |#define RSRC_DELETE_YES 311    
+; 742  |//$FILENAME del_warning_line1.src
+; 743  |#define RSRC_WARNING_MSG_LINE1 312    
+; 744  |//$FILENAME del_warning_line2.src
+; 745  |#define RSRC_WARNING_MSG_LINE2 313    
+; 746  |//$FILENAME lowbattery.src
+; 747  |#define RSRC_BROWNOUT_BITMAP 314    
+; 748  |//$FILENAME vbr.src
+; 749  |#define RSRC_VBR_BITMAP 315    
+; 750  |
+; 751  |//$FILENAME string_song.src
+; 752  |#define RSRC_STRING_SONG_COLON 316    
+; 753  |//$FILENAME string_voice.src    
+; 754  |#define RSRC_STRING_VOICE_COLON 317    
+; 755  |
+; 756  |//$FILENAME time_date_title.src
+; 757  |#define RSRC_TIME_DATE_TITLE 318    
+; 758  |//$FILENAME set_time_title.src
+; 759  |#define RSRC_SET_TIME_TITLE 319    
+; 760  |//$FILENAME set_date_title.src 
+; 761  |#define RSRC_SET_DATE_TITLE 320    
+; 762  |//$FILENAME string_searching.src
+; 763  |#define RSRC_STRING_SEARCHING 321    
+; 764  |/////////////////////////////////////////////////////////////////////////////////
+; 765  |//  Save Changes
+; 766  |/////////////////////////////////////////////////////////////////////////////////
+; 767  |//$FILENAME save_changes_yes.src
+; 768  |#define RSRC_SAVE_CHANGES_YES 322    
+; 769  |//$FILENAME save_changes_no.src
+; 770  |#define RSRC_SAVE_CHANGES_NO 323    
+; 771  |//$FILENAME save_changes_cancel.src
+; 772  |#define RSRC_SAVE_CHANGES_CANCEL 324    
+; 773  |//$FILENAME save_changes_clear.src
+; 774  |#define RSRC_SAVE_CHANGES_CLEAR 325    
+; 775  |/////////////////////////////////////////////////////////////////////////////////
+; 776  |//  Contrast
+; 777  |/////////////////////////////////////////////////////////////////////////////////
+; 778  |//$FILENAME contrast_title.src
+; 779  |#define RSRC_CONTRAST_TITLE 326    
+; 780  |//$FILENAME contrast_frame.src
+; 781  |#define RSRC_CONTRAST_FRAME 327    
+; 782  |//$FILENAME contrast_level0.src
+; 783  |#define RSRC_CONTRAST_LEVEL_0 328    
+; 784  |//$FILENAME contrast_level1.src
+; 785  |#define RSRC_CONTRAST_LEVEL_1 329    
+; 786  |//$FILENAME contrast_level2.src
+; 787  |#define RSRC_CONTRAST_LEVEL_2 330    
+; 788  |//$FILENAME contrast_level3.src
+; 789  |#define RSRC_CONTRAST_LEVEL_3 331    
+; 790  |//$FILENAME contrast_level4.src
+; 791  |#define RSRC_CONTRAST_LEVEL_4 332    
+; 792  |//$FILENAME contrast_level5.src
+; 793  |#define RSRC_CONTRAST_LEVEL_5 333    
+; 794  |//$FILENAME contrast_level6.src
+; 795  |#define RSRC_CONTRAST_LEVEL_6 334    
+; 796  |//$FILENAME contrast_level7.src
+; 797  |#define RSRC_CONTRAST_LEVEL_7 335    
+; 798  |//$FILENAME contrast_level8.src
+; 799  |#define RSRC_CONTRAST_LEVEL_8 336    
+; 800  |//$FILENAME contrast_level9.src
+; 801  |#define RSRC_CONTRAST_LEVEL_9 337    
+; 802  |//$FILENAME contrast_level10.src
+; 803  |#define RSRC_CONTRAST_LEVEL_10 338    
+; 804  |
+; 805  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 806  |// Funclets
+; 807  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 808  |//$FILENAME Funclet_SetRTC.src
+; 809  |#define RSRC_FUNCLET_SET_RTC 339    
+; 810  |//$FILENAME Funclet_InitRTC.src
+; 811  |#define RSRC_FUNCLET_INIT_RTC 340    
+; 812  |//$FILENAME Funclet_ReadRTC.src
+; 813  |#define RSRC_FUNCLET_READ_RTC 341    
+; 814  |//$FILENAME Funclet_SysResetAllInt.src
+; 815  |#define RSRC_FUNCLET_SYSRESETALLINT 342    
+; 816  |//$FILENAME Funclet_SysSetupDecVec.src
+; 817  |#define RSRC_FUNCLET_SYSSETUPDECVEC 343    
+; 818  |//$FILENAME Funclet_SysSetupEncVec.src
+; 819  |#define RSRC_FUNCLET_SYSSETUPENCVEC 344    
+; 820  |//$FILENAME Funclet_SysTimeInit.src
+; 821  |#define RSRC_FUNCLET_SYSTIMEINIT 345    
+; 822  |//$FILENAME Funclet_AnalogInit.src 
+; 823  |#define RSRC_FUNCLET_ANALOGINIT 346    
+; 824  |//$FILENAME Funclet_UsbConnected.src 
+; 825  |#define RSRC_FUNCLET_USBCONNECTED 347    
+; 826  |//$FILENAME Funclet_ButtonInit.src 
+; 827  |#define RSRC_FUNCLET_BUTTONINIT 348    
+; 828  |//$FILENAME Funclet_PowerUpHeadPhones.src 
+; 829  |#define RSRC_FUNCLET_POWERUPHEADPHONES 349    
+; 830  |//$FILENAME Funclet_PowerDownHeadPhones.src 
+; 831  |#define RSRC_FUNCLET_POWERDOWNHEADPHONES 350    
+; 832  |//$FILENAME Funclet_StartProject.src 
+; 833  |#define RSRC_FUNCLET_STARTPROJECT 351    
+; 834  |//$FILENAME Funclet_ModuleSetTimer.src 
+; 835  |#define RSRC_FUNCLET_MODULESETTIMER 352    
+; 836  |//$FILENAME null.src  
+; 837  |#define RSRC_FUNCLET_MEDIADETECTION 353    
+; 838  |//$FILENAME Funclet_SysStopDecoder.src  
+; 839  |#define RSRC_FUNCLET_SYSSTOPDECODER 354    
+; 840  |//$FILENAME Funclet_SysStopEncoder.src  
+; 841  |#define RSRC_FUNCLET_SYSSTOPENCODER 355    
+; 842  |//$FILENAME Funclet_SysSetDecoder.src   
+; 843  |#define RSRC_FUNCLET_SYSSETDECODER 356    
+; 844  |//$FILENAME Funclet_SysSetEncoder.src   
+; 845  |#define RSRC_FUNCLET_SYSSETENCODER 357    
+; 846  |//$FILENAME null.src
+; 847  |#define RSRC_FUNCLET_PROCESSPT 358    
+; 848  |//$FILENAME Funclet_DisplaySplashScreen.src
+; 849  |#define RSRC_FUNCLET_DISPLAYSPLASHSCREEN 359    
+; 850  |//$FILENAME Funclet_SysGetVolume.src   
+; 851  |#define RSRC_FUNCLET_SYSGETVOLUME 360    
+; 852  |//$FILENAME null.src 
+; 853  |#define RSRC_FUNCLET_MMCENUMERATEPHYSICALDEVICE 361    
+; 854  |//$FILENAME null.src 
+; 855  |#define RSRC_FUNCLET_RESETDEVICE 362    
+; 856  |//$FILENAME null.src 
+; 857  |#define RSRC_FUNCLET_PROCESSCSD 363    
+; 858  |//$FILENAME null.src 
+; 859  |#define RSRC_FUNCLET_PROCESSPARTITION 364    
+; 860  |//$FILENAME null.src 
+; 861  |#define RSRC_FUNCLET_PARTITIONENTRYCOPY 365    
+; 862  |//$FILENAME Funclet_MixerMasterFadeOut.src
+; 863  |#define RSRC_FUNCLET_MIXER_MASTER_FADE_OUT 366    
+; 864  |//$FILENAME Funclet_MixerMasterFadeIn.src
+; 865  |#define RSRC_FUNCLET_MIXER_MASTER_FADE_IN 367    
+; 866  |//$FILENAME Funclet_EncSetProperties.src
+; 867  |#define RSRC_FUNCLET_ENCSETPROPERTIES 368    
+; 868  |//$FILENAME null.src
+; 869  |#define RSRC_FUNCLET_DOESMBREXIST 369    
+; 870  |//$FILENAME null.src 
+; 871  |#define RSRC_FUNCLET_EXTRACTPARTITIONPARAMETERS 370    
+; 872  |//$FILENAME Funclet_SaveSettings.src
+; 873  |#define RSRC_FUNCLET_SYSSAVESETTINGS 371    
+; 874  |//$FILENAME Funclet_LoadSettings.src
+; 875  |#define RSRC_FUNCLET_SYSLOADSETTINGS 372    
+; 876  |///////////////////////////////////////////////////////////////
+; 877  |// Sanyo FM Tuner Fuclet
+; 878  |///////////////////////////////////////////////////////////////
+; 879  |//RSRC_FUNCLET_TUNER_DRIVER_INIT    equ      334    ;$FILENAME Funclet_TunerDriverInit.src
+; 880  |//RSRC_FUNCLET_TUNER_SCAN_STATIONS    equ      335    ;$FILENAME Funclet_TunerScanStations.src
+; 881  |//RSRC_FUNCLET_TUNER_SET_TO_PRESET    equ      336    ;$FILENAME Funclet_TunerSetToPreset.src
+; 882  |//RSRC_FUNCLET_TUNER_SET_MONO_STEREO    equ      337    ;$FILENAME Funclet_TunerSetMonoStereo.src
+; 883  |//RSRC_FUNCLET_TUNER_SET_STANDBY    equ      338    ;$FILENAME Funclet_TunerSetStandby.src
+; 884  |//RSRC_FUNCLET_TUNER_SET_PRESET    equ      339    ;$FILENAME Funclet_TunerSetPreset.src
+; 885  |//RSRC_FUNCLET_TUNER_ERASE_PRESET    equ      340    ;$FILENAME Funclet_TunerErasePreset.src
+; 886  |//RSRC_FUNCLET_TUNER_SET_IF    equ      341    ;$FILENAME Funclet_TunerSetIf.src
+; 887  |//RSRC_FUNCLET_TUNER_WRITE_IF_OSC    equ      342    ;$FILENAME Funclet_TunerWriteIfOSc.src
+; 888  |//RSRC_FUNCLET_TUNER_GET_FIELD_STRENGTH    equ      343    ;$FILENAME Funclet_TunerGetFieldStrength.src
+; 889  |//RSRC_FUNCLET_TUNER_INIT_RF_CAP_OSC    equ      344    ;$FILENAME Funclet_TunerInitRfCapOsc.src
+; 890  |//RSRC_FUNCLET_TUNER_STORE_FM_STATION    equ      345    ;$FILENAME Funclet_TunerStoreFmStation.src
+; 891  |//RSRC_FUNCLET_TUNER_STORE_FM_PRESET    equ      346    ;$FILENAME Funclet_TunerStoreFmPreset.src
+; 892  |//RSRC_FUNCLET_TUNER_SET_REGION    equ      347    ;$FILENAME Funclet_TunerSetRegion.src
+; 893  |
+; 894  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 895  |// WMA Resources
+; 896  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 897  |//$FILENAME wmaCore.src
+; 898  |#define RSRC_WMA_CORE 373    
+; 899  |//$FILENAME wmaMidLow.src
+; 900  |#define RSRC_WMA_MIDLOW 374    
+; 901  |//$FILENAME wmaHigh.src
+; 902  |#define RSRC_WMA_HIGH 375    
+; 903  |//$FILENAME wmaHighMid.src
+; 904  |#define RSRC_WMA_HIGHMID 376    
+; 905  |//$FILENAME wmaMid.src
+; 906  |#define RSRC_WMA_MID 377    
+; 907  |//$FILENAME wmaLow.src
+; 908  |#define RSRC_WMA_LOW 378    
+; 909  |//$FILENAME wmaX1mem.src
+; 910  |#define RSRC_WMA_DATA_X1 379    
+; 911  |//$FILENAME wmaYmem.src
+; 912  |#define RSRC_WMA_DATA_Y 380    
+; 913  |//$FILENAME wmaLXmem.src
+; 914  |#define RSRC_WMA_DATA_L_X 381    
+; 915  |//$FILENAME wmaLYmem.src
+; 916  |#define RSRC_WMA_DATA_L_Y 382    
+; 917  |//$FILENAME wmaHuff44Qb.src
+; 918  |#define RSRC_WMA_HUFF44QB 383    
+; 919  |//$FILENAME wmaHuff44Ob.src
+; 920  |#define RSRC_WMA_HUFF44OB 384    
+; 921  |//$FILENAME wmaHuff16Ob.src
+; 922  |#define RSRC_WMA_HUFF16OB 385    
+; 923  |//$FILENAME drmpdcommon.src
+; 924  |#define RSRC_DRMPD_COMMON 386    
+; 925  |//$FILENAME januswmasupport.src
+; 926  |#define RSRC_JANUS_WMASUPPORT 387    
+; 927  |//$FILENAME wmalicenseinit.src
+; 928  |#define RSRC_WMA_LICENSEINIT 388    
+; 929  |//$FILENAME wma_tables.src
+; 930  |#define RSRC_WMA_TABLES 389    
+; 931  |//$FILENAME janus_tables.src
+; 932  |#define RSRC_JANUS_TABLES 390    
+; 933  |//$FILENAME wma_constants.src
+; 934  |#define RSRC_WMA_CONSTANTS 391    
+; 935  |//$FILENAME janus_constants.src
+; 936  |#define RSRC_JANUS_CONSTANTS 392    
+; 937  |//$FILENAME janus_xmem.src
+; 938  |#define RSRC_JANUS_X 393    
+; 939  |//$FILENAME janusy_data.src
+; 940  |#define RSRC_JANUSY_DATA 394    
+; 941  |
+; 942  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 943  |// Fonts -- these are last because they are very large
+; 944  |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 945  |//$FILENAME font_table.src
+; 946  |#define RSRC_FONT_TABLE 395    
+; 947  |//$FILENAME font_PGM.src
+; 948  |#define RSRC_PGM_8 396    
+; 949  |//$FILENAME font_SGMs.src
+; 950  |#define RSRC_SGMS_8 397    
+; 951  |//$FILENAME font_script_00.src
+; 952  |#define RSRC_SCRIPT_00_8 398    
+; 953  |//$FILENAME font_scripts.src
+; 954  |#define RSRC_SCRIPTS_8 399    
+; 955  |//$FILENAME font_PDM.src
+; 956  |#define RSRC_PDM 400    
+; 957  |//$FILENAME font_SDMs.src
+; 958  |#define RSRC_SDMS 401    
+; 959  |//$FILENAME bitmap_warning.src
+; 960  |#define RSRC_WARNING 402    
+; 961  |//$FILENAME bitmap_device_full.src
+; 962  |#define RSRC_DEVICE_FULL 403    
+; 963  |
+; 964  |
+; 965  |//$FILENAME lcd_controller_init.src
+; 966  |#define RSRC_LCD_INIT_SEQ 404    
+; 967  |
+; 968  |//$FILENAME Funclet_DBCSToUnicode.src
+; 969  |#define RSRC_FUNCLET_DBCS_TO_UNICODE 405    
+; 970  |//$FILENAME Funclet_DBCSToUnicodeDstXSrcY.src
+; 971  |#define RSRC_FUNCLET_DBCS_TO_UNICODE_DSTX_SRCY 406    
+; 972  |//$FILENAME Funclet_LCDSetFont.src
+; 973  |#define RSRC_FUNCLET_SET_FONT 407    
+; 974  |//$FILENAME Funclet_GetTextWidthAddressUnicode.src
+; 975  |#define RSRC_FUNCLET_GET_TEXT_WIDTH_ADDRESS_UNICODE 408    
+; 976  |//$FILENAME Funclet_GetTextWidthResourceUnicode.src
+; 977  |#define RSRC_FUNCLET_GET_TEXT_WIDTH_RESOURCE_UNICODE 409    
+; 978  |//$FILENAME Funclet_GetTextWidthAddressDBCS.src
+; 979  |#define RSRC_FUNCLET_GET_TEXT_WIDTH_ADDRESS_DBCS 410    
+; 980  |//$FILENAME Funclet_GetTextWidthResourceDBCS.src
+; 981  |#define RSRC_FUNCLET_GET_TEXT_WIDTH_RESOURCE_DBCS 411    
+; 982  |//$FILENAME Funclet_ChipSerialNumberInit.src
+; 983  |#define RSRC_FUNCLET_CHIPSERIALNUMBERINIT 412    
+; 984  |//$FILENAME Funclet_InternalMediaSerialNumberInit.src
+; 985  |#define RSRC_FUNCLET_INTERNALMEDIASERIALNUMBERINIT 413    
+; 986  |//$FILENAME Funclet_ChipGetSerialNumber.src
+; 987  |#define RSRC_FUNCLET_CHIPGETSERIALNUMBER 414    
+; 988  |//$FILENAME Funclet_CreateNullSerialNumber.src
+; 989  |#define RSRC_FUNCLET_CREATENULLSERIALNUMBER 415    
+; 990  |//$FILENAME Funclet_ConvertHexToASCII.src
+; 991  |#define RSRC_FUNCLET_CONVERTHEXTOASCII 416    
+; 992  |//$FILENAME Funclet_LowResolutionAdcInit.src
+; 993  |#define RSRC_FUNCLET_LOWRESOLUTIONADCINIT 417    
+; 994  |
+; 995  |
+; 996  |//$FILENAME sysrecord.src
+; 997  |#define RSRC_SYSRECORD_CODE 418    
+; 998  |
+; 999  |//$FILENAME string_record_settings.src
+; 1000 |#define RSRC_STRING_RECORD_SETTINGS 419    
+; 1001 |//$FILENAME string_sample_rate.src
+; 1002 |#define RSRC_STRING_SAMPLE_RATE 420    
+; 1003 |//$FILENAME string_encoder.src
+; 1004 |#define RSRC_STRING_ENCODER 421    
+; 1005 |//$FILENAME string_adpcm.src
+; 1006 |#define RSRC_STRING_ADPCM 422    
+; 1007 |//$FILENAME string_msadpcm.src
+; 1008 |#define RSRC_STRING_MSADPCM 423    
+; 1009 |//$FILENAME string_imadpcm.src
+; 1010 |#define RSRC_STRING_IMADPCM 424    
+; 1011 |//$FILENAME string_pcm.src
+; 1012 |#define RSRC_STRING_PCM 425    
+; 1013 |//$FILENAME string_internal.src
+; 1014 |#define RSRC_STRING_INTERNAL 426    
+; 1015 |//$FILENAME string_external.src
+; 1016 |#define RSRC_STRING_EXTERNAL 427    
+; 1017 |//$FILENAME string_device.src
+; 1018 |#define RSRC_STRING_DEVICE 428    
+; 1019 |//$FILENAME string_source.src
+; 1020 |#define RSRC_STRING_SOURCE 429    
+; 1021 |//$FILENAME string_microphone.src
+; 1022 |#define RSRC_STRING_MICROPHONE 430    
+; 1023 |//$FILENAME string_linein.src
+; 1024 |#define RSRC_STRING_LINEIN 431    
+; 1025 |//$FILENAME string_bits.src
+; 1026 |#define RSRC_STRING_BITS 432    
+; 1027 |//$FILENAME string_4.src
+; 1028 |#define RSRC_STRING_4 433    
+; 1029 |//$FILENAME string_8.src
+; 1030 |#define RSRC_STRING_8 434    
+; 1031 |//$FILENAME string_16.src
+; 1032 |#define RSRC_STRING_16 435    
+; 1033 |//$FILENAME string_24.src
+; 1034 |#define RSRC_STRING_24 436    
+; 1035 |//$FILENAME string_fm.src
+; 1036 |#define RSRC_STRING_FM 437    
+; 1037 |//$FILENAME string_mono.src
+; 1038 |#define RSRC_STRING_MONO 438    
+; 1039 |//$FILENAME string_stereo.src
+; 1040 |#define RSRC_STRING_STEREO 439    
+; 1041 |//$FILENAME string_8000hz.src
+; 1042 |#define RSRC_STRING_8000HZ 440    
+; 1043 |//$FILENAME string_11025hz.src
+; 1044 |#define RSRC_STRING_11025HZ 441    
+; 1045 |//$FILENAME string_16000hz.src
+; 1046 |#define RSRC_STRING_16000HZ 442    
+; 1047 |//$FILENAME string_22050hz.src
+; 1048 |#define RSRC_STRING_22050HZ 443    
+; 1049 |//$FILENAME string_32000hz.src
+; 1050 |#define RSRC_STRING_32000HZ 444    
+; 1051 |//$FILENAME string_44100hz.src
+; 1052 |#define RSRC_STRING_44100HZ 445    
+; 1053 |//$FILENAME string_48000hz.src
+; 1054 |#define RSRC_STRING_48000HZ 446    
+; 1055 |//$FILENAME string_channels.src
+; 1056 |#define RSRC_STRING_CHANNELS 447    
+; 1057 |//$FILENAME string_spaces.src
+; 1058 |#define RSRC_STRING_SPACES 448    
+; 1059 |//$FILENAME slider_bar.src
+; 1060 |#define RSRC_SLIDER_BAR 449    
+; 1061 |//$FILENAME slider_bar_inv.src
+; 1062 |#define RSRC_SLIDER_BAR_INV 450    
+; 1063 |//$FILENAME slider_track.src
+; 1064 |#define RSRC_SLIDER_TRACK 451    
+; 1065 |//$FILENAME string_no_files.src
+; 1066 |#define RSRC_STRING_NO_FILES 452    
+; 1067 |
+; 1068 |/////////////////////////////////////////////////////////////////////
+; 1069 |//  Time and Date Resource Strings
+; 1070 |/////////////////////////////////////////////////////////////////////
+; 1071 |//$FILENAME string_sunday.src
+; 1072 |#define RSRC_STRING_SUNDAY 453    
+; 1073 |//$FILENAME string_monday.src
+; 1074 |#define RSRC_STRING_MONDAY 454    
+; 1075 |//$FILENAME string_tuesday.src
+; 1076 |#define RSRC_STRING_TUESDAY 455    
+; 1077 |//$FILENAME string_wednesday.src
+; 1078 |#define RSRC_STRING_WEDNESDAY 456    
+; 1079 |//$FILENAME string_thursday.src
+; 1080 |#define RSRC_STRING_THURSDAY 457    
+; 1081 |//$FILENAME string_friday.src
+; 1082 |#define RSRC_STRING_FRIDAY 458    
+; 1083 |//$FILENAME string_saturday.src
+; 1084 |#define RSRC_STRING_SATURDAY 459    
+; 1085 |//$FILENAME string_am.src
+; 1086 |#define RSRC_STRING_AM 460    
+; 1087 |//$FILENAME string_pm.src
+; 1088 |#define RSRC_STRING_PM 461    
+; 1089 |//$FILENAME string_amclear.src
+; 1090 |#define RSRC_STRING_AMCLEAR 462    
+; 1091 |//$FILENAME string_slash.src
+; 1092 |#define RSRC_STRING_SLASH 463    
+; 1093 |//$FILENAME string_colon.src
+; 1094 |#define RSRC_STRING_COLON 464    
+; 1095 |//$FILENAME string_12hour.src
+; 1096 |#define RSRC_STRING_12HOUR 465    
+; 1097 |//$FILENAME string_24hour.src
+; 1098 |#define RSRC_STRING_24HOUR 466    
+; 1099 |//$FILENAME string_format.src
+; 1100 |#define RSRC_STRING_FORMAT 467    
+; 1101 |//$FILENAME string_mmddyyyy.src
+; 1102 |#define RSRC_STRING_MMDDYYYY 468    
+; 1103 |//$FILENAME string_ddmmyyyy.src
+; 1104 |#define RSRC_STRING_DDMMYYYY 469    
+; 1105 |//$FILENAME string_yyyymmdd.src
+; 1106 |#define RSRC_STRING_YYYYMMDD 470    
+; 1107 |//$FILENAME string_ok.src
+; 1108 |#define RSRC_STRING_OK 471    
+; 1109 |//$FILENAME string_cancel.src
+; 1110 |#define RSRC_STRING_CANCEL 472    
+; 1111 |//$FILENAME negative_sign.src
+; 1112 |#define RSRC_NEGATIVE_SIGN 473    
+; 1113 |//$FILENAME string_dec_pt5.src
+; 1114 |#define RSRC_DEC_PT5_STRING 474    
+; 1115 |//$FILENAME string_dec_pt0.src
+; 1116 |#define RSRC_DEC_PT0_STRING 475    
+; 1117 |//$FILENAME string_db.src
+; 1118 |#define RSRC_DB_STRING 476    
+; 1119 |//$FILENAME string_hz2.src
+; 1120 |#define RSRC_HZ2_STRING 477    
+; 1121 |
+; 1122 |
+; 1123 |//$FILENAME record_settings_menu_code_bank.src
+; 1124 |#define RSRC_RECORD_SETTINGS_MENU_CODE_BANK 478    
+; 1125 |//$FILENAME metadata_codebank.src
+; 1126 |#define RSRC_METADATA_CODEBANK 479    
+; 1127 |//$FILENAME mp3metadata_codebank.src
+; 1128 |#define RSRC_MP3_METADATA_CODEBANK 480    
+; 1129 |//$FILENAME wmametadata_codebank.src
+; 1130 |#define RSRC_WMA_METADATA_CODEBANK 481    
+; 1131 |//$FILENAME wavmetadata_codebank.src
+; 1132 |#define RSRC_WAV_METADATA_CODEBANK 482    
+; 1133 |//$FILENAME smvmetadata_codebank.src
+; 1134 |#define RSRC_SMV_METADATA_CODEBANK 483    
+; 1135 |//$FILENAME playlist2init_codebank.src
+; 1136 |#define RSRC_PLAYLIST2INIT_CODEBANK 484    
+; 1137 |
+; 1138 |//$FILENAME delete_successful.src
+; 1139 |#define RSRC_DELETE_SUCCESSFUL 485    
+; 1140 |//$FILENAME delete_error.src
+; 1141 |#define RSRC_DELETE_ERROR 486    
+; 1142 |//$FILENAME lic_expired.src
+; 1143 |#define RSRC_LIC_EXPIRED 487    
+; 1144 |//$FILENAME id3v2_codebank.src
+; 1145 |#define RSRC_ID3V2_CODEBANK 488    
+; 1146 |//$FILENAME id3v2lyrics_codebank.src
+; 1147 |#define RSRC_ID3V2_LYRICS_CODEBANK 489    
+; 1148 |//$FILENAME lyrics3_codebank.src
+; 1149 |#define RSRC_LYRICS3_CODEBANK 490    
+; 1150 |//$FILENAME lrc_codebank.src
+; 1151 |#define RSRC_LRC_CODEBANK 491    
+; 1152 |//$FILENAME lyrics_api_codebank.src
+; 1153 |#define RSRC_LYRICS_API_CODEBANK 492    
+; 1154 |//$FILENAME wmalyrics_codebank.src
+; 1155 |#define RSRC_WMA_LYRICS_CODEBANK 493    
+; 1156 |//$FILENAME apicframe_codebank.src
+; 1157 |#define RSRC_APIC_FRAME_CODEBANK 494    
+; 1158 |
+; 1159 |//$FILENAME exmediaerror1.src
+; 1160 |#define RSRC_EXTERNAL_MEDIA_ERROR1 495    
+; 1161 |//$FILENAME exmediaerror2.src
+; 1162 |#define RSRC_EXTERNAL_MEDIA_ERROR2 496    
+; 1163 |//$FILENAME inmediaerror1.src
+; 1164 |#define RSRC_INTERNAL_MEDIA_ERROR1 497    
+; 1165 |
+; 1166 |//$FILENAME backlight_title.src
+; 1167 |#define RSRC_BACKLIGHT_TITLE 498    
+; 1168 |//$FILENAME backlight_state_on.src
+; 1169 |#define RSRC_BACKLIGHT_STATE_ON 499    
+; 1170 |//$FILENAME backlight_state_off.src
+; 1171 |#define RSRC_BACKLIGHT_STATE_OFF 500    
+; 1172 |//$FILENAME backlightmenu.src
+; 1173 |#define RSRC_BACKLIGHT_MENU_CODE_BANK 501    
+; 1174 |//$FILENAME string_backlight_menu.src
+; 1175 |#define RSRC_STRING_BACKLIGHT_MENU 502    
+; 1176 |
+; 1177 |//$FILENAME enc_mp3mod.src
+; 1178 |#define RSRC_ENC_MP3_MOD_CODE 503    
+; 1179 |//$FILENAME enc_mp3p.src
+; 1180 |#define RSRC_ENC_MP3P_CODE 504    
+; 1181 |//$FILENAME enc_mp3x.src
+; 1182 |#define RSRC_ENC_MP3X_CODE 505    
+; 1183 |//$FILENAME enc_mp3y.src
+; 1184 |#define RSRC_ENC_MP3Y_CODE 506    
+; 1185 |//$FILENAME mp3_implementation.src
+; 1186 |#define RSRC_MP3_IMPLEMENTATION 507    
+; 1187 |//$FILENAME string_mp3.src
+; 1188 |#define RSRC_STRING_MP3 508    
+; 1189 |//$FILENAME string_all.src
+; 1190 |#define RSRC_STRING_ALL 509    
+; 1191 |
+; 1192 |//$FILENAME mediastartup.src
+; 1193 |#define RSRC_NANDMEDIAINIT 510    
+; 1194 |#define RSRC_NANDMEDIAALLOCATE 0
+; 1195 |#define RSRC_NANDMEDIADISCOVERALLOCATION 0
+; 1196 |#define RSRC_NANDMEDIAGETMEDIATABLE RSRC_NANDMEDIAINIT
+; 1197 |#define RSRC_NANDMEDIAGETINFO RSRC_NANDMEDIAINIT
+; 1198 |#define RSRC_NANDMEDIAERASE 0
+; 1199 |
+; 1200 |//$FILENAME nanddatadriveinit.src
+; 1201 |#define RSRC_NANDDATADRIVEINIT 511    
+; 1202 |#define RSRC_NANDDATADRIVEGETINFO RSRC_NANDDATADRIVEREADSECTOR
+; 1203 |#define RSRC_NANDDATADRIVESETINFO 0
+; 1204 |//$FILENAME nanddatadrivereadsector.src
+; 1205 |#define RSRC_NANDDATADRIVEREADSECTOR 512    
+; 1206 |#define RSRC_NANDDATADRIVEWRITESECTOR RSRC_NANDDATADRIVEREADSECTOR
+; 1207 |#define RSRC_NANDDATADRIVEDUMBMULTIWRITESETUP 0 
+; 1208 |#define RSRC_NANDDATADRIVEDUMBMULTIWRITESECTOR 0 
+; 1209 |#define RSRC_NANDDATADRIVECACHEMULTIWRITESETUP 0 
+; 1210 |#define RSRC_NANDDATADRIVECACHEMULTIWRITESECTOR 0 
+; 1211 |#define RSRC_NANDDATADRIVEERASE 0 
+; 1212 |#define RSRC_NANDDATADRIVEFLUSH RSRC_NANDDATADRIVEREADSECTOR 
+; 1213 |
+; 1214 |#define RSRC_NANDSYSTEMDRIVEINIT RSRC_NANDMEDIAINIT 
+; 1215 |#define RSRC_NANDSYSTEMDRIVEGETINFO RSRC_NANDMEDIAINIT  
+; 1216 |#define RSRC_NANDSYSTEMDRIVESETINFO 0  
+; 1217 |#define RSRC_NANDSYSTEMDRIVEREADSECTOR 0 
+; 1218 |#define RSRC_NANDSYSTEMDRIVEWRITESECTOR 0 
+; 1219 |#define RSRC_NANDSYSTEMDRIVEMULTIWRITESETUP 0 
+; 1220 |#define RSRC_NANDSYSTEMDRIVEMULTIWRITESECTOR 0 
+; 1221 |#define RSRC_NANDSYSTEMDRIVEERASE 0 
+; 1222 |#define RSRC_NANDSYSTEMDRIVEFLUSH 0 
+; 1223 |
+; 1224 |//$FILENAME vbr_codebank.src
+; 1225 |#define RSRC_VBR_CODEBANK 513    
+; 1226 |
+; 1227 |//$FILENAME string_recordtest_menu.src
+; 1228 |#define RSRC_STRING_RECORDTEST_MENU 514    
+; 1229 |//$FILENAME string_recordtest_duration.src
+; 1230 |#define RSRC_STRING_DURATION 515    
+; 1231 |//$FILENAME string_recordtest_time5.src
+; 1232 |#define RSRC_STRING_TIME5 516    
+; 1233 |//$FILENAME string_recordtest_time10.src
+; 1234 |#define RSRC_STRING_TIME10 517    
+; 1235 |//$FILENAME string_recordtest_time30.src
+; 1236 |#define RSRC_STRING_TIME30 518    
+; 1237 |//$FILENAME string_recordtest_time60.src
+; 1238 |#define RSRC_STRING_TIME60 519    
+; 1239 |//$FILENAME string_recordtest_time300.src
+; 1240 |#define RSRC_STRING_TIME300 520    
+; 1241 |//$FILENAME string_recordtest_time600.src
+; 1242 |#define RSRC_STRING_TIME600 521    
+; 1243 |
+; 1244 |//$FILENAME test_title.src
+; 1245 |#define RSRC_TEST_TITLE 522    
+; 1246 |//$FILENAME testmenu.src
+; 1247 |#define RSRC_TEST_MENU_CODE_BANK 523    
+; 1248 |
+; 1249 |
+; 1250 |//$FILENAME mmcmediastartup.src
+; 1251 |#define RSRC_MMCDATADRIVEINIT 524    
+; 1252 |#define RSRC_MMCMEDIAALLOCATE RSRC_MMCDATADRIVEINIT
+; 1253 |#define RSRC_MMCMEDIADISCOVERALLOCATION RSRC_MMCDATADRIVEINIT
+; 1254 |//$FILENAME mmcinfo.src
+; 1255 |#define RSRC_MMCMEDIAGETINFO 525    
+; 1256 |#define RSRC_MMCMEDIAGETMEDIATABLE RSRC_MMCMEDIAGETINFO
+; 1257 |//$FILENAME mmcerase.src
+; 1258 |#define RSRC_MMCMEDIAERASE 526    
+; 1259 |
+; 1260 |
+; 1261 |#define RSRC_MMCDATADRIVEFLUSH RSRC_MMCDATADRIVEINIT
+; 1262 |
+; 1263 |//$FILENAME mmcenumerate.src
+; 1264 |#define RSRC_MMCENUMERATE 527    
+; 1265 |//$FILENAME mmcresetdevice.src
+; 1266 |#define RSRC_MMC_RESETDEVICE 528    
+; 1267 |//$FILENAME mmcprocesscsd.src
+; 1268 |#define RSRC_MMC_PROCESSCSD 529    
+; 1269 |//$FILENAME mmcprocesscid.src
+; 1270 |#define RSRC_MMC_PROCESSCID 530    
+; 1271 |//$FILENAME mmcprocesscid2.src
+; 1272 |#define RSRC_FUNCLET_MMCPROCESSCID2 531    
+; 1273 |//$FILENAME mmcdetectpresence.src
+; 1274 |#define RSRC_MMC_DETECTPRESENCE 532    
+; 1275 |//$FILENAME mmcserialnumberinit.src
+; 1276 |#define RSRC_MMCSERIALNUMBERINIT 533    
+; 1277 |//$FILENAME mmccheckwriteprotect.src
+; 1278 |#define RSRC_MMC_CHECKWRITEPROTECT 534    
+; 1279 |
+; 1280 |//$FILENAME mmcread.src
+; 1281 |#define RSRC_MMCDATADRIVEREADSECTOR 535    
+; 1282 |//$FILENAME mmcmediainit.src
+; 1283 |#define RSRC_MMCMEDIAINIT 536    
+; 1284 |//$FILENAME mmcdatadriveinfo.src
+; 1285 |#define RSRC_MMCDATADRIVESETINFO 537    
+; 1286 |#define RSRC_MMCDATADRIVEGETINFO RSRC_MMCDATADRIVESETINFO
+; 1287 |//$FILENAME mmcdatadriveerase.src
+; 1288 |#define RSRC_MMCDATADRIVEERASE 538    
+; 1289 |
+; 1290 |#define RSRC_MMCDATADRIVEWRITESECTOR RSRC_MMCDATADRIVEREADSECTOR
+; 1291 |#define RSRC_MMCDATADRIVEMULTIWRITESETUP RSRC_MMCDATADRIVEWRITESECTOR 
+; 1292 |#define RSRC_MMCDATADRIVEMULTIWRITESECTOR RSRC_MMCDATADRIVEWRITESECTOR 
+; 1293 |
+; 1294 |
+; 1295 |/////////////////////////////////////////////////////////////////////////////////
+; 1296 |//  File system
+; 1297 |/////////////////////////////////////////////////////////////////////////////////
+; 1298 |//$FILENAME arrangefilename.src
+; 1299 |#define RSRC_FUNCLET_ARRANGEFILENAME 539    
+; 1300 |//$FILENAME clearcluster.src
+; 1301 |#define RSRC_FUNCLET_CLEARCLUSTER 540    
+; 1302 |//$FILENAME createdirectory.src
+; 1303 |#define RSRC_FUNCLET_CREATEDIRECTORY 541    
+; 1304 |//$FILENAME deletecontent.src
+; 1305 |#define RSRC_FUNCLET_DELETECONTENT 542    
+; 1306 |//$FILENAME deleterecord.src
+; 1307 |#define RSRC_FUNCLET_DELETERECORD 543    
+; 1308 |//$FILENAME fastopen.src
+; 1309 |#define RSRC_FUNCLET_FASTOPEN 544    
+; 1310 |//$FILENAME fcreate.src
+; 1311 |#define RSRC_FUNCLET_FCREATE 545    
+; 1312 |//$FILENAME filegetattrib.src
+; 1313 |#define RSRC_FUNCLET_FILEGETATTRIB 546    
+; 1314 |//$FILENAME filegetdate.src
+; 1315 |#define RSRC_FUNCLET_FILEGETDATE 547    
+; 1316 |//$FILENAME filesetattrib.src
+; 1317 |#define RSRC_FUNCLET_FILESETATTRIB 548    
+; 1318 |//$FILENAME filesetdate.src
+; 1319 |#define RSRC_FUNCLET_FILESETDATE 549    
+; 1320 |//$FILENAME fsinit.src
+; 1321 |#define RSRC_FUNCLET_FSINIT 550    
+; 1322 |//$FILENAME fsshutdown.src
+; 1323 |#define RSRC_FUNCLET_FSSHUTDOWN 551    
+; 1324 |//$FILENAME readdevicerecord.src
+; 1325 |#define RSRC_FUNCLET_READDEVICERECORD 552    
+; 1326 |//$FILENAME checkspaceinrootdir.src
+; 1327 |#define RSRC_FUNCLET_CHECKSPACEINROOTDIR 553    
+; 1328 |//$FILENAME setcwdhandle.src
+; 1329 |#define RSRC_FUNCLET_SETCWDHANDLE 554    
+; 1330 |//$FILENAME fsdriveinit.src
+; 1331 |#define RSRC_FUNCLET_FSDRIVEINIT 555    
+; 1332 |//$FILENAME fsclearBuf.src
+; 1333 |#define RSRC_FUNCLET_FSCLEARDRIVEBUF 556    
+; 1334 |//RSRC_FUNCLET_TOTALFREECLUSTER    equ      328    ;$FILENAME totalfreecluster.src
+; 1335 |//RSRC_FUNCLET_TOTALFREECLUSTERFAT16    equ      328    ;$FILENAME totalfreeclusterfat16.src
+; 1336 |//$FILENAME fgetfasthandle.src
+; 1337 |#define RSRC_FUNCLET_FGETFASTHANDLE 557    
+; 1338 |//$FILENAME ishandlewriteallocated.src
+; 1339 |#define RSRC_FUNCLET_ISHANDLEWRITEALLOCATED 558    
+; 1340 |//$FILENAME isfileopen.src
+; 1341 |#define RSRC_FUNCLET_ISFILEOPEN 559    
+; 1342 |//$FILENAME iscurrworkdir.src
+; 1343 |#define RSRC_FUNCLET_ISCURRWORKDIR 560    
+; 1344 |//$FILENAME chdir.src
+; 1345 |#define RSRC_FUNCLET_CHDIR 561    
+; 1346 |//$FILENAME deletetree.src
+; 1347 |#define RSRC_FUNCLET_DELETETREE 562    
+; 1348 |//$FILENAME deleteallrecords.src
+; 1349 |#define RSRC_FUNCLET_DELETEALLRECORDS 563    
+; 1350 |//$FILENAME cleardata.src
+; 1351 |#define RSRC_FUNCLET_CLEARDATA 564    
+; 1352 |//$FILENAME changetolowleveldir.src
+; 1353 |#define RSRC_FUNCLET_CHANGETOLOWLEVELDIR 565    
+; 1354 |//$FILENAME getrecordnumber.src
+; 1355 |#define RSRC_FUNCLET_GETRECORDNUMBER 566    
+; 1356 |//$FILENAME fileremove.src
+; 1357 |#define RSRC_FUNCLET_FILEREMOVE 567    
+; 1358 |//$FILENAME charactersearch.src
+; 1359 |#define RSRC_FUNCLET_CHARACTERSEARCH 568    
+; 1360 |//$FILENAME stringcompare.src
+; 1361 |#define RSRC_FUNCLET_STRINGCOMPARE 569    
+; 1362 |//$FILENAME fopenw.src
+; 1363 |#define RSRC_FUNCLET_FOPENW 570    
+; 1364 |//$FILENAME fremove.src
+; 1365 |#define RSRC_FUNCLET_FREMOVE 571    
+; 1366 |//$FILENAME fremovew.src
+; 1367 |#define RSRC_FUNCLET_FREMOVEW 572    
+; 1368 |//$FILENAME mkdir.src
+; 1369 |#define RSRC_FUNCLET_MKDIR 573    
+; 1370 |//$FILENAME mkdirw.src
+; 1371 |#define RSRC_FUNCLET_MKDIRW 574    
+; 1372 |//$FILENAME rmdir.src
+; 1373 |#define RSRC_FUNCLET_RMDIR 575    
+; 1374 |//$FILENAME rmdirw.src
+; 1375 |#define RSRC_FUNCLET_RMDIRW 576    
+; 1376 |//$FILENAME fgetc.src
+; 1377 |#define RSRC_FUNCLET_FGETC 577    
+; 1378 |//$FILENAME fgets.src
+; 1379 |#define RSRC_FUNCLET_FGETS 578    
+; 1380 |//$FILENAME fputc.src
+; 1381 |#define RSRC_FUNCLET_FPUTC 579    
+; 1382 |//$FILENAME fputs.src
+; 1383 |#define RSRC_FUNCLET_FPUTS 580    
+; 1384 |//$FILENAME arrangelongfilename.src
+; 1385 |#define RSRC_FUNCLET_ARRANGELONGFILENAME 581    
+; 1386 |//$FILENAME convert_itoa.src
+; 1387 |#define RSRC_FUNCLET_CONVERT_ITOA 582    
+; 1388 |//$FILENAME createdirrecord.src
+; 1389 |#define RSRC_FUNCLET_CREATEDIRRECORD 583    
+; 1390 |//$FILENAME chksum.src
+; 1391 |#define RSRC_FUNCLET_CHKSUM 584    
+; 1392 |//$FILENAME createshortdirrecord.src
+; 1393 |#define RSRC_FUNCLET_CREATESHORTDIRRECORD 585    
+; 1394 |//$FILENAME discardtrailigperiodsucs3.src
+; 1395 |#define RSRC_FUNCLET_DISCARDTRAILIGPERIODSUCS3 586    
+; 1396 |//$FILENAME discardtrailigperiodsw.src
+; 1397 |#define RSRC_FUNCLET_DISCARDTRAILIGPERIODSW 587    
+; 1398 |//$FILENAME extractfilenamew.src
+; 1399 |#define RSRC_FUNCLET_EXTRACTFILENAMEW 588    
+; 1400 |//$FILENAME extractpathw.src
+; 1401 |#define RSRC_FUNCLET_EXTRACTPATHW 589    
+; 1402 |//$FILENAME findfreerecord.src
+; 1403 |#define RSRC_FUNCLET_FINDFREERECORD 590    
+; 1404 |//$FILENAME getnamew.src
+; 1405 |#define RSRC_FUNCLET_GETNAMEW 591    
+; 1406 |//$FILENAME isdirectoryempty.src
+; 1407 |#define RSRC_FUNCLET_ISDIRECTORYEMPTY 592    
+; 1408 |//$FILENAME isshortnamevalid.src
+; 1409 |#define RSRC_FUNCLET_ISSHORTNAMEVALID 593    
+; 1410 |//$FILENAME longdirmatch.src
+; 1411 |#define RSRC_FUNCLET_LONGDIRMATCH 594    
+; 1412 |//$FILENAME unicodetooem.src
+; 1413 |#define RSRC_FUNCLET_UNICODETOOEM 595    
+; 1414 |//$FILENAME matchdirrecordw.src
+; 1415 |#define RSRC_FUNCLET_MATCHDIRRECORDW 596    
+; 1416 |//$FILENAME setcwd.src
+; 1417 |#define RSRC_FUNCLET_SETCWD 597    
+; 1418 |//$FILENAME setshortfilename.src
+; 1419 |#define RSRC_FUNCLET_SETSHORTFILENAME 598    
+; 1420 |//$FILENAME generatefilenametail.src
+; 1421 |#define RSRC_FUNCLET_GENERATEFILENAMETAIL 599    
+; 1422 |//$FILENAME dbcstounicode.src
+; 1423 |#define RSRC_FUNCLET_DBCSTOUNICODE 600    
+; 1424 |//$FILENAME strcpy.src
+; 1425 |#define RSRC_FUNCLET_STRCPY 601    
+; 1426 |//$FILENAME strcpyw.src
+; 1427 |#define RSRC_FUNCLET_STRCPYW 602    
+; 1428 |//$FILENAME strlengthw.src
+; 1429 |#define RSRC_FUNCLET_STRLENGTHW 603    
+; 1430 |//$FILENAME filesystempresent.src
+; 1431 |#define RSRC_FUNCLET_FILESYSTEMPRESENT 604    
+; 1432 |//$FILENAME DataDriveInit.src
+; 1433 |#define RSRC_FUNCLET_DATADRIVEINIT 605    
+; 1434 |//$FILENAME FSGetDataDrivePbsLocation.src
+; 1435 |#define RSRC_FUNCLET_FSGETDATADRIVEPBSLOCATION 606    
+; 1436 |//$FILENAME FSPartitionEntryCopy.src
+; 1437 |#define RSRC_FUNCLET_FSPARTITIONENTRYCOPYFSDD 607    
+; 1438 |//$FILENAME DataDriveGetSize.src
+; 1439 |#define RSRC_FUNCLET_DATADRIVEGETSIZE 608    
+; 1440 |//$FILENAME ConstructLongFileName.src 
+; 1441 |#define RSRC_FUNCLET_CONSTRUCTLONGFILENAME 609    
+; 1442 |//$FILENAME strcpyucs3_2.src
+; 1443 |#define RSRC_FUNCLET_STRCPYUCS3_2 610    
+; 1444 |//$FILENAME getvolumelabel.src
+; 1445 |#define RSRC_FUNCLET_GETVOLUMELABEL 611    
+; 1446 |//$FILENAME setvolumelabel.src
+; 1447 |#define RSRC_FUNCLET_SETVOLUMELABEL 612    
+; 1448 |//$FILENAME disk_full.src
+; 1449 |#define RSRC_DISK_FULL 613    
+; 1450 |//$FILENAME chkdskstartup.src
+; 1451 |#define RSRC_CHECKDISK 614    
+; 1452 |//$FILENAME chkdskstartupy.src
+; 1453 |#define RSRC_CHKDSK_YMEM 615    
+; 1454 |//$FILENAME low_level_pwr_line1.src
+; 1455 |#define RSRC_LOW_PWR_EXT_DEV_LINE1 616    
+; 1456 |//$FILENAME low_level_pwr_line2.src
+; 1457 |#define RSRC_LOW_PWR_EXT_DEV_LINE2 617    
+; 1458 |//$FILENAME string_bit_rate.src
+; 1459 |#define RSRC_STRING_BIT_RATE 618    
+; 1460 |//$FILENAME string_96000hz.src
+; 1461 |#define RSRC_STRING_96KBPS 619    
+; 1462 |//$FILENAME string_112000hz.src
+; 1463 |#define RSRC_STRING_112KBPS 620    
+; 1464 |//$FILENAME string_128000hz.src
+; 1465 |#define RSRC_STRING_128KBPS 621    
+; 1466 |//$FILENAME string_160000hz.src
+; 1467 |#define RSRC_STRING_160KBPS 622    
+; 1468 |//$FILENAME string_192000hz.src
+; 1469 |#define RSRC_STRING_192KBPS 623    
+; 1470 |//$FILENAME string_224000hz.src
+; 1471 |#define RSRC_STRING_224KBPS 624    
+; 1472 |//$FILENAME string_256000hz.src
+; 1473 |#define RSRC_STRING_256KBPS 625    
+; 1474 |//$FILENAME string_320000hz.src
+; 1475 |#define RSRC_STRING_320KBPS 626    
+; 1476 |//$FILENAME string_hz.src
+; 1477 |#define RSRC_STRING_HZ 627    
+; 1478 |//$FILENAME EncCommonp.src
+; 1479 |#define RSRC_ENCODERCOMMON_P_CODE 628    
+; 1480 |//$FILENAME adc_adcx.src
+; 1481 |#define RSRC_ADC_ADCX_CODE 629    
+; 1482 |//$FILENAME adc_adcy.src
+; 1483 |#define RSRC_ADC_ADCY_CODE 630    
+; 1484 |//$FILENAME Funclet_encodercommon.src 
+; 1485 |#define RSRC_FUNCLET_LOADENCODERCOMMON 631    
+; 1486 |//$FILENAME string_album.src
+; 1487 |#define RSRC_STRING_ALBUM 632    
+; 1488 |//$FILENAME string_encoder_song.src
+; 1489 |#define RSRC_STRING_SONG 633    
+; 1490 |//$FILENAME string_mode.src
+; 1491 |#define RSRC_STRING_MODE 634    
+; 1492 |
+; 1493 |//////////////////////////////////////////////////////////////////////////////////
+; 1494 |// display related
+; 1495 |//////////////////////////////////////////////////////////////////////////////////
+; 1496 |//$FILENAME Funclet_HalDisplayInit.src
+; 1497 |#define RSRC_FUNCLET_HAL_DISPLAY_INIT 635    
+; 1498 |
+; 1499 |//////////////////////////////////////////////////////////////////////////////////
+; 1500 |//WMDRM Related
+; 1501 |//////////////////////////////////////////////////////////////////////////////////
+; 1502 |//$FILENAME legacy_decryptcontentkey.src
+; 1503 |#define RSRC_FUNCLET_LEGACY_DECRYPTCONTENTKEY 636    
+; 1504 |//$FILENAME drm_bbx_legacycipherkeysetup.src
+; 1505 |#define RSRC_FUNCLET_DRM_BBX_LEGACYCIPHERKEYSETUP 637    
+; 1506 |//$FILENAME drm_bbx_initialize.src
+; 1507 |#define RSRC_FUNCLET_DRM_BBX_INITIALIZE 638    
+; 1508 |//$FILENAME drm_bbx_canbind.src
+; 1509 |#define RSRC_FUNCLET_DRM_BBX_CANBIND 639    
+; 1510 |//$FILENAME verifychecksum.src
+; 1511 |#define RSRC_FUNCLET_VERIFYCHECKSUM 640    
+; 1512 |//$FILENAME drm_b64_encodew.src
+; 1513 |#define RSRC_FUNCLET_DRM_B64_ENCODEW 641    
+; 1514 |//$FILENAME _performactions.src
+; 1515 |#define RSRC_FUNCLET__PERFORMACTIONS 642    
+; 1516 |//$FILENAME _processendofchain.src
+; 1517 |#define RSRC_FUNCLET__PROCESSENDOFCHAIN 643    
+; 1518 |//$FILENAME drmcrt_iswxdigit.src
+; 1519 |#define RSRC_FUNCLET_DRMCRT_ISWXDIGIT 644    
+; 1520 |//$FILENAME drmcrt_towlower.src
+; 1521 |#define RSRC_FUNCLET_DRMCRT_TOWLOWER 645    
+; 1522 |//$FILENAME drmcrt_wcslen.src
+; 1523 |#define RSRC_FUNCLET_DRMCRT_WCSLEN 646    
+; 1524 |//$FILENAME drmcrt_wcsncpy.src
+; 1525 |#define RSRC_FUNCLET_DRMCRT_WCSNCPY 647    
+; 1526 |//$FILENAME drmcrt_memmove.src
+; 1527 |#define RSRC_FUNCLET_DRMCRT_MEMMOVE 648    
+; 1528 |//$FILENAME performoperation_part1.src
+; 1529 |#define RSRC_FUNCLET_PERFORMOPERATION_PART1 649    
+; 1530 |//$FILENAME performoperation_part2.src
+; 1531 |#define RSRC_FUNCLET_PERFORMOPERATION_PART2 650    
+; 1532 |//$FILENAME performoperation_part3.src
+; 1533 |#define RSRC_FUNCLET_PERFORMOPERATION_PART3 651    
+; 1534 |//$FILENAME performoperation_part4.src
+; 1535 |#define RSRC_FUNCLET_PERFORMOPERATION_PART4 652    
+; 1536 |//$FILENAME performoperation_part5.src
+; 1537 |#define RSRC_FUNCLET_PERFORMOPERATION_PART5 653    
+; 1538 |//$FILENAME performoperation_part6.src
+; 1539 |#define RSRC_FUNCLET_PERFORMOPERATION_PART6 654    
+; 1540 |//$FILENAME isvalidfunction.src
+; 1541 |#define RSRC_FUNCLET_ISVALIDFUNCTION 655    
+; 1542 |//$FILENAME functiongetvalue.src
+; 1543 |#define RSRC_FUNCLET_FUNCTIONGETVALUE 656    
+; 1544 |//$FILENAME globalsetvariable.src
+; 1545 |#define RSRC_FUNCLET_GLOBALSETVARIABLE 657    
+; 1546 |//$FILENAME variabledrmkgetorset.src
+; 1547 |#define RSRC_FUNCLET_VARIABLEDRMKGETORSET 658    
+; 1548 |//$FILENAME variabledrmgetorset.src
+; 1549 |#define RSRC_FUNCLET_VARIABLEDRMGETORSET 659    
+; 1550 |//$FILENAME variableappgetorset.src
+; 1551 |#define RSRC_FUNCLET_VARIABLEAPPGETORSET 660    
+; 1552 |//$FILENAME variablelicensegetorset.src
+; 1553 |#define RSRC_FUNCLET_VARIABLELICENSEGETORSET 661    
+; 1554 |//$FILENAME variablecontentgetorset.src
+; 1555 |#define RSRC_FUNCLET_VARIABLECONTENTGETORSET 662    
+; 1556 |//$FILENAME variabledevicegetorset.src
+; 1557 |#define RSRC_FUNCLET_VARIABLEDEVICEGETORSET 663    
+; 1558 |//$FILENAME variablepmlicensegetorset.src
+; 1559 |#define RSRC_FUNCLET_VARIABLEPMLICENSEGETORSET 664    
+; 1560 |//$FILENAME drm_hds_createstore.src
+; 1561 |#define RSRC_FUNCLET_DRM_HDS_CREATESTORE 665    
+; 1562 |//$FILENAME drm_hds_init.src
+; 1563 |#define RSRC_FUNCLET_DRM_HDS_INIT 666    
+; 1564 |//$FILENAME drm_hds_uninit.src
+; 1565 |#define RSRC_FUNCLET_DRM_HDS_UNINIT 667    
+; 1566 |//$FILENAME drm_hds_openstore.src
+; 1567 |#define RSRC_FUNCLET_DRM_HDS_OPENSTORE 668    
+; 1568 |//$FILENAME drm_hds_deleteslot.src
+; 1569 |#define RSRC_FUNCLET_DRM_HDS_DELETESLOT 669    
+; 1570 |//$FILENAME drm_hds_slotresize.src
+; 1571 |#define RSRC_FUNCLET_DRM_HDS_SLOTRESIZE 670    
+; 1572 |//$FILENAME drm_hds_initslotenum.src
+; 1573 |#define RSRC_FUNCLET_DRM_HDS_INITSLOTENUM 671    
+; 1574 |//$FILENAME drm_hds_cleanupstore.src 
+; 1575 |#define RSRC_FUNCLET_DRM_HDS_CLEANUPSTORE 672    
+; 1576 |//$FILENAME _hdscopyslot_child2child.src 
+; 1577 |#define RSRC_FUNCLET__HDSCOPYSLOT_CHILD2CHILD 673    
+; 1578 |//$FILENAME _hdscopychildpayload.src 
+; 1579 |#define RSRC_FUNCLET__HDSCOPYCHILDPAYLOAD 674    
+; 1580 |//$FILENAME _hdsdefragmentfile.src 
+; 1581 |#define RSRC_FUNCLET__HDSDEFRAGMENTFILE 675    
+; 1582 |//$FILENAME _hdscleanupnamespace.src 
+; 1583 |#define RSRC_FUNCLET__HDSCLEANUPNAMESPACE 676    
+; 1584 |//$FILENAME _hdscleanupstore.src 
+; 1585 |#define RSRC_FUNCLET__HDSCLEANUPSTORE 677    
+; 1586 |//$FILENAME drm_lst_clean.src
+; 1587 |#define RSRC_FUNCLET_DRM_LST_CLEAN 678    
+; 1588 |//$FILENAME _hdslocatefreeblockforslot.src
+; 1589 |#define RSRC_FUNCLET__HDSLOCATEFREEBLOCKFORSLOT 679    
+; 1590 |//$FILENAME _hdslockblock2deleteslot.src
+; 1591 |#define RSRC_FUNCLET__HDSLOCKBLOCK2DELETESLOT 680    
+; 1592 |//$FILENAME _hdsunlockblock2deleteslot.src
+; 1593 |#define RSRC_FUNCLET__HDSUNLOCKBLOCK2DELETESLOT 681    
+; 1594 |//$FILENAME _hdscreatenamespace.src
+; 1595 |#define RSRC_FUNCLET__HDSCREATENAMESPACE 682    
+; 1596 |//$FILENAME _hdsfilepos2blocknum.src
+; 1597 |#define RSRC_FUNCLET__HDSFILEPOS2BLOCKNUM 683    
+; 1598 |//$FILENAME _writesrn.src
+; 1599 |#define RSRC_FUNCLET__WRITESRN 684    
+; 1600 |//$FILENAME _writecommonblockheader.src
+; 1601 |#define RSRC_FUNCLET__WRITECOMMONBLOCKHEADER 685    
+; 1602 |//$FILENAME _writechildblockheader.src
+; 1603 |#define RSRC_FUNCLET__WRITECHILDBLOCKHEADER 686    
+; 1604 |//$FILENAME _readdatablockheader.src
+; 1605 |#define RSRC_FUNCLET__READDATABLOCKHEADER 687    
+; 1606 |//$FILENAME _writedatablockheader.src
+; 1607 |#define RSRC_FUNCLET__WRITEDATABLOCKHEADER 688    
+; 1608 |//$FILENAME _hdsexpandstore.src
+; 1609 |#define RSRC_FUNCLET__HDSEXPANDSTORE 689    
+; 1610 |//$FILENAME _hdsallocblock.src
+; 1611 |#define RSRC_FUNCLET__HDSALLOCBLOCK 690    
+; 1612 |//$FILENAME _hdsfreeblock.src
+; 1613 |#define RSRC_FUNCLET__HDSFREEBLOCK 691    
+; 1614 |//$FILENAME _hdscreateoversizedslot.src
+; 1615 |#define RSRC_FUNCLET__HDSCREATEOVERSIZEDSLOT 692    
+; 1616 |//$FILENAME _hdsallocslotinfile.src
+; 1617 |#define RSRC_FUNCLET__HDSALLOCSLOTINFILE 693    
+; 1618 |//$FILENAME _hdswriteblockhdr.src
+; 1619 |#define RSRC_FUNCLET__HDSWRITEBLOCKHDR 694    
+; 1620 |//$FILENAME _hdsadjustchildpayload.src
+; 1621 |#define RSRC_FUNCLET__HDSADJUSTCHILDPAYLOAD 695    
+; 1622 |//$FILENAME _hdsfindleftmostleafblock.src
+; 1623 |#define RSRC_FUNCLET__HDSFINDLEFTMOSTLEAFBLOCK 696    
+; 1624 |//$FILENAME _hdscreateandopenslot.src
+; 1625 |#define RSRC_FUNCLET__HDSCREATEANDOPENSLOT 697    
+; 1626 |//$FILENAME _hdsremoveslot.src
+; 1627 |#define RSRC_FUNCLET__HDSREMOVESLOT 698    
+; 1628 |//$FILENAME _hdscopyandlocknewslot.src
+; 1629 |#define RSRC_FUNCLET__HDSCOPYANDLOCKNEWSLOT 699    
+; 1630 |//$FILENAME _hdsrelocateslotandkeepcurrlock.src
+; 1631 |#define RSRC_FUNCLET__HDSRELOCATESLOTANDKEEPCURRLOCK 700    
+; 1632 |//$FILENAME _hdstraversenextrightsiblingblock.src
+; 1633 |#define RSRC_FUNCLET__HDSTRAVERSENEXTRIGHTSIBLINGBLOCK 701    
+; 1634 |//$FILENAME _hdstraverseblocksinpostorder.src
+; 1635 |#define RSRC_FUNCLET__HDSTRAVERSEBLOCKSINPOSTORDER 702    
+; 1636 |//$FILENAME _hdsslotresize.src
+; 1637 |#define RSRC_FUNCLET__HDSSLOTRESIZE 703    
+; 1638 |//$FILENAME _isnull.src
+; 1639 |#define RSRC_FUNCLET__ISNULL 704    
+; 1640 |//$FILENAME _hdsgensrnhash.src
+; 1641 |#define RSRC_FUNCLET__HDSGENSRNHASH 705    
+; 1642 |//$FILENAME _hdsallocblockbuffer.src
+; 1643 |#define RSRC_FUNCLET__HDSALLOCBLOCKBUFFER 706    
+; 1644 |//$FILENAME _readsrn.src
+; 1645 |#define RSRC_FUNCLET__READSRN 707    
+; 1646 |//$FILENAME _hdsgetputchildblocknum.src
+; 1647 |#define RSRC_FUNCLET__HDSGETPUTCHILDBLOCKNUM 708    
+; 1648 |//$FILENAME _hdshashkeytoindex.src
+; 1649 |#define RSRC_FUNCLET__HDSHASHKEYTOINDEX 709    
+; 1650 |//$FILENAME _hdsslotwrite.src
+; 1651 |#define RSRC_FUNCLET__HDSSLOTWRITE 710    
+; 1652 |//$FILENAME _hdsinitslotenum.src
+; 1653 |#define RSRC_FUNCLET__HDSINITSLOTENUM 711    
+; 1654 |//$FILENAME drm_lst_close.src
+; 1655 |#define RSRC_FUNCLET_DRM_LST_CLOSE 712    
+; 1656 |//$FILENAME drm_lst_enumnext.src
+; 1657 |#define RSRC_FUNCLET_DRM_LST_ENUMNEXT 713    
+; 1658 |//$FILENAME drm_lst_enumdelete.src
+; 1659 |#define RSRC_FUNCLET_DRM_LST_ENUMDELETE 714    
+; 1660 |//$FILENAME _processextensions.src
+; 1661 |#define RSRC_FUNCLET__PROCESSEXTENSIONS 715    
+; 1662 |//$FILENAME _processidlist.src
+; 1663 |#define RSRC_FUNCLET__PROCESSIDLIST 716    
+; 1664 |//$FILENAME _processexclusions.src
+; 1665 |#define RSRC_FUNCLET__PROCESSEXCLUSIONS 717    
+; 1666 |//$FILENAME _processinclusions.src
+; 1667 |#define RSRC_FUNCLET__PROCESSINCLUSIONS 718    
+; 1668 |//$FILENAME drm_opl_processcopyoutputleveldata.src
+; 1669 |#define RSRC_FUNCLET_DRM_OPL_PROCESSCOPYOUTPUTLEVELDATA 719    
+; 1670 |//$FILENAME _getopllevel.src
+; 1671 |#define RSRC_FUNCLET__GETOPLLEVEL 720    
+; 1672 |//$FILENAME drm_opl_processplayoutputleveldata.src
+; 1673 |#define RSRC_FUNCLET_DRM_OPL_PROCESSPLAYOUTPUTLEVELDATA 721    
+; 1674 |//$FILENAME _updateattributetokeninslot.src
+; 1675 |#define RSRC_FUNCLET__UPDATEATTRIBUTETOKENINSLOT 722    
+; 1676 |//$FILENAME drm_sst_settokenvalue.src
+; 1677 |#define RSRC_FUNCLET_DRM_SST_SETTOKENVALUE 723    
+; 1678 |//$FILENAME drm_sst_createlicensestatepassword.src
+; 1679 |#define RSRC_FUNCLET_DRM_SST_CREATELICENSESTATEPASSWORD 724    
+; 1680 |//$FILENAME drm_utl_promoteansitounicode.src
+; 1681 |#define RSRC_FUNCLET_DRM_UTL_PROMOTEANSITOUNICODE 725    
+; 1682 |//$FILENAME drm_pk_symmetricsign.src
+; 1683 |#define RSRC_FUNCLET_DRM_PK_SYMMETRICSIGN 726    
+; 1684 |//$FILENAME drm_utl_getversionfromstring.src
+; 1685 |#define RSRC_FUNCLET_DRM_UTL_GETVERSIONFROMSTRING 727    
+; 1686 |//$FILENAME drm_utl_stringinsertblanksubstring.src
+; 1687 |#define RSRC_FUNCLET_DRM_UTL_STRINGINSERTBLANKSUBSTRING 728    
+; 1688 |//$FILENAME drm_utl_stringremovesubstring.src
+; 1689 |#define RSRC_FUNCLET_DRM_UTL_STRINGREMOVESUBSTRING 729    
+; 1690 |//$FILENAME drm_utl_dstrsearch.src
+; 1691 |#define RSRC_FUNCLET_DRM_UTL_DSTRSEARCH 730    
+; 1692 |//$FILENAME drm_utl_dstrsearchreverse.src
+; 1693 |#define RSRC_FUNCLET_DRM_UTL_DSTRSEARCHREVERSE 731    
+; 1694 |//$FILENAME drm_utl_stringtoguid.src
+; 1695 |#define RSRC_FUNCLET_DRM_UTL_STRINGTOGUID 732    
+; 1696 |//$FILENAME drm_utl_ensuredataalignment.src
+; 1697 |#define RSRC_FUNCLET_DRM_UTL_ENSUREDATAALIGNMENT 733    
+; 1698 |//$FILENAME overlappingdates.src
+; 1699 |#define RSRC_FUNCLET_OVERLAPPINGDATES 734    
+; 1700 |//$FILENAME drm_asd_parsev2license.src
+; 1701 |#define RSRC_FUNCLET_DRM_ASD_PARSEV2LICENSE 735    
+; 1702 |//$FILENAME neginfdate.src
+; 1703 |#define RSRC_FUNCLET_NEGINFDATE 736    
+; 1704 |//$FILENAME infdate.src
+; 1705 |#define RSRC_FUNCLET_INFDATE 737    
+; 1706 |//$FILENAME isexpired.src
+; 1707 |#define RSRC_FUNCLET_ISEXPIRED 738    
+; 1708 |//$FILENAME getsecstateattr.src
+; 1709 |#define RSRC_FUNCLET_GETSECSTATEATTR 739    
+; 1710 |//$FILENAME setexpirycategory.src
+; 1711 |#define RSRC_FUNCLET_SETEXPIRYCATEGORY 740    
+; 1712 |//$FILENAME getv2licenseinfo.src
+; 1713 |#define RSRC_FUNCLET_GETV2LICENSEINFO 741    
+; 1714 |//$FILENAME getnextlicense.src
+; 1715 |#define RSRC_FUNCLET_GETNEXTLICENSE 742    
+; 1716 |//$FILENAME aggregate.src
+; 1717 |#define RSRC_FUNCLET_AGGREGATE 743    
+; 1718 |//$FILENAME drm_asd_getlicenseaggregatedata.src
+; 1719 |#define RSRC_FUNCLET_DRM_ASD_GETLICENSEAGGREGATEDATA 744    
+; 1720 |//$FILENAME _scannodeforattributew.src
+; 1721 |#define RSRC_FUNCLET__SCANNODEFORATTRIBUTEW 745    
+; 1722 |//$FILENAME _getxmlnodecdataw.src
+; 1723 |#define RSRC_FUNCLET__GETXMLNODECDATAW 746    
+; 1724 |//$FILENAME drm_ddc_getdevicecertificate.src
+; 1725 |#define RSRC_FUNCLET_DRM_DDC_GETDEVICECERTIFICATE 747    
+; 1726 |//$FILENAME _createdevicestore.src
+; 1727 |#define RSRC_FUNCLET__CREATEDEVICESTORE 748    
+; 1728 |//$FILENAME _mapdrmerror.src
+; 1729 |#define RSRC_FUNCLET__MAPDRMERROR 749    
+; 1730 |//$FILENAME _comparemachineid.src
+; 1731 |#define RSRC_FUNCLET__COMPAREMACHINEID 750    
+; 1732 |//$FILENAME initmgrcontext.src
+; 1733 |#define RSRC_FUNCLET_INITMGRCONTEXT 751    
+; 1734 |//$FILENAME drm_mgr_setv2header.src
+; 1735 |#define RSRC_FUNCLET_DRM_MGR_SETV2HEADER 752    
+; 1736 |//$FILENAME drm_mgr_commit.src
+; 1737 |#define RSRC_FUNCLET_DRM_MGR_COMMIT 753    
+; 1738 |//$FILENAME drm_mgr_cleanuplicensestore.src
+; 1739 |#define RSRC_FUNCLET_DRM_MGR_CLEANUPLICENSESTORE 754    
+; 1740 |//$FILENAME januscleandatastore.src
+; 1741 |#define RSRC_FUNCLET_JANUSCLEANDATASTORE 755    
+; 1742 |//$FILENAME drm_mtr_openid.src
+; 1743 |#define RSRC_FUNCLET_DRM_MTR_OPENID 756    
+; 1744 |//$FILENAME drm_mtr_incrementcount.src
+; 1745 |#define RSRC_FUNCLET_DRM_MTR_INCREMENTCOUNT 757    
+; 1746 |//$FILENAME drm_mtr_closecontext.src
+; 1747 |#define RSRC_FUNCLET_DRM_MTR_CLOSECONTEXT 758    
+; 1748 |//$FILENAME oem_setendoffile.src
+; 1749 |#define RSRC_FUNCLET_OEM_SETENDOFFILE 759    
+; 1750 |//$FILENAME oem_genrandombytes.src
+; 1751 |#define RSRC_FUNCLET_OEM_GENRANDOMBYTES 760    
+; 1752 |//$FILENAME oem_getfallbacksigningkey.src
+; 1753 |#define RSRC_FUNCLET_OEM_GETFALLBACKSIGNINGKEY 761    
+; 1754 |//$FILENAME oem_getdevicecerttemplate.src
+; 1755 |#define RSRC_FUNCLET_OEM_GETDEVICECERTTEMPLATE 762    
+; 1756 |//$FILENAME oem_setdevicecert.src
+; 1757 |#define RSRC_FUNCLET_OEM_SETDEVICECERT 763    
+; 1758 |//$FILENAME oem_getclockresetstate.src
+; 1759 |#define RSRC_FUNCLET_OEM_GETCLOCKRESETSTATE 764    
+; 1760 |//$FILENAME oem_setclockresetstate.src
+; 1761 |#define RSRC_FUNCLET_OEM_SETCLOCKRESETSTATE 765    
+; 1762 |//$FILENAME oem_getuniqueid.src
+; 1763 |#define RSRC_FUNCLET_OEM_GETUNIQUEID 766    
+; 1764 |//$FILENAME oem_getdevicecert.src
+; 1765 |#define RSRC_FUNCLET_OEM_GETDEVICECERT 767    
+; 1766 |//$FILENAME drm_snc_openstore.src
+; 1767 |#define RSRC_FUNCLET_DRM_SNC_OPENSTORE 768    
+; 1768 |//$FILENAME drm_snc_closestore.src
+; 1769 |#define RSRC_FUNCLET_DRM_SNC_CLOSESTORE 769    
+; 1770 |//$FILENAME _setkidstoredata.src
+; 1771 |#define RSRC_FUNCLET__SETKIDSTOREDATA 770    
+; 1772 |//$FILENAME drm_snc_deletekid.src
+; 1773 |#define RSRC_FUNCLET_DRM_SNC_DELETEKID 771    
+; 1774 |//$FILENAME drm_snc_updatekid.src
+; 1775 |#define RSRC_FUNCLET_DRM_SNC_UPDATEKID 772    
+; 1776 |//$FILENAME drm_mgr_setv1header.src
+; 1777 |#define RSRC_FUNCLET_DRM_MGR_SETV1HEADER 773    
+; 1778 |//$FILENAME functiongetvalue_part1.src
+; 1779 |#define RSRC_FUNCLET_FUNCTIONGETVALUE_PART1 774    
+; 1780 |//$FILENAME functiongetvalue_fn_datediff.src
+; 1781 |#define RSRC_FUNCLET_FUNCTIONGETVALUE_FN_DATEDIFF 775    
+; 1782 |//$FILENAME _hdscreatenamespacestore.src
+; 1783 |#define RSRC_FUNCLET__HDSCREATENAMESPACESTORE 776    
+; 1784 |//$FILENAME drm_hds_createstore2.src
+; 1785 |#define RSRC_FUNCLET_DRM_HDS_CREATESTORE2 777    
+; 1786 |//$FILENAME drm_hds_openstore2.src
+; 1787 |#define RSRC_FUNCLET_DRM_HDS_OPENSTORE2 778    
+; 1788 |//$FILENAME _hdsprealloc.src
+; 1789 |#define RSRC_FUNCLET__HDSPREALLOC 779    
+; 1790 |//$FILENAME oem_systemtimetofiletime.src
+; 1791 |#define RSRC_FUNCLET_OEM_SYSTEMTIMETOFILETIME 780    
+; 1792 |//$FILENAME oem_filetimetosystemtime.src
+; 1793 |#define RSRC_FUNCLET_OEM_FILETIMETOSYSTEMTIME 781    
+; 1794 |//$FILENAME gendevicecertificate.src
+; 1795 |#define RSRC_FUNCLET_GENDEVICECERTIFICATE 782    
+; 1796 |//$FILENAME drmcrt_memmove_mem.src
+; 1797 |#define RSRC_FUNCLET_DRMCRT_MEMMOVE_MEM 783    
+; 1798 |//$FILENAME copyhdsdtore.src
+; 1799 |#define RSRC_FUNCLET_COPYHDSDTORE 784    
+; 1800 |//$FILENAME generatedevicecert.src
+; 1801 |#define RSRC_FUNCLET_GENERATEDEVICECERT 785    
+; 1802 |//$FILENAME oem_getdevicedatetime.src
+; 1803 |#define RSRC_FUNCLET_OEM_GETDEVICEDATETIME 786    
+; 1804 |//$FILENAME drm_mtr_updatedata.src
+; 1805 |#define RSRC_FUNCLET_DRM_MTR_UPDATEDATA 787    
+; 1806 |//$FILENAME _hdsupdatesrn.src
+; 1807 |#define RSRC_FUNCLET__HDSUPDATESRN 788    
+; 1808 |//$FILENAME drm_b64_decodew_inplace.src
+; 1809 |#define RSRC_FUNCLET_DRM_B64_DECODEW_INPLACE 789    
+; 1810 |//$FILENAME _checksecureclock.src
+; 1811 |#define RSRC_FUNCLET__CHECKSECURECLOCK 790    
+; 1812 |//$FILENAME _preparesecureclockdataforwriting.src
+; 1813 |#define RSRC_FUNCLET__PREPARESECURECLOCKDATAFORWRITING 791    
+; 1814 |//$FILENAME _preparesecureclockdataforreading.src
+; 1815 |#define RSRC_FUNCLET__PREPARESECURECLOCKDATAFORREADING 792    
+; 1816 |//$FILENAME drm_sst_closelockedslot.src
+; 1817 |#define RSRC_FUNCLET_DRM_SST_CLOSELOCKEDSLOT 793    
+; 1818 |//$FILENAME variablesecuretimegetorset.src
+; 1819 |#define RSRC_FUNCLET_VARIABLESECURETIMEGETORSET 794    
+; 1820 |//$FILENAME strtol.src
+; 1821 |#define RSRC_FUNCLET_STRTOL 795    
+; 1822 |//$FILENAME mktime.src
+; 1823 |#define RSRC_FUNCLET_MKTIME 796    
+; 1824 |//$FILENAME gmtime.src
+; 1825 |#define RSRC_FUNCLET_GMTIME 797    
+; 1826 |//$FILENAME localtime.src
+; 1827 |#define RSRC_FUNCLET_LOCALTIME 798    
+; 1828 |//$FILENAME _struct_tm_to_systemtime.src
+; 1829 |#define RSRC_FUNCLET__STRUCT_TM_TO_SYSTEMTIME 799    
+; 1830 |//$FILENAME _systemtime_to_struct_tm.src
+; 1831 |#define RSRC_FUNCLET__SYSTEMTIME_TO_STRUCT_TM 800    
+; 1832 |//$FILENAME _systemtimetotime_t.src
+; 1833 |#define RSRC_FUNCLET__SYSTEMTIMETOTIME_T 801    
+; 1834 |//$FILENAME oem_setsystemtime.src
+; 1835 |#define RSRC_FUNCLET_OEM_SETSYSTEMTIME 802    
+; 1836 |//$FILENAME const_pkcrypto.src
+; 1837 |#define RSRC_CONST_PKCRYPTO 803    
+; 1838 |//$FILENAME const_y.src
+; 1839 |#define RSRC_CONST_Y 804    
+; 1840 |//$FILENAME aes_dec_table.src
+; 1841 |#define RSRC_AES_DEC_TABLE 805    
+; 1842 |//$FILENAME aes_key_table.src
+; 1843 |#define RSRC_AES_KEY_TABLE 806    
+; 1844 |//$FILENAME aes_enc_table.src
+; 1845 |#define RSRC_AES_ENC_TABLE 807    
+; 1846 |//$FILENAME device_cert.src
+; 1847 |#define RSRC_DEVCERT 808    
+; 1848 |//$FILENAME devcert_template.src
+; 1849 |#define RSRC_DEVCERT_TEMPLATE 809    
+; 1850 |//$FILENAME getbase64decodedkey.src
+; 1851 |#define RSRC_FUNCLET_GETBASE64DECODEDKEY 810    
+; 1852 |//$FILENAME _initslot.src
+; 1853 |#define RSRC_FUNCLET__INITSLOT 811    
+; 1854 |//$FILENAME hdsimplcommon.src
+; 1855 |#define RSRC_HDSIMPLCOMMON_P 812    
+; 1856 |//$FILENAME hdsimpl_p.src
+; 1857 |#define RSRC_HDSIMPL_P 813    
+; 1858 |
+; 1859 |
+; 1860 |//////////////////////////////////////////////////////////////////////////////////
+; 1861 |//pkcrypto Related
+; 1862 |//////////////////////////////////////////////////////////////////////////////////
+; 1863 |//$FILENAME two_adic_inverse.src
+; 1864 |#define RSRC_FUNCLET_TWO_ADIC_INVERSE 814    
+; 1865 |//$FILENAME mp_shift.src
+; 1866 |#define RSRC_FUNCLET_MP_SHIFT 815    
+; 1867 |//$FILENAME mp_significant_bit_count.src
+; 1868 |#define RSRC_FUNCLET_MP_SIGNIFICANT_BIT_COUNT 816    
+; 1869 |//$FILENAME set_immediate.src
+; 1870 |#define RSRC_FUNCLET_SET_IMMEDIATE 817    
+; 1871 |//$FILENAME multiply_immediate.src
+; 1872 |#define RSRC_FUNCLET_MULTIPLY_IMMEDIATE 818    
+; 1873 |//$FILENAME multiply.src
+; 1874 |#define RSRC_FUNCLET_MULTIPLY 819    
+; 1875 |//$FILENAME divide_precondition_1.src
+; 1876 |#define RSRC_FUNCLET_DIVIDE_PRECONDITION_1 820    
+; 1877 |//$FILENAME divide_immediate.src
+; 1878 |#define RSRC_FUNCLET_DIVIDE_IMMEDIATE 821    
+; 1879 |//$FILENAME ecaffine_exponentiation_tabular.src
+; 1880 |#define RSRC_FUNCLET_ECAFFINE_EXPONENTIATION_TABULAR 822    
+; 1881 |//$FILENAME ecaffine_table_construction.src
+; 1882 |#define RSRC_FUNCLET_ECAFFINE_TABLE_CONSTRUCTION 823    
+; 1883 |//$FILENAME ecproj5_to_ecaffine.src
+; 1884 |#define RSRC_FUNCLET_ECPROJ5_TO_ECAFFINE 824    
+; 1885 |//$FILENAME ecproj5_set_infinite.src
+; 1886 |#define RSRC_FUNCLET_ECPROJ5_SET_INFINITE 825    
+; 1887 |//$FILENAME ecaffine_on_curve.src
+; 1888 |#define RSRC_FUNCLET_ECAFFINE_ON_CURVE 826    
+; 1889 |//$FILENAME ecaffine_addition.src
+; 1890 |#define RSRC_FUNCLET_ECAFFINE_ADDITION 827    
+; 1891 |//$FILENAME ecaffine_addition_subtraction.src
+; 1892 |#define RSRC_FUNCLET_ECAFFINE_ADDITION_SUBTRACTION 828    
+; 1893 |//$FILENAME ecaffine_attributes2.src
+; 1894 |#define RSRC_FUNCLET_ECAFFINE_ATTRIBUTES2 829    
+; 1895 |//$FILENAME kfdesc_initialize.src
+; 1896 |#define RSRC_FUNCLET_KFDESC_INITIALIZE 830    
+; 1897 |//$FILENAME kimmediate.src
+; 1898 |#define RSRC_FUNCLET_KIMMEDIATE 831    
+; 1899 |//$FILENAME kprime_immediater.src
+; 1900 |#define RSRC_FUNCLET_KPRIME_IMMEDIATER 832    
+; 1901 |//$FILENAME kprime_sqrter.src
+; 1902 |#define RSRC_FUNCLET_KPRIME_SQRTER 833    
+; 1903 |//$FILENAME kinitialize_prime.src
+; 1904 |#define RSRC_FUNCLET_KINITIALIZE_PRIME 834    
+; 1905 |//$FILENAME mod_lucasuv.src
+; 1906 |#define RSRC_FUNCLET_MOD_LUCASUV 835    
+; 1907 |//$FILENAME mod_lucas.src
+; 1908 |#define RSRC_FUNCLET_MOD_LUCAS 836    
+; 1909 |//$FILENAME bucket_multiply.src
+; 1910 |#define RSRC_FUNCLET_BUCKET_MULTIPLY 837    
+; 1911 |//$FILENAME mod_exp2000.src
+; 1912 |#define RSRC_FUNCLET_MOD_EXP2000 838    
+; 1913 |//$FILENAME mod_exp.src
+; 1914 |#define RSRC_FUNCLET_MOD_EXP 839    
+; 1915 |//$FILENAME modmul_choices1.src
+; 1916 |#define RSRC_FUNCLET_MODMUL_CHOICES1 840    
+; 1917 |//$FILENAME mod_sqrt.src
+; 1918 |#define RSRC_FUNCLET_MOD_SQRT 841    
+; 1919 |//$FILENAME create_modulus.src
+; 1920 |#define RSRC_FUNCLET_CREATE_MODULUS 842    
+; 1921 |//$FILENAME from_modular.src
+; 1922 |#define RSRC_FUNCLET_FROM_MODULAR 843    
+; 1923 |//$FILENAME add_immediate.src
+; 1924 |#define RSRC_FUNCLET_ADD_IMMEDIATE 844    
+; 1925 |//$FILENAME add_diff.src
+; 1926 |#define RSRC_FUNCLET_ADD_DIFF 845    
+; 1927 |//$FILENAME add_full.src
+; 1928 |#define RSRC_FUNCLET_ADD_FULL 846    
+; 1929 |//$FILENAME compare_sum_same.src
+; 1930 |#define RSRC_FUNCLET_COMPARE_SUM_SAME 847    
+; 1931 |//$FILENAME sub_immediate.src
+; 1932 |#define RSRC_FUNCLET_SUB_IMMEDIATE 848    
+; 1933 |//$FILENAME mp_initialization.src
+; 1934 |#define RSRC_FUNCLET_MP_INITIALIZATION 849    
+; 1935 |//$FILENAME new_random_bytes.src
+; 1936 |#define RSRC_FUNCLET_NEW_RANDOM_BYTES 850    
+; 1937 |//$FILENAME new_random_dword_interval.src
+; 1938 |#define RSRC_FUNCLET_NEW_RANDOM_DWORD_INTERVAL 851    
+; 1939 |//$FILENAME new_random_digit_interval.src
+; 1940 |#define RSRC_FUNCLET_NEW_RANDOM_DIGIT_INTERVAL 852    
+; 1941 |//$FILENAME new_random_mod.src
+; 1942 |#define RSRC_FUNCLET_NEW_RANDOM_MOD 853    
+; 1943 |//$FILENAME new_random_mod_nonzero.src
+; 1944 |#define RSRC_FUNCLET_NEW_RANDOM_MOD_NONZERO 854    
+; 1945 |//$FILENAME new_random_digits.src
+; 1946 |#define RSRC_FUNCLET_NEW_RANDOM_DIGITS 855    
+; 1947 |//$FILENAME words_to_ecaffine.src
+; 1948 |#define RSRC_FUNCLET_WORDS_TO_ECAFFINE 856    
+; 1949 |//$FILENAME ecaffine_to_dwords.src
+; 1950 |#define RSRC_FUNCLET_ECAFFINE_TO_DWORDS 857    
+; 1951 |//$FILENAME _threadunsafepkinit.src
+; 1952 |#define RSRC_FUNCLET__THREADUNSAFEPKINIT 858    
+; 1953 |//$FILENAME pkinit.src
+; 1954 |#define RSRC_FUNCLET_PKINIT 859    
+; 1955 |//$FILENAME drm_pk_genkeypair.src
+; 1956 |#define RSRC_FUNCLET_DRM_PK_GENKEYPAIR 860    
+; 1957 |//$FILENAME drm_pk_encrypt.src
+; 1958 |#define RSRC_FUNCLET_DRM_PK_ENCRYPT 861    
+; 1959 |//$FILENAME drm_pk_decrypt.src
+; 1960 |#define RSRC_FUNCLET_DRM_PK_DECRYPT 862    
+; 1961 |//$FILENAME byte_array_mod_bignum.src
+; 1962 |#define RSRC_FUNCLET_BYTE_ARRAY_MOD_BIGNUM 863    
+; 1963 |//$FILENAME fe2ipmod.src
+; 1964 |#define RSRC_FUNCLET_FE2IPMOD 864    
+; 1965 |//$FILENAME drm_pk_sign.src
+; 1966 |#define RSRC_FUNCLET_DRM_PK_SIGN 865    
+; 1967 |//$FILENAME drm_pk_verify.src
+; 1968 |#define RSRC_FUNCLET_DRM_PK_VERIFY 866    
+; 1969 |//$FILENAME random_bytes.src
+; 1970 |#define RSRC_FUNCLET_RANDOM_BYTES 867    
+; 1971 |//$FILENAME mp_gcdex.src
+; 1972 |#define RSRC_FUNCLET_MP_GCDEX 868    
+; 1973 |//$FILENAME mp_gcdex_split1.src
+; 1974 |#define RSRC_FUNCLET_MP_GCDEX_SPLIT1 869    
+; 1975 |//$FILENAME pkcrypto_p.src
+; 1976 |#define RSRC_PKCRYPTO_P 870    
+; 1977 |//$FILENAME del_all_warning_line2.src
+; 1978 |#define RSRC_WARNING_MSG_ALL_LINE2 871    
+; 1979 |//$FILENAME del_all_file_star.src
+; 1980 |#define RSRC_FILE_DELETE_STAR 872    
+; 1981 |//$FILENAME string_voice_menu_delete_all.src
+; 1982 |#define RSRC_STRING_VOICE_MENU_DELETE_ALL 873    
+; 1983 |//$FILENAME Funclet_Init5VSense.src
+; 1984 |#define RSRC_FUNCLET_INIT5VSENSE 874    
+; 1985 |//$FILENAME Funclet_UpdateDCDCDutyCycle.src
+; 1986 |#define RSRC_FUNCLET_UPDATEDCDCDUTYCYCLE 875    
+; 1987 |//$FILENAME Funclet_changeplayset.src
+; 1988 |#define RSRC_FUNCLET_CHANGE_PLAYSET 876    
+; 1989 |
+; 1990 |//$FILENAME Funclet_mmctesterase.src    
+; 1991 |#define RSRC_FUNCLET_MMC_TEST_ERASE 877    
+; 1992 |//$FILENAME Funclet_mmchalinit.src 
+; 1993 |#define RSRC_FUNCLET_MMC_HALINIT 878    
+; 1994 |
+; 1995 |
+; 1996 |// Added to allow rechargeable battery configurations to build
+; 1997 |//$FILENAME battery_charging.src
+; 1998 |#define RSRC_BATTERY_CHARGING 879    
+; 1999 |//$FILENAME batterychargecodebank.src
+; 2000 |#define RSRC_BATTERY_CHARGE_CODEBANK 880    
+; 2001 |//$FILENAME updatevolume.src
+; 2002 |#define RSRC_FUNCLET_SYSUPDATEVOLUME 881    
+; 2003 |//$FILENAME Funclet_TestSkipCheckDisk.src
+; 2004 |#define RSRC_FUNCLET_TESTSKIPCHECKDISK 882    
+; 2005 |//$FILENAME Funclet_DisableStmpGeneratedMicBias.src
+; 2006 |#define RSRC_FUNCLET_DISABLE_STMP_GENERATED_MICBIAS 883    
+; 2007 |//$FILENAME Funclet_EnableStmpGeneratedMicBias.src
+; 2008 |#define RSRC_FUNCLET_ENABLE_STMP_GENERATED_MICBIAS 884    
+; 2009 |//$FILENAME Funclet_SetSkipCheckDisk.src
+; 2010 |#define RSRC_FUNCLET_SETSKIPCHECKDISK 885    
+; 2011 |//$FILENAME drm_expr_evaluateexpression_no_more_tokens.src
+; 2012 |#define RSRC_FUNCLET_DRM_EXPR_EVALUATEEXPRESSION_NO_MORE_TOKENS 886    
+; 2013 |//$FILENAME _iscachedevent.src
+; 2014 |#define RSRC_FUNCLET__ISCACHEDEVENT 887    
+; 2015 |//$FILENAME setcountedexpirycategory.src
+; 2016 |#define RSRC_FUNCLET_SETCOUNTEDEXPIRYCATEGORY 888    
+; 2017 |//$FILENAME oem_data.src
+; 2018 |#define RSRC_OEM_DATA 889    
+; 2019 |//$FILENAME gpk_p.src
+; 2020 |#define RSRC_GPK_P 890    
+; 2021 |//$FILENAME key_data.src
+; 2022 |#define RSRC_KEY_DATA 891    
+; 2023 |//$FILENAME string_arial_8_defragmenting_store.src
+; 2024 |#define RSRC_DEFRAGMENT_STORE_STRING 892    
+; 2025 |//$FILENAME string_working.src
+; 2026 |#define RSRC_STRING_WORKING 893    
+; 2027 |//$FILENAME Funclet_loadusertime.src
+; 2028 |#define RSRC_FUNCLET_LOADUSERTIME 894    
+; 2029 |//$FILENAME Funclet_saveusertime.src
+; 2030 |#define RSRC_FUNCLET_SAVEUSERTIME 895    
+; 2031 |
+; 2032 |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2033 |// Audible ACELP Resources
+; 2034 |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2035 |//$FILENAME AudibleAcelpDec.src
+; 2036 |#define RSRC_AUDIBLE_ACELPDEC_CODE 896    
+; 2037 |//$FILENAME AudibleAcelpP.src
+; 2038 |#define RSRC_AUDIBLE_ACELP_CODE_P 897    
+; 2039 |//$FILENAME AudibleAcelpX.src
+; 2040 |#define RSRC_AUDIBLE_ACELP_DATA_X 898    
+; 2041 |//$FILENAME AudibleAcelpY.src
+; 2042 |#define RSRC_AUDIBLE_ACELP_DATA_Y 899    
+; 2043 |
+; 2044 |//$FILENAME AudibleDecMod.src
+; 2045 |#define RSRC_AUDIBLE_DECMOD_CODE 900    
+; 2046 |//$FILENAME audiblemp3p.src
+; 2047 |#define RSRC_AUDIBLE_MP3P_CODE 901    
+; 2048 |//$FILENAME audiblemp3x.src
+; 2049 |#define RSRC_AUDIBLE_MP3X_CODE 902    
+; 2050 |//$FILENAME audiblemp3y.src
+; 2051 |#define RSRC_AUDIBLE_MP3Y_CODE 903    
+; 2052 |
+; 2053 |//$FILENAME audiblemetadata_p.src
+; 2054 |#define RSRC_AUDIBLE_METADATA_P 904    
+; 2055 |//$FILENAME audiblemetadata_y.src
+; 2056 |#define RSRC_AUDIBLE_METADATA_Y 905    
+; 2057 |//$FILENAME audiblesongposition_p.src
+; 2058 |#define RSRC_AUDIBLE_SONG_POSITION_P 906    
+; 2059 |//$FILENAME audibletargetcheck_p.src
+; 2060 |#define RSRC_AUDIBLE_TARGET_CHECK_P 907    
+; 2061 |//$FILENAME audiblefillfileinfo_p.src
+; 2062 |#define RSRC_AUDIBLE_FILLFILEINFO_P 908    
+; 2063 |//$FILENAME audibledsa_p.src
+; 2064 |#define RSRC_AUDIBLE_DSA_P 909    
+; 2065 |//$FILENAME audiblefillmetadata_p.src
+; 2066 |#define RSRC_AUDIBLE_FILLMETADATA_P 910    
+; 2067 |//$FILENAME audiblemetastrings_p.src
+; 2068 |#define RSRC_AUDIBLE_METASTRINGS_P 911    
+; 2069 |//$FILENAME aaactivationrecords_p.src
+; 2070 |#define RSRC_AUDIBLE_ACTIVATION_P 912    
+; 2071 |
+; 2072 |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2073 |// Effects and SRS Resources
+; 2074 |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2075 |//$FILENAME srs_effectsmodules_p.src
+; 2076 |#define RSRC_SRS_EFFECTS_MODULES_P 913    
+; 2077 |//$FILENAME srs_effectsmodules_x.src
+; 2078 |#define RSRC_SRS_EFFECTS_MODULES_X 914    
+; 2079 |//$FILENAME wowctrl.src
+; 2080 |#define RSRC_WOW_CTRL 915    
+; 2081 |
+; 2082 |//$FILENAME wowmenu.src
+; 2083 |#define RSRC_WOW_MENU_CODE_BANK 916    
+; 2084 |//$FILENAME string_wowbrightness_menu.src
+; 2085 |#define RSRC_STRING_WOW_BRIGHTNESS 917    
+; 2086 |//$FILENAME string_wow_menu.src
+; 2087 |#define RSRC_STRING_WOW_MENU 918    
+; 2088 |//$FILENAME string_wowtrubass_menu.src
+; 2089 |#define RSRC_STRING_WOW_TRUBASS 919    
+; 2090 |//$FILENAME string_wowvolume_menu.src
+; 2091 |#define RSRC_STRING_WOW_VOLUME 920    
+; 2092 |//$FILENAME string_wowbrightness_low_menu.src
+; 2093 |#define RSRC_STRING_WOW_BRIGHT_LOW 921    
+; 2094 |//$FILENAME string_wowbrightness_mid_menu.src
+; 2095 |#define RSRC_STRING_WOW_BRIGHT_MID 922    
+; 2096 |//$FILENAME string_wowbrightness_high_menu.src
+; 2097 |#define RSRC_STRING_WOW_BRIGHT_HIGH 923    
+; 2098 |//$FILENAME wow_icon.src
+; 2099 |#define RSRC_WOW_ICON 924    
+; 2100 |
+; 2101 |//$FILENAME wow16k.src
+; 2102 |#define RSRC_WOW16K 925    
+; 2103 |//$FILENAME wow32k.src
+; 2104 |#define RSRC_WOW32K 926    
+; 2105 |//$FILENAME wow8k.src
+; 2106 |#define RSRC_WOW8K 927    
+; 2107 |//$FILENAME wow11k.src
+; 2108 |#define RSRC_WOW11K 928    
+; 2109 |//$FILENAME wow22k.src
+; 2110 |#define RSRC_WOW22K 929    
+; 2111 |//$FILENAME wow24k.src
+; 2112 |#define RSRC_WOW24K 930    
+; 2113 |//$FILENAME wow44k.src
+; 2114 |#define RSRC_WOW44K 931    
+; 2115 |//$FILENAME wow48k.src
+; 2116 |#define RSRC_WOW48K 932    
+; 2117 |
+; 2118 |//$FILENAME wow16k_Y.src
+; 2119 |#define RSRC_WOW16K_Y 933    
+; 2120 |//$FILENAME wow32k_Y.src
+; 2121 |#define RSRC_WOW32K_Y 934    
+; 2122 |//$FILENAME wow8k_Y.src
+; 2123 |#define RSRC_WOW8K_Y 935    
+; 2124 |//$FILENAME wow11k_Y.src
+; 2125 |#define RSRC_WOW11K_Y 936    
+; 2126 |//$FILENAME wow22k_Y.src
+; 2127 |#define RSRC_WOW22K_Y 937    
+; 2128 |//$FILENAME wow24k_Y.src
+; 2129 |#define RSRC_WOW24K_Y 938    
+; 2130 |//$FILENAME wow44k_Y.src
+; 2131 |#define RSRC_WOW44K_Y 939    
+; 2132 |//$FILENAME wow48k_Y.src
+; 2133 |#define RSRC_WOW48K_Y 940    
+; 2134 |
+; 2135 |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2136 |// Audible Section Navigation
+; 2137 |/////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2138 |//$FILENAME audible_secnav.src
+; 2139 |#define RSRC_AUDIBLE_SECNAV_ICON 941    
+; 2140 |
+; 2141 |
+; 2142 |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; 2143 |// STFM1000 Tuner funclet
+; 2144 |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; 2145 |//$FILENAME Funclet_TunerDriverInit.src
+; 2146 |#define RSRC_FUNCLET_TUNER_DRIVER_INIT 942    
+; 2147 |//$FILENAME Funclet_TunerSTFM1000PowerUp.src
+; 2148 |#define RSRC_FUNCLET_STFM1000_POWER_UP 943    
+; 2149 |//$FILENAME Funclet_TunerDriverIncUp.src
+; 2150 |#define RSRC_FUNCLET_TUNER_DRIVER_INC_UP 944    
+; 2151 |//$FILENAME Funclet_TunerDriverIncDown.src
+; 2152 |#define RSRC_FUNCLET_TUNER_DRIVER_INC_DOWN 945    
+; 2153 |//$FILENAME Funclet_TunerDriverStandyby.src
+; 2154 |#define RSRC_FUNCLET_TUNER_DRIVER_SET_STANDBY 946    
+; 2155 |//$FILENAME Funclet_TunerDriverReplacePreset.src
+; 2156 |#define RSRC_FUNCLET_TUNER_DRIVER_REPLACE_PRESET 947    
+; 2157 |//$FILENAME Funclet_TunerDriverErasePreset.src
+; 2158 |#define RSRC_FUNCLET_TUNER_DRIVER_ERASE_PRESET 948    
+; 2159 |//$FILENAME Funclet_TunerDriverTuneToPreset.src
+; 2160 |#define RSRC_FUNCLET_TUNER_DRIVER_TUNE_TO_PRESET 949    
+; 2161 |//$FILENAME Funclet_TunerDriverSearchDown.src
+; 2162 |#define RSRC_FUNCLET_TUNER_DRIVER_SEARCH_DOWN 950    
+; 2163 |//$FILENAME Funclet_TunerSTFM1000MonitorQuality.src
+; 2164 |#define RSRC_FUNCLET_STFM1000_TUNER_MONITOR_QUALITY 951    
+; 2165 |//$FILENAME Funclet_TunerSTFM1000SafePowerDown.src
+; 2166 |#define RSRC_FUNCLET_TUNER_SAFE_POWER_DOWN 952    
+; 2167 |//$FILENAME Funclet_TunerSTFM1000OptimizeChannel.src
+; 2168 |#define RSRC_FUNCLET_STFM1000_TUNER_OPTIMIZE_CHANNEL 953    
+; 2169 |//$FILENAME decstfmmod.src
+; 2170 |#define RSRC_DEC_STFM_MOD_CODE 954    
+; 2171 |//$FILENAME dec_stfmp.src
+; 2172 |#define RSRC_DEC_STFMP_CODE 955    
+; 2173 |//$FILENAME dec_stfmx.src
+; 2174 |#define RSRC_DEC_STFMX_CODE 956    
+; 2175 |//$FILENAME dec_stfmy.src
+; 2176 |#define RSRC_DEC_STFMY_CODE 957    
+; 2177 |//$FILENAME Funclet_sw_stereocontrol_bwsweep.src
+; 2178 |#define RSRC_FUNCLET_SW_STEREOCONTROL_BWSWEEP 958    
+; 2179 |//$FILENAME Funclet_sw_stereocontrol_xcall.src
+; 2180 |#define RSRC_FUNCLET_SW_STEREOCONTROL_XCALL 959    
+; 2181 |//$FILENAME Funclet_TunerSTFM1000I2CInit.src
+; 2182 |#define RSRC_FUNCLET_STFM1000_I2C_INIT 960    
+; 2183 |//$FILENAME Funclet_TunerDriverScanStations.src
+; 2184 |#define RSRC_FUNCLET_TUNER_DRIVER_SCAN_STATION 961    
+; 2185 |//$FILENAME Funclet_TunerDriverSetMonoStereoMode.src
+; 2186 |#define RSRC_FUNCLET_TUNER_DRIVER_SET_MONO_STEREO_MODE 962    
+; 2187 |//$FILENAME Funclet_STFM1000TestPresence.src
+; 2188 |#define RSRC_FUNCLET_STFM1000_TEST_PRESENCE 963    
+; 2189 |//$FILENAME Funclet_I2CWriteTunerRegister.src
+; 2190 |#define RSRC_FUNCLET_I2C_WRITE_TUNER_REGISTER 964    
+; 2191 |//$FILENAME Funclet_I2CReset.src
+; 2192 |#define RSRC_FUNCLET_I2C_RESET 965    
+; 2193 |
+; 2194 |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2195 |// PLAYLIST3 and Music Library
+; 2196 |////////////////////////////////////////////////////////////////////////////////////////////////////
+; 2197 |//$FILENAME build_ml.src
+; 2198 |#define RSRC_BUILD_ML 966    
+; 2199 |//$FILENAME build_ml_warning.src
+; 2200 |#define RSRC_BUILD_ML_WARNING 967    
+; 2201 |//$FILENAME build_ml_warning2.src
+; 2202 |#define RSRC_BUILD_ML_WARNING2 968    
+; 2203 |//$FILENAME build_flash1.src
+; 2204 |#define RSRC_BUILD_FLASH1 969    
+; 2205 |//$FILENAME build_flash2.src
+; 2206 |#define RSRC_BUILD_FLASH2 970    
+; 2207 |//$FILENAME build_flash3.src
+; 2208 |#define RSRC_BUILD_FLASH3 971    
+; 2209 |//$FILENAME build_sd1.src
+; 2210 |#define RSRC_BUILD_SD1 972    
+; 2211 |//$FILENAME build_sd2.src
+; 2212 |#define RSRC_BUILD_SD2 973    
+; 2213 |//$FILENAME build_sd3.src
+; 2214 |#define RSRC_BUILD_SD3 974    
+; 2215 |//$FILENAME build_newmusic.src
+; 2216 |#define RSRC_BUILD_NEWMUSIC 975    
+; 2217 |//$FILENAME sdmd.src
+; 2218 |#define RSRC_SDMD_MENU_CODE_BANK 976    
+; 2219 |//$FILENAME MusicLibBuildModule.src
+; 2220 |#define RSRC_MUSICLIB_BUILD_MODULE 977    
+; 2221 |//$FILENAME MusicLibBuildGenreTable.src
+; 2222 |#define RSRC_MUSICLIB_BUILD_GENRE_TABLE 978    
+; 2223 |//$FILENAME MusicLibBrowseModule.src
+; 2224 |#define RSRC_MUSICLIB_BROWSE_MODULE 979    
+; 2225 |//$FILENAME MusicLibPlayModule.src
+; 2226 |#define RSRC_MUSICLIB_PLAY_MODULE 980    
+; 2227 |//$FILENAME MusicLibPlayAllNextModule.src
+; 2228 |#define RSRC_MUSICLIB_PLAYALLNEXT_MODULE 981    
+; 2229 |//$FILENAME MusicLibPlayAllPrevModule.src
+; 2230 |#define RSRC_MUSICLIB_PLAYALLPREV_MODULE 982    
+; 2231 |//$FILENAME MusicLibShuffleModule.src
+; 2232 |#define RSRC_MUSICLIB_SHUFFLE_MODULE 983    
+; 2233 |//$FILENAME Funclet_write_detection_access.src
+; 2234 |#define RSRC_FUNCLET_WRITE_DETECTION_ACCESS 984    
+; 2235 |//$FILENAME Funclet_LOCAL_GetLvlOneItem_info.src
+; 2236 |#define RSRC_FUNCLET_LOCAL_GET_LVL_ONE_ITEM_INFO 985    
+; 2237 |//$FILENAME Funclet_LOCAL_GetFlashAssociatedList_info.src
+; 2238 |#define RSRC_FUNCLET_LOCAL_GET_FLASH_ASSOCIATED_LIST_INFO 986    
+; 2239 |//$FILENAME MusicLibVoiceApp.src
+; 2240 |#define RSRC_MUSICLIB_VOICE_APP 987    
+; 2241 |//$FILENAME MusicLibVoiceModule.src
+; 2242 |#define RSRC_MUSICLIB_VOICE_MODULE 988    
+; 2243 |//$FILENAME MusicLibVoicePlayModule.src
+; 2244 |#define RSRC_MUSICLIB_VOICEPLAY_MODULE 989    
+; 2245 |//$FILENAME MusicLibMergeFunction.src
+; 2246 |#define RSRC_MUSICLIB_MERGE_FUNCTION 990    
+; 2247 |//$FILENAME MusicLibMergeModule.src
+; 2248 |#define RSRC_MUSICLIB_MERGE_MODULE 991    
+; 2249 |//$FILENAME MusicLibBrowseApp.src
+; 2250 |#define RSRC_MUSICLIB_BROWSE_APP 992    
+; 2251 |//$FILENAME playmusicmenu.src
+; 2252 |#define RSRC_PLAYMUSIC_MENU_CODE_BANK 993    
+; 2253 |//$FILENAME browsemenu.src
+; 2254 |#define RSRC_BROWSE_MENU_CODE_BANK 994    
+; 2255 |//$FILENAME browsemenu_extra.src
+; 2256 |#define RSRC_BROWSE_MENU_EXTRA_CODE_BANK 995    
+; 2257 |//$FILENAME string_play_all.src
+; 2258 |#define RSRC_STRING_PLAY_ALL 996    
+; 2259 |//$FILENAME string_unknown_year.src
+; 2260 |#define RSRC_STRING_UNKNOWN_YEAR 997    
+; 2261 |//$FILENAME string_year_width.src
+; 2262 |#define RSRC_STRING_YEAR_WIDTH 998    
+; 2263 |//$FILENAME string_artist.src
+; 2264 |#define RSRC_STRING_ARTIST 999    
+; 2265 |//$FILENAME string_songs.src
+; 2266 |#define RSRC_STRING_SONGS 1000    
+; 2267 |//$FILENAME string_on_the_fly.src
+; 2268 |#define RSRC_STRING_ON_THE_FLY 1001    
+; 2269 |//$FILENAME string_new_music.src
+; 2270 |#define RSRC_STRING_NEW_MUSIC_MENU 1002    
+; 2271 |//$FILENAME string_genre.src
+; 2272 |#define RSRC_STRING_GENRE 1003    
+; 2273 |//$FILENAME string_year.src
+; 2274 |#define RSRC_STRING_YEAR 1004    
+; 2275 |//$FILENAME string_playlist.src
+; 2276 |#define RSRC_STRING_PLAYLIST 1005    
+; 2277 |//$FILENAME string_fm_rec.src
+; 2278 |#define RSRC_STRING_FM_REC 1006    
+; 2279 |//$FILENAME string_play_music.src
+; 2280 |#define RSRC_STRING_PLAY_MUSIC 1007    
+; 2281 |//$FILENAME highlight_back.src
+; 2282 |#define RSRC_HIGHLIGHT_BACK 1008    
+; 2283 |//$FILENAME newmusicmenu.src
+; 2284 |#define RSRC_NEW_MUSIC_MENU_CODE_BANK 1009    
+; 2285 |//$FILENAME string_1_day.src
+; 2286 |#define RSRC_STRING_1_DAY 1010    
+; 2287 |//$FILENAME string_1_week.src
+; 2288 |#define RSRC_STRING_1_WEEK 1011    
+; 2289 |//$FILENAME string_1_month.src
+; 2290 |#define RSRC_STRING_1_MONTH 1012    
+; 2291 |//$FILENAME on_the_fly_full.src
+; 2292 |#define RSRC_LIST_FULL_MESSAGE 1013    
+; 2293 |//$FILENAME on_the_fly_free1.src
+; 2294 |#define RSRC_LIST_FREE_MESSAGE 1014    
+; 2295 |//$FILENAME on_the_fly_free2.src
+; 2296 |#define RSRC_LIST_FREE_MESSAGE2 1015    
+; 2297 |//$FILENAME on_the_fly_delete1.src
+; 2298 |#define RSRC_LIST_DELETE_MESSAGE 1016    
+; 2299 |//$FILENAME on_the_fly_delete2.src
+; 2300 |#define RSRC_LIST_DELETE_MESSAGE2 1017    
+; 2301 |//$FILENAME empty_favourite.src
+; 2302 |#define RSRC_EMPTY_FAVOURITE 1018    
+; 2303 |//$FILENAME sd_remove.src
+; 2304 |#define RSRC_SD_REMOVE 1019    
+; 2305 |//$FILENAME sd_insert.src
+; 2306 |#define RSRC_SD_INSERT 1020    
+; 2307 |//$FILENAME check_disk_1.src
+; 2308 |#define RSRC_CHECK_DISK_1 1021    
+; 2309 |//$FILENAME check_disk_2.src
+; 2310 |#define RSRC_CHECK_DISK_2 1022    
+; 2311 |//$FILENAME check_disk_3.src
+; 2312 |#define RSRC_CHECK_DISK_3 1023    
+; 2313 |//$FILENAME flash_error.src
+; 2314 |#define RSRC_FLASH_ERROR 1024    
+; 2315 |#endif //IF (!@def(resources))
+; 2316 |
+
+	SYMB	ENDF
+
+; 6    |
+; 7    |_reentrant void DisplayClear (void)
+; 8    |{
+
+	org	p,".ptextsysdisplay":
+	SYMB	LINE, 8
+	SYMB	TYPE, 258, 'X', 8, #1, 31, 0
+	SYMB	GFUN, "DisplayClear", FDisplayClear, #258, 1, 0, 0
+	SYMB	ALAB, FDisplayClear, #258
+FDisplayClear:
+	move	ssh,y:(r7)+
+	SYMB	SOFF, 1, 1
+	SYMB	SOFF, -1
+
+; 9    |    SysPostMessage(6,LCD_CLEAR_RANGE,0,0,LCD_SIZE_X,LCD_SIZE_Y);     
+
+	SYMB	LINE, 9
+	gmove	#0,a
+	move	#159,b0
+	move	b0,y:(r7)+
+	SYMB	SOFF, 2, 1
+	move	#$80,b0
+	move	b0,y:(r7)+
+	SYMB	SOFF, 3, 1
+	gmove	#0,b
+	move	b,y:(r7)+
+	SYMB	SOFF, 4, 1
+	move	a,y:(r7)+
+	SYMB	SOFF, 5, 1
+	move	#<3,y0
+	move	y0,y:(r7)+
+	SYMB	SOFF, 6, 1
+	move	#6,b0
+	move	b0,y:(r7)+
+	SYMB	SOFF, 7, 1
+	jsr	FSysPostMessage
+	move	#6,n7
+	nop
+	move	(r7)-n7
+	SYMB	SOFF, 1, 1
+
+; 10   |}
+
+	SYMB	LINE, 10
+	move	y:-(r7),ssh
+	SYMB	SOFF, 0, 1
+	SYMB	SOFF, 0
+	nop
+	rts
+	SYMB	EFUN
+
+; 11   |
+; 12   |
+; 13   |_reentrant void DisplayLowBattery (void)
+; 14   |{
+
+	SYMB	LINE, 14
+	SYMB	TYPE, 259, 'X', 8, #1, 31, 0
+	SYMB	GFUN, "DisplayLowBattery", FDisplayLowBattery, #259, 1, 0, 0
+	SYMB	ALAB, FDisplayLowBattery, #259
+FDisplayLowBattery:
+	move	ssh,y:(r7)+
+	SYMB	SOFF, 1, 1
+	SYMB	SOFF, -1
+
+; 15   |    SysPostMessage(5,LCD_PRINT_RANGE_RSRC,0,(LCD_FIRST_ROW_NUM+2)*LCD_SIZE_ROW,RSRC_BROWNOUT_BITMAP);
+
+	SYMB	LINE, 15
+	move	#314,b
+	move	b,y:(r7)+
+	SYMB	SOFF, 2, 1
+	move	#24,b0
+	move	b0,y:(r7)+
+	SYMB	SOFF, 3, 1
+	gmove	#0,b
+	move	b,y:(r7)+
+	SYMB	SOFF, 4, 1
+	move	#$30001,y0
+	move	y0,y:(r7)+
+	SYMB	SOFF, 5, 1
+	move	#5,b0
+	move	b0,y:(r7)+
+	SYMB	SOFF, 6, 1
+	jsr	FSysPostMessage
+	move	#5,n7
+	nop
+	move	(r7)-n7
+	SYMB	SOFF, 1, 1
+
+; 16   |
+; 17   |}
+
+	SYMB	LINE, 17
+	move	y:-(r7),ssh
+	SYMB	SOFF, 0, 1
+	SYMB	SOFF, 0
+	nop
+	rts
+	SYMB	EFUN
+	SYMB	ENDF
+	SYMB	TYPE, 260, 'X', 8, #1, 31, 2, #16, #1
+	SYMB	ALAB, FSysPostMessage, #260
+
+	extern	FSysPostMessage
+
+	global	FDisplayClear, FDisplayLowBattery
+
+	calls	"DisplayClear", "SysPostMessage"
+	calls	"DisplayLowBattery", "SysPostMessage"
+
+	end	

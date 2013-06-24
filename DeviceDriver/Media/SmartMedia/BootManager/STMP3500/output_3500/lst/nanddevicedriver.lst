@@ -1,0 +1,427 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\common\nanddevicedriver.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2002-2004
+                                3 ;
+                                4 ;  File        : nanddevicedriver.asm
+                                5 ;  Description : Support functions for NANDs Device Driver
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7 
+                                9 
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Includes
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 
+                               27 
+                               28         section BOOTROM_FLASH
+                               29 
+                               30 
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               32 ;   External Definitions
+                               33 ;///////////////////////////////////////////////////////////////////////////////
+                               34 
+                               35 
+                               41 
+                               42     global   Sm001MbPtr
+                               43     global   Sm002MbPtr
+                               44     global   Sm004MbPtr
+                               45     global   Sm008MbPtr
+                               46     global   Sm016MbPtr
+                               47     global   Sm032MbPtr
+                               48     global   Sm064MbPtr
+                               49     global   Sm128MbPtr
+                               50     global   Sm000MbPtr
+                               51     
+                               52     global  FLH_PAGESTATE_A
+                               53     global  NandFindNextDevice
+                               54 
+                               56     global  NandFindPrevDevice
+                               58 
+                               59     global  NandSaveBootInfo
+                               60     global  NandFillSinkBuffer
+                               61 
+                               62     
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+                               64 ;   External References
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               66 
+                               70     
+                               71     extern  FlashError1
+                               72     extern  SM_INFO_LARGE_MEDIA_FLAG
+                               73     extern  SM_INFO_16BIT_BUS_FLAG  
+                               74     extern  SM_INFO_LARGE_ADD_FLAG  
+                               75     extern  SM_INFO_SSFDC_CMD_FLAG  
+                               76 
+                               77     extern  FSectorSizeInWords
+                               78     extern  FSectorSizeInWordsPlusOne
+                               79     extern  FNandLookupID
+                               80     extern  pCurrentNANDDescriptor
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               81     extern  FNandSearchForSTMPBlock
+                               82     extern  FNandReadSectorDataWrapper
+                               83     extern  FNandIncBlockNumber
+                               84     extern  FNandIsBlockBoundary
+                               85     extern  NandSectorNum
+                               86     extern  FNandHalInit
+                               87     
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+                               89 ;   Equates
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+                               91 
+                               92 ; !!!!!!!!!!!!! We're assuming SmartMedia >= 4MB !!!!!!!!!!!!!!!!!!!!!!!!
+                               93 ; !!!!! This FLH_PAGESIZE is different than that found in smequ.inc !!!!!!!!!!!
+                               94 ; !!!!!  it's okay because they are used differently.
+                               95 FLH_PAGESIZE        equ     $0100
+                               96 FLH_PAGESPERBLOCK   equ     32
+                               97 FLH_PHYSBLOCKSIZE   equ     FLH_PAGESIZE*FLH_PAGESPERBLOCK
+                               98 FLH_PAGESTATE_A     equ     1
+                               99 FLH_PAGESTATE_B     equ     2
+                              100 FLH_PAGESTATE_C     equ     3
+                              101 
+                              102 ; Flash progress stuff
+                              103 FLH_PROG_INIT       equ     1<<0
+                              104 
+                              105 ;///////////////////////////////////////////////////////////////////////////////
+                              106 ;   X Memory
+                              107 ;
+                              108 ;///////////////////////////////////////////////////////////////////////////////
+                              109         
+                              110 ;///////////////////////////////////////////////////////////////////////////////
+                              111 ;   Y Memory
+                              112 ;///////////////////////////////////////////////////////////////////////////////
+                              113         
+                              114 ;///////////////////////////////////////////////////////////////////////////////
+                              115 ;   Code
+                              116 ;///////////////////////////////////////////////////////////////////////////////
+                              117 
+P:0000                        118     org     p,"BOOTROM_Flash_P":
+                              119 
+                              120 ;///////////////////////////////////////////////////////////////////////////////
+                              121 ;   NandSaveBootInfo
+                              122 ; Exit:
+                              123 ;   y0 = CardNum
+                              124 ;///////////////////////////////////////////////////////////////////////////////
+                              125 NandSaveBootInfo
+                              126     ; get the flags for this card
+P:0000 45F000 rrrrrr  3    3  127     move    x:BootInfo,x1
+                              128 
+                              129     ; clear out bootinfo (preserve BootType)
+P:0002 200013         2    5  130     clr     a
+P:0003 20AC00         2    7  131     move    x1,a1
+P:0004 44F400 800000  3   10  132     move    #>$800000,x0
+P:0006 200046         2   12  133     and     x0,a
+P:0007 547000 rrrrrr  3   15  134     move    a1,x:BootInfo
+                              135 
+                              136     ; get the offset to the SmInfoCardx word
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0009 200013         2   17  137     clr     a
+P:000A 46F000 rrrrrr  3   20  138     move    x:NandCurDevNum,y0              ; get the card number
+P:000C 20CC00         2   22  139     move    y0,a1
+                              140 
+P:000D 44F400 rrrrrr  3   25  141     move    #>SmCard0Info,x0
+P:000F 200040         2   27  142     add     x0,a
+P:0010 21D000         2   29  143     move    a,r0
+P:0011 000000         2   31  144     nop
+P:0012 456000         2   33  145     move    x1,x:(r0)
+P:0013 00000C         4   37  146     rts
+                              147     
+                              148 ;///////////////////////////////////////////////////////////////////////////////
+                              149 ;   NandFindNextDevice
+                              150 ;
+                              151 ;   Exit :   
+                              152 ;           Success      Fail
+                              153 ;   -----------------------------
+                              154 ;   Carry      1             0
+                              155 ;
+                              156 ;///////////////////////////////////////////////////////////////////////////////
+                              157 NandFindNextDevice
+                              158 
+                              159 _find_a_card
+P:0014 56F000 rrrrrr  3   40  160     move    x:NandCurDevNum,a
+P:0016 0BF080 rrrrrr  6   46  161         jsr             FNandHalInit                            ; Detects the NAND and returns SUC
+                                  CESS (0)
+                              162                                                                                 ; if found. Otherw
+                                  ise returns !SUCCESS
+P:0018 200003         2   48  163     tst     a                           ; Non-zero ID means card found
+P:0019 0AF0AA rrrrrr  6   54  164     jeq     _card_found
+                              165 
+                              166     ; card not found so inc card number and look again
+P:001B 200013         2   56  167     clr     a                           
+P:001C 567000 rrrrrr  3   59  168     move    a,x:FlashPageBuf            ; clear the old ID read
+                              169 
+P:001E 54F000 rrrrrr  3   62  170     move    x:NandCurDevNum,a1
+P:0020 44F400 000001  3   65  171     move    #>$000001,x0                ; increment the card number
+P:0022 200040         2   67  172     add     x0,a
+P:0023 547000 rrrrrr  3   70  173     move    a1,x:NandCurDevNum          ; save the card number
+                              174 
+P:0025 44F400 000004  3   73  175     move    #>4,x0
+P:0027 200045         2   75  176     cmp     x0,a                        ; end of cards?
+P:0028 0AF0A2 rrrrrr  6   81  177     jne     _find_a_card
+                              178 
+                              179     ; checked all 4 chip-selects and no cards found
+P:002A 0AF940         4   85  180     bclr    #0,sr    
+P:002B 00000C         4   89  181     rts
+                              182 
+                              183 _card_found
+P:002C 0AF960         4   93  184     bset    #0,sr    
+P:002D 00000C         4   97  185     rts    
+                              186 
+                              187 
+                              189 ;///////////////////////////////////////////////////////////////////////////////
+                              190 ;   NandFindPrevDevice
+                              191 ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              192 ;   Exit :   
+                              193 ;           Success      Fail
+                              194 ;   -----------------------------
+                              195 ;   Carry      1             0
+                              196 ;
+                              197 ;///////////////////////////////////////////////////////////////////////////////
+                              198 NandFindPrevDevice
+                              199 
+                              200 _find_a_card_Boot
+P:002E 56F000 rrrrrr  3  100  201     move    x:NandCurDevNum,a
+P:0030 0BF080 rrrrrr  6  106  202     jsr     FNandHalInit                                ; Detects the NAND and returns SUCCESS (0)
+                                  
+                              203                                                         ; if found. Otherwise returns !SUCCESS
+P:0032 200003         2  108  204     tst     a                           ; Non-zero ID means card found
+P:0033 0AF0AA rrrrrr  6  114  205     jeq     _card_found_Boot
+                              206 
+                              207     ; card not found so inc card number and look again
+P:0035 56F000 rrrrrr  3  117  208     move    x:NandCurDevNum,a
+P:0037 200003         2  119  209     tst     a                        ; end of cards?
+P:0038 0AF0AA rrrrrr  6  125  210     jeq     _find_no_card_Boot
+                              211 
+P:003A 00000A         2  127  212     dec     a                           ; decrement the card number
+P:003B 547000 rrrrrr  3  130  213     move    a1,x:NandCurDevNum          ; save the card number
+                              214 
+P:003D 200013         2  132  215     clr     a                           
+P:003E 567000 rrrrrr  3  135  216     move    a,x:FlashPageBuf            ; clear the old ID read
+                              217 
+P:0040 0AF080 rrrrrr  6  141  218     jmp     _find_a_card_Boot
+                              219 
+                              220 _find_no_card_Boot
+                              221     ; checked all 4 chip-selects and no cards found
+P:0042 0AF940         4  145  222     bclr    #0,sr    
+P:0043 00000C         4  149  223     rts
+                              224 
+                              225 _card_found_Boot
+P:0044 0AF960         4  153  226     bset    #0,sr    
+P:0045 00000C         4  157  227     rts    
+                              228 
+                              230 
+                              231 
+                              232 ;///////////////////////////////////////////////////////////////////////////////
+                              233 ;   NandFillSinkBuffer
+                              234 ; Reads a new sector datta from the NAND and copies it into the sink buffer.
+                              235 ; This function handles tthe page boundaries andd searches for a new system
+                              236 ; block.
+                              237 ;
+                              238 ; Entry
+                              239 ;       none
+                              240 ; Exit
+                              241 ;       none
+                              242 ;
+                              243 ; In case of an error (i.e. no more blocks available, ... the function jumps
+                              244 ; to FlasError()
+                              245 ;///////////////////////////////////////////////////////////////////////////////
+                              246 NandFillSinkBuffer
+                              247     ; do we need to look for a new STMPBlock?
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              248         ; After reading the last page of a bblock, x:SmLookForBlock is set to 1
+                              249         ; therefore the next page to be read is in a different block. Before reading
+                              250         ;this page, we need to find the neext system block.
+P:0046 56F000 rrrrrr  3  160  251     move    x:SmLookForBlock,a
+P:0048 200003         2  162  252     tst     a
+P:0049 0AF0AA rrrrrr  6  168  253     jeq     _sr_read_page
+                              254 
+                              255     ; need to find another STMPBlock
+P:004B 200013         2  170  256     clr     a
+P:004C 567000 rrrrrr  3  173  257     move    a,x:SmLookForBlock
+P:004E 0BF080 rrrrrr  6  179  258     jsr     FNandSearchForSTMPBlock
+P:0050 200003         2  181  259     tst     a
+P:0051 0AF0A2 rrrrrr  6  187  260     jne     _sr_block_search_error
+                              261 
+                              262 _sr_read_page
+                              263     ; reset the head and tail pointers to the sink buffer
+P:0053 50F400 rrrrrr  3  190  264     move    #>FlashSinkBuf,a0
+P:0055 507000 rrrrrr  3  193  265     move    a0,x:FlashSinkHeadPtr
+P:0057 507000 rrrrrr  3  196  266     move    a0,x:FlashSinkTailPtr
+                              267     
+                              268     ; read a page
+P:0059 60F000 rrrrrr  3  199  269     move    x:pCurrentNANDDescriptor,r0
+P:005B 56F000 rrrrrr  3  202  270     move    x:NandCurDevNum,a
+P:005D 57F000 rrrrrr  3  205  271     move    x:NandSectorNum,b
+P:005F 64F400 rrrrrr  3  208  272     move    #>FlashPageBuf,r4
+P:0061 0BF080 rrrrrr  6  214  273     jsr     FNandReadSectorDataWrapper
+P:0063 200003         2  216  274     tst     a
+P:0064 0AF0A2 rrrrrr  6  222  275     jne     _sr_page_read_error
+                              276 
+                              277     ; copy data from the NAND page buffer to the sink buffer
+P:0066 0BF080 rrrrrr  6  228  278     jsr     NandCopyData
+                              279 
+                              280     ; increment the page 
+P:0068 56F000 rrrrrr  3  231  281     move    x:NandSectorNum,a
+P:006A 44F400 000001  3  234  282     move    #>$000001,x0
+P:006C 200040         2  236  283     add     x0,a
+P:006D 547000 rrrrrr  3  239  284     move    a1,x:NandSectorNum
+P:006F 0BF080 rrrrrr  6  245  285     jsr     FNandIsBlockBoundary
+P:0071 200003         2  247  286     tst     a
+P:0072 0AF0A2 rrrrrr  6  253  287     jne     _sr_block_boundary_found
+P:0074 00000C         4  257  288     rts
+                              289 
+                              290 _sr_block_boundary_found
+                              291     ; we're at a boundary so we need to flag for an STMPBlock search next time
+P:0075 0BF080 rrrrrr  6  263  292     jsr     FNandIncBlockNumber
+P:0077 44F400 000001  3  266  293     move    #>$000001,x0
+P:0079 447000 rrrrrr  3  269  294     move    x0,x:SmLookForBlock
+P:007B 00000C         4  273  295     rts
+                              296 
+                              297 _sr_block_search_error
+                              298 _sr_page_read_error
+                              299     ; catastrophic error
+P:007C 0AF080 rrrrrr  6  279  300     jmp     FlashError1
+                              301 
+                              302 
+                              303 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              304 
+                              305 
+                              306 
+                              307 ;///////////////////////////////////////////////////////////////////////////////
+                              308 ;   NandCopyData
+                              309 ;       Copies the sector data pointed by #FlashPageBuf into buuffer pointed by
+                              310 ;       x:FlashSinkHeadPtr.
+                              311 ;
+                              312 ;       Due to byte alignment problems, the amount of data copied is variable.
+                              313 ;       There are 3 cases:
+                              314 ;       Case 1 FLH_PAGESTATE_A - The 1st byte destination byte is at byte offset 0:
+                              315 ;               170 (510 bytes) words are copied. The 2 extra bbytes are saved in
+                              316 ;               FlashLagniappe variable. After copy, the state is set to FLH_PAGESTATE_B
+                              317 ;       Case 2 FLH_PAGESTATE_B - The 1st byte destination byte is at byte offset 2:
+                              318 ;               171 (513 bytes) words are copied. The 2 first bytes in the destination buffer 
+                              319 ;               are the 2 bytes saved previously in the FlashLagniappe variable.
+                              320 ;               Only 511 bytes from the source buffer are copied into the ddestination
+                              321 ;               buffer. The extra byte is are saved in FlashLagniappe variable.
+                              322 ;               After copy, the state is set to FLH_PAGESTATE_C.
+                              323 ;       Case 3 FLH_PAGESTATE_C - The 1st byte destination byte is at byte offset 1:
+                              324 ;               171 (513 bytes) words are copied. The first byte in the destination buffer 
+                              325 ;               is the byte saved previously in the FlashLagniappe variable.
+                              326 ;               All 512 bytes from the source buffer are copied into the destination
+                              327 ;               buffer. This case leaves the destination buffer word aligned.
+                              328 ;               After copy, the state is set to FLH_PAGESTATE_A.
+                              329 ;///////////////////////////////////////////////////////////////////////////////
+                              330 NandCopyData
+                              331     ; setup the buffer pointers
+P:007E 60F400 rrrrrr  3  282  332     move    #>FlashPageBuf,r0
+P:0080 05F420 00FFFF  4  286  333     movec   #>$ffff,m0
+P:0082 61F000 rrrrrr  3  289  334     move    x:FlashSinkHeadPtr,r1
+                              335     
+                              336     ; go to the current page state
+P:0084 56F000 rrrrrr  3  292  337     move    x:>FlashPageState,a
+P:0086 44F400 000001  3  295  338     move    #>FLH_PAGESTATE_A,x0
+P:0088 200045         2  297  339     cmp     x0,a                    
+P:0089 0AF0AA rrrrrr  6  303  340     jeq     pagestatea                
+P:008B 44F400 000002  3  306  341     move    #>FLH_PAGESTATE_B,x0
+P:008D 200045         2  308  342     cmp     x0,a                    
+P:008E 0AF0AA rrrrrr  6  314  343     jeq     pagestateb                
+P:0090 44F400 000003  3  317  344     move    #>FLH_PAGESTATE_C,x0
+P:0092 200045         2  319  345     cmp     x0,a                    
+P:0093 0AF0AA rrrrrr  6  325  346     jeq     pagestatec                
+                              347 
+                              348 pagestatea
+                              349     ; in Page State A, flash byte 0 is aligned with FlashPageBuf byte 0
+P:0095 44F000 rrrrrr  3  328  350     move    x:FSectorSizeInWords,x0
+P:0097 06C400 rrrrrr  6  334  351     do      x0,_done_a
+P:0099 44D800         2  336  352     move    x:(r0)+,x0                          ; get data    
+P:009A 445900         2  338  353     move    x0,x:(r1)+                          ; write to sink buf
+                         (4)  354 _done_a
+P:009B 44E000         2  340  355     move    x:(r0),x0                           ; get lagniappe
+P:009C 208E00         2  342  356     move    x0,a
+P:009D 45F400 00FFFF  3  345  357     move    #>$00FFFF,x1                        ; mask off upper byte
+P:009F 200066         2  347  358     and     x1,a
+P:00A0 547000 rrrrrr  3  350  359     move    a1,x:FlashLagniappe                 ; save lagniappe
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00A2 617000 rrrrrr  3  353  360     move    r1,x:FlashSinkHeadPtr               ; update the FlashSinkBufPtr
+P:00A4 45F400 000002  3  356  361     move    #>FLH_PAGESTATE_B,x1                ; next state
+P:00A6 457000 rrrrrr  3  359  362     move    x1,x:FlashPageState
+                              363 
+P:00A8 00000C         4  363  364     rts                                         ; done
+                              365     
+                              366 pagestateb
+                              367     ; in Page State B, flash byte 2 is aligned with FlashPageBuf byte 0
+P:00A9 45F400 008000  3  366  368     move    #>$008000,x1                        ; setup the shift up factor
+P:00AB 46F000 rrrrrr  3  369  369     move    x:FlashLagniappe,y0                 ; get lagniappe
+                              370                                                 ; y0=__1100
+P:00AD 44F000 rrrrrr  3  372  371     move    x:FSectorSizeInWordsPlusOne,x0
+P:00AF 06C400 rrrrrr  6  378  372     do      x0,_done_b
+P:00B1 44D800         2  380  373     move    x:(r0)+,x0                          ; get next
+P:00B2 44F4A0 00FFFF  3  383  374     mpy     x0,x1,a         #>$00FFFF,x0        ; mask lower byte into upper lagniappe byte
+                              375                                                 ; a1=__1100, a0=22____
+P:00B4 200046         2  385  376     and     x0,a                                ; mask of artificats of signed multiply
+P:00B5 218700         2  387  377     move    a1,y1                               ; temp save lagniappe
+P:00B6 210C00         2  389  378     move    a0,a1
+P:00B7 200052         2  391  379     or      y0,a                                ; perform the mask
+P:00B8 545900         2  393  380     move    a1,x:(r1)+                          ; write to sink buf
+P:00B9 20E600         2  395  381     move    y1,y0                               ; setup lagniappe
+                        (17)  382 _done_b
+P:00BA 45F400 0000FF  3  398  383     move    #>$0000FF,x1                        ; mask off upper two bytes of new lagniappe
+P:00BC 20CE00         2  400  384     move    y0,a
+P:00BD 200066         2  402  385     and     x1,a
+P:00BE 547000 rrrrrr  3  405  386     move    a1,x:FlashLagniappe                 ; save lagniappe
+P:00C0 617000 rrrrrr  3  408  387     move    r1,x:FlashSinkHeadPtr               ; update the FlashSinkBufPtr
+P:00C2 45F400 000003  3  411  388     move    #>FLH_PAGESTATE_C,x1                ; next state
+P:00C4 457000 rrrrrr  3  414  389     move    x1,x:FlashPageState
+                              390 
+P:00C6 00000C         4  418  391     rts
+                              392     
+                              393 pagestatec
+                              394     ; in Page State B, flash byte 1 is aligned with FlashPageBuf byte 0
+P:00C7 45F400 000080  3  421  395     move    #>$000080,x1                        ; setup the shift up factor
+P:00C9 46F000 rrrrrr  3  424  396     move    x:FlashLagniappe,y0                 ; get lagniappe
+                              397                                                 ; y0=____00
+P:00CB 44F000 rrrrrr  3  427  398     move    x:FSectorSizeInWordsPlusOne,x0
+P:00CD 06C400 rrrrrr  6  433  399     do      x0,_done_c
+P:00CF 44D800         2  435  400     move    x:(r0)+,x0                          ; get next
+P:00D0 44F4A0 0000FF  3  438  401     mpy     x0,x1,a         #>$0000FF,x0        ; mask lower 2 bytes into upper lagniappe 2 bytes
+                              402                                                 ; a1=____00, a0=2211__
+P:00D2 200046         2  440  403     and     x0,a                                ; mask of artificats of signed multiply
+P:00D3 218700         2  442  404     move    a1,y1                               ; temp save lagniappe
+P:00D4 210C00         2  444  405     move    a0,a1
+P:00D5 200052         2  446  406     or      y0,a                                ; perform the mask
+P:00D6 545900         2  448  407     move    a1,x:(r1)+                          ; write to sink buf
+P:00D7 20E600         2  450  408     move    y1,y0                               ; setup lagniappe
+                        (17)  409 _done_c
+                              410                                                 ; no lagniappe to save!
+P:00D8 617000 rrrrrr  3  453  411     move    r1,x:FlashSinkHeadPtr               ; update the FlashSinkBufPtr
+P:00DA 45F400 000001  3  456  412     move    #>FLH_PAGESTATE_A,x1                ; next state
+P:00DC 457000 rrrrrr  3  459  413     move    x1,x:FlashPageState
+                              414 
+P:00DE 00000C         4  463  415     rts
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              416 
+                              417     
+                              418     endsec

@@ -1,0 +1,411 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\syssettings.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ;  File        : syssettings.asm
+                                5 ;  Description : System Settings Routines
+                                6 ;  Notes       : This file contains 3 different P memory sections.
+                                7 ;                SYSFUN_SysSettings_Sys_P is in system memory (always resident)
+                                8 ;                SYSAPP_SysSettings_Init_P & SYSAPP_SysSettings_Shutdown_P are 
+                                9 ;                  in application space (overlaid)                
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               12     section SYSFUN_SysSettings
+                               14     opt     mex
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   Macros
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               22     list
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               25 ;   Includes
+                               26 ;///////////////////////////////////////////////////////////////////////////////
+                               35     list
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               39 ;   External Definitions
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               46 ;///////////////////////////////////////////////////////////////////////////////
+                               47 ;   External References
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               52     list
+                               59     
+                               73     ; locator generated labels used when loading resources    
+                               80 ;///////////////////////////////////////////////////////////////////////////////
+                               81 ;   Equates
+                               82 ;///////////////////////////////////////////////////////////////////////////////
+                               84 ; Store the system settings on this device
+                               85 Device          equ     0        
+                               86                 
+                               87 ; File attributes
+                               88 READONLY        equ     $000001
+                               89 HIDDEN          equ     $000002
+                               90 SYSTEM          equ     $000004    
+                               92 READ            equ     1
+                               93 WRITE           equ     2
+                               94 ; Settings Commands (These follow the filesystem complex pointer scheme)
+                               95 SAVE_RANGE_MASK equ     $F00000
+                               96 SAVE_RANGE_ERR  equ     $000000
+                               97 SAVE_RANGE_P    equ     $100000
+                               98 SAVE_RANGE_L    equ     $200000
+                               99 SAVE_RANGE_Y    equ     $400000
+                              100 SAVE_RANGE_X    equ     $800000
+                              101 SAVE_RANGE_END  equ     $F00000
+                              110 ;///////////////////////////////////////////////////////////////////////////////
+                              111 ;  X memory
+                              112 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        114     org x,"SYSFUN_SysSettings_X":
+                              116 ;///////////////////////////////////////////////////////////////////////////////
+                              117 ;  Y memory
+                              118 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        120     org y,"SYSFUN_SysSettings_Y":
+                              122 ; The name of the file to store the system settings        
+                              123 ;FileName  dcb   'ES'++DirectorySeparator,'ITT','SGN','AD.',0++0++'T'   ; "/SETTINGS.DAT
+Y:0000 45532F 495454          124 FileName  dcb   'ES'++DirectorySeparator,'ITT','SGN','AD.',0++0++'T'   ; "/SETTINGS.DAT
+       53474E 41442E              
+       000054                     
+                              125 ;FileName  dcb   'TES','NIT','.SG','TAD'   ; "/SETTINGS.DAT
+                              128 ; Buffer for FileRead and FileWrite
+Y:0005 000000                 129 Buffer    dc    0
+Y:0006 000000                 130           dc    0
+                              132 ;Storage for the stack pointer register
+Y:0007 000000                 133 OldSP     dc    0       
+                              135 ; Flag indicates that routine has completed.
+Y:0008 000000                 136 Fg_iSysSaveSettingsDone  dc  0
+Y:0000                        138     org y,"SYSFUN_SysSettings_Commands_Y":
+Y:0000 F00000                 140     dc      SAVE_RANGE_END
+                              143 ;///////////////////////////////////////////////////////////////////////////////
+                              144 ;   P Memory
+                              145 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        147    org    p,".ptextSysSettings":                             
+                              149 ;///////////////////////////////////////////////////////////////////////////////
+                              150 ;
+                              151 ;>  Name:           SysLoadSettings
+                              152 ;
+                              153 ;   Type:           Function
+                              154 ;
+                              155 ;   Description:    Opens the file settings.dat and decodes its contents to 
+                              156 ;                   restore memory locations based upon the contents of
+                              157 ;                   settings.dat.
+                              158 ;
+                              159 ;   Inputs:         The file "settings.dat" must be at the root location of
+                              160 ;                   device 0 media.
+                              161 ;
+                              162 ;   Outputs:        Memory locations restored to values indicated by contents
+                              163 ;                   of settings.dat.
+                              164 ;                   
+                              165 ;   Notes:          
+                              166 ;
+                              167 ;   SeeAlso:        SysSaveSettings, SaveRange, SaveRangeX, SaveRangeY,
+                              168 ;                   SaveRangeP, SaveRangeL
+                              169 ;<
+                              170 ;///////////////////////////////////////////////////////////////////////////////
+                              171 SysLoadSettings
+                              173    
+                              174        ;If using funclet, function will be executed via funclet kernel
+                              175        CallFunclet RSRC_FUNCLET_SYSLOADSETTINGS
+P:0000 0D0080         4    4  175     jsr       $80
+P:0001 000179                 175     DC       RSRC_FUNCLET_SYSLOADSETTINGS  ; 1 word
+                              176    
+P:0000                        177        org p,"SYSFUNCLET_SysLoadSettings":
+                              178        
+P:0000 000179                 179        dc      RSRC_FUNCLET_SYSLOADSETTINGS       ; Funclet Resource number
+                              180    
+                              183     ; Save the system stack
+P:0001 66F400 rrrrrr  3    3  184     move    #_StackSaved,r6             ; setup the return address
+P:0003 65F400 rrrrrr  3    6  185     move    #OldSP,r5                   ; pointer to the SP local save
+P:0005 0AF080 rrrrrr  6   12  186     jmp     SaveSystemStack             ; save the hardware stack
+                              187 _StackSaved
+                              188             
+                              189     ; Open the system settings file for reading
+P:0007 52F400 000000  3   15  190     move    #>Device,a2
+P:0009 54F400 rrrrrr  3   18  191     move    #>FileName,a1
+P:000B 0ACC76         4   22  192     bset    #22,a1                      ; Y memory space
+P:000C 50F400 000001  3   25  193     move    #>READ,a0
+P:000E 0BF080 rrrrrr  6   31  195     jsr     FILEOpen
+P:0010 0AF0A8 rrrrrr  6   37  196     jcs     _Exit
+P:0012 218A00         2   39  197     move    a1,a2                       ; Put the handle into A2
+                              199     ; Read the software version from the systems settings file        
+P:0013 54F400 000006  3   42  200     move    #>6,a1
+P:0015 280000         2   44  201     move    #0,a0
+P:0016 0AC876         4   48  202     bset    #22,a0
+P:0017 60F400 rrrrrr  3   51  203     move    #>Buffer,r0
+P:0019 058060r        2   53  204     movec   y:<Const_ffffff,m0
+                              205     push    a2
+P:001A 5A5F00         2   55  205     move    a2,y:(r7)+
+P:001B 0BF080 rrrrrr  6   61  206     jsr     FileRead
+                              207     pop     a2
+P:001D 5AFF00         4   65  207     move    y:-(r7),a2
+P:001E 0AF0A8 rrrrrr  6   71  208     jcs     _Close
+                              210     ; Verify that the software version matches the current software
+P:0020 44F400 000003  3   74  211     move    #>VERSION_MAJOR,x0
+P:0022 5FF000 rrrrrr  3   77  212     move    y:Buffer,b
+P:0024 20004D         2   79  213     cmp     x0,b
+P:0025 0AF0A2 rrrrrr  6   85  214     jne     _Close
+P:0027 44F400 00038E  3   88  215     move    #>VERSION_MINOR,x0
+P:0029 5FF000 rrrrrr  3   91  216     move    y:Buffer+1,b
+P:002B 20004D         2   93  217     cmp     x0,b
+P:002C 0AF0A2 rrrrrr  6   99  218     jne     _Close
+                              220 _NextCmd
+                              221     ; Read the next command from the systems settings file        
+P:002E 54F400 000003  3  102  222     move    #>3,a1
+P:0030 50F400 000000  3  105  223     move    #>0,a0
+P:0032 0AC876         4  109  224     bset    #22,a0
+P:0033 60F400 rrrrrr  3  112  225     move    #>Buffer,r0          ; Starting address target.
+P:0035 058060r        2  114  226     movec   y:<Const_ffffff,m0
+                              227     push    a2
+P:0036 5A5F00         2  116  227     move    a2,y:(r7)+
+P:0037 0BF080 rrrrrr  6  122  228     jsr     FileRead
+                              229     pop     a2
+P:0039 5AFF00         4  126  229     move    y:-(r7),a2
+P:003A 0AF0A8 rrrrrr  6  132  230     jcs     _Close
+                              232     ; Check if it is the End command
+P:003C 44F400 F00000  3  135  233     move    #>SAVE_RANGE_MASK,x0
+P:003E 5FF000 rrrrrr  3  138  234     move    y:Buffer,b
+P:0040 20004E         2  140  235     and     x0,b
+P:0041 20004D         2  142  236     cmp     x0,b
+P:0042 0AF0AA rrrrrr  6  148  237     jeq     _Close
+                              238     
+                              239     ; Read the number of bytes from the systems settings file        
+                              240     ; Number of bytes to read from file. Must be <= 3 since 1 word left at Buffer+1.
+P:0044 54F400 000003  3  151  241     move    #>3,a1                  
+P:0046 50F400 000000  3  154  242     move    #>0,a0
+P:0048 0AC876         4  158  243     bset    #22,a0
+P:0049 60F400 rrrrrr  3  161  244     move    #>Buffer+1,r0               ; Word address to read file bytes into.
+P:004B 058060r        2  163  245     movec   y:<Const_ffffff,m0
+                              246     push    a2                          ; File handle
+P:004C 5A5F00         2  165  246     move    a2,y:(r7)+
+P:004D 0BF080 rrrrrr  6  171  247     jsr     FileRead
+                              248     pop     a2
+P:004F 5AFF00         4  175  248     move    y:-(r7),a2
+P:0050 0AF0A8 rrrrrr  6  181  249     jcs     _Close
+                              250         
+                              251     ; Read the settings data from the systems settings file        
+P:0052 5FF000 rrrrrr  3  184  252     move    y:Buffer,b
+P:0054 21F000         2  186  253     move    b,r0
+P:0055 44F400 FF0000  3  189  254     move    #>$ff0000,x0
+P:0057 20004E         2  191  255     and     x0,B
+P:0058 21A800         2  193  256     move    B1,a0
+                              257                      ; Read the file bytes into this address. 
+                              258     ; Above line causes Y mem corruption if settings.dat is not deleted on each firmware update.
+P:0059 5CF000 rrrrrr  3  196  259     move    y:Buffer+1,a1               ; Number of bytes to read from file
+                              260               ; Starting address target.
+P:005B 058060r        2  198  261     movec   y:<Const_ffffff,m0
+                              262     push    a2                          ; File handle
+P:005C 5A5F00         2  200  262     move    a2,y:(r7)+
+P:005D 0BF080 rrrrrr  6  206  263     jsr     FileRead
+                              264     pop     a2
+P:005F 5AFF00         4  210  264     move    y:-(r7),a2
+P:0060 0AF0A8 rrrrrr  6  216  265     jcs     _Close
+P:0062 0AF080 rrrrrr  6  222  267     jmp     _NextCmd
+                              269 _Close
+                              270     ; Close the system settings file
+P:0064 0BF080 rrrrrr  6  228  271     jsr     FILEClose
+                              273 _Exit
+                              274     ; Restore the system stack
+P:0066 65F400 rrrrrr  3  231  275     move    #OldSP,r5                   ; pointer to the SP local save
+P:0068 66F400 rrrrrr  3  234  276     move    #_Return,r6                 ; setup the return address
+P:006A 0AF080 rrrrrr  6  240  277     jmp     RestoreSystemStack          ; restore the hardware stack
+                              278 _Return
+P:006C 00000C         4  244  280     rts
+                              281                                 
+P:0002                        282     org p,".ptextSysSettings":
+                              284 ;///////////////////////////////////////////////////////////////////////////////
+                              285 ;
+                              286 ;>  Name:           SysSaveSettings
+                              287 ;
+                              288 ;   Type:           Function
+                              289 ;
+                              290 ;   Description:    Creates the file settings.dat and stores commands created
+                              291 ;                   by the SaveRange macros to settings.dat. 
+                              292 ;
+                              293 ;   Inputs:         SaveRange macros must exist for SysSaveSettings to save
+                              294 ;                   the commands to settings.dat.
+                              295 ;
+                              296 ;   Outputs:        A settings.dat file at the root location of device 0 media.
+                              297 ;
+                              298 ;                   
+                              299 ;   Notes:          Settings file creation is not attempted if deletion attempt    
+                              300 ;                   returns any error code other than ERR_FILE_NOT_FOUND.
+                              301 ;
+                              302 ;   SeeAlso:        SysLoadSettings, SaveRange, SaveRangeX, SaveRangeY,
+                              303 ;                   SaveRangeP, SaveRangeL
+                              304 ;<
+                              305 ;///////////////////////////////////////////////////////////////////////////////
+                              306 SysSaveSettings
+                              308    
+                              309        ;If using funclet, function will be executed via funclet kernel
+                              310        CallFunclet RSRC_FUNCLET_SYSSAVESETTINGS
+P:0002 0D0080         4    8  310     jsr       $80
+P:0003 000178                 310     DC       RSRC_FUNCLET_SYSSAVESETTINGS  ; 1 word
+                              311    
+P:0000                        312        org p,"SYSFUNCLET_SysSaveSettings":
+                              313        
+P:0000 000178                 314        dc      RSRC_FUNCLET_SYSSAVESETTINGS       ; Funclet Resource number
+                              315    
+                              318     ; Save the system stack
+P:0001 66F400 rrrrrr  3    3  319     move    #_StackSaved,r6             ; setup the return address
+P:0003 65F400 rrrrrr  3    6  320     move    #OldSP,r5                   ; pointer to the SP local save
+P:0005 0AF080 rrrrrr  6   12  321     jmp     SaveSystemStack             ; save the hardware stack
+                              322 _StackSaved
+                              323     ; Check the battery lagniappe and if we don't have enough juice then
+                              324     ;   skip the save
+P:0007 0BF080 rrrrrr  6   18  325     jsr     FSysBatteryGetLevel
+P:0009 44F400 00000A  3   21  326     move    #>BATT_SAFETY_MARGIN,x0
+P:000B 200045         2   23  327     cmp     x0,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:000C 0AF0A9 rrrrrr  6   29  328         jlt     _Exit2
+                              331     ; Load the FAT write code
+P:000E 0BF080 rrrrrr  6   35  332     jsr     SysLoadFATWrite
+                              334             
+                              335     ; Clear the file attributes of read only, system and hidden
+P:0010 52F400 000000  3   38  336     move    #>Device,a2
+P:0012 54F400 rrrrrr  3   41  337     move    #>FileName,a1
+P:0014 0ACC76         4   45  338     bset    #22,a1                      ; Y memory space
+P:0015 50F400 000007  3   48  339     move    #>(READONLY|SYSTEM|HIDDEN),a0
+P:0017 0BF080 rrrrrr  6   54  340     jsr     FILEAttributeClear
+                              341                     
+                              343             
+P:0019 200013         2   56  344     clr a
+                              345     ; Create a new system settings file
+P:001A 52F400 000000  3   59  346     move    #>Device,a2
+P:001C 54F400 rrrrrr  3   62  347     move    #>FileName,a1
+P:001E 0ACC76         4   66  348     bset    #22,a1                      ; Y memory space
+P:001F 0BF080 rrrrrr  6   72  349     jsr     FILECreate                      
+P:0021 0AF0A8 rrrrrr  6   78  350     jcs     _Exit
+P:0023 218A00         2   80  351     move    a1,a2                       ; Put the handle into A2
+                              353     ; Put the current software version into the buffer
+P:0024 50F400 000003  3   83  354     move    #>VERSION_MAJOR,a0
+P:0026 587000 rrrrrr  3   86  355     move    a0,y:Buffer
+P:0028 50F400 00038E  3   89  356     move    #>VERSION_MINOR,a0
+P:002A 587000 rrrrrr  3   92  357     move    a0,y:Buffer+1
+                              359     ; Write the software version to the systems settings file        
+P:002C 54F400 000006  3   95  360     move    #>6,a1
+P:002E 280000         2   97  361     move    #0,a0
+P:002F 0AC876         4  101  362     bset    #22,a0
+P:0030 60F400 rrrrrr  3  104  363     move    #>Buffer,r0
+P:0032 058060r        2  106  364     movec   y:<Const_ffffff,m0
+                              365     push    a2
+P:0033 5A5F00         2  108  365     move    a2,y:(r7)+
+P:0034 0BF080 rrrrrr  6  114  366     jsr     FileWrite
+                              367     pop     a2
+P:0036 5AFF00         4  118  367     move    y:-(r7),a2
+P:0037 0AF0A8 rrrrrr  6  124  368     jcs     _Close
+                              370     ; Load the settings commands resource
+P:0039 44F400 0000AD  3  127  371     move    #>RSRC_SETTINGS_COMMANDS,x0 ; Resource number
+P:003B 45F400 000002  3  130  372     move    #>RSRC_TYPE_DATA,x1         ; Resource type is data
+P:003D 47F400 000600  3  133  373     move    #>SCRATCH_USER_Y_SIZE*3,y1 
+P:003F 46F400 rrrrrr  3  136  374     move    #>UserScratchY,y0    ; Address of the overlay area
+P:0041 54F400 400000  3  139  375     move    #TARGET_MEM_Y,a1            ; Overlay area is in Y memory
+                              376     push    a2
+P:0043 5A5F00         2  141  376     move    a2,y:(r7)+
+P:0044 0BF080 rrrrrr  6  147  377     jsr     SysLoadResource
+                              378     pop     a2
+P:0046 5AFF00         4  151  378     move    y:-(r7),a2
+                              380     ; Set the command pointer to the first command
+P:0047 61F400 rrrrrr  3  154  381     move    #>UserScratchY,r1
+P:0049 058061r        2  156  382     movec   y:<Const_ffffff,m1
+                              383         
+                              384 _NextCmd        
+                              385     ; Get the next command
+P:004A 5FE100         2  158  386     move    y:(r1),b
+                              388     ; Check that the command is valid
+P:004B 44F400 F00000  3  161  389     move    #>SAVE_RANGE_MASK,x0
+P:004D 20004E         2  163  390     and     x0,b
+P:004E 0AF0A2 rrrrrr  6  169  391     jne     _CheckEnd
+                              392     
+                              393     ; Invalid memory space for settings command
+                              394     error
+P:0050 000200         4  173  394     debug
+P:0051 000000         2  175  395     nop
+                              396     
+                              397 _CheckEnd
+                              398     ; Check if this is the End command
+P:0052 20004D         2  177  399     cmp     x0,b
+P:0053 0AF0AA rrrrrr  6  183  400     jeq     _WriteEndCommand        
+                              402     ; Write the settings command to the systems settings file        
+P:0055 54F400 000006  3  186  403     move    #>6,a1
+P:0057 223000         2  188  404     move    r1,r0
+P:0058 280000         2  190  405     move    #0,a0
+P:0059 0AC876         4  194  406     bset    #22,a0
+P:005A 058060r        2  196  407     movec   y:<Const_ffffff,m0
+                              408     push    r1
+P:005B 695F00         2  198  408     move    r1,y:(r7)+
+                              409     push    a2
+P:005C 5A5F00         2  200  409     move    a2,y:(r7)+
+P:005D 0BF080 rrrrrr  6  206  410     jsr     FileWrite
+                              411     pop     a2
+P:005F 5AFF00         4  210  411     move    y:-(r7),a2
+                              412     pop     r1
+P:0060 69FF00         4  214  412     move    y:-(r7),r1
+P:0061 0AF0A8 rrrrrr  6  220  413     jcs     _Close
+                              415     ; Write the settings data to the systems settings file
+P:0063 5FD900         2  222  416     move    y:(r1)+,b
+P:0064 21F000         2  224  417     move    b,r0
+P:0065 44F400 FF0000  3  227  418     move    #>$ff0000,x0
+P:0067 20004E         2  229  419     and     x0,B
+P:0068 21A800         2  231  420     move    B1,a0
+P:0069 5CD900         2  233  421     move    y:(r1)+,a1
+P:006A 058060r        2  235  422     movec   y:<Const_ffffff,m0
+                              423     push    r1
+P:006B 695F00         2  237  423     move    r1,y:(r7)+
+                              424     push    a2
+P:006C 5A5F00         2  239  424     move    a2,y:(r7)+
+P:006D 0BF080 rrrrrr  6  245  425     jsr     FileWrite
+                              426     pop     a2
+P:006F 5AFF00         4  249  426     move    y:-(r7),a2
+                              427     pop     r1
+P:0070 69FF00         4  253  427     move    y:-(r7),r1
+P:0071 0AF0A8 rrrrrr  6  259  428     jcs     _Close
+                              429     
+P:0073 0AF080 rrrrrr  6  265  430     jmp     _NextCmd
+                              432 _WriteEndCommand
+                              433     ; Write the end command to the systems settings file        
+P:0075 54F400 000003  3  268  434     move    #>3,a1
+P:0077 223000         2  270  435     move    r1,r0
+P:0078 280000         2  272  436     move    #0,a0
+P:0079 0AC876         4  276  437     bset    #22,a0
+P:007A 058060r        2  278  438     movec   y:<Const_ffffff,m0
+                              439     push    a2
+P:007B 5A5F00         2  280  439     move    a2,y:(r7)+
+P:007C 0BF080 rrrrrr  6  286  440     jsr     FileWrite
+                              441     pop     a2
+P:007E 5AFF00         4  290  441     move    y:-(r7),a2
+                              443 _Close
+                              444     ; Close the system settings file
+P:007F 0BF080 rrrrrr  6  296  445     jsr     FILEClose
+                              446     
+                              447     ; Set the file attributes to read only, system and hidden
+P:0081 52F400 000000  3  299  448     move    #>Device,a2
+P:0083 54F400 rrrrrr  3  302  449     move    #>FileName,a1
+P:0085 0ACC76         4  306  450     bset    #22,a1                      ; Y memory space
+P:0086 50F400 000007  3  309  451     move    #>(READONLY|SYSTEM|HIDDEN),a0
+P:0088 0BF080 rrrrrr  6  315  452     jsr     FILEAttribute
+                              453     
+                              454 _Exit
+                              455         
+P:008A 0BF080 rrrrrr  6  321  456         jsr     FSaveUserTime
+                              457         ; Unload the FAT write code
+P:008C 0BF080 rrrrrr  6  327  458         jsr     SysUnLoadFATWrite
+                              460 _Exit2 
+                              461      ; Restore the system stack
+P:008E 65F400 rrrrrr  3  330  462     move    #OldSP,r5                   ; pointer to the SP local save
+P:0090 66F400 rrrrrr  3  333  463     move    #_Return,r6                 ; setup the return address
+P:0092 0AF080 rrrrrr  6  339  464     jmp     RestoreSystemStack          ; restore the hardware stack
+                              466 _Return
+                              468     push    a1
+P:0094 5C5F00         2  341  468     move    a1,y:(r7)+
+P:0095 5C8000r        2  343  469     move    y:<Const_000001,a1
+P:0096 5C7000 rrrrrr  3  346  470     move    a1,Y:Fg_iSysSaveSettingsDone  
+                              471     pop     a1
+P:0098 5CFF00         4  350  471     move    y:-(r7),a1
+                              472     ; Flag notifies others that settings are saved. Main menu clears display now.
+P:0099 00000C         4  354  475     rts
+                              478     
+                              479        ;If using funclet, switch counter back to original here
+P:0000                        480        org    p,"SYSFUN_SysSettings_P":                             
+                              481    
+                              484     endsec

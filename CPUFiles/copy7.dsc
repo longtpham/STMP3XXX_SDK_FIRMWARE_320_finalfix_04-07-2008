@@ -1,0 +1,114 @@
+copy .xipolypha;
+copy .ptextnddkillusector;
+copy .ptextnddcloseupdate;
+copy .ptextnandhaltype2writefunctions;
+copy .ptextnandhaltype3writefunctions;
+copy .ptextnandhaltype4functions;
+copy .ptextnandhaltype5functions;      // start of segemnt added for sdk 2.6 port
+copy .ptextnandra_utils_write;
+copy .ptextnandhalstartcomputeecc;
+copy .ptextnandhalsetnandbusy;
+copy .ptextnandhalcomputeeccgetstatus; // end of block added for 2.6 port
+copy .ptextnandcalculateeccsync;
+copy .ptextnandhalmarkblockbadinra;
+copy .ptextfflush;                    
+copy .ptextflushsector;               
+copy .ptextupdatefilesize;            
+copy .ptextgetnewcluster;             
+copy .ptextwritefatentry;             
+copy .ptextwritesector;               
+copy .ptextfwrite;                    
+copy .ptextfirstfreeandallocate;
+copy .ptexttotalfreecluster;
+copy .pStmpTotalfreecx;
+copy .ptextcomputefreeclusters;
+copy .ptextmmchalspiwrite;
+
+copy SYSFUNCLET_DRM_SST_GETTOKENVALUE_P;
+//Feb 5 2007:move to Y_Copy9 copy SYSFUNCLET_SETVOLUMELABEL_P; 
+copy SYSFUNCLET_ECAFFINE_ON_CURVE_P; 
+copy SYSFUNCLET__HDSLOCATEFREEBLOCKFORSLOT_P; 
+copy SYSFUNCLET_CHDIR_P; 
+copy SYSFUNCLET__HDSALLOCSLOTINFILE_P; 
+copy SYSFUNCLET_Shortdirmatch_P; 
+copy SYSFUNCLET_MP_SHIFT_P;
+copy SYSFUNCLET_CHDIR_P;//0x57
+copy SYSFUNCLET_DRM_CLK_INITCHECKSECURECLOCK_P;//0x57
+copy SYSFUNCLET_PowerDownHeadPhones_P;//0x57
+copy SYSFUNCLET_PowerUpHeadPhones_P;//0x57
+copy SYSFUNCLET_FUNCTIONGETVALUE_P;//0x57
+copy SYSFUNCLET_DRM_SST_SETLOCKEDDATA_P;//0x57 
+copy SYSFUNCLET_StartProject_P;//0x57
+copy SYSFUNCLET_MP_SHIFT_P;
+copy .ptextnddaddblktobbtbl;
+copy SYSFUNCLET_DRM_OPL_PROCESSPLAYOUTPUTLEVELDATA_P;
+copy SYSFUNCLET_STRLENGTH_P;
+copy SYSFUNCLET_STRLENGTHW_P;
+copy SYSFUNCLET_DRM_SST_OPENKEYTOKENS_P;
+copy SYSFUNCLET_LONGDIRMATCH_P; 
+copy SYSFUNCLET_OEM_WRITEFILE_P; 
+copy SYSFUNCLET_DRM_LIC_REPORTACTIONS_P;
+copy SYSFUNCLET_DRM_EXPR_EVALUATEEXPRESSION_NO_MORE_TOKENS_P;
+copy SYSFUNCLET__HDSINITSLOTENUM_P;
+copy SYSFUNCLET_STRTOL_P;
+copy SYSFUNCLET_DELETERECORD_P;
+copy SYSFUNCLET_CHANGEPATH_P;
+copy .ptextdrmsha1;
+copy .ptextlayerallo;
+copy .pMidLow;
+copy .ptextoemfileio;
+copy .ptextJanusfunc;
+copy SYSFUNCLET__UPDATEATTRIBUTETOKENINSLOT_P;
+copy .ydataaeskeytables;
+copy .ptextdrmcipher_runtime;
+copy .ptextwavedec;
+copy .pHigh;
+copy .ptextencodesideinfo;
+copy .ptextecurve;
+copy .ptextmodular;
+copy .ptextparseparameterstoheader;
+copy .ptextdetectsilence;
+copy .ptextnandmediaerase ;
+copy .ptextnandsystemdrivewritesector ;
+copy MMCDD_Header_p;
+copy SYSFUNCLET_StartProject_P;
+copy .ptextmmchalspi;
+copy DECMOD_AdpcmIma_overlay_P;
+copy DECMOD_DecoderOverlay_overlay_P;
+copy .ptextmmcsal;
+            copy SYSFUNCLET_ECPROJ5_TO_ECAFFINE_P;
+            copy SYSFUNCLET_CHECKSPACEINROOTDIR_P;
+            copy SYSFUNCLET_BYTE_ARRAY_MOD_BIGNUM_P;
+            copy SYSFUNCLET_STRCPYW_P;
+            copy SYSFUNCLET_FSINIT_P;
+            copy SYSFUNCLET_SysResetAllInt_P;
+            copy SYSFUNCLET_GETSECSTATEATTR_P;
+            copy SYSFUNCLET_DRM_MGR_SETV2HEADER_P;
+            copy SYSFUNCLET_STRCPY_P;
+            copy SYSFUNCLET_ADD_DIFF_P;
+            copy SYSFUNCLET_DRM_UTL_GETVERSIONASSTRING_P;
+            copy SYSFUNCLET_EXTRACTPATH_P;
+            copy SYSFUNCLET_DRM_LEVL_EVALUATEEXPRESSION_P;
+            copy SYSFUNCLET_DRM_UTL_STRINGREMOVESUBSTRING_P;
+            copy SYSFUNCLET_FCLOSE_P;
+            copy SYSFUNCLET_DRM_MAC_INV32_P;
+            copy SYSFUNCLET_SETCWDHANDLE_P;
+            copy SYSFUNCLET__HDSFINDLEFTMOSTLEAFBLOCK_P;
+            copy .ptextnanddatadrivegetinfo;
+            copy SYSFUNCLET_DRM_LEVL_PERFORMOPERATIONS_P;
+            copy SYSFUNCLET_DRM_B64_ENCODEW_P;
+            copy SYSFUNCLET_DRM_BBX_HASHVALUE_P;
+            copy SYSFUNCLET_DRM_BBX_INITIALIZE_P;
+            copy SYSFUNCLET_DRM_BBX_LEGACYCIPHERKEYSETUP_P;
+            copy SYSFUNCLET_DRM_CPHR_INIT_P;
+            copy SYSFUNCLET_DRM_DCP_GETATTRIBUTE_P;
+            copy SYSFUNCLET_DRM_DCP_LOADPROPERTIESCACHE_P;
+            copy SYSFUNCLET_DRM_EXPR_EVALUATEEXPRESSION_P;
+            copy SYSFUNCLET_DRM_HDR_GETATTRIBUTE_P;
+        copy SYSFUNCLET_DRM_HDS_CREATESTORE_P;
+        copy SYSFUNCLET_DRM_HDS_CREATESTORE2_P;
+        copy SYSFUNCLET_DRM_HDS_DELETESLOT_P;
+        copy SYSFUNCLET_DRM_HDS_OPENSLOT_P;
+        copy SYSFUNCLET_DRM_HDS_SLOTENUMNEXT_P;
+        copy SYSFUNCLET_DRM_HDS_SLOTSEEK_P;
+        copy SYSFUNCLET_DRM_LIC_CHECKCLOCKROLLBACK_P;

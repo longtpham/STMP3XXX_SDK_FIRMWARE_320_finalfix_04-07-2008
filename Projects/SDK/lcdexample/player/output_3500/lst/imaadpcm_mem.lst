@@ -1,0 +1,151 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\algorithms\common\imaadpcm_mem.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ; File : imaadpcm_mem.asm
+                                5 ; Description : IMA ADPCM specific memory
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7     
+                                9     section IMA_ADPCM_Mem        
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;       Globals
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;///////////////////////////////////////////////////////////////////////////////
+                               18 ;       Y Memory
+                               19 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         21     org y,"IMAADPCM_Data_Y":
+                               22 ; Do not change the order of the following four variables.    
+                               23 ; Channel 0
+                               24 FIMA_pred0
+Y:0000 RESERVED                25 IMA_pred0                 ds         1
+Y:0000
+                               26 FIMA_index0
+Y:0001 RESERVED                27 IMA_index0                ds         1
+Y:0001
+                               28 ; Channel 1
+                               29 FIMA_pred1
+Y:0002 RESERVED                30 IMA_pred1                 ds         1
+Y:0002
+                               31 FIMA_index1
+Y:0003 RESERVED                32 IMA_index1                ds         1
+Y:0003
+X:0000                         35     org x,"IMAADPCM_Tables_X":
+                               36 IMAIndexTable
+X:0000 FFFFFF                  37                         DC              -1
+X:0001 FFFFFF                  38                         DC              -1
+X:0002 FFFFFF                  39                         DC              -1
+X:0003 FFFFFF                  40                         DC              -1
+X:0004 000002                  41                         DC              2
+X:0005 000004                  42                         DC              4
+X:0006 000006                  43                         DC              6
+X:0007 000008                  44                         DC              8
+X:0008 FFFFFF                  45                         DC              -1
+X:0009 FFFFFF                  46                         DC              -1
+X:000A FFFFFF                  47                         DC              -1
+X:000B FFFFFF                  48                         DC              -1
+X:000C 000002                  49                         DC              2
+X:000D 000004                  50                         DC              4
+X:000E 000006                  51                         DC              6
+X:000F 000008                  52                         DC              8
+                               55 IMAStepSizeTable
+X:0010 000007                  56                         DC              $7
+X:0011 000008                  57                         DC              $8
+X:0012 000009                  58                         DC              $9
+X:0013 00000A                  59                         DC              $a
+X:0014 00000B                  60                         DC              $b
+X:0015 00000C                  61                         DC              $c
+X:0016 00000D                  62                         DC              $d
+X:0017 00000E                  63                         DC              $e
+X:0018 000010                  64                         DC              $10 
+X:0019 000011                  65                         DC              $11 
+X:001A 000013                  66                         DC              $13 
+X:001B 000015                  67                         DC              $15 
+X:001C 000017                  68                         DC              $17 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:001D 000019                  69                         DC              $19 
+X:001E 00001C                  70                         DC              $1c 
+X:001F 00001F                  71                         DC              $1f 
+X:0020 000022                  72                         DC              $22 
+X:0021 000025                  73                         DC              $25 
+X:0022 000029                  74                         DC              $29 
+X:0023 00002D                  75                         DC              $2d 
+X:0024 000032                  76                         DC              $32 
+X:0025 000037                  77                         DC              $37 
+X:0026 00003C                  78                         DC              $3c 
+X:0027 000042                  79                         DC              $42 
+X:0028 000049                  80                         DC              $49 
+X:0029 000050                  81                         DC              $50 
+X:002A 000058                  82                         DC              $58 
+X:002B 000061                  83                         DC              $61 
+X:002C 00006B                  84                         DC              $6b 
+X:002D 000076                  85                         DC              $76 
+X:002E 000082                  86                         DC              $82 
+X:002F 00008F                  87                         DC              $8f 
+X:0030 00009D                  88                         DC              $9d 
+X:0031 0000AD                  89                         DC              $ad 
+X:0032 0000BE                  90                         DC              $be 
+X:0033 0000D1                  91                         DC              $d1 
+X:0034 0000E6                  92                         DC              $e6 
+X:0035 0000FD                  93                         DC              $fd 
+X:0036 000117                  94                         DC              $117 
+X:0037 000133                  95                         DC              $133 
+X:0038 000151                  96                         DC              $151 
+X:0039 000173                  97                         DC              $173 
+X:003A 000198                  98                         DC              $198 
+X:003B 0001C1                  99                         DC              $1c1 
+X:003C 0001EE                 100                         DC              $1ee 
+X:003D 000220                 101                         DC              $220 
+X:003E 000256                 102                         DC              $256 
+X:003F 000292                 103                         DC              $292 
+X:0040 0002D4                 104                         DC              $2d4 
+X:0041 00031C                 105                         DC              $31c 
+X:0042 00036C                 106                         DC              $36c 
+X:0043 0003C3                 107                         DC              $3c3 
+X:0044 000424                 108                         DC              $424 
+X:0045 00048E                 109                         DC              $48e 
+X:0046 000502                 110                         DC              $502 
+X:0047 000583                 111                         DC              $583 
+X:0048 000610                 112                         DC              $610 
+X:0049 0006AB                 113                         DC              $6ab 
+X:004A 000756                 114                         DC              $756 
+X:004B 000812                 115                         DC              $812 
+X:004C 0008E0                 116                         DC              $8e0 
+X:004D 0009C3                 117                         DC              $9c3 
+X:004E 000ABD                 118                         DC              $abd 
+X:004F 000BD0                 119                         DC              $bd0 
+X:0050 000CFF                 120                         DC              $cff 
+X:0051 000E4C                 121                         DC              $e4c 
+X:0052 000FBA                 122                         DC              $fba 
+X:0053 00114C                 123                         DC              $114c
+X:0054 001307                 124                         DC              $1307
+X:0055 0014EE                 125                         DC              $14ee
+X:0056 001706                 126                         DC              $1706
+X:0057 001954                 127                         DC              $1954
+X:0058 001BDC                 128                         DC              $1bdc
+X:0059 001EA5                 129                         DC              $1ea5
+X:005A 0021B6                 130                         DC              $21b6
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+X:005B 002515                 131                         DC              $2515
+X:005C 0028CA                 132                         DC              $28ca
+X:005D 002CDF                 133                         DC              $2cdf
+X:005E 00315B                 134                         DC              $315b
+X:005F 00364B                 135                         DC              $364b
+X:0060 003BB9                 136                         DC              $3bb9
+X:0061 0041B2                 137                         DC              $41b2
+X:0062 004844                 138                         DC              $4844
+X:0063 004F7E                 139                         DC              $4f7e
+X:0064 005771                 140                         DC              $5771
+X:0065 00602F                 141                         DC              $602f
+X:0066 0069CE                 142                         DC              $69ce
+X:0067 007462                 143                         DC              $7462
+X:0068 007FFF                 144                         DC              $7fff
+                              146     endsec

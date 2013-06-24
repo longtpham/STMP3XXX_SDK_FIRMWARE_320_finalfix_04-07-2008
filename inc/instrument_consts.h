@@ -1,0 +1,28 @@
+#define INSTRUMENT_CONTEXT_DEVICE_DRIVER_READ                   0x01
+#define INSTRUMENT_CONTEXT_DEVICE_DRIVER_READ_READ_SECTOR 0x01
+
+
+
+#define INSTRUMENT_CONTEXT_SYSLOADRESOURCE                      0x02
+#define INSTRUMENT_CONTEXT_SYSLOADRESOURCE_OVERHEAD     0x01
+#define INSTRUMENT_CONTEXT_SYSLOADRESOURCE_SECTOR_READ  0x02
+#define INSTRUMENT_CONTEXT_SYSLOADRESOURCE_COPY         0x03
+
+#define INSTRUMENT_CONTEXT_SYSTEMDRIVE_READ                     0x03
+#define INSTRUMENT_CONTEXT_SYSTEMDRIVE_READ_OVERHEAD    0x01
+#define INSTRUMENT_CONTEXT_SYSTEMDRIVE_READ_HAL         0x02
+
+
+#define INSTRUMENT_CONTEXT_HAL                                  0x04
+#define INSTRUMENT_CONTEXT_HAL_OVERHEAD                 0x01
+#define INSTRUMENT_CONTEXT_HAL_READ_FROM_PAGE           0x02
+#define INSTRUMENT_CONTEXT_HAL_READ_FROM_PAGE           0x02
+
+#define INSTRUMENT_CONTEXT_HIL                                  0x05
+
+
+#define MULTI_WRITE_ACTIVE                              0x00
+#define MULTI_WRITE_IN_PIPELINE                         0x01
+#define MULTI_WRITE_START_NEW                           0x02
+#define MULTI_WRITE_CLOSE_UPDATE                        0x03
+#define UPDATE_LCD                                      0x04

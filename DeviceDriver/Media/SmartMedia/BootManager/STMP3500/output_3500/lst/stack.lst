@@ -1,0 +1,115 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\common\stack.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : stack.asm
+                                5 ;  Description : Stack routines
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7 
+                                8     section SYSFUN_Stack
+                                9 
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Macros
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               15 ;   Includes
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19 ;   External Definitions
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               21 
+                               22     ;Functions 
+                               23     global  SaveSystemStack
+                               24     global  RestoreSystemStack
+                               25     
+                               26 ;///////////////////////////////////////////////////////////////////////////////
+                               27 ;   External References
+                               28 ;///////////////////////////////////////////////////////////////////////////////
+                               29 
+                               30 ;///////////////////////////////////////////////////////////////////////////////
+                               31 ;   Equates
+                               32 ;///////////////////////////////////////////////////////////////////////////////
+                               33 
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ;   X Memory
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37         
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               39 ;   Y Memory
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               41         
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;   P Memory
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               45 
+P:0000                         46     org     p,"SYSFUN_Stack_P":
+                               47 
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;
+                               50 ;>  Name:           SaveSystemStack
+                               51 ;
+                               52 ;   Type:           Function
+                               53 ;
+                               54 ;   Description:    Saves the system hardware stack to the data stack
+                               55 ;
+                               56 ;   Inputs:         r5 = Pointer to local save area for current hardware SP
+                               57 ;                   r6 = Pointer to return address
+                               58 ;                   r7 = Current data stack pointer
+                               59 ;
+                               60 ;   Outputs:        none
+                               61 ;                   
+                               62 ;   Notes:          none
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;<
+                               64 ;///////////////////////////////////////////////////////////////////////////////
+                               65 SaveSystemStack
+P:0000 044EBB         2    2   66     movec   sp,a
+P:0001 565D00         2    4   67     move    a,x:(r5)+                   ; save sp
+P:0002 44F403 000001  3    7   68     tst     a   #>1,x0    
+P:0004 0AF0AA rrrrrr  6   13   69     jeq     _sp_is_cleared
+                               70 _save_system_stack
+P:0006 055F3D         2   15   71     movec   ssl,x:(r7)+
+P:0007 055F3C         2   17   72     movec   ssh,x:(r7)+
+P:0008 200044         2   19   73     sub     x0,a                        ; decrement stack count
+P:0009 0AF0A2 rrrrrr  6   25   74     jne     _save_system_stack
+                               75 _sp_is_cleared
+P:000B 0AE680         4   29   76     jmp     (r6)
+                               77 
+                               78 ;///////////////////////////////////////////////////////////////////////////////
+                               79 ;
+                               80 ;>  Name:           RestoreSystemStack
+                               81 ;
+                               82 ;   Type:           Function
+                               83 ;
+                               84 ;   Description:    Restores the system hardware stack from the data stack.
+                               85 ;
+                               86 ;   Inputs:         r5 = Pointer to local save area for old hardware SP
+                               87 ;                   r6 = Pointer to return address
+                               88 ;                   r7 = Current data stack pointer
+                               89 ;
+                               90 ;   Outputs:        none
+                               91 ;                   
+                               92 ;   Notes:          none
+                               93 ;<
+                               94 ;///////////////////////////////////////////////////////////////////////////////
+                               95 RestoreSystemStack
+P:000C 56E500         2   31   96     move    x:(r5),a                    ; original, saved sp
+P:000D 44F403 000001  3   34   97     tst     a   #>1,x0                  ; use for counter
+P:000F 0AF0AA rrrrrr  6   40   98     jeq     _sp_is_restored             ; if sp==0, done
+                               99 _restore_system_stack
+P:0011 05FF3D         4   44  100     movec   x:-(r7),ssl
+P:0012 05FF3C         4   48  101     movec   x:-(r7),ssh
+P:0013 200044         2   50  102     sub     x0,a                        ; decrement stack count
+P:0014 0AF0A2 rrrrrr  6   56  103     jne     _restore_system_stack
+                              104 _sp_is_restored
+P:0016 0AE680         4   60  105     jmp     (r6)
+                              106 
+                              107     endsec

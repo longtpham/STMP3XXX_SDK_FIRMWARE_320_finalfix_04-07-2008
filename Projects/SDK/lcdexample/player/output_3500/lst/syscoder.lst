@@ -1,0 +1,730 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\syscoder.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : syscoder.asm
+                                5 ;  Description : Misc System Routines for Encoders & Decoders
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     page    255,255,0
+                               10     section SYSFUN_SysCoder
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Macros
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               19     list
+                               21     OPT OP
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               23 ;   Includes
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               32     list
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ;   External Definitions
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37     
+                               38     ;Functions  
+                               51 ;    global  SysSetPlaybackMode
+                               85         
+                               86 ;///////////////////////////////////////////////////////////////////////////////
+                               87 ;   External References
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+                               92     list
+                              103     ; TIME_FIX   Add the 2 decoder song byte consumed vars
+                              122     
+                              138 ;///////////////////////////////////////////////////////////////////////////////
+                              139 ;   X Memory
+                              140 ;///////////////////////////////////////////////////////////////////////////////
+                              141         
+X:0000                        142     org     x,"SYSFUN_SysCoder_X":
+                              144 ;///////////////////////////////////////////////////////////////////////////////
+                              145 ;   Y Memory
+                              146 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                        148     org     y,"SYSFUN_SysCoder_Y":
+                              149 Fg_wSongCurrentMinutes
+Y:0000 000000                 150 SongCurrentMinutes   dc      0
+                              152 Fg_wSongCurrentSeconds     
+Y:0001 000000                 153 SongCurrentSeconds   dc      0
+                              155 Fg_frSongSecondsPerByte   
+Y:0002 000000                 156 SongSecondsPerByte   dc      0
+                              158 Fg_wSongTotalMinutes      
+Y:0003 000000                 159 SongTotalMinutes     dc      0
+                              161 Fg_wSongTotalSeconds     
+Y:0004 000000                 162 SongTotalSeconds     dc      0
+                              164 Fg_wSongRemainMinutes    
+Y:0005 000000                 165 SongRemainMinutes    dc      0
+                              167 Fg_wSongRemainSeconds    
+Y:0006 000000                 168 SongRemainSeconds    dc      0
+                              170 Fg_wCurrentSongNumber
+Y:0007 000000                 171 CurrentSongNumber    dc      0
+                              173 Fg_wTotalSongCount
+Y:0008 000000                 174 TotalSongCount       dc      0          ; gets loaded with total number of songs across all cards in root dirs
+                              175          
+                              176 ;///////////////////////////////////////////////////////////////////////////////
+                              177 ;   P Memory
+                              178 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        180     org     p,"SYSFUN_SysCoder_P":
+                              182 ;///////////////////////////////////////////////////////////////////////////////
+                              183 ;
+                              184 ;>  Name:           DecoderGetStatus
+                              185 ;
+                              186 ;   Type:           Function
+                              187 ;
+                              188 ;   Description:    Get the Decoder status
+                              189 ;
+                              190 ;   Inputs:         none
+                              191 ;
+                              192 ;   Outputs:        x0 = DecoderSR
+                              193 ;                   
+                              194 ;   Notes:          DecoderSR bit equates.  The bit field that is set indicates
+                              195 ;                   the state of the decoder.  Bit fields are listed below.
+                              196 ;                    
+                              197 ;                   Bit 5  Pause  
+                              198 ;                   Bit 6  Stop   
+                              199 ;                   Bit 12 Play               
+                              200 ;                   
+                              201 ;<
+                              202 ;///////////////////////////////////////////////////////////////////////////////
+                              203 DecoderGetStatus
+P:0000 44F000 rrrrrr  3    3  204     move    x:DecoderSR,x0
+P:0002 208E00         2    5  205     move    x0,a
+P:0003 00000C         4    9  206     rts
+                              208 ;///////////////////////////////////////////////////////////////////////////////
+                              209 ;
+                              210 ;>  Name:           EncoderGetStatus
+                              211 ;
+                              212 ;   Type:           Function
+                              213 ;
+                              214 ;   Description:    Get the Encoder status
+                              215 ;
+                              216 ;   Inputs:         none
+                              217 ;
+                              218 ;   Outputs:        x0 = EncoderCSR
+                              219 ;                   a1 = EncoderCSR
+                              220 ;   Notes:          EncoderSR bit equates.  The bit field that is set indicates
+                              221 ;                   the state of the encoder.  Bit fields are listed below.
+                              222 ;                                                             
+                              223 ;                   Bit 0  EncNotEnoughSpace                                                                       
+                              224 ;                   Bit 1  EncRanOutOfSpace                                                                        
+                              225 ;                   Bit 2  EncRecordError                                                                          
+                              226 ;                   Bit 3  EncToldToStop                                                                           
+                              227 ;                   Bit 4  EncAlreadyRecording                                                                  
+                              228 ;                   Bit 6  Stop                                                                                 
+                              229 ;                   Bit 12 Rec
+                              230 ;
+                              231 ;<
+                              232 ;///////////////////////////////////////////////////////////////////////////////
+                              233 EncoderGetStatus
+P:0004 44F000 rrrrrr  3   12  234     move    x:EncoderSR,x0
+P:0006 208E00         2   14  235     move    x0,a
+P:0007 00000C         4   18  236     rts
+                              238 ;///////////////////////////////////////////////////////////////////////////////
+                              239 ;
+                              240 ;>  Name:           EncGetRecordTime
+                              241 ;
+                              242 ;   Type:           Function
+                              243 ;
+                              244 ;   Description:    Get the time that the Encoder started recording
+                              245 ;
+                              246 ;   Inputs:         none
+                              247 ;
+                              248 ;   Outputs:        x0 = Low word of the time that recording started
+                              249 ;                   x1 = High word of the time that recording started
+                              250 ;   Notes:          
+                              251 ;<
+                              252 ;///////////////////////////////////////////////////////////////////////////////
+                              253 EncGetRecordTime
+                              254     ; TODO:  have the encoder save the current time when it starts and avoid
+                              255     ;   this calculation.
+P:0008 0BF080 rrrrrr  6   24  256     jsr     SysGetCurrentTime
+P:000A 45F000 rrrrrr  3   27  257     move    x:RecStartTimeHigh,x1
+P:000C 44F000 rrrrrr  3   30  258     move    x:RecStartTimeLow,x0
+P:000E 200024         2   32  259     sub     x,a
+P:000F 00000C         4   36  260     rts
+                              261     
+                              262 ;///////////////////////////////////////////////////////////////////////////////
+                              263 ;
+                              264 ;>  Name:           DecGetSongPos
+                              265 ;
+                              266 ;   Type:           Function
+                              267 ;
+                              268 ;   Description:    Returns the byte count of the current position in the song
+                              269 ;                   being decoded.
+                              270 ;
+                              271 ;   Inputs:         none
+                              272 ;
+                              273 ;   Outputs:        A1 = SongByteTotalHigh
+                              274 ;                   A0 = SongByteTotalLow
+                              275 ;                   
+                              276 ;   Notes:          
+                              277 ;<
+                              278 ;///////////////////////////////////////////////////////////////////////////////
+                              279 DecGetSongPos
+P:0010 200013         2   38  280     clr     a
+P:0011 5CF000 rrrrrr  3   41  281     move    y:SongByteTotalHigh,a1
+P:0013 58F000 rrrrrr  3   44  282     move    y:SongByteTotalLow,a0
+                              283 ;    move    y:SongByteTotalConsumedHigh,a1
+                              284 ;    move    y:SongByteTotalConsumedLow,a0
+                              285     ; TIME_FIX   Future accuracy enhancement to use consumed byte count instead  
+                              286     ; of SongByteTotalLow|High. USE OLD byte count until all decoders updated!
+                              287     ; AB mode for adpcm, mp3, wma use this routine. Consumed byte count version  
+                              288     ; is more precise but we must use the SongByteTotalLow|High values until ALL 
+                              289     ; supported decoders calculate the new variable. Future version will use 
+                              290     ; decoder consumed bytes instead of adjusted bytes read from file.
+P:0015 00000C         4   48  291     rts
+                              293 ;///////////////////////////////////////////////////////////////////////////////
+                              294 ; Name:        Mp3DecGetSongPos
+                              295 ; Type:        Function
+                              296 ; Description: Returns the byte count of the current position in the song
+                              297 ;              being decoded.
+                              298 ;
+                              299 ; Inputs:      none
+                              300 ; Outputs:     Returns in A1:A0 SongByteTotalConsumedHigh and Low
+                              301 ; Note:        Corrects low bitrate issue with MP3 A-B function.
+                              302 ;///////////////////////////////////////////////////////////////////////////////
+                              303 Mp3DecGetSongPos
+P:0016 200013         2   50  304     clr     a
+P:0017 5CF000 rrrrrr  3   53  305     move    y:SongByteTotalConsumedHigh,a1
+P:0019 58F000 rrrrrr  3   56  306     move    y:SongByteTotalConsumedLow,a0
+P:001B 00000C         4   60  307     rts
+                              309 ;///////////////////////////////////////////////////////////////////////////////
+                              310 ;
+                              311 ;>  Name:           DecSetSongPos
+                              312 ;
+                              313 ;   Type:           Function
+                              314 ;
+                              315 ;   Description:    Sets the decoder file position to a specific location.
+                              316 ;                   being decoded.
+                              317 ;                   Expects it to be paused.
+                              318 ;
+                              319 ;   Inputs:         A1 = upper word of 48-bit address
+                              320 ;                   A0 = lower word of 48-bit address
+                              321 ;
+                              322 ;   Outputs:        A = 0 if no error
+                              323 ;                   A1 = error code if unsuccessful
+                              324 ;                   
+                              325 ;   Notes:          Not operational for MPEG decoder yet.
+                              326 ;<
+                              327 ;///////////////////////////////////////////////////////////////////////////////
+                              328 DecSetSongPos
+                              329     ; File must be paused or stopped
+P:001C 44F000 rrrrrr  3   63  330     move    x:DecoderSR,x0
+P:001E 0AC40C rrrrrr  6   69  331     jclr    #Play,x0,_CheckValue
+P:0020 56F400 000400  3   72  332     move    #>ERROR_DECODER_PLAYING,a
+P:0022 00000C         4   76  333     rts
+                              334 _CheckValue
+P:0023 20001B         2   78  335     clr     b
+P:0024 5DF000 rrrrrr  3   81  336     move    y:SongByteLengthHigh,b1
+P:0026 59F000 rrrrrr  3   84  337     move    y:SongByteLengthLow,b0
+P:0028 20000D         2   86  338     cmp     a,b
+P:0029 0AF0A7 rrrrrr  6   92  339     jgt     _SetPosition
+P:002B 56F400 000401  3   95  340     move    #>ERROR_DECODER_SETPOS,a
+P:002D 00000C         4   99  341     rts
+                              342 _SetPosition
+P:002E 5C7000 rrrrrr  3  102  343     move    a1,y:SongByteTotalHigh
+P:0030 587013 rrrrrr  3  105  345     clr     a	            a0,y:SongByteTotalLow
+P:0032 00000C         4  109  346     rts
+                              349 ;///////////////////////////////////////////////////////////////////////////////
+                              350 ;
+                              351 ;>  Name:           DecSetSongPosZero
+                              352 ;
+                              353 ;   Type:           Function
+                              354 ;
+                              355 ;   Description:    Resets the song file pointer to the beginning of the file.
+                              356 ;
+                              357 ;   Inputs:         none
+                              358 ;
+                              359 ;   Outputs:        Updates SongByteTotalHigh & SongByteTotalHigh
+                              360 ;                   
+                              361 ;   Notes:          _asmfunc void DecSetSongPosZero(void)
+                              362 ;<
+                              363 ;///////////////////////////////////////////////////////////////////////////////
+                              364 DecSetSongPosZero
+P:0033 200013         2  111  365     clr     a
+P:0034 5E7000 rrrrrr  3  114  366     move    a,y:SongByteTotalHigh
+P:0036 5E7000 rrrrrr  3  117  367     move    a,y:SongByteTotalLow
+                              368     ; TIME_FIX  Clear precise byte pos vars also.
+P:0038 5E7000 rrrrrr  3  120  369     move    a,y:SongByteTotalConsumedHigh
+P:003A 5E7000 rrrrrr  3  123  370     move    a,y:SongByteTotalConsumedLow
+P:003C 00000C         4  127  371     rts
+                              373 ;///////////////////////////////////////////////////////////////////////////////
+                              374 ;
+                              375 ;>  Name:           DecSetSongPosEnd
+                              376 ;
+                              377 ;   Type:           Function
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              378 ;
+                              379 ;   Description:    Resets the song file pointer to the end of the file.
+                              380 ;
+                              381 ;   Inputs:         none
+                              382 ;
+                              383 ;   Outputs:        Updates SongByteTotalHigh & SongByteTotalLow
+                              384 ;                   
+                              385 ;   Notes:          _asmfunc void DecSetSongPosEnd(void)
+                              386 ;<
+                              387 ;///////////////////////////////////////////////////////////////////////////////
+                              388 DecSetSongPosEnd
+P:003D 4CF000 rrrrrr  3  130  389     move    y:SongByteLengthHigh,x0
+P:003F 4C7000 rrrrrr  3  133  390     move    x0,y:SongByteTotalHigh
+P:0041 4C7000 rrrrrr  3  136  391     move    x0,y:SongByteTotalConsumedHigh
+                              392     
+P:0043 4CF000 rrrrrr  3  139  393     move    y:SongByteLengthLow,x0
+P:0045 4C7000 rrrrrr  3  142  394     move    x0,y:SongByteTotalLow
+P:0047 4C7000 rrrrrr  3  145  395     move    x0,y:SongByteTotalConsumedLow
+                              396     ; TIME_FIX  Sets consumed byte position vars to last byte also
+P:0049 00000C         4  149  397     rts
+                              399 ;///////////////////////////////////////////////////////////////////////////////
+                              400 ;
+                              401 ;>  Name:           DecClearSongTime
+                              402 ;
+                              403 ;   Type:           Function
+                              404 ;
+                              405 ;   Description:    Clear the song time
+                              406 ;
+                              407 ;   Inputs:         none
+                              408 ;
+                              409 ;   Outputs:        Clears SongTotalMinute/Seconds, SongCurrentMinutes/Seconds,
+                              410 ;                   and SongRemainMinutes/Seconds
+                              411 ;                   
+                              412 ;   Notes:          _asmfunc void DecClearSongTime(void)
+                              413 ;<
+                              414 ;///////////////////////////////////////////////////////////////////////////////
+                              415 DecClearSongTime
+P:004A 200013         2  151  416     clr     a
+                              417 ;    move    a,y:SongTotalMinutes
+                              418 ;    move    a,y:SongTotalSeconds
+P:004B 5E7000 rrrrrr  3  154  419     move    a,y:SongCurrentMinutes
+P:004D 5E7000 rrrrrr  3  157  420     move    a,y:SongCurrentSeconds
+P:004F 5E7000 rrrrrr  3  160  421     move    a,y:SongRemainMinutes
+P:0051 5E7000 rrrrrr  3  163  422     move    a,y:SongRemainSeconds
+P:0053 00000C         4  167  423     rts
+                              424         
+                              425 ;///////////////////////////////////////////////////////////////////////////////
+                              426 ;
+                              427 ;>  Name:           DecGetSongTime
+                              428 ;
+                              429 ;   Type:           Function
+                              430 ;
+                              431 ;   Description:    Get the current song time
+                              432 ;
+                              433 ;   Inputs:         none
+                              434 ;
+                              435 ;   Outputs:        a1 = Song Minutes
+                              436 ;                   a0 = Song Seconds
+                              437 ;                   x1 = Song Total Minutes
+                              438 ;                   x0 = Song Total Seconds
+                              439 ;
+                              440 ;   Notes:          
+                              441 ;<
+                              442 ;///////////////////////////////////////////////////////////////////////////////
+                              443 DecGetSongTime
+P:0054 4DF013 rrrrrr  3  170  444     clr     a	            y:SongTotalMinutes,x1
+P:0056 4CF000 rrrrrr  3  173  448     move    y:SongTotalSeconds,x0
+P:0058 5CF000 rrrrrr  3  176  445     move    y:SongCurrentMinutes,a1
+P:005A 58F000 rrrrrr  3  179  446     move    y:SongCurrentSeconds,a0
+P:005C 00000C         4  183  449     rts
+                              451 ;///////////////////////////////////////////////////////////////////////////////
+                              452 ;
+                              453 ;>  Name:           DecGetCurrentTime
+                              454 ;
+                              455 ;   Type:           Function
+                              456 ;
+                              457 ;   Description:    Get the current song time only
+                              458 ;
+                              459 ;   Inputs:         none
+                              460 ;
+                              461 ;   Outputs:        a1 = Song Seconds
+                              462 ;                   b1 = Song Minutes
+                              463 ;
+                              464 ;   Notes:          _asmfunc SONGTIME DecGetCurrentTime(void);
+                              465 ;<
+                              466 ;///////////////////////////////////////////////////////////////////////////////
+                              467 DecGetCurrentTime
+P:005D 5FF013 rrrrrr  3  186  468     clr     a	            y:SongCurrentMinutes,b
+P:005F 5CF000 rrrrrr  3  189  470     move    y:SongCurrentSeconds,a1
+P:0061 00000C         4  193  471     rts
+                              474 ;///////////////////////////////////////////////////////////////////////////////
+                              475 ;
+                              476 ;>  Name:           SysFlushCoderMemory
+                              477 ;
+                              478 ;   Type:           Function
+                              479 ;
+                              480 ;   Description:    Clears out the System Application Space.  This function
+                              481 ;                   is typically used to clear the X, Y, and P memory in
+                              482 ;                   application space just prior to loading an overlay into
+                              483 ;                   the region.  This will eliminate the potential effect of  
+                              484 ;                   residues in memory from the previously resident code.
+                              485 ;
+                              486 ;   Inputs:         none
+                              487 ;
+                              488 ;   Outputs:        none
+                              489 ;                   
+                              490 ;   Notes:          
+                              491 ;<
+                              492 ;///////////////////////////////////////////////////////////////////////////////
+                              493 SysFlushCoderMemory
+                              496     ; clear x memory
+                              497     ; non-WMA : x app is 0x0000 to beginning of system
+                              498     ; WMA:      x app is 0x0000 to beginning of LTABLES (b_WMA_LX)
+P:0062 300013         2  195  501     clr     a	            #0,r0                       ; start address
+P:0063 058060r        2  197  494     movec   y:<Const_ffffff,m0          ; linear
+P:0064 45F400 rrrrrr  3  200  499     move    #>(F_lc_u_eX_app_cluster-F_lc_u_bX_app_cluster),x1 ; num words to fill
+P:0066 06C520         4  204  502     rep     x1                          ;we can use the rep, decoders aren't playing
+P:0067 565800         2  206  503         move    a,x:(r0)+
+                              505     ; clear y memory
+P:0068 60F400 rrrrrr  3  209  507     move    #F_lc_u_bY_app_cluster,r0                           ; start address
+P:006A 45F400 rrrrrr  3  212  506     move    #>(F_lc_u_eY_app_cluster-F_lc_u_bY_app_cluster),x1  ; num words to fill
+P:006C 06C520         4  216  508     rep     x1                                                  ;we can use the rep, decoders aren't playing
+P:006D 5E5800         2  218  509         move    a,y:(r0)+
+                              511    ; clear p memory
+P:006E 60F400 rrrrrr  3  221  513     move    #>F_lc_u_bP_app_cluster,r0  ; start address
+P:0070 45F400 rrrrrr  3  224  512     move    #>(F_lc_u_eP_app_cluster-F_lc_u_bP_app_cluster),x1 ; num words to fill
+P:0072 06C520         4  228  514     rep     x1                          ;we can use the rep, decoders aren't playing
+P:0073 07588E         6  234  515         movem   a,p:(r0)+
+                              518     
+P:0074 00000C         4  238  519     rts
+                              522 ;///////////////////////////////////////////////////////////////////////////////
+                              523 ;
+                              524 ;>  Name:           SysSetDecoder
+                              525 ;
+                              526 ;   Type:           Function
+                              527 ;
+                              528 ;   Description:    Loads new decoder to be executed in the decoder module table.
+                              529 ;
+                              530 ;   Inputs:         
+                              531 ;                   x0 = Decoder flag
+                              532 ;
+                              533 ;   Outputs:        none
+                              534 ;                   
+                              535 ;   Notes:          
+                              536 ;                   Decoders supported are:
+                              537 ;                       DECODER_TYPE_MP3
+                              538 ;                       DECODER_TYPE_ADPCM_IMA
+                              539 ;                       DECODER_TYPE_WMA -- for 3410 and up
+                              540 ;<
+                              541 ;///////////////////////////////////////////////////////////////////////////////
+                              542 SysSetDecoder
+                              545    
+                              546        ;If using funclet, function will be executed via funclet kernel
+                              547        CallFunclet RSRC_FUNCLET_SYSSETDECODER
+P:0075 0D0080         4  242  547     jsr       $80
+P:0076 000169                 547     DC       RSRC_FUNCLET_SYSSETDECODER  ; 1 word
+                              548    
+P:0000                        549        org p,"SYSFUNCLET_SysSetDecoder_P":
+                              550        
+P:0000 000169                 551        dc      RSRC_FUNCLET_SYSSETDECODER           ; Funclet Resource number
+                              552    
+P:0001 0AF940         4    4  555     bclr    #HW_SR_C_BITPOS,sr
+                              563     
+P:0002 0AF960         4    8  564     bset    #HW_SR_C_BITPOS,sr
+P:0003 46F400 000426  3   11  559     move    #>RSRC_DEC_STFM_MOD_CODE,y0     ; HACK!!!!
+                              565 ;    rts
+                              567 ;    jsset   #DECODER_TYPE_MP3,x0,_type_mp3
+                              568 ;    jsset   #DECODER_TYPE_ADPCM_IMA,x0,_type_adpcm_ima
+                              569 ;    jsset   #DECODER_TYPE_STFM,x0,_type_stfm
+                              571 ;    if (@def('DEVICE_3400')||@def('DEVICE_3300'))
+                              572 ;        ; not enough room for wma
+                              573 ;    else
+                              574 ;        ; wma supported
+                              575 ;        jsset   #DECODER_TYPE_WMA,x0,_type_wma
+                              576 ;    endif
+                              578 ;    jcc     _type_error
+P:0005 4E7000 rrrrrr  3   14  579     move    y0,y:DecoderResourcePtr
+P:0007 00000C         4   18  580     rts
+                              582 _type_mp3
+P:0008 0AF960         4   22  584     bset    #HW_SR_C_BITPOS,sr
+P:0009 46F400 000094  3   25  583     move    #>RSRC_DECMOD_CODE,y0
+P:000B 00000C         4   29  585     rts
+                              586 _type_adpcm_ima
+P:000C 0AF960         4   33  588     bset    #HW_SR_C_BITPOS,sr
+P:000D 46F400 000099  3   36  587     move    #>RSRC_DEC_ADPCM_MOD_CODE,y0
+P:000F 00000C         4   40  589     rts
+                              590     
+                              592 _type_stfm
+P:0010 0AF960         4   44  594     bset    #HW_SR_C_BITPOS,sr
+P:0011 46F400 000426  3   47  593     move    #>RSRC_DEC_STFM_MOD_CODE,y0
+P:0013 00000C         4   51  595     rts
+                              597 _type_wma
+                              601         ; wma supported
+P:0014 0AF960         4   55  603         bset    #HW_SR_C_BITPOS,sr
+P:0015 46F400 00000B  3   58  602         move    #>RSRC_WMADEC_CODE,y0           
+P:0017 00000C         4   62  604         rts
+                              606 _type_aac
+                              607 _type_error
+                              608     error
+P:0018 000200         4   66  608     debug
+                              611    
+                              612        ;If using funclet, switch counter back to original here
+P:0077                        613        org    p,"SYSFUN_SysCoder_P":                             
+                              614        
+                              618 ;///////////////////////////////////////////////////////////////////////////////
+                              619 ;
+                              620 ;>  Name:           DecoderForceInit
+                              621 ;
+                              622 ;   Type:           Function
+                              623 ;
+                              624 ;   Description:    Initializes the current decoder
+                              625 ;
+                              626 ;   Inputs:         none
+                              627 ;
+                              628 ;   Outputs:        none
+                              629 ;                   
+                              630 ;   Notes:          
+                              631 ;<
+                              632 ;///////////////////////////////////////////////////////////////////////////////
+                              633 DecoderForceInit
+                              634     ; if we're starting to play then the decoder needs to init
+P:0077 45F400 rrrrrr  3  245  635     move    #>MODULE_NUM_DECODER,x1
+P:0079 44F400 800000  3  248  636     move    #>EVENT_INIT,x0
+P:007B 0BF080 rrrrrr  6  254  637     jsr     SignalModule
+P:007D 00000C         4  258  638     rts    
+                              640 ;///////////////////////////////////////////////////////////////////////////////
+                              641 ;
+                              642 ;>  Name:           SysSetDecoderResource
+                              643 ;
+                              644 ;   Type:           Function
+                              645 ;
+                              646 ;   Description:    Loads new decoder to be executed in the decoder module table.
+                              647 ;
+                              648 ;   Inputs:         
+                              649 ;                   a = Decoder resource number
+                              650 ;
+                              651 ;   Outputs:        none
+                              652 ;                   
+                              653 ;   Notes:          **Similar to SysSetDecoder, but loads resource directly from Acc. a.
+                              654 ;                   Decoders supported are:
+                              655 ;                       DECODER_TYPE_MP3
+                              656 ;                       DECODER_TYPE_ADPCM_IMA
+                              657 ;                       DECODER_TYPE_WMA -- for 3410 and up
+                              658 ;<
+                              659 ;///////////////////////////////////////////////////////////////////////////////
+                              660 SysSetDecoderResource
+P:007E 5C7000 rrrrrr  3  261  661     move    a1,y:DecoderResourcePtr
+P:0080 00000C         4  265  662     rts
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              663     
+                              664 ;///////////////////////////////////////////////////////////////////////////////
+                              665 ;
+                              666 ;>  Name:           SysSetEncoder
+                              667 ;
+                              668 ;   Type:           Function
+                              669 ;
+                              670 ;   Description:    Loads new encoder to be executed in the encoder module table.
+                              671 ;
+                              672 ;   Inputs:         
+                              673 ;                   x0 = Encoder flag
+                              674 ;
+                              675 ;   Outputs:        none
+                              676 ;                   
+                              677 ;   Notes:          
+                              678 ;                   Encoders supported are:
+                              679 ;                       ENCODER_TYPE_ADPCM_IMA
+                              680 ;<
+                              681 ;///////////////////////////////////////////////////////////////////////////////
+                              682 SysSetEncoder
+                              685    
+                              686        ;If using funclet, function will be executed via funclet kernel
+                              687        CallFunclet RSRC_FUNCLET_SYSSETENCODER
+P:0081 0D0080         4  269  687     jsr       $80
+P:0082 00016A                 687     DC       RSRC_FUNCLET_SYSSETENCODER  ; 1 word
+                              688    
+P:0000                        689        org p,"SYSFUNCLET_SysSetEncoder_P":
+                              690        
+P:0000 00016A                 691        dc      RSRC_FUNCLET_SYSSETENCODER           ; Funclet Resource number
+                              692    
+P:0001 0AF940         4    4  695     bclr    #HW_SR_C_BITPOS,sr
+P:0002 0BC420 rrrrrr  6   10  696     jsset   #ENCODER_TYPE_ADPCM_IMA,x0,_type_adpcm_ima
+P:0004 0BC422 rrrrrr  6   16  697     jsset   #ENCODER_TYPE_MP3,x0,_type_mp3
+P:0006 0AF0A0 rrrrrr  6   22  698     jcc     _type_error
+P:0008 4E7000 rrrrrr  3   25  699     move    y0,y:EncoderResourcePtr
+P:000A 00000C         4   29  700     rts
+                              702 _type_adpcm_ima
+P:000B 0AF960         4   33  704     bset    #HW_SR_C_BITPOS,sr
+P:000C 46F400 0000A1  3   36  703     move    #>RSRC_ENC_ADPCM_MOD_CODE,y0
+P:000E 00000C         4   40  705     rts
+                              707 _type_mp3
+P:000F 0AF960         4   44  710     bset    #HW_SR_C_BITPOS,sr
+P:0010 46F400 0001FC  3   47  709     move    #>RSRC_ENC_MP3_MOD_CODE,y0
+P:0012 00000C         4   51  711     rts
+                              714 _type_pcm
+                              715 _type_error
+                              716     error
+P:0013 000200         4   55  716     debug
+                              719    
+                              720        ;If using funclet, switch counter back to original here
+P:0083                        721        org    p,"SYSFUN_SysCoder_P":                             
+                              722        
+                              724     
+                              726 ;///////////////////////////////////////////////////////////////////////////////
+                              727 ;
+                              728 ;>  Name:           EncoderForceInit
+                              729 ;
+                              730 ;   Type:           Function
+                              731 ;
+                              732 ;   Description:    Initializes the current encoder
+                              733 ;
+                              734 ;   Inputs:         none
+                              735 ;
+                              736 ;   Outputs:        none
+                              737 ;                   
+                              738 ;   Notes:          
+                              739 ;<
+                              740 ;///////////////////////////////////////////////////////////////////////////////
+                              741 EncoderForceInit
+                              742     ; if we're starting to record then the encoder needs to init
+P:0083 45F400 rrrrrr  3  272  743     move    #>MODULE_NUM_CAPTURE,x1
+P:0085 44F400 800000  3  275  744     move    #>EVENT_INIT,x0
+P:0087 0BF080 rrrrrr  6  281  745     jsr     SignalModule
+P:0089 00000C         4  285  746     rts    
+                              747     
+                              748 ;///////////////////////////////////////////////////////////////////////////////
+                              749 ;
+                              750 ;>  Name:           StopDecoder
+                              751 ;
+                              752 ;   Type:           Function
+                              753 ;
+                              754 ;   Description:    Stops the current decoder
+                              755 ;
+                              756 ;   Inputs:         none
+                              757 ;
+                              758 ;   Outputs:        none
+                              759 ;                   
+                              760 ;   Notes:          none
+                              761 ;<
+                              762 ;///////////////////////////////////////////////////////////////////////////////
+                              763 SysStopDecoder
+                              764     
+                              766    
+                              767        ;If using funclet, function will be executed via funclet kernel
+                              768        CallFunclet RSRC_FUNCLET_SYSSTOPDECODER
+P:008A 0D0080         4  289  768     jsr       $80
+P:008B 000167                 768     DC       RSRC_FUNCLET_SYSSTOPDECODER  ; 1 word
+                              769    
+P:0000                        770        org p,"SYSFUNCLET_SysStopDecoder_P":
+                              771        
+P:0000 000167                 772        dc      RSRC_FUNCLET_SYSSTOPDECODER           ; Funclet Resource number
+                              773    
+P:0001 0BF080 rrrrrr  6    6  776     jsr     DecoderGetStatus
+P:0003 0AC426 rrrrrr  6   12  777     jset    #Stop,x0,_stopped
+                              779     ;post the stop message to the decoder.
+P:0005 22F000         2   14  780     move    r7,r0
+P:0006 46F400 000002  3   17  781     move    #>2,y0
+                              782     push    y0
+P:0008 4E5F00         2   19  782     move    y0,y:(r7)+
+P:0009 46F400 000003  3   22  783     move    #>DECODER_STOP,y0
+                              784     push    y0
+P:000B 4E5F00         2   24  784     move    y0,y:(r7)+
+P:000C 058060r        2   26  785     movec   y:<Const_ffffff,m0
+P:000D 0BF080 rrrrrr  6   32  786     jsr     SysPostMessage
+                              787     pop     y0
+                              788     pop     y0
+                              790         ;No direct SysLoadResource as it will mess up the kernel
+                              792     ;Load and Execute decoder via syscallmodule (which is same as syscallfunction2400)
+P:000F 058060r        2   34  795     movec   y:<Const_ffffff,m0
+P:0010 6EF000 rrrrrr  3   37  796     move    y:DecoderProcessPtr,r6          ;function to call
+P:0012 7EF000 rrrrrr  3   40  797         move    y:DecoderResourcePtr,n6         ; Module resource number (decoder overlay code)
+P:0014 60F400 rrrrrr  3   43  794     move    #DecoderQueueDescriptor,r0 
+P:0016 54F400 000002  3   46  793     move    #>EVENT_MESSAGE,a1
+P:0018 4EFF00         4   50  787     move    y:-(r7),y0
+P:0019 4EFF00         4   54  788     move    y:-(r7),y0
+P:001A 0BF080 rrrrrr  6   60  798     jsr     SysCallModule
+                              800     ;Wait for the decoder to stop
+                              801 _WaitStop
+P:001C 0BF080 rrrrrr  6   66  802     jsr     DecoderGetStatus
+P:001E 0AC426 rrrrrr  6   72  803     jset    #Stop,x0,_stopped
+P:0020 0AF080 rrrrrr  6   78  804     jmp     _WaitStop
+                              806 _stopped
+P:0022 00000C         4   82  807     rts
+                              808     
+                              810    
+                              811        ;If using funclet, switch counter back to original here
+P:008C                        812        org    p,"SYSFUN_SysCoder_P":                             
+                              813        
+                              816     
+                              817 ;///////////////////////////////////////////////////////////////////////////////
+                              818 ;
+                              819 ;>  Name:           StopEncoder
+                              820 ;
+                              821 ;   Type:           Function
+                              822 ;
+                              823 ;   Description:    Stops the current encoder
+                              824 ;
+                              825 ;   Inputs:         none
+                              826 ;
+                              827 ;   Outputs:        none
+                              828 ;                   
+                              829 ;   Notes:          none
+                              830 ;<
+                              831 ;///////////////////////////////////////////////////////////////////////////////
+                              832 SysStopEncoder
+                              834    
+                              835        ;If using funclet, function will be executed via funclet kernel
+                              836        CallFunclet RSRC_FUNCLET_SYSSTOPENCODER
+P:008C 0D0080         4  293  836     jsr       $80
+P:008D 000168                 836     DC       RSRC_FUNCLET_SYSSTOPENCODER  ; 1 word
+                              837    
+P:0000                        838        org p,"SYSFUNCLET_SysStopEncoder_P":
+                              839        
+P:0000 000168                 840        dc      RSRC_FUNCLET_SYSSTOPENCODER           ; Funclet Resource number
+                              841    
+P:0001 0BF080 rrrrrr  6    6  844     jsr     EncoderGetStatus
+P:0003 0AC425 rrrrrr  6   12  845     jset    #Pause,x0,_Encorder_Start_again
+P:0005 0AC426 rrrrrr  6   18  846     jset    #Stop,x0,_stopped
+                              847 _Stop_Encoder_Begin
+                              848     ;post the stop message to the encoder.
+P:0007 22F000         2   20  849     move    r7,r0
+P:0008 46F400 000002  3   23  850     move    #>2,y0
+                              851     push    y0
+P:000A 4E5F00         2   25  851     move    y0,y:(r7)+
+P:000B 46F400 010001  3   28  852     move    #>ENCODER_STOP,y0
+                              853     push    y0
+P:000D 4E5F00         2   30  853     move    y0,y:(r7)+
+P:000E 058060r        2   32  854     movec   y:<Const_ffffff,m0
+P:000F 0BF080 rrrrrr  6   38  855     jsr     SysPostMessage
+                              856     pop     y0
+                              857     pop     y0
+                              859         ;No direct SysLoadResource as it will mess up the kernel
+                              861     ;Load and Execute encoder via syscallmodule (which is same as syscallfunction2400)
+P:0011 058060r        2   40  864     movec   y:<Const_ffffff,m0
+P:0012 6EF000 rrrrrr  3   43  865     move    y:EncoderProcessPtr,r6
+P:0014 7EF000 rrrrrr  3   46  866         move    y:EncoderResourcePtr,n6         ; Module resource number
+P:0016 60F400 rrrrrr  3   49  863     move    #CaptureQueueDescriptor,r0 
+P:0018 54F400 000002  3   52  862     move    #>EVENT_MESSAGE,a1
+P:001A 4EFF00         4   56  856     move    y:-(r7),y0
+P:001B 4EFF00         4   60  857     move    y:-(r7),y0
+P:001C 0BF080 rrrrrr  6   66  867     jsr     SysCallModule
+as2410 W118: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\syscoder.asm: line 867 : inserted "extern SysCallModule"
+                              869     ;Wait for the encoder to stop
+                              870 _WaitStop
+P:001E 0BF080 rrrrrr  6   72  871     jsr     EncoderGetStatus
+P:0020 0AC426 rrrrrr  6   78  872     jset    #Stop,x0,_stopped
+P:0022 0AF080 rrrrrr  6   84  873     jmp     _WaitStop
+                              875 _stopped
+P:0024 00000C         4   88  876     rts
+                              878 _Encorder_Start_again
+                              879     ;post the stop message to the encoder.
+P:0025 22F000         2   90  880     move    r7,r0
+P:0026 46F400 000002  3   93  881     move    #>2,y0
+                              882     push    y0
+P:0028 4E5F00         2   95  882     move    y0,y:(r7)+
+P:0029 46F400 010000  3   98  883     move    #>ENCODER_RECORD,y0
+                              884     push    y0
+P:002B 4E5F00         2  100  884     move    y0,y:(r7)+
+P:002C 058060r        2  102  885     movec   y:<Const_ffffff,m0
+P:002D 0BF080 rrrrrr  6  108  886     jsr     SysPostMessage
+                              887     pop     y0
+P:002F 4EFF00         4  112  887     move    y:-(r7),y0
+                              888     pop     y0
+P:0030 4EFF00         4  116  888     move    y:-(r7),y0
+P:0031 0AF080 rrrrrr  6  122  889     jmp     _Stop_Encoder_Begin
+                              892    
+                              893        ;If using funclet, switch counter back to original here
+P:008E                        894        org    p,"SYSFUN_SysCoder_P":                             
+                              895        
+                              898     endsec

@@ -1,0 +1,24 @@
+LED test Documentation
+----------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the sequential LEDs by testing the APIs provided. Information about the LED API can be found in the document "Customizing the User Interface User Manual" on the extranet. 
+
+Build Options
+-------------
+Usage : seqledtest DEVICE [ALL]
+	DEVICE = 3400 or 3410
+     	ALL    = rebuilds all files
+
+Test Execution
+--------------
+The test is uses the control functionality of the LED module. No button functionality is used in this test. The main module has a while(1) loop which blinks all LEDs, sequentially blinks the LEDs from right to left on the engineering board, and also blinks the LEDs from left to right. This test based on the ledtest and it uses the added LED_DLY_ON_CONTROL message to achieve the sequentially blinking.
+
+Test Architecture
+-----------------
+Modules used in the test:
+LedModule - for LED control functionality
+
+The resources are in Y memory. The test uses timers to execute modules. This is done because timers are needed to define accurately the ON and OFF time of the LEDs.LED control functionality is present in the 'led.asm' file under 'system\msgmodules\hardware\led'.
+No resources are needed by the test. The 'resource.inc' is just a fake file needed by the build.

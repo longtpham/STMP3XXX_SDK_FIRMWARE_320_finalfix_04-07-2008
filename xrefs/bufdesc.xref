@@ -1,0 +1,24 @@
+;///////////////////////////////////////////////////////////////////////////////
+; Copyright(C) SigmaTel, Inc. 2001
+;
+; STMP Buffer Descriptor Include
+;///////////////////////////////////////////////////////////////////////////////
+
+ IF (!@DEF(BUFDESC_XREF))
+BUFDESC_XREF equ 1
+;Functions
+    EXTERN  InitBufferEmpty
+    EXTERN  InitBufferFull
+    EXTERN  InitBufferSize
+    EXTERN  FillBufferY
+    EXTERN  GetFilledSpace
+    EXTERN  GetEmptySpace
+    if (!(@def('DEVICE_3400')||@def('DEVICE_3300')))
+    ; WMA specific code
+    EXTERN  FillBufferX
+    endif
+;Variables in X
+;   none
+;Variables in Y
+;   none
+ ENDIF ;(!@DEF(BUFDESC_XREF))

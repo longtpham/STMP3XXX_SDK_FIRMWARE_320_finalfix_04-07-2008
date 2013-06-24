@@ -1,0 +1,1108 @@
+; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00098960
+; options: -OG -si -DPLAYER -DALL -DRETAIL -DNAND4 -DMMC -DPL3_FB -DAUDIBLEDEC
+;          -DREMOVE_FM -DLYRIC_TOOL -DLIBS -DNO_SYMBOLS -DSTMP_BUILD_PLAYER
+;          -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD -DFULL_PLAYER_KERNEL
+;          -DDCDC_POWER_TRANSFER -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD
+;          -DSYNC_LYRICS -DAUDIBLE -DREMOVE_FM -DFM_EUROPE_REGION
+;          -DSD_USE_100KHZ_TUNING_GRID -DNEWSHINGYIH -DFUNCLET
+;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+;          -DCHKDSK -DFAT16 -DDEVICE_3500 -DSDK2400 -DENGR_BD -DUSE_PLAYLIST3
+;          -DBATTERY_TYPE_ALKALINE -w68 -w66 -I..\output_3500\include
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+;          -I..\..\..\..\..\System\Common\symbols
+;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+;          -I..\..\..\..\..\FileSystem\Fat32\h
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\FileSystem\Fat32\h
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+;          -I..\..\..\..\..\devicedriver\media\include
+;          -I..\..\..\..\..\devicedriver\media\ddildl
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\DeviceDriver\Media\include
+;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+;          -I..\..\..\..\..\devicedriver\media\ddildl
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\libsource\sysserialnumber
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+;          -I..\..\..\..\..\FileSystem\Fat32\h
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+;          -I..\..\..\..\..\System\Common\rtcaccess
+;          -I..\..\..\..\..\System\Common\playlist3
+;          -I..\..\..\..\..\System\Common\record
+;          -I..\..\..\..\..\System\Common\mp3filename
+;          -I..\..\..\..\..\FileSystem\chkdsk\include
+;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_ALKALINE -Dk_opt_single_fat
+;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\AASource
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\IncludePublic
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\AADevProject
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\ACELP
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\AASource
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\IncludePublic
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleAcelp\Audible_Acelp_Src\AADevProject
+;          -I..\..\..\..\..\Algorithms\Decoders\AudibleMp3\Audible_Mp3_Src
+;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+;          -I..\..\..\..\..\devicedriver\display
+;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+
+	page	132
+	opt	nops,now109,noop,opjmp,norp,w139,noopspeed,oprep
+	SYMB	MODP, 52, 31, 387
+	SYMB	NAME, "audiblemp3dec_c"
+	SYMB	TOOL, "TASKING DSP2410 C compiler v1.5", 1
+	SYMB	TYPE, 256, "bit", 'g', 0, 1
+	SYMB	FILE, "..\\..\\..\\..\\..\\algorithms\\decoders\\audiblemp3\\audiblemp3dec_c.c"
+
+;audiblemp3dec_c:
+; 1    |#include "audiblemp3common.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\Algorithms\\Decoders\\AudibleMp3\\Audible_Mp3_Src\\audiblemp3common.h"
+
+; 1    |#ifndef	AUDIBLEMP3COMMON_H
+; 2    |#define	AUDIBLEMP3COMMON_H
+; 3    |
+; 4    |//
+; 5    |// For AAFileMiscHelpers.c
+; 6    |//
+; 7    |#define	ReadULong							MP3ReadULong
+; 8    |//#define	ReadLong							MP3ReadLong
+; 9    |#define	ReadUShort							MP3ReadUShort
+; 10   |//#define	ReadShort							MP3ReadShort
+; 11   |#define	WriteLong							MP3WriteLong
+; 12   |#define	WriteShort							MP3WriteShort
+; 13   |#define	ReadTextLine						MP3ReadTextLine
+; 14   |#define	CAudInputBuffer_AddRef				CMP3AudInputBuffer_AddRef
+; 15   |#define	CAudInputBuffer_Release				CMP3AudInputBuffer_Release
+; 16   |#define	CAudInputBuffer_Read				CMP3AudInputBuffer_Read
+; 17   |#define	CAudInputBuffer_SetCurrentPos		CMP3AudInputBuffer_SetCurrentPos
+; 18   |#define	CAudInputBuffer_GetCurrentPos		CMP3AudInputBuffer_GetCurrentPos
+; 19   |#define	CAudInputBuffer_GetFileSize			CMP3AudInputBuffer_GetFileSize
+; 20   |#define	CAudInputBuffer_CAudInputBuffer		CMP3AudInputBuffer_CAudInputBuffer
+; 21   |#define	CAudInputBuffer_SeekFromCurPos		CMP3AudInputBuffer_SeekFromCurPos
+; 22   |#define	CAudInputBuffer_GetBufferFromCurPos	CMP3AudInputBuffer_GetBufferFromCurPos
+; 23   |#define	CAudOutputBuffer_Write				CMP3AudOutputBuffer_Write
+; 24   |#define	CAudOutputBuffer_SetCurrentPos		CMP3AudOutputBuffer_SetCurrentPos
+; 25   |#define	CAudOutputBuffer_GetCurrentPos		CMP3AudOutputBuffer_GetCurrentPos
+; 26   |#define	CAudOutputBuffer_CAudOutputBuffer	CMP3AudOutputBuffer_CAudOutputBuffer
+; 27   |
+; 28   |//
+; 29   |// For AudCStandAllocation.c
+; 30   |//
+; 31   |#define	stm_MemStack						MP3stm_MemStack
+; 32   |#define	Audible_malloc						MP3Audible_malloc
+; 33   |#define	Audible_free						MP3Audible_free
+; 34   |#define	Audible_FreeAllMemory				MP3Audible_FreeAllMemory
+; 35   |#define	AudibleSetHeapMemory				MP3AudibleSetHeapMemory
+; 36   |#define	AudibleGetHeapMemory				MP3AudibleGetHeapMemory
+; 37   |
+; 38   |//
+; 39   |// For AudCStandImpGeneric.c
+; 40   |//
+; 41   |//#define	Audible_memset						MP3Audible_memset
+; 42   |//#define	Audible_memcpy						MP3Audible_memcpy
+; 43   |#define	Audible_memcmp						MP3Audible_memcmp
+; 44   |//#define	Audible_strcpy						MP3Audible_strcpy
+; 45   |//#define	Audible_strncpy						MP3Audible_strncpy
+; 46   |//#define	Audible_strlen						MP3Audible_strlen
+; 47   |//#define	Audible_strcmp						MP3Audible_strcmp
+; 48   |//#define	Audible_strstr						MP3Audible_strstr
+; 49   |//#define	Audible_strncmp						MP3Audible_strncmp
+; 50   |//#define	Audible_strcat						MP3Audible_strcat
+; 51   |#define	Audible_IsDigit						MP3Audible_IsDigit
+; 52   |#define	Audible_atol						MP3Audible_atol
+; 53   |
+; 54   |//
+; 55   |// For CoreEncryption.c
+; 56   |//
+; 57   |#define	InitEncryptionKeyFromBuffer			MP3InitEncryptionKeyFromBuffer
+; 58   |#define	Encrypt64Bits						MP3Encrypt64Bits
+; 59   |#define	Decrypt64Bits						MP3Decrypt64Bits
+; 60   |#define	Decrypt64BitsBlocks					MP3Decrypt64BitsBlocks
+; 61   |#define	EncryptInChainMode					MP3EncryptInChainMode
+; 62   |
+; 63   |//
+; 64   |// For CircularBuffer.c
+; 65   |//
+; 66   |#define	CircularBuffer_CircularBuffer			MP3CircularBuffer_CircularBuffer
+; 67   |#define	CircularBuffer_ChangeAllocationBuffer	MP3CircularBuffer_ChangeAllocationBuffer
+; 68   |#define	CircularBuffer_Destructor				MP3CircularBuffer_Destructor
+; 69   |#define	CircularBuffer_NormalisePositions		MP3CircularBuffer_NormalisePositions
+; 70   |#define	CircularBuffer_Read						MP3CircularBuffer_Read
+; 71   |#define	CircularBuffer_GetDataLeft				MP3CircularBuffer_GetDataLeft
+; 72   |#define	CircularBuffer_Write					MP3CircularBuffer_Write
+; 73   |#define	CircularBuffer_Unread					MP3CircularBuffer_Unread
+; 74   |#define	CircularBuffer_FlushData				MP3CircularBuffer_FlushData
+; 75   |#define	CircularBuffer_SetWritePosition			MP3CircularBuffer_SetWritePosition
+; 76   |#define	CircularBuffer_GetBufferSize			MP3CircularBuffer_GetBufferSize
+; 77   |#define	CircularBuffer_GetBufferPointer			MP3CircularBuffer_GetBufferPointer
+; 78   |
+; 79   |#endif	// AUDIBLEMP3COMMON_H
+
+	SYMB	ENDF
+
+; 2    |#include "audiblemp3overlay.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\Algorithms\\Decoders\\AudibleMp3\\Audible_Mp3_Src\\audiblemp3overlay.h"
+
+; 1    |#ifndef	AUDIBLEMP3OPEN_H
+; 2    |#define	AUDIBLEMP3OPEN_H
+; 3    |
+; 4    |//
+; 5    |// For InputStreamImplCStand.c
+; 6    |//
+; 7    |#define	stm_InputStreamVT			MP3stm_InputStreamVT
+; 8    |#define	CFileStand_AddRef			CMP3FileStand_AddRef
+; 9    |#define	CFileStand_Release			CMP3FileStand_Release
+; 10   |#define	CFileStand_Read				CMP3FileStand_Read
+; 11   |#define	CFileStand_SetCurrentPos	CMP3FileStand_SetCurrentPos
+; 12   |#define	CFileStand_GetCurrentPos	CMP3FileStand_GetCurrentPos
+; 13   |#define	CFileStand_GetFileSize		CMP3FileStand_GetFileSize
+; 14   |#define	InitInputStreamCStand		MP3InitInputStreamCStand
+; 15   |
+; 16   |//
+; 17   |// For CreateCodec.c
+; 18   |//
+; 19   |#define	CreateCodec					MP3CreateCodec
+; 20   |
+; 21   |//
+; 22   |// For AAFileAccessImpl.c
+; 23   |//
+; 24   |#define	AudibleAA_GetMetadata				MP3AudibleAA_GetMetadata
+; 25   |#define	AudibleAA_GetMetadataEmbedded		MP3AudibleAA_GetMetadataEmbedded
+; 26   |#define	AudibleAAOpenFile					MP3AudibleAAOpenFile
+; 27   |#define	AudibleAACloseFile					MP3AudibleAACloseFile
+; 28   |#define	AudibleAAGetAudioTimePos			MP3AudibleAAGetAudioTimePos
+; 29   |#define	AudibleAASetAudioTimePos			MP3AudibleAASetAudioTimePos
+; 30   |
+; 31   |//
+; 32   |// For AAOpenFile.c
+; 33   |//
+; 34   |#define	InternalOpenAAFile			MP3InternalOpenAAFile
+; 35   |
+; 36   |//
+; 37   |// For CheckTargeting.c
+; 38   |//
+; 39   |//#define	InternalAACheckTargeting	MP3InternalAACheckTargeting
+; 40   |
+; 41   |//
+; 42   |// For ReadAAFileSectionsHeader.c
+; 43   |//
+; 44   |#define	ValidateAAFileHeader		MP3ValidateAAFileHeader
+; 45   |#define	ReadAAFileSections			MP3ReadAAFileSections
+; 46   |#define	ReadAudibleCommonHeader		MP3ReadAudibleCommonHeader
+; 47   |#define	ReadAudibleOptionalHeader	MP3ReadAudibleOptionalHeader
+; 48   |#define	ReadAudibleSpecificHeader	MP3ReadAudibleSpecificHeader
+; 49   |#define	ReadAudibleIDList			MP3ReadAudibleIDList
+; 50   |#define	ReadAudibleTableOfContent	MP3ReadAudibleTableOfContent
+; 51   |#define	ReadAudibleAudioOffsets		MP3ReadAudibleAudioOffsets
+; 52   |#define	ReadAudibleImage			MP3ReadAudibleImage
+; 53   |#define	CAudibleAAInternal_FreeAudibleAAInternalMemory	CMP3AudibleAAInternal_FreeAudibleAAInternalMemory
+; 54   |
+; 55   |//
+; 56   |// For DecryptHeader.c
+; 57   |//
+; 58   |#define	CAudibleAAInternal_DecryptAudibleHeader		CMP3AudibleAAInternal_DecryptAudibleHeader
+; 59   |
+; 60   |//
+; 61   |// For FillAudibleFileInfoMin.c
+; 62   |//
+; 63   |#define	FillAudibleFileInfoFromInternalData			MP3FillAudibleFileInfoFromInternalData
+; 64   |#define	FillAudibleEncStringsFromInternalData		MP3FillAudibleEncStringsFromInternalData
+; 65   |#define	FillCodecInfoFromInternalData				MP3FillCodecInfoFromInternalData
+; 66   |#define	ProcessValueNamePairForAudibleInfo			MP3ProcessValueNamePairForAudibleInfo
+; 67   |#define	ProcessValueNamePairForAudibleInfoEmbedded	MP3ProcessValueNamePairForAudibleInfoEmbedded
+; 68   |
+; 69   |//
+; 70   |// For AAFileAccess_Nav.c
+; 71   |//
+; 72   |#define	AudibleAAGetAudioBytePos						MP3AudibleAAGetAudioBytePos
+; 73   |#define	AudibleAASetAudioBytePos						MP3AudibleAASetAudioBytePos
+; 74   |#define	AudibleAASetAudioBytePosExactly					MP3AudibleAASetAudioBytePosExactly
+; 75   |#define	AudibleAAGetAudioSection						MP3AudibleAAGetAudioSection
+; 76   |#define	AudibleAASetAudioSection						MP3AudibleAASetAudioSection
+; 77   |#define	AudibleAAMoveNextSection						MP3AudibleAAMoveNextSection
+; 78   |#define	AudibleAAMovePrevSection						MP3AudibleAAMovePrevSection
+; 79   |#define	CAudibleAudioAccess_GetAudioSectionLength		CMP3AudibleAudioAccess_GetAudioSectionLength
+; 80   |#define	CAudibleAudioAccess_InitPartialBlocks			CMP3AudibleAudioAccess_InitPartialBlocks
+; 81   |#define	CAudibleAudioAccess_AdjustPosToSecondStart		CMP3AudibleAudioACcess_AdjustPosToSecondStart
+; 82   |#define	CAudibleAAInternal_SeekToSection				CMP3AudibleAAInternal_SeekToSection
+; 83   |#define	CAudibleAudioAccess_SeekToAudioPos				CMP3AudibleAudioAccess_SeekToAudioPos
+; 84   |#define	CAudibleAudioAccess_SeekToTimePos				CMP3AudibleAudioAccess_SeekToTimePos
+; 85   |#define	CAudibleAudioAccess_GetAudioPosBytes			CMP3AudibleAudioAccess_GetAudioPosBytes
+; 86   |#define	CAudibleAudioAccess_GetAudioPosTimeMS			CMP3AudibleAudioAccess_GetAudioPosTimeMS
+; 87   |#define	CAudibleAAInternal_GetAudioCurrentSection		CMP3AudibleAAInternal_GetAudioCurrentSection
+; 88   |#define	CAudibleAudioAccess_CalcAudioPosTimeMS			CMP3AudibleAudioAccess_CalcAudioPosTimeMS
+; 89   |#define	AudibleAACalculateSeekToSection					MP3AudibleAACalculateSeekToSection
+; 90   |
+; 91   |#endif	// AUDIBLEMP3OPEN_H
+
+	SYMB	ENDF
+
+; 3    |#include "audiblemp3nonoverlay.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\Algorithms\\Decoders\\AudibleMp3\\Audible_Mp3_Src\\audiblemp3nonoverlay.h"
+
+; 1    |#ifndef	AUDIBLEMP3DECODE_H
+; 2    |#define	AUDIBLEMP3DECODE_H
+; 3    |
+; 4    |//
+; 5    |// For AAFileDecode.c
+; 6    |//
+; 7    |#define	AudibleAAReadEncodedAudio		MP3AudibleAAReadEncodedAudio
+; 8    |#define	AudibleAAReadPCMAudio			MP3AudibleAAReadPCMAudio
+; 9    |
+; 10   |//
+; 11   |// For AAGetAudio.c
+; 12   |//
+; 13   |#define	CAudibleAAInternal_AudibleAAReadEncAudio		CMP3AudibleAAInternal_AudibleAAReadEncAudio
+; 14   |#define	CAudibleAAInternal_AudibleAAReadPCMAudioIntern	CMP3AudibleAAInternal_AudibleAAReadPCMAudioIntern
+; 15   |#define	GetSecondSizeByCodecID							MP3GetSecondSizeByCodecID
+; 16   |#define	CAudibleAAInternal_ReadEncAudioFromSecond		CMP3AudibleAAInternal_ReadEncAudioFromSecond
+; 17   |#define	CAudibleAAInternal_ReadEncAudioFromBlock		CMP3AudibleAAInternal_ReadEncAudioFromBlock
+; 18   |
+; 19   |#endif	// AUDIBLEMP3DECODE_H
+; 20   |
+
+	SYMB	ENDF
+
+; 4    |
+; 5    |#include "AAFileAccess.h"
+
+	SYMB	FILE, "..\\..\\..\\..\\..\\Algorithms\\Decoders\\AudibleAcelp\\Audible_Acelp_Src\\IncludePublic\\AAFileAccess.h"
+
+; 1    |/* $Header: Z:/projects/Audible/SigmaTel/AudibleOEM/STMP3XXX_SDK_PLAYER_FIRMWARE/Algorithms/Decoders/AudibleAcelp/Audible_Acelp_Src/IncludePublic/rcs/AAFileAccess.h 1.4 2005/03/03 05:10:18Z mmiu Exp $ */
+; 2    |/* $Name: SigmaTel_v1.0_RC4 SigmaTel_v1.0_RC3 $ */
+; 3    |/******************************************************************************
+; 4    |*                                                                             *
+; 5    |*                (C) Copyright Audible Inc. (1997-2005)                       *
+; 6    |*                         All Rights Reserved                                 *
+; 7    |*    This material is confidential and shall remain as such. Any unauthorized *
+; 8    |*   use, distribution, reproduction or storage of this material or any part   *
+; 9    |*   thereof is strictly prohibited.                                           *
+; 10   |******************************************************************************/
+; 11   |
+; 12   |
+; 13   |
+; 14   |#ifndef __AAFILEACCESS_H
+; 15   |#define __AAFILEACCESS_H
+; 16   |//  Definition for reading interface from file. 
+; 17   |//  We use C-like structures for actual interface to reach maximum compartibility
+; 18   |
+; 19   |// ********** For Microsoft compiler we need _cdecl. For other platforms - we disable it.
+; 20   |//           It is very important to specify calling convention for the public functions to avoid compilation with different default.
+; 21   |
+; 22   |#ifdef _MSC_VER
+; 23   |#define _CDECL_CALL_TYPE   __cdecl
+; 24   |#define _STDCALL_CALL_TYPE __stdcall 
+; 25   |#else // !_MSC_VER
+; 26   |#define _CDECL_CALL_TYPE 
+; 27   |#define _STDCALL_CALL_TYPE 
+; 28   |#endif // _MSC_VER 
+; 29   |
+; 30   |
+; 31   |#ifdef __cplusplus
+; 32   |extern "C" {
+; 33   |#endif
+; 34   |
+; 35   |
+; 36   |
+; 37   |typedef enum _AudErrorCode 
+; 38   |{ AUD_NO_ERROR                      = 0,
+; 39   |  AUD_FILE_OPEN_FAIL                = -1,
+; 40   |  AUD_BAD_FILE_HANDLE               = -2,
+; 41   |  AUD_FILE_READ_FAIL                = -3,
+; 42   |  AUD_FILE_WRITE_FAIL               = -4,
+; 43   |  AUD_FILE_SEEK_FAIL                = -5,
+; 44   |  AUD_NOT_AUDIBLE_FILE              = -6,
+; 45   |  AUD_AA_FILE_BAD_FORMAT            = -7,
+; 46   |  AUD_AA_FILE_UNSOPPORTED_FORMAT    = -8,
+; 47   |  AUD_AA_FILE_TRUNCATED             = -9,
+; 48   |  AUD_MEM_ALLOC_FAILED              = -10,
+; 49   |  AUD_CODEC_NOT_SUPPORTED           = -11,
+; 50   |  AUD_INTERNAL_NO_BLOCK_ALLOCATED   = -20,
+; 51   |  AUD_AUDIO_SEEK_OUT_OF_RANGE       = -21,
+; 52   |  AUD_DECODER_NOT_SUPPORTED         = -22,
+; 53   |  AUD_DECODER_FAILED                = -23,
+; 54   |  AUD_AUDIO_END_OF_FILE_REACHED     = -24,
+; 55   |  AUD_PARTIAL_FILE_EMPTY            = -25,
+; 56   |  AUD_PARTIAL_FILE_CANC_BY_USER     = -26,
+; 57   |  AUD_REGISTRY_OPER_FAILED          = -27,
+; 58   |  
+; 59   |  AUD_ACTIVATION_RECORDS_SIG_FAIL   = -30,
+; 60   |  AUD_DEVICE_NOT_ACTIVATED_FOR_THIS_FILE = -31,
+; 61   |  AUD_DEVICE_NOT_ACTIVATED          = -32,
+; 62   |  
+; 63   |  AUD_ACTIVATION_BAD_USER_DATA      = -40,
+; 64   |  AUD_ACTIVATION_BAD_PLAYER_DATA    = -41,
+; 65   |  
+; 66   |  AUD_ACTIVATION_SERVER_ERROR       = -50,
+; 67   |  
+; 68   |  AUD_IMAGE_MEM_NOT_ALLOCATED       = -100,
+; 69   |  
+; 70   |  AUD_NO_MORE_SUBSCRIPTION_ISSUES   = -101,
+; 71   |//---------- Some essential param are NULL or invalid.  
+; 72   |  AUD_INVALID_INPUT_PARAM           = -1000,
+; 73   |  AUD_AUDIBLE_FILE_INFO_SIZE_MISMATCH  = -1001
+; 74   |} AudErrorCode;
+; 75   |
+; 76   |// ************** Definitions for abstruct classes for file input. Different for C and C++ code.**************
+; 77   |//--------------- C Input stream
+; 78   |typedef struct IAudibleInputStream IAudibleInputStream;
+
+	SYMB	TYPE, 258, "IAudibleInputStream", 'T', #257
+
+; 79   |
+; 80   |typedef struct _IAudibleInputStreamVFT
+; 81   |
+; 82   |{//-------- Analog of IUnknown. Return new ref count - after adding 1. 
+; 83   |  _reentrant long ( _STDCALL_CALL_TYPE *AddRef)( IAudibleInputStream *pThis );
+; 84   |//-------- Release deletes the object if reference count was 1. 
+; 85   |  _reentrant long ( _STDCALL_CALL_TYPE *Release)( IAudibleInputStream *pThis );
+; 86   |//--------- Reads from input stream. Return fail if unable to read requested size
+; 87   |  _reentrant AudErrorCode ( _STDCALL_CALL_TYPE *Read)( IAudibleInputStream *pThis, void *pBuffer, long bufSize, long *pBytesRead );
+
+	SYMB	TYPE, 259, "_AudErrorCode", 'N',\
+		 "AUD_NO_ERROR", 0,\
+		 "AUD_FILE_OPEN_FAIL", -1,\
+		 "AUD_BAD_FILE_HANDLE", -2,\
+		 "AUD_FILE_READ_FAIL", -3,\
+		 "AUD_FILE_WRITE_FAIL", -4,\
+		 "AUD_FILE_SEEK_FAIL", -5,\
+		 "AUD_NOT_AUDIBLE_FILE", -6,\
+		 "AUD_AA_FILE_BAD_FORMAT", -7,\
+		 "AUD_AA_FILE_UNSOPPORTED_FORMAT", -8,\
+		 "AUD_AA_FILE_TRUNCATED", -9,\
+		 "AUD_MEM_ALLOC_FAILED", -10,\
+		 "AUD_CODEC_NOT_SUPPORTED", -11,\
+		 "AUD_INTERNAL_NO_BLOCK_ALLOCATED", -20,\
+		 "AUD_AUDIO_SEEK_OUT_OF_RANGE", -21,\
+		 "AUD_DECODER_NOT_SUPPORTED", -22,\
+		 "AUD_DECODER_FAILED", -23,\
+		 "AUD_AUDIO_END_OF_FILE_REACHED", -24,\
+		 "AUD_PARTIAL_FILE_EMPTY", -25,\
+		 "AUD_PARTIAL_FILE_CANC_BY_USER", -26,\
+		 "AUD_REGISTRY_OPER_FAILED", -27,\
+		 "AUD_ACTIVATION_RECORDS_SIG_FAIL", -30,\
+		 "AUD_DEVICE_NOT_ACTIVATED_FOR_THIS_FILE", -31,\
+		 "AUD_DEVICE_NOT_ACTIVATED", -32,\
+		 "AUD_ACTIVATION_BAD_USER_DATA", -40,\
+		 "AUD_ACTIVATION_BAD_PLAYER_DATA", -41,\
+		 "AUD_ACTIVATION_SERVER_ERROR", -50,\
+		 "AUD_IMAGE_MEM_NOT_ALLOCATED", -100,\
+		 "AUD_NO_MORE_SUBSCRIPTION_ISSUES", -101,\
+		 "AUD_INVALID_INPUT_PARAM", -1000,\
+		 "AUD_AUDIBLE_FILE_INFO_SIZE_MISMATCH", -1001
+	SYMB	TYPE, 260, "AudErrorCode", 'T', #259
+
+; 88   |//--------- Seeks to particular location from the beginning.
+; 89   |  _reentrant AudErrorCode ( _STDCALL_CALL_TYPE *SetCurrentPos)( IAudibleInputStream *pThis, long newPos );
+; 90   |//--------- If it fails - return -1. Otherwize tell current position in the stream
+; 91   |  _reentrant long ( _STDCALL_CALL_TYPE *GetCurrentPos)( IAudibleInputStream *pThis );
+; 92   |//--------- Get size of the file or memory block that implements the stream.
+; 93   |//          On many platforms there is direct API to get file size without seeking to end.
+; 94   |  _reentrant long ( _STDCALL_CALL_TYPE *GetFileSize)( IAudibleInputStream *pThis );
+; 95   |} IAudibleInputStreamVFT;
+
+	SYMB	TYPE, 262, 'n', #258, 387
+	SYMB	TYPE, 263, 'P', #262
+	SYMB	TYPE, 261, 'X', 8, #6, 31, 1, #263
+	SYMB	TYPE, 264, 'n', #261, 385
+	SYMB	TYPE, 265, 'P', #264
+	SYMB	TYPE, 266, 'X', 8, #6, 31, 1, #263
+	SYMB	TYPE, 267, 'n', #266, 385
+	SYMB	TYPE, 268, 'P', #267
+	SYMB	TYPE, 270, 'n', #6, 387
+	SYMB	TYPE, 271, 'P', #270
+	SYMB	TYPE, 272, 'n', #1, 387
+	SYMB	TYPE, 273, 'P', #272
+	SYMB	TYPE, 269, 'X', 8, #260, 31, 4, #263, #273, #6, #271
+	SYMB	TYPE, 274, 'n', #269, 385
+	SYMB	TYPE, 275, 'P', #274
+	SYMB	TYPE, 276, 'X', 8, #260, 31, 2, #263, #6
+	SYMB	TYPE, 277, 'n', #276, 385
+	SYMB	TYPE, 278, 'P', #277
+	SYMB	TYPE, 279, 'X', 8, #6, 31, 1, #263
+	SYMB	TYPE, 280, 'n', #279, 385
+	SYMB	TYPE, 281, 'P', #280
+	SYMB	TYPE, 282, 'X', 8, #6, 31, 1, #263
+	SYMB	TYPE, 283, 'n', #282, 385
+	SYMB	TYPE, 284, 'P', #283
+	SYMB	TYPE, 285, "_IAudibleInputStreamVFT", 'S', 6,\
+		 "AddRef", #265, 0,\
+		 "Release", #268, 1,\
+		 "Read", #275, 2,\
+		 "SetCurrentPos", #278, 3,\
+		 "GetCurrentPos", #281, 4,\
+		 "GetFileSize", #284, 5
+	SYMB	TYPE, 286, "IAudibleInputStreamVFT", 'T', #285
+
+; 96   |
+; 97   |struct IAudibleInputStream
+; 98   |
+; 99   |{ IAudibleInputStreamVFT *pVTable;
+; 100  |};
+
+	SYMB	TYPE, 287, 'n', #286, 387
+	SYMB	TYPE, 288, 'P', #287
+	SYMB	TYPE, 257, "IAudibleInputStream", 'S', 1,\
+		 "pVTable", #288, 0
+
+; 101  |
+; 102  |//--------------- C Output stream
+; 103  |typedef struct IAudibleOutputStream IAudibleOutputStream;
+
+	SYMB	TYPE, 290, "IAudibleOutputStream", 'T', #289
+
+; 104  |
+; 105  |typedef struct _IAudibleOutputStreamVFT
+; 106  |
+; 107  |{//--------- Reads from input stream
+; 108  |  _reentrant AudErrorCode ( _STDCALL_CALL_TYPE *Write)( IAudibleOutputStream *pThis, void *pBuffer, long bufSize, long *pBytesWritten );
+; 109  |//--------- Seeks to particular location from the beginning.
+; 110  |  _reentrant AudErrorCode ( _STDCALL_CALL_TYPE *SetCurrentPos)( IAudibleOutputStream *pThis,  long newPos );
+; 111  |//--------- If it fails - return -1. 
+; 112  |  _reentrant long ( _STDCALL_CALL_TYPE *GetCurrentPos)( IAudibleOutputStream *pThis );
+; 113  |} IAudibleOutputStreamVFT;
+
+	SYMB	TYPE, 292, 'n', #290, 387
+	SYMB	TYPE, 293, 'P', #292
+	SYMB	TYPE, 291, 'X', 8, #260, 31, 4, #293, #273, #6, #271
+	SYMB	TYPE, 294, 'n', #291, 385
+	SYMB	TYPE, 295, 'P', #294
+	SYMB	TYPE, 296, 'X', 8, #260, 31, 2, #293, #6
+	SYMB	TYPE, 297, 'n', #296, 385
+	SYMB	TYPE, 298, 'P', #297
+	SYMB	TYPE, 299, 'X', 8, #6, 31, 1, #293
+	SYMB	TYPE, 300, 'n', #299, 385
+	SYMB	TYPE, 301, 'P', #300
+	SYMB	TYPE, 302, "_IAudibleOutputStreamVFT", 'S', 3,\
+		 "Write", #295, 0,\
+		 "SetCurrentPos", #298, 1,\
+		 "GetCurrentPos", #301, 2
+	SYMB	TYPE, 303, "IAudibleOutputStreamVFT", 'T', #302
+
+; 114  |
+; 115  |struct IAudibleOutputStream
+; 116  |
+; 117  |{ IAudibleOutputStreamVFT *pVTable;
+; 118  |};
+
+	SYMB	TYPE, 304, 'n', #303, 387
+	SYMB	TYPE, 305, 'P', #304
+	SYMB	TYPE, 289, "IAudibleOutputStream", 'S', 1,\
+		 "pVTable", #305, 0
+
+; 119  |
+; 120  |//--------- C for playback position.
+; 121  |typedef struct IAudibleLoadOrSavePlayPos IAudibleLoadOrSavePlayPos;
+
+	SYMB	TYPE, 307, "IAudibleLoadOrSavePlayPos", 'T', #306
+
+; 122  |
+; 123  |typedef struct _IAudibleLoadOrSavePlayPosVFT
+; 124  |
+; 125  |{ _reentrant long ( _STDCALL_CALL_TYPE *Release)( IAudibleLoadOrSavePlayPos *pThis );
+; 126  |  _reentrant AudErrorCode ( _STDCALL_CALL_TYPE *LoadPlaybackPos)( IAudibleLoadOrSavePlayPos *pThis, unsigned long *pPlayPos, unsigned long *pPlayThroughInd );
+; 127  |  _reentrant AudErrorCode ( _STDCALL_CALL_TYPE *SavePlaybackPos)( IAudibleLoadOrSavePlayPos *pThis, unsigned long  PlayPos,  unsigned long  PlayThroughInd  );
+; 128  |} IAudibleLoadOrSavePlayPosVFT;
+
+	SYMB	TYPE, 309, 'n', #307, 387
+	SYMB	TYPE, 310, 'P', #309
+	SYMB	TYPE, 308, 'X', 8, #6, 31, 1, #310
+	SYMB	TYPE, 311, 'n', #308, 385
+	SYMB	TYPE, 312, 'P', #311
+	SYMB	TYPE, 314, 'n', #7, 387
+	SYMB	TYPE, 315, 'P', #314
+	SYMB	TYPE, 313, 'X', 8, #260, 31, 3, #310, #315, #315
+	SYMB	TYPE, 316, 'n', #313, 385
+	SYMB	TYPE, 317, 'P', #316
+	SYMB	TYPE, 318, 'X', 8, #260, 31, 3, #310, #7, #7
+	SYMB	TYPE, 319, 'n', #318, 385
+	SYMB	TYPE, 320, 'P', #319
+	SYMB	TYPE, 321, "_IAudibleLoadOrSavePlayPosVFT", 'S', 3,\
+		 "Release", #312, 0,\
+		 "LoadPlaybackPos", #317, 1,\
+		 "SavePlaybackPos", #320, 2
+	SYMB	TYPE, 322, "IAudibleLoadOrSavePlayPosVFT", 'T', #321
+
+; 129  |
+; 130  |struct IAudibleLoadOrSavePlayPos
+; 131  |
+; 132  |{ IAudibleLoadOrSavePlayPosVFT *pVTable;
+; 133  |};
+
+	SYMB	TYPE, 323, 'n', #322, 387
+	SYMB	TYPE, 324, 'P', #323
+	SYMB	TYPE, 306, "IAudibleLoadOrSavePlayPos", 'S', 1,\
+		 "pVTable", #324, 0
+
+; 134  |
+; 135  |
+; 136  |//--This structure keeps set of strings for metadata in Audible file. 
+; 137  |//  Size is multiple of 64. 
+; 138  |typedef struct _CAudibleFileStrings
+; 139  |
+; 140  |{
+; 141  |  char sz_short_title        [128]; // This is the title to be used in most cases. 
+; 142  |  char sz_title              [96]; // This is the long title. It is most time the same as short, unless it is really long.          
+; 143  |  char sz_author             [64]; // Author         
+; 144  |  char sz_product_id         [32];  // String of product ID (  unique for book or subscriptio ussue    
+; 145  |//  char sz_title              [128]; // This is the long title. It is most time the same as short, unless it is really long.          
+; 146  |//  char sz_author             [256]; // Author         
+; 147  |//  char sz_product_id         [64];  // String of product ID (  unique for book or subscriptio ussue    
+; 148  |  char sz_parent_id          [64];  // For subscriptions issues or collection items - product ID of parent.     
+; 149  |  char sz_pubdate            [64];
+; 150  |  char sz_long_description   [16];	// mmiu - Do we even need to keep this field?
+; 151  |//  char sz_long_description   [2048];
+; 152  |  char sz_description        [16];	// mmiu - Shortened field
+; 153  |//  char sz_description        [512];
+; 154  |/*
+; 155  |  char sz_provider           [64];
+; 156  |  char sz_narrator           [64];
+; 157  |  char sz_copyright          [64];
+; 158  |  char sz_price              [64];
+; 159  |  char sz_date_unavailable   [64];
+; 160  |  char sz_user_alias         [64];
+; 161  |  char sz_keywords           [64];
+; 162  |  char sz_category           [128];
+; 163  |  char sz_category_search    [16];	// mmiu - Shortened field
+; 164  |//  char sz_category_search    [512];
+; 165  |  char sz_is_aggregeration   [64];
+; 166  |  char sz_genre              [64];
+; 167  |  char sz_codec              [64];
+; 168  |*/
+; 169  |} CAudibleFileStrings;
+; 170  |
+; 171  |//--This structure keeps set of strings for metadata used in embedded systems. 
+; 172  |//  Size is multiple of 64. 
+; 173  |typedef struct _CAudibleFileStringsEmbedded
+; 174  |
+; 175  |{ char sz_title_embed        [96]; // This is the title to be used in most cases. 
+; 176  |  char sz_author_embed       [64]; // Author         
+; 177  |  char sz_product_id_embed   [32];  // String of product ID (  unique for book or subscriptio ussue    
+; 178  |} CAudibleFileStringsEmbedded;
+; 179  |
+; 180  |// ************* Set of constant definitions for available codecs - possible values for codecID *************
+; 181  |
+; 182  |#define AUDIBLE_CODEC_G723          0x1    // Format 1, G.723 codec, variable bit rate
+; 183  |#define AUDIBLE_CODEC_ACELP8_5      0xc010 // Format 2, Acelp codec, constant bit rate
+; 184  |#define AUDIBLE_CODEC_ACELP16       0xc00c // Format 3, Acelp codec, constant bit rate
+; 185  |#define AUDIBLE_CODEC_MP332_MONO    0xc00d // Format 4, MP3 codec,   constant bit rate
+; 186  |#define AUDIBLE_CODEC_MP3128_STEREO 0xc00e // Not implemeted, MP3 codec, stereo, constant bit rate
+; 187  |#define AUDIBLE_CODEC_HAC16     	  0xc013 // Format 5, HAC codec.
+; 188  |
+; 189  |//--- This structure keeps codecID and characteristics of codec. Filled by AudibleAA_GetMetadata
+; 190  |//    Total size is 8 *  bytes.
+; 191  |
+; 192  |typedef struct _CAudibleFileCodecData 
+; 193  |
+; 194  |{//---------- Codec ID, please see AUDIBLE_CODEC_* definitions.
+; 195  |  int   codecID;
+; 196  |//---------- Bitrates, but per second. For varialble bitrate codecs - average.
+; 197  |  int   averageBitRate;					// For SigmaTel, int is 24 bits
+; 198  |//---------- Size of one codec frame in bytes.
+; 199  |  short codecFrameSize;
+; 200  |//---------- Lenght of one codec frame in milliseconds. 
+; 201  |  short codecFramePCMSamples;
+; 202  |//---------- Sampling rate of original PCM data.
+; 203  |  int   pcmSamplingRate;				// For SigmaTel, int is 24 bits
+; 204  |//---------- Bit depth of original audio. For all formats March 2004 - 16 bit.  
+; 205  |  short pcmBitperSample;
+; 206  |//---------- Brings size of structure to 8 long values to avoid automatic padding in structure 
+; 207  |//  long unUsedPadding[2];
+; 208  |} CAudibleFileCodecData;
+; 209  |
+; 210  |//-- We do not have books with more that 100 sections. 
+; 211  |//   If one is generated - then pAudioChaptersOffsets will miss offsets for chapters with count exceeding 100.
+; 212  |#define AUDIO_CHAPTERS_MAX_COUNT 128 // 128
+; 213  |//-- Information about audio in "AA" file Filled by AudibleAA_GetMetadata
+; 214  |//   Total size of structure 136 * 4 bytes.
+; 215  |
+; 216  |typedef struct _CAudibleFileAudioData
+; 217  |
+; 218  |{//---------- Total audio size in bytes. Should be multiple of frame size.
+; 219  |  unsigned long totalAudioSizeBytes;
+; 220  |//---------- Total audio time in milliseconds.
+; 221  |  unsigned long totalAudioTimeMS;
+; 222  |//---------- Total size of original audio file, if this is partial one.
+; 223  |  unsigned long IsPartialFile;
+; 224  |  unsigned long origFileAudioSizeByte; 
+; 225  |  unsigned long segmentStartByte;
+; 226  |  unsigned long segmentEndByte;
+; 227  |  unsigned long reservPadding;  // We add padding byte to keep size of structure round 
+; 228  |//---------- We assume that book keeps maximum of 100 sections. 
+; 229  |  unsigned long audioChapterCount;
+; 230  |  unsigned long pAudioChaptersOffsets[AUDIO_CHAPTERS_MAX_COUNT]; 
+; 231  |} CAudibleFileAudioData;
+; 232  |
+; 233  |//-- Fills JPEG image from AA file. Memory for pJPEGImage allocated by client software. Size should be 25K
+; 234  |
+; 235  |typedef struct _CAudibleFileImage
+; 236  |
+; 237  |{ unsigned long  allocatedSize;
+; 238  |  unsigned long  filledSize;
+; 239  |  void           *pJPEGImage;
+; 240  |  unsigned long  unUsedPadding;
+; 241  |} CAudibleFileImage;
+
+	SYMB	TYPE, 325, 'Z', #2, 127
+	SYMB	TYPE, 327, 'Z', #2, 95
+	SYMB	TYPE, 329, 'Z', #2, 63
+	SYMB	TYPE, 331, 'Z', #2, 31
+	SYMB	TYPE, 333, 'Z', #2, 15
+	SYMB	TYPE, 335, "_CAudibleFileStrings", 'S', 480,\
+		 "sz_short_title", #325, 0,\
+		 "sz_title", #327, 128,\
+		 "sz_author", #329, 224,\
+		 "sz_product_id", #331, 288,\
+		 "sz_parent_id", #329, 320,\
+		 "sz_pubdate", #329, 384,\
+		 "sz_long_description", #333, 448,\
+		 "sz_description", #333, 464
+	SYMB	TYPE, 336, "CAudibleFileStrings", 'T', #335
+	SYMB	TYPE, 337, "_CAudibleFileCodecData", 'S', 6,\
+		 "codecID", #16, 0,\
+		 "averageBitRate", #16, 1,\
+		 "codecFrameSize", #4, 2,\
+		 "codecFramePCMSamples", #4, 3,\
+		 "pcmSamplingRate", #16, 4,\
+		 "pcmBitperSample", #4, 5
+	SYMB	TYPE, 338, "CAudibleFileCodecData", 'T', #337
+	SYMB	TYPE, 339, 'Z', #7, 127
+	SYMB	TYPE, 341, "_CAudibleFileAudioData", 'S', 272,\
+		 "totalAudioSizeBytes", #7, 0,\
+		 "totalAudioTimeMS", #7, 2,\
+		 "IsPartialFile", #7, 4,\
+		 "origFileAudioSizeByte", #7, 6,\
+		 "segmentStartByte", #7, 8,\
+		 "segmentEndByte", #7, 10,\
+		 "reservPadding", #7, 12,\
+		 "audioChapterCount", #7, 14,\
+		 "pAudioChaptersOffsets", #339, 16
+	SYMB	TYPE, 342, "CAudibleFileAudioData", 'T', #341
+	SYMB	TYPE, 343, "_CAudibleFileImage", 'S', 7,\
+		 "allocatedSize", #7, 0,\
+		 "filledSize", #7, 2,\
+		 "pJPEGImage", #273, 4,\
+		 "unUsedPadding", #7, 5
+	SYMB	TYPE, 344, "CAudibleFileImage", 'T', #343
+
+; 242  |
+; 243  |typedef struct _CAudibleFileInfo
+; 244  |
+; 245  |{ unsigned long          uSize;
+; 246  |  CAudibleFileStrings    meta;
+; 247  |  CAudibleFileCodecData  codec;
+; 248  |  CAudibleFileAudioData  audio;
+; 249  |  CAudibleFileImage      image;
+; 250  |} CAudibleFileInfo;
+
+	SYMB	TYPE, 345, "_CAudibleFileStringsEmbedded", 'S', 192,\
+		 "sz_title_embed", #327, 0,\
+		 "sz_author_embed", #329, 96,\
+		 "sz_product_id_embed", #331, 160
+	SYMB	TYPE, 346, "CAudibleFileStringsEmbedded", 'T', #345
+
+; 251  |
+; 252  |typedef struct _CAudibleFileInfoEmbedded
+; 253  |
+; 254  |{ unsigned long                  uSize;
+; 255  |  CAudibleFileStringsEmbedded    meta;
+; 256  |  CAudibleFileCodecData          codec;
+; 257  |  CAudibleFileAudioData          audio;
+; 258  |  CAudibleFileImage              image;
+; 259  |} CAudibleFileInfoEmbedded;
+; 260  |
+; 261  |// ************ Core function that extracts metadata. ************************************************
+; 262  |//    Flags for extraction of metadata. We have 3 options - standard strings, section offsets and image
+; 263  |//-- Fill metadata strings from Audible file ( CAudibleFileStrings    meta; )
+; 264  |#define AUDIBLE_METADATA_GET_STRINGS      1
+; 265  |//-- Fills codec and audio data ( CAudibleFileCodecData codec & CAudibleFileAudioData audio )
+; 266  |#define AUDIBLE_METADATA_GET_CHAP_OFFSETS 2
+; 267  |//-- Fill the image from "aa" file. Memory for image should be allocated. ( CAudibleFileImage      image; )
+; 268  |#define AUDIBLE_METADATA_GET_IMAGE        4
+; 269  |
+; 270  |
+; 271  |// ********** Core function to get metadata. Activation is not required to extract metadata from "AA" file. **********
+; 272  |
+; 273  |AudErrorCode _CDECL_CALL_TYPE AudibleAA_GetMetadata( IAudibleInputStream *pFile, CAudibleFileInfo *pAAFileInfo, unsigned long flags );
+
+	SYMB	TYPE, 347, "_CAudibleFileInfo", 'S', 767,\
+		 "uSize", #7, 0,\
+		 "meta", #336, 2,\
+		 "codec", #338, 482,\
+		 "audio", #342, 488,\
+		 "image", #344, 760
+	SYMB	TYPE, 348, "CAudibleFileInfo", 'T', #347
+
+; 274  |// ********** Same function for embedded systems with less fields
+; 275  |AudErrorCode _CDECL_CALL_TYPE AudibleAA_GetMetadataEmbedded( IAudibleInputStream *pFile, CAudibleFileInfoEmbedded *pAAFileInfo, unsigned long flags );
+
+	SYMB	TYPE, 349, "_CAudibleFileInfoEmbedded", 'S', 479,\
+		 "uSize", #7, 0,\
+		 "meta", #346, 2,\
+		 "codec", #338, 194,\
+		 "audio", #342, 200,\
+		 "image", #344, 472
+	SYMB	TYPE, 350, "CAudibleFileInfoEmbedded", 'T', #349
+
+; 276  |
+; 277  |//   To help with implementation of IAudibleInputStream we have groupspecific functions
+; 278  |//   Each function will be implemeneted for specific platform only - for example AudibleAA_GetMetadataWindows PC and CE Windows.
+; 279  |//   I put all function declarations into one header just to avoid multiplication of headers.
+; 280  |AudErrorCode _CDECL_CALL_TYPE AudibleAA_GetMetadata_WndPC( const char           *lpszAudFileName, CAudibleFileInfo *pAAFileInfo, unsigned long flags );
+; 281  |AudErrorCode _CDECL_CALL_TYPE AudibleAA_GetMetadata_WndCE( const unsigned short *lpszAudFileName, CAudibleFileInfo *pAAFileInfo, unsigned long flags );
+; 282  |
+; 283  |// ********** Opening of aa file and access to audio. *************************************************
+; 284  |//  Definition of HAUDFILE. We declare structure of unknown type.
+; 285  |//  HAUDFILE is type of pointer to this structure.  Internally we always have definiton for this structure.
+; 286  |
+; 287  |typedef struct _CAudibleAAInternal *HAUDFILE;   
+; 288  |
+; 289  |// ****************  DRM support structures.   ******************************************
+; 290  |//    Data for one activation record. 
+; 291  |//-- Size of the unique hardware ID from player.
+; 292  |//   If there are less than 20 bytes in actual player ID, pad remaining by zeroes.
+; 293  |#define AUDIBLE_PLAYER_ID_SIZE     20
+; 294  |//-- Size of one audible activation record or license.
+; 295  |#define ACTIVATION_PACKET_RAW_SIZE 70
+; 296  |//-- Usual count of licenses returned from server.
+; 297  |#define AUDIBLE_ACTIVATIONS_COUNT  8
+; 298  |                    
+; 299  |//-- Structure that keeps one activation record
+; 300  |
+; 301  |typedef struct _CAudibleDRMRecordData
+; 302  |
+; 303  |{ unsigned char szData[ACTIVATION_PACKET_RAW_SIZE];
+; 304  |} CAudibleDRMRecordData;  
+
+	SYMB	TYPE, 351, 'Z', #3, 69
+	SYMB	TYPE, 353, "_CAudibleDRMRecordData", 'S', 70,\
+		 "szData", #351, 0
+	SYMB	TYPE, 354, "CAudibleDRMRecordData", 'T', #353
+
+; 305  |
+; 306  |//-- Usually server returns 8 activation records. If only 1 user activated device - then there are 1 valid and 7 blank records.
+; 307  |//-- If second user activates device, then 
+; 308  |
+; 309  |typedef struct _CAudibleActivationPack
+; 310  |
+; 311  |{ CAudibleDRMRecordData m_ActivPack[AUDIBLE_ACTIVATIONS_COUNT];
+; 312  |} CAudibleActivationPack;
+
+	SYMB	TYPE, 356, 'n', #355, 387
+	SYMB	TYPE, 357, 'P', #356
+	SYMB	TYPE, 358, "HAUDFILE", 'T', #357
+
+; 313  |
+; 314  |
+; 315  |// **** Opens Audible file for access to audio. Pointer to IAudibleInputStream is cached inside and refernce count is increased by 1.
+; 316  |//     pFile->Release is called once client calls AudibleAACloseFile
+; 317  |
+; 318  |//     If file is protected client software needs to provide Activation records and playerID 
+; 319  |//     For inprotected file ( or we call untergeted ) last 3 parametes can be NULL.
+; 320  |//     Please contact Audible for untargeted test files.
+; 321  |
+; 322  |AudErrorCode _CDECL_CALL_TYPE AudibleAAOpenFile
+; 323  |( HAUDFILE *hAudFileRef,                                  // Out parameter, fill AA handle
+; 324  |  IAudibleInputStream *pAAFile,                           // Stream for file access.
+; 325  |  CAudibleDRMRecordData *pRecoreds, short RecordCount,    // DRM records. For untargeted ( test ) audio it can be NULL and zero.
+; 326  |  unsigned char playerID[AUDIBLE_PLAYER_ID_SIZE],         // Unique hardware playerID. The same ID as was used to activate device. For untargeted audio it can be NULL.
+; 327  |  IAudibleLoadOrSavePlayPos *pSaveOrLoadPlayPos       // Pointer to a ineraface that saves or loads playback position. This pointer can be NULL.
+; 328  |);
+; 329  |
+; 330  |//  Windows specific functions.
+; 331  |//--------------- On PC this function reads activation from device. Basically it is used for trasfer to device.
+; 332  |AudErrorCode _CDECL_CALL_TYPE AudibleAAOpenFile_WndPC
+; 333  |( HAUDFILE *hAudFileRef, 
+; 334  |  const char *lpszAudFileName, 
+; 335  |  CAudibleDRMRecordData *pRecoreds, short RecordCount, 
+; 336  |  unsigned char playerID[AUDIBLE_PLAYER_ID_SIZE]
+; 337  |);
+; 338  |
+; 339  |//--------------- This function assumes retrieval of activation records from PC registry. Should not be used for transfer to device.
+; 340  |AudErrorCode _CDECL_CALL_TYPE AudibleAAOpenFile_WndPCForDesktopPlayback
+; 341  |( HAUDFILE *hAudFileRef, 
+; 342  |  const char *lpszAudFileName 
+; 343  |);
+; 344  |
+; 345  |//--------------- On CE client software needs to present activation data. Data can be stored in registry or in file.
+; 346  |AudErrorCode _CDECL_CALL_TYPE AudibleAAOpenFile_WndCE
+; 347  |( HAUDFILE *hAudFileRef, 
+; 348  |  const unsigned short *lpszAudFileName, 
+; 349  |  CAudibleDRMRecordData *pRecoreds, 
+; 350  |  short RecordCount, 
+; 351  |  unsigned char playerID[AUDIBLE_PLAYER_ID_SIZE]
+; 352  |);
+; 353  |
+; 354  |// ***********  Closes internal data and frees all memory. 
+; 355  |//  This function should be called to free memory kept by handle returned with AudibleAAOpenFile. 
+; 356  |//   It also calls "Release" on cached IAudibleInputStream
+; 357  |
+; 358  |void AudibleAACloseFile( HAUDFILE hAudFileRef );
+; 359  |
+; 360  |//-------- Access to audio. Reads and decrypts block on audio from "aa" file. 
+; 361  |//         Number of bytes read is always equal to bufSize, unless end of file is reached or error occured. 
+; 362  |AudErrorCode _CDECL_CALL_TYPE AudibleAAReadEncodedAudio( HAUDFILE hAudFileRef, void *pBuffer, unsigned long bufSize, unsigned long *pBytesRead );
+; 363  |//-------- Provides PCM audio from "aa" file. If codec of aa file is not implemented on particular plutform - function fails.
+; 364  |//         If end of file is not reached - function always fills bufSize bytes.
+; 365  |//AudErrorCode _CDECL_CALL_TYPE AudibleAAReadPCMAudio( HAUDFILE hAudFileRef, void *pBuffer, unsigned long bufSize, unsigned long *pBytesRead );
+; 366  |AudErrorCode _CDECL_CALL_TYPE AudibleAAReadPCMAudio( HAUDFILE hAudFileRef, _circ int *pHead_OutBuffer, int OutBufferSize, int *OutCount, int *nBytesConsumed );
+; 367  |
+; 368  |//-------- Seek support. We have seek on time, bytes and sections. All seek function always go to the beginning of codec frame.
+; 369  |//         Sections are zero based and if file have n sections, then user can navigate to n-1 section index.
+; 370  |AudErrorCode _CDECL_CALL_TYPE AudibleAASetAudioBytePos( HAUDFILE hAudFileRef, unsigned long newBytePos      );
+; 371  |AudErrorCode _CDECL_CALL_TYPE AudibleAASetAudioTimePos( HAUDFILE hAudFileRef, unsigned long newTimeMilliSec );
+; 372  |AudErrorCode _CDECL_CALL_TYPE AudibleAASetAudioSection( HAUDFILE hAudFileRef, unsigned long section );
+; 373  |
+; 374  |//-------- This function sets playback position to exact bytes, does not round to frame boundary.
+; 375  |AudErrorCode _CDECL_CALL_TYPE AudibleAASetAudioBytePosExactly( HAUDFILE hAudFileRef, unsigned long newBytePos );
+; 376  |
+; 377  |//-------- Retrieve of the current position in audio.
+; 378  |unsigned long _CDECL_CALL_TYPE AudibleAAGetAudioBytePos( HAUDFILE hAudFileRef );
+; 379  |unsigned long _CDECL_CALL_TYPE AudibleAAGetAudioTimePos( HAUDFILE hAudFileRef );
+; 380  |unsigned long _CDECL_CALL_TYPE AudibleAAGetAudioSection( HAUDFILE hAudFileRef );
+; 381  |
+; 382  |//-------- Functions to move forward/backward a section. This function should be called if user press next/previous section buttons.
+; 383  |//  If current position in the last section - position is not updated.   
+; 384  |AudErrorCode _CDECL_CALL_TYPE AudibleAAMoveNextSection( HAUDFILE hAudFileRef );
+; 385  |
+; 386  |//  If current position in the middle of the section - AudibleAAMovePrevSection brings position to the beginning of the section.
+; 387  |//  If current position within 5 sec. from the beginning of the section AudibleAAMovePrevSection brings to the beggning of the prev. section.
+; 388  |AudErrorCode _CDECL_CALL_TYPE AudibleAAMovePrevSection( HAUDFILE hAudFileRef );
+; 389  |
+; 390  |
+; 391  |//-------- This is function for trasnfer application to generate partial "AA" file.
+; 392  |//         If endSecond - after end of file - we copy audio until end of the file.  
+; 393  |// During copy AudibleAAGeneratePartialFile calls pointer to IAudibleProgress. This gives option to show progress or cancel generation process.
+; 394  |// If this function returns 0 ( FALSE ), then generation of partial file is halted. 
+; 395  |// If returns 1 - generation continues.
+; 396  |
+; 397  |typedef struct IAudibleProgress IAudibleProgress;
+
+	SYMB	TYPE, 360, "IAudibleProgress", 'T', #359
+
+; 398  |
+; 399  |typedef struct _IAudibleProgressVFT
+; 400  |
+; 401  |{ _reentrant int ( _STDCALL_CALL_TYPE *OnProgress)( IAudibleProgress *pThis, unsigned long bytesCopied, unsigned long bytesTotal );
+; 402  |} IAudibleProgressVFT;
+
+	SYMB	TYPE, 362, 'n', #360, 387
+	SYMB	TYPE, 363, 'P', #362
+	SYMB	TYPE, 361, 'X', 8, #16, 31, 3, #363, #7, #7
+	SYMB	TYPE, 364, 'n', #361, 385
+	SYMB	TYPE, 365, 'P', #364
+	SYMB	TYPE, 366, "_IAudibleProgressVFT", 'S', 1,\
+		 "OnProgress", #365, 0
+	SYMB	TYPE, 367, "IAudibleProgressVFT", 'T', #366
+
+; 403  |
+; 404  |struct IAudibleProgress
+; 405  |
+; 406  |{ IAudibleProgressVFT *pVTable;
+; 407  |};
+
+	SYMB	TYPE, 368, 'n', #367, 387
+	SYMB	TYPE, 369, 'P', #368
+	SYMB	TYPE, 359, "IAudibleProgress", 'S', 1,\
+		 "pVTable", #369, 0
+
+; 408  |
+; 409  |
+; 410  |AudErrorCode _CDECL_CALL_TYPE AudibleAAGeneratePartialFile
+; 411  |( IAudibleInputStream  *pInputFile,  // Input stream for "aa" file
+; 412  |  IAudibleOutputStream *pOutFile,    // Output stream for partial "aa" file
+; 413  |  IAudibleProgress     *pProgress,   // Pointer to interace that called each time portion of data copied. This pointer might be NULL.
+; 414  |  unsigned int startSecond,                   // Starting second out of original file. 
+; 415  |  unsigned int endSecond                      // Ending second in original file.
+; 416  |);
+; 417  |
+; 418  |//////////////////////// Playback position support /////////////////////////////////////////////////////////////////////////
+; 419  |// The idea is to keep playback position in separate file, which has the same name as "AA" file, but different extension.
+; 420  |// If the audio file is 2000xACuriousFragmentUnabridged_acelp16_igorgrebnev.aa, then playback position is stored in 
+; 421  |// 2000xACuriousFragmentUnabridged_acelp16_igorgrebnev.pos
+; 422  |
+; 423  |AudErrorCode GetPlayBackPos( IAudibleInputStream *pInputPosFile, unsigned long *playbackPos, unsigned long *playThroughInd );
+; 424  |AudErrorCode SetPlayBackPos( IAudibleOutputStream *pInputPosFile, unsigned long playbackPos, unsigned  long playThroughInd );
+; 425  |
+; 426  |//------- For devices where dynamic memory is not available we provide option to set Audible Heap.
+; 427  |//        If AudibleSetHeapMemory is called - then there are no internal calls to malloc.
+; 428  |//        Only one AA file can be opened at one time. 
+; 429  |//        Recommnded value for heap is 5K 
+; 430  |
+; 431  |void AudibleSetHeapMemory( void *pMemoryBlock, long memorySize );
+; 432  |//------- Return the same pointer that was set by AudibleSetHeapMemory
+; 433  |void *AudibleGetHeapMemory( void );
+; 434  |
+; 435  |
+; 436  |//////////////////////// Acitivation support. Added as second step of Audible support //////////////////////////////////////
+; 437  |
+; 438  |typedef enum _AUDIBLE_REGISTER_CODE
+; 439  |
+; 440  |{ AUDIBLE_REGISTER_PLAYER    = 0,
+; 441  |  AUDIBLE_UNREGISTER_PLAYER  = 1
+; 442  |} AUDIBLE_REGISTER_CODE;
+; 443  |
+; 444  |//-------------- User information for activation. 
+; 445  |typedef struct _CAudibleUserData
+; 446  |
+; 447  |{ const char *lpszUsername;                        // Should not be NULL.                          
+; 448  |  const char *lpszPassword;                        // Should not be NULL.                          
+; 449  |  const char *lpszDomain;                          // If NULL, default "www.audible.com" . This is domain to activate      
+; 450  |  const char *lpszLicenceType;                     // If NULL, default "individual" .      Licence type - group or individual    
+; 451  |  const char *lpszGroupName;                       // If NULL, default "".                 Name of the group for group licence. 
+; 452  |  const char *lpszEntryPointCode;                  // If NULL, default "generic"    .      Installation source ( WEB, CD, etc. )    
+; 453  |} CAudibleUserData;
+; 454  |
+; 455  |//-------------- Player information for activation. 
+; 456  |typedef struct _CAudiblePlayerData
+; 457  |                
+; 458  |{ unsigned char playerid[AUDIBLE_PLAYER_ID_SIZE];  // Player ID. 
+; 459  |  const char *lpszPlayerType;                      // "software"  
+; 460  |  const char *lpszManufacturer;                    // "AudibleMac"
+; 461  |  const char *lpszModel;                           // "Mac"       
+; 462  |} CAudiblePlayerData;
+
+	SYMB	TYPE, 370, 'n', #2, 387
+	SYMB	TYPE, 371, 'P', #370
+	SYMB	TYPE, 372, "_CAudibleUserData", 'S', 6,\
+		 "lpszUsername", #371, 0,\
+		 "lpszPassword", #371, 1,\
+		 "lpszDomain", #371, 2,\
+		 "lpszLicenceType", #371, 3,\
+		 "lpszGroupName", #371, 4,\
+		 "lpszEntryPointCode", #371, 5
+	SYMB	TYPE, 373, "CAudibleUserData", 'T', #372
+
+; 463  |
+; 464  |AudErrorCode _CDECL_CALL_TYPE AudibleCreateActivationRequest
+; 465  |
+; 466  |( const CAudibleUserData   *pUserData,      //  User data    In parameter.
+
+	SYMB	TYPE, 374, 'Z', #3, 19
+	SYMB	TYPE, 376, "_CAudiblePlayerData", 'S', 23,\
+		 "playerid", #374, 0,\
+		 "lpszPlayerType", #371, 20,\
+		 "lpszManufacturer", #371, 21,\
+		 "lpszModel", #371, 22
+	SYMB	TYPE, 377, "CAudiblePlayerData", 'T', #376
+
+; 467  |  const CAudiblePlayerData *pPlayerType,    //  Player data. In parameter.
+
+	SYMB	TYPE, 378, "_AUDIBLE_REGISTER_CODE", 'N',\
+		 "AUDIBLE_REGISTER_PLAYER", 0,\
+		 "AUDIBLE_UNREGISTER_PLAYER", 1
+	SYMB	TYPE, 379, "AUDIBLE_REGISTER_CODE", 'T', #378
+
+; 468  |  AUDIBLE_REGISTER_CODE actionCode,
+; 469  |  const char *lpszActivationReqCGI,         // String with URL of activation CGI script. If NULL, default is used
+; 470  |  char   *requestBuf,                       // Out parameter. Filled by data to be sent to server. Once filled - 0 terminated.  
+; 471  |  unsigned long bufferSize                  // Size of requestBuf. Recommended size is 4K ( 4096 bytes. )
+; 472  |); 
+; 473  |
+; 474  |AudErrorCode _CDECL_CALL_TYPE AudibleGenerateActivationFromServerResponse
+; 475  |
+; 476  |( const void *pServerResponce,                  // In parameter. responce provided by server. 
+; 477  |  unsigned long  responceLen,                   // In parameter. Length of data in server responce. 
+
+	SYMB	TYPE, 380, 'Z', #354, 7
+	SYMB	TYPE, 382, "_CAudibleActivationPack", 'S', 560,\
+		 "m_ActivPack", #380, 0
+	SYMB	TYPE, 383, "CAudibleActivationPack", 'T', #382
+
+; 478  |  CAudibleActivationPack *pActivationPack,      // Out parameter - fills 8 structures with activation data.
+; 479  |  char *lpszError,                              // Out parameter. Incase of error provides description. 
+; 480  |  int  errorBufferLen                           // Lengh of buffer for error. Should be at elast 512 bytes.
+; 481  |);
+; 482  |
+; 483  |// ************** Now PC Windows specific functions.*******************************************
+; 484  |//----------  Reads PC activation data from PC registry       
+; 485  |AudErrorCode AudibleGetActivationDataFromPC( CAudibleActivationPack *pActivationPack );
+; 486  |
+; 487  |//----------  Writes PC activation data to PC registry
+; 488  |AudErrorCode AudibleSetActivationDataToPC( const CAudibleActivationPack *pActivationPack );
+; 489  |
+; 490  |//------------- This function generates software player ID for PC.
+; 491  |AudErrorCode AudibleGeneratePCPlayerID
+; 492  |
+; 493  |( unsigned char *playerID, // Pointer to buffer to be filled with player ID
+; 494  |  unsigned long playerIDSize      // Size of the buffer. Should be 20. 
+; 495  |);
+; 496  |
+; 497  |///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+; 498  |//                              Download support
+; 499  |
+; 500  |// Structure that keeps data for one subscription entry from rcdmap file.
+; 501  |
+; 502  |typedef struct _CSubscriptionEntry
+; 503  |
+; 504  |{ char      m_strUserID[64];                   
+; 505  |  char      m_strTitle[128];                    
+; 506  |  char      m_strProdID[64];                   
+; 507  |  char      m_strBundleID[64];                 
+; 508  |  char      m_strassemble_url[1024];             
+; 509  |  char      m_strcleanup_url[512];              
+; 510  |  char      m_strVersion[64];                  
+; 511  |  char      m_strBackoffInterval[64];          
+; 512  |  char      m_strAwType[64];                   
+; 513  |  char      m_strDomain[64];                   
+; 514  |  char      m_strCodec[32];                    
+; 515  |  long      m_tmStartTime;                 
+; 516  |  long      m_tmEndTime;                   
+; 517  |  long      m_tmCancelTime;                
+; 518  |  long      m_tmSpanFrequency;
+; 519  |  int      m_bLeaveOnServer;
+; 520  |  int      m_bOverRide;
+; 521  |  int      m_bDownloadLatest;
+; 522  |} CSubscriptionEntry;
+; 523  |
+; 524  |////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+; 525  |

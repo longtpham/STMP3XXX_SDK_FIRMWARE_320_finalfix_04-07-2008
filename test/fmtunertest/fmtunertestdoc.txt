@@ -1,0 +1,41 @@
+FM tuner test Documentation
+---------------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the FM tuners 5757 and 5767. This is done by using all the APIs provided by the tuner module. 
+We have an option of either using the 5757 or the 5767 tuner for the test. Thus, for example, if you want to test 5757 tuner, then include the 'philips5757.mk' file and exclude the 'philips5767.mk' in the build. Check out the tuner test makefile to do this. 
+
+Build Options
+-------------
+Usage : fmtunertest [ALL] DEVICE TUNERMODEL [LIBS]
+     	ALL        = rebuilds all files
+	DEVICE     = D3410 or D3500 (required parameter)
+	TUNERMODEL = FM5757,FM5767(Philips FM tuner) or FM24000(Sanyo FM tuner) supported (required parameter)
+	LIBS	   = Forces libraries to be rebuilt.
+
+Test Execution
+--------------
+The test first runs and tests all the APIs provided by the tunermodule. After this has been done, it tunes into some channel (here it is 102.3). After this we can use buttons, to perform 'search up/down' and 'manual up/down' functionality. Currently, the way the test is set, 4 buttons are used for the manual UP/DOWN and search UP/DOWN functionality. We can add more functionality by adding more cases in the while(1) loop. Button functionality can be manipulated using the 'buttonsdef.inc' file.
+The LCD module displays the frequency of the channel to which we are currently tuned to. This is done by using the 'g_wDecimalFrequency' value, the global which stores the current decimal frequency.
+Some of the API (e.g. TUNER_POWER_ON) is only valid for the 5767 tuner. Thus, while adding 'SysPostMessage(..)' calls to the test, please check if the API is valid for both the tuners, else use the 'TUNER_5767' tag to process code only for 5767 tuner.
+The search UP/DOWN functions take close to a second to execute. Hence, after executing a 'search' command, we wait until the 'g_iFMTuner_Searching' variable is reset.
+
+Test Architecture
+-----------------
+The test uses the following modules
+Modules used in the test:
+DisplayModule - for display functionality
+MixerModule - need to set up mixer controls and volume registers during Tuner analog initialization
+TunerModule - for tuner functionality
+MenuModule - the menu module is used because the 5767 tuner file uses a menu command. However, the menu queue is not really processed. It is done by setting the menu queue head and tail pointers equal (check the RetrieveMenuMsg() function)
+
+The resources are in Y memory. The test uses forced processing of the module queues.
+
+The files with tuner module funtionality are under 'system\msgmodules\hardware\tuner'.
+The tunermodule.c files includes functionality to initialize the tuner (TunerModuleInit(..)) and process the tuner queue (TunerModuleProcessQueue(..)). 
+The processing of tuner module calls is done in the 'Philips5757/67' files. The Read and Write functions are used to actually communicate with the tuner by sending data out to set the tuner registers and reading back information about the state of the tuner.
+
+Debugger Notes
+--------------
+Ensure the debugger is initializing the P, X, and Y allocation correctly.  Currently register FFE8=0x0828, FFE9=0x1818, FFED=0x380000

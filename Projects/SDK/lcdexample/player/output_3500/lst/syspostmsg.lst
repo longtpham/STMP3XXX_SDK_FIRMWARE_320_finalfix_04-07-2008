@@ -1,0 +1,177 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\syspostmsg.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ;  File        : syspostmsg.asm
+                                5 ;  Description : Message posting routines
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_SysPostMsg
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Macros
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               16     list
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               19 ;   Includes
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               25     list
+                               26     
+                               27 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;   External Definitions
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               31     ;Functions
+                               35 ;///////////////////////////////////////////////////////////////////////////////
+                               36 ;   External References
+                               37 ;///////////////////////////////////////////////////////////////////////////////
+                               42     list
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   Equates
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               52 ;///////////////////////////////////////////////////////////////////////////////
+                               53 ;   X Memory
+                               54 ;///////////////////////////////////////////////////////////////////////////////
+                               55         
+X:0000                         56     org     x,"SYSFUN_SysPostMsg_X":
+                               58 ;///////////////////////////////////////////////////////////////////////////////
+                               59 ;  Y memory
+                               60 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         62     org     y,"SYSFUN_SysPostMsg_mod_Y":
+                               64 ;///////////////////////////////////////////////////////////////////////////////
+                               65 ;   P Memory
+                               66 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         68     org     p,"SYSFUN_SysPostMsg_P":
+                               72 ;///////////////////////////////////////////////////////////////////////////////
+                               73 ;
+                               74 ;>  Name:           FSysPostMessage
+                               75 ;
+                               76 ;   Type:           Function
+                               77 ;
+                               78 ;   Description:    Post a message to module queue
+                               79 ;
+                               80 ;   Inputs:         message to be posted
+                               81 ;
+                               82 ;   Outputs:        none
+                               83 ;                   
+                               84 ;   Notes:          C wrapper for SysPostMessage -- message past on stack
+                               85 ;
+                               86 ;//egad...I hate to do it this way, but its the easiest way I can think of right now
+                               87 ;//Tasking pushes the parameters on the stack backwards, so we can't just offset the stack
+                               88 ;//by Length backwards and put this pointer in R0 to pass to SysPostMessage (note:  this C function 
+                               89 ;//is FSysPostMessage).  What ends up happening is we step backwards from the stack pointer, and push
+                               90 ;//these values onto the stack (making a message on the stack that is properly organized).  After calling
+                               91 ;//SysPostMessage, we fixup the stack properly to remove all the items we stuffed onto it.
+                               92 ;//The warning "parameter iLength not used" is unavoidable without adding more code
+                               93 ;<
+                               94 ;///////////////////////////////////////////////////////////////////////////////
+                               95 FSysPostMessage
+P:0000 22F100         2    2   96     move r7,r1                  ;move our current stack pointer to r0 (this is where the message will start)
+P:0001 22F000         2    4   97     move r7,r0
+P:0002 58F900         4    8   98     move y:-(r1),a0              ;get the length, 
+P:0003 585F00         2   10   99     move a0,y:(r7)+             ;put the length in the new message
+P:0004 00000A         2   12  100     dec a
+P:0005 06C800 rrrrrr  6   18  101     do a0,_enddo                ;for each in the message
+P:0007 4CF900         4   22  102         move y:-(r1),x0         ;move backwards and copy it to x0
+P:0008 4C5F00         2   24  103         move x0,y:(r7)+         ;push it on the stack, creating a new message
+                         (6)  104 _enddo
+                              105     push a0                     ;Save off the length-1
+P:0009 585F00         2   26  105     move    a0,y:(r7)+
+                              106     push SSH
+P:000A 055F7C         2   28  106     movec   SSH,y:(r7)+
+P:000B 0BF080 rrrrrr  6   34  108     jsr SysPostMessage
+                              109     pop SSH
+P:000D 05FF7C         4   38  109     movec   y:-(r7),SSH
+                              110     pop n7                      ;pop the length-1 off into n7
+P:000E 7FFF00         4   42  110     move    y:-(r7),n7
+P:000F 205700         2   44  111     move (r7)-                  ;this is one for the length...
+P:0010 204700         2   46  112     move (r7)-n7                ;move the stack back by the length-1 (pop off the rest of the message)
+P:0011 00000C         4   50  113     rts
+                              116 ;///////////////////////////////////////////////////////////////////////////////
+                              117 ;
+                              118 ;>  Name:           SysPostMessage
+                              119 ;
+                              120 ;   Type:           Function
+                              121 ;
+                              122 ;   Description:    Post a message to module queue
+                              123 ;
+                              124 ;   Inputs:         r0 : points to a message to be posted (in y memory)
+                              125 ;                   m0 : linear addressing
+                              126 ;
+                              127 ;   Outputs:        none
+                              128 ;                   
+                              129 ;   Notes:          
+                              130 ;<
+                              131 ;///////////////////////////////////////////////////////////////////////////////
+                              132 SysPostMessage
+                              134     push    m1
+P:0012 055F61         2   52  134     movec   m1,y:(r7)+
+                              136     ;Find the buffer descriptor for the targetted module
+P:0013 4FD800         2   54  137     move y:(r0)+,y1                     ; y1=message size, loop value further down to copy the data
+P:0014 4DD000         2   56  138     move y:(r0)-,x1                     ; x1=message value
+                              139     
+                              140     ;Extract the base command from the message command
+                              141     ;and start init for the next loop
+P:0015 56F400 FF0000  3   59  142     move    #>$ff0000,a                 ; a1 = Mask (I do not care about a2)
+P:0017 61F466 rrrrrr  3   62  143     and     x1,a    #>ModuleRouterTable,r1
+                              145     ;r1 points to the Base Command entry for the first queue descriptor
+                              146     ;Buffer Descriptor Search Loop
+P:0019 058061r        2   64  147     movec   y:<Const_ffffff,m1          ;Continuing loop init ...
+P:001A 57F400 FF0000  3   67  148     move    #>$ff0000,b                 ; b1 = Mask (I do not care about b2, it should be the same than a2 (few lines above))
+                              149     
+P:001C 060080rrrrrrr  6   73  150     do  #0,_EndLoop                
+P:001E 4CD900         2   75  151         move    y:(r1)+,x0              ;x0 = CommandBase + Queue descriptor Address
+P:001F 4DD900         2   77  152         move    y:(r1)+,x1              ;x1 = Module Number
+P:0020 20004E         2   79  153         and     x0,b                    ;Get rid of queue descriptor address
+P:0021 20000D         2   81  154         cmp     a,b                     ;Check match
+P:0022 0AF0A2 rrrrrr  6   87  155         jne     _Continue               ;No match, try next router entry
+P:0024 00008C         2   89  156         enddo                           ;We have a match. Terminate the loop
+P:0025 0AF080 rrrrrr  6   95  157         jmp     _FoundIt
+                              158 _Continue
+P:0027 57F400 FF0000  3   98  159         move    #>$ff0000,b
+                        (25)  160 _EndLoop
+                              162     error                               ;Does not know how to route message
+P:0029 000200         4  102  162     debug
+                              163     
+                              164 _FoundIt
+P:002A 209400         2  104  165     move    x0,r4                       ;low 16 bits of x0 is the address of the queue descriptor
+                              167     ; Save the module number
+                              168     push x1
+P:002B 4D5F00         2  106  168     move    x1,y:(r7)+
+                              170     ; Determine amount of empty space in that message queue.
+                              171     ; HACK need to save y1,r0,m0,r4,m4 on the stack when we get it working...
+                              172     ; ...they could be destroyed by the jsr below if GetEmptySpace is modified.
+P:002C 0BF080 rrrrrr  6  112  173     jsr    GetEmptySpace
+                              175     ; compare size of message to post with space available in dest queue
+P:002E 200075         2  114  176     cmp    y1,a
+P:002F 0AF0A1 rrrrrr  6  120  177     jge    _enough_space
+                              178     ; if not enough space, debug instruction
+                              179     error
+P:0031 000200         4  124  179     debug
+                              181 _enough_space
+                              182     ; else continue processing posting message
+                              183     ; acquire the head pointer and module of the target queue
+P:0032 3C0200         2  126  184     move #2,n4                          ; set up offset reg for advancement
+P:0033 205C00         2  128  185     move (r4)+                          ; skip past the base address
+P:0034 05CC61         2  130  186     movec y:(r4)+n4,m1                   ; m1=target buffer queue modulo, r4 points to headptr
+P:0035 69E400         2  132  187     move y:(r4),r1                      ; r1=head ptr of target buffer queue
+                              189     ; copy message type and arguments to destination queue...
+                              190     ; ...including the size field
+P:0036 06C700 rrrrrr  6  138  192     do   y1,_copy_message
+P:0038 4CD800         2  140  193         move y:(r0)+,x0
+P:0039 4C5900         2  142  194         move x0,y:(r1)+
+                         (4)  195 _copy_message
+                              197     ; update the head pointer in the destination queue buffer descriptor
+P:003A 696400         2  144  198     move r1,y:(r4)
+                              199     ; restore the linear addressing mode
+P:003B 058061r        2  146  200     movec y:<Const_ffffff,m1
+                              202     ; Restore the module number
+                              203     pop  x1
+P:003C 4DFF00         4  150  203     move    y:-(r7),x1
+                              205     ; Signal the module that it has a message
+P:003D 44F400 000002  3  153  206     move #>EVENT_MESSAGE,x0
+P:003F 0BF080 rrrrrr  6  159  207     jsr  SignalModule
+                              208     pop     m1
+P:0041 05FF61         4  163  208     movec   y:-(r7),m1
+P:0042 00000C         4  167  210     rts
+                              212     endsec

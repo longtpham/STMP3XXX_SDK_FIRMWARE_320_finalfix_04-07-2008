@@ -1,0 +1,308 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\3500\sysbrownout.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;
+                                3 ;  File        : sysbrownout.asm
+                                4 ;  Description : Brownout System Routines
+                                5 ;
+                                6 ;  Copyright (c) SigmaTel, Inc. Unpublished
+                                7 ; 
+                                8 ;  SigmaTel, Inc.
+                                9 ;  Proprietary  Confidential
+                               10 ; 
+                               11 ;  This source code and the algorithms implemented therein constitute
+                               12 ;  confidential information and may comprise trade secrets of SigmaTel, Inc.
+                               13 ;  or its associates, and any use thereof is subject to the terms and
+                               14 ;  conditions of the Confidential Disclosure Agreement pursuant to which this
+                               15 ;  source code was originally received.
+                               16 ;
+                               17 ;///////////////////////////////////////////////////////////////////////////////
+                               19     page    255,255,0
+                               21     section SYSFUN_Brownout
+                               23 ;///////////////////////////////////////////////////////////////////////////////
+                               24 ;   Macros
+                               25 ;///////////////////////////////////////////////////////////////////////////////
+                               29     list
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               32 ;   Includes
+                               33 ;///////////////////////////////////////////////////////////////////////////////
+                               39     list
+                               40         
+                               41 ;///////////////////////////////////////////////////////////////////////////////
+                               42 ;   External Definitions
+                               43 ;///////////////////////////////////////////////////////////////////////////////
+                               46 ;   global  SysRTCShutdown
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   External References
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               53     list
+                               60         
+                               61 ;///////////////////////////////////////////////////////////////////////////////
+                               62 ;   Equates
+                               63 ;///////////////////////////////////////////////////////////////////////////////
+                               66 ; brownout trip point in mV
+                               67 VBATT_BO_MV     equ     830
+                               72 NUM_BATT_READS  equ     7
+                               74 ;///////////////////////////////////////////////////////////////////////////////
+                               75 ;   X Memory
+                               76 ;///////////////////////////////////////////////////////////////////////////////
+                               77         
+X:0000                         78     org     x,"SYSFUN_Brownout_X":
+                               80 ;///////////////////////////////////////////////////////////////////////////////
+                               81 ;   Y Memory
+                               82 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         84     org     y,"SYSFUN_Brownout_Y":
+                               85 ;Storage for the stack pointer register
+Y:0000 000000                  86 OldSP       dc    0
+Y:0001 000000                  87 OldR7       dc    0
+Y:0002 000000                  88 OldM7       dc    0       
+Y:0003                         89 BrownoutStack   ds    20 
+   |   RESERVED                   
+Y:0016
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+                               91 ;   P Memory
+                               92 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         94     org     p,"SYSFUN_Brownout_P":
+                               96 ;///////////////////////////////////////////////////////////////////////////////
+                               97 ;
+                               98 ;>  Name:           SysBrownOutIsr
+                               99 ;
+                              100 ;   Type:           Interrupt Service Routine
+                              101 ;
+                              102 ;   Description:    If IRQB is generated one of the brownouts occurred
+                              103 ;                   Vddd, Vddio, Battery -- if not battery shutdown immediately
+                              104 ;
+                              105 ;                   If battery brownout, debounce first, because noice when using DC/DC
+                              106 ;                   debounce counter is clear in main loop if >2
+                              107 ;
+                              108 ;   Inputs:         none
+                              109 ;
+                              110 ;   Outputs:        none
+                              111 ;                   
+                              112 ;   Notes:          
+                              113 ;<
+                              114 ;///////////////////////////////////////////////////////////////////////////////
+                              115 SysBrownOutIsr
+                              117    ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              118    ; This will be returned to its previous state when the RTI occurs (since the SR
+                              119    ; will be popped back off System Stack Low (SSL).
+                              120    ; Accumulator behavior is unpredictable when the DM bit is set.
+                              121    ; Next cycle after clearing it should NOT be an ALU instruction.
+P:0000 00BFB8         2    2  122    andi #$BF,mr
+                              124    ;test point
+                              125    ;bset #HW_GP_B17_BITPOS,x:HW_GP0DOR
+P:0001 057067 rrrrrr  4    6  127    movec m7,y:OldM7
+P:0003 058067r        2    8  128    movec y:<Const_ffffff,m7
+P:0004 6F7000 rrrrrr  3   11  129    move  r7,y:OldR7  
+P:0006 67F400 rrrrrr  3   14  130    move  #BrownoutStack,r7
+P:0008 05707B rrrrrr  4   18  131    movec sp,y:OldSP
+                              133    ; Save Accumulator completely
+                              134    push   a0
+P:000A 585F00         2   20  134     move    a0,y:(r7)+
+                              135    push   a1
+P:000B 5C5F00         2   22  135     move    a1,y:(r7)+
+                              136    push   a2
+P:000C 5A5F00         2   24  136     move    a2,y:(r7)+
+                              138    ; save other registers used
+                              139    push   x0
+P:000D 4C5F00         2   26  139     move    x0,y:(r7)+
+                              141 ; clear out 2 levels of hw stack for do loops in _BattBOQualifier   
+P:000E 044EBB         2   28  142    movec  sp,a 
+P:000F 4C8000r        2   30  143    move   y:<Const_000003,x0
+P:0010 200045         2   32  144    cmp    x0,a 
+P:0011 0AF0A9 rrrrrr  6   38  145    jlt     _sp_is_cleared
+                              147    push    ssl          ; need 2 levels for do loop
+P:0013 055F7D         2   40  147     movec   ssl,y:(r7)+
+                              148    push    ssh
+P:0014 055F7C         2   42  148     movec   ssh,y:(r7)+
+                              149    push    ssl        
+P:0015 055F7D         2   44  149     movec   ssl,y:(r7)+
+                              150    push    ssh
+P:0016 055F7C         2   46  150     movec   ssh,y:(r7)+
+                              151 _sp_is_cleared
+                              153    ; --------------------------------------------------------------------------------
+                              154    ; if battery brownout enabled, debounce it -- if fast glitches 
+                              155    ; Assumption made here that brownout event is the threshold assigned to IRQ_EVENT0
+P:0017 44F000 00FA22  3   49  156    move    x:HW_BATT_RESULT,x0
+P:0019 0BC474         4   53  157    btst    #HW_BATT_RESULT_IRQ_EVENT0_BITPOS,x0
+P:001A 0AF0A8 rrrrrr  6   59  158    jcs     _BattBOQualifier  
+                              160    ; verify this is a IRQB interrupt
+P:001C 44F000 00FA01  3   62  161    move    x:HW_RCR,x0
+P:001E 0BC469         4   66  162    btst    #HW_RCR_IRQB_BITPOS,x0
+P:001F 0AF0A8 rrrrrr  6   72  163    jcs     _Done
+                              164    
+                              165    ; Check if this was a VDDIO brown out and shut down if it was.
+P:0021 44F000 00FA0E  3   75  166    move    x:HW_DCDC_VDDIO,x0
+P:0023 0BC474         4   79  167    btst    #HW_DCDC_VDDIO_BROWNOUT_STATUS_BITPOS,x0
+P:0024 0AF0A8 rrrrrr  6   85  168    jcs     _Shutdown
+                              170    ; if not a batt brownout put headphones into class A mode to reduce current draw
+P:0026 0A7009 00FA15  6   91  171    bclr    #HW_HPCTRL_HPCLASSAB_BITPOS,x:HW_HPCTRL
+                              173    ; Go make sure that this was a real brownout and not just a glitch.
+P:0028 0AF080 rrrrrr  6   97  174    jmp     _CoreBOQualifier
+                              175    ;------------------------
+                              177 _Shutdown
+                              178     ; turn off the DCDC converter
+P:002A 0A7009 00FA03  6  103  179     bclr    #HW_MIXTBR_PSRN_BITPOS,x:HW_MIXTBR  ;Must Clear PSRN bit first
+P:002C 0A7031 00FA00  6  109  180     bset    #HW_CCR_PWDN_BITPOS,x:HW_CCR    ; If using the DCDC converter then                                          
+                              181                                             ; the part will turn off.  If not
+                              182                                             ; using the DCDC converter then
+                              183                                             ; the part will just kinda stop
+                              184                                             ; working :)
+P:002E 0AF080 rrrrrr  6  115  185 _loop  jmp _loop                            ; must stop here
+                              188 ;;;;;;;;;;;;;;;;;; Battery Brownout ;;;;;;;;;;;;;;;;;;;;
+                              189 _BattBOQualifier
+                              190    ; assuming a 68uF cap on battery line, (dt/dv = 13.6uS/0.1V)
+                              191    ; if there was a battery drop out, we need to quickly decide
+                              192    ; because the xtal can be affected by battery droops before the Vddd BO will trip
+                              193    ; 
+                              194    ; The implementation prior to SDK2.105 takes too long to monitor the battery and
+                              195    ; the long term average was used making it susceptible to ungraceful shutdowns 
+                              196    ; due to battery "fall out" case
+                              197    ; 
+                              198    ; sample instantaneous voltage X times and decide within 13.6uS to shutdown
+                              199    ; only sum results to reduce time -- don't have time to find out/change clock speed and could be
+                              200    ; anywhere between 10MHz and 60MHz, so assume worst case 10MHz (100nS/dclk) 
+                              201    ; 136 clks to shutdown -- 
+                              202    ;     @10MHz: 27 reads, and 3 gpio bit manipulations (timing) takes 13.4uS to shutdown
+                              203    ;
+                              204    ; LRADC samples @ 4.096MHz/4 = 1.024MHz (976.5nS) -- another tradeoff is number of new samples taken during
+                              205    ;    X reads; also dependent upon clock speed, worse case is 60MHz (16.66nS/dclk) -- 58 clks between reads
+                              206    ;    with a 6 clk loop, need to read 10 times, to get 2 samples at 60MHz
+                              207    ;
+                              208    ; test point     
+                              209    ; bclr #HW_GP_B16_BITPOS,x:HW_GP0DOR
+                              211    ;;;; save stack in case it's a false alarm
+                              212     push b2
+P:0030 5B5F00         2  117  212     move    b2,y:(r7)+
+                              213     push b1
+P:0031 5D5F00         2  119  213     move    b1,y:(r7)+
+                              214     push b0
+P:0032 595F00         2  121  214     move    b0,y:(r7)+
+                              215     push y0
+P:0033 4E5F00         2  123  215     move    y0,y:(r7)+
+                              216     push r0
+P:0034 685F00         2  125  216     move    r0,y:(r7)+
+                              217       
+                              218     ; --------------------------------------------------------------------------------
+                              219     ;equivalent to:     move    #>(BATT_BO_CNTS*NUM_BATT_READS),x0
+                              220     ;Assumes battery threshold was previously programmed
+P:0035 200013         2  127  221     clr     a
+P:0036 4EF000 rrrrrr  3  130  222     move    y:FbattBrownoutCount,y0         ;Grab the precalculated brownout count
+P:0038 44F400 000700  3  133  223     move    #>(NUM_BATT_READS*256),x0       ;Shift the scalar by 8 bits, because of result's bit position in the register
+P:003A 2000D0         2  135  224     mpy     x0,y0,a                         ;Multiply expected brownout count by scalar
+P:003B 200022         2  137  225     asr     a                               ;Shift right once for integer math
+P:003C 210400         2  139  226     move    a0,x0                           ;Store in x0
+                              228     ;x0 now contains expected sum of NUM_BATT_READS number of results, shifted left by 8 bits
+                              229     ;to match the sum generated in _ReadBatt, to which it will be compared
+P:003D 46F413 01FF00  3  142  231     clr     a   #>LOW_RES_ADC_BATT_READ_MASK,y0
+P:003F 20001B         2  144  232     clr     b
+P:0040 60F400 00FA22  3  147  233     move    #HW_BATT_RESULT,r0
+                              235 _ReadBatt
+P:0042 060780 rrrrrr  6  153  236     do #7,_CompareBatt             
+P:0044 54E000         2  155  237     move    x:(r0),a1              ; read lradc result  (2 clks)
+P:0045 200056         2  157  238     and     y0,a1                  ; mask battery cnts  (2 clks)
+P:0046 200018         2  159  239     add     a,b                    ; add to accumulator (2 clks)
+                         (6)  240 _CompareBatt
+P:0047 20004D         2  161  242     cmp     x0,b
+                              243     ;test point
+P:0048 0A7011 00F401  6  167  244     bclr #HW_GP_B17_BITPOS,x:HW_GP0DOR
+P:004A 0AF0AF rrrrrr  6  173  245     jle     _Shutdown
+                              246     
+                              247     ; battery level ok so continue -- restore stack
+                              248     pop r0
+P:004C 68FF00         4  177  248     move    y:-(r7),r0
+                              249     pop y0
+P:004D 4EFF00         4  181  249     move    y:-(r7),y0
+                              250     pop b0
+P:004E 59FF00         4  185  250     move    y:-(r7),b0
+                              251     pop b1
+P:004F 5DFF00         4  189  251     move    y:-(r7),b1
+                              252     pop b2
+P:0050 5BFF00         4  193  252     move    y:-(r7),b2
+P:0051 0AF080 rrrrrr  6  199  254     jmp     _Done
+                              256 ;;;;;;;;;;;;;;;;;; Vddd Brownout ;;;;;;;;;;;;;;;;;;;;;;;        
+                              257 _CoreBOQualifier
+                              258    ; headphone shorts can cause the core to droop but not the battery
+                              259    ; if get vddd brownout, turn off headphone amp (class A is negligible current draw w/o the startup issues)
+                              260    ; check the battery voltage and if the battery is not drooping then continue
+                              261    ; battery will not droop during a headphone short if the short detect circuit is enabled
+                              262    ; bclr #HW_GP_B17_BITPOS,x:HW_GP0DOR
+                              264     ;Use the current averages value, unless it's zero
+P:0053 4CF000 rrrrrr  3  202  265     move    y:FLowResAdcBattAvg,x0
+P:0055 200013         2  204  266     clr     a
+P:0056 200045         2  206  267     cmp     x0,a
+P:0057 0AF0A2 rrrrrr  6  212  268     jne     _CheckVoltage
+                              269     ;At startup, the averaged value may not be available yet. If not, get instantaneous value.
+P:0059 4CF000 rrrrrr  3  215  270     move    y:FLowResAdcBattResult,x0
+                              271     
+                              272 _CheckVoltage        ; voltage to use is in x0
+                              273     ; if brownout level is less than actual voltage, don't shutdown yet
+P:005B 5EF000 rrrrrr  3  218  274     move    y:FbattBrownoutCount,a
+P:005D 200045         2  220  275     cmp     x0,a
+P:005E 0AF0A7 rrrrrr  6  226  276     jgt     _Shutdown
+                              278     ;bset #HW_GP_B17_BITPOS,x:HW_GP0DOR
+                              280     ; no brownout so return amp back to class AB
+P:0060 0A7029 00FA15  6  232  281     bset    #HW_HPCTRL_HPCLASSAB_BITPOS,x:HW_HPCTRL     
+                              283 _Done
+                              284     ; Restore the system stack 2 levels
+P:0062 5EF000 rrrrrr  3  235  285     move    y:OldSP,a                    ; original, saved sp
+P:0064 4C8000r        2  237  286     move   y:<Const_000003,x0
+P:0065 200045         2  239  287     cmp    x0,a 
+P:0066 0AF0A9 rrrrrr  6  245  288     jlt     _sp_is_restored
+                              290     pop     ssh
+P:0068 05FF7C         4  249  290     movec   y:-(r7),ssh
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              291     pop     ssl
+P:0069 05FF7D         4  253  291     movec   y:-(r7),ssl
+                              292     pop     ssh
+P:006A 05FF7C         4  257  292     movec   y:-(r7),ssh
+                              293     pop     ssl
+P:006B 05FF7D         4  261  293     movec   y:-(r7),ssl
+                              294 _sp_is_restored
+                              296     ; Restore all the scratch registers used
+                              297     pop     x0
+P:006C 4CFF00         4  265  297     move    y:-(r7),x0
+                              298     ; Restore the Accumulator
+                              299     pop     a2
+P:006D 5AFF00         4  269  299     move    y:-(r7),a2
+                              300     pop     a1
+P:006E 5CFF00         4  273  300     move    y:-(r7),a1
+                              301     pop     a0
+P:006F 58FF00         4  277  301     move    y:-(r7),a0
+P:0070 05F07B rrrrrr  4  281  302     movec y:OldSP,sp
+P:0072 05F067 rrrrrr  4  285  303     movec y:OldM7,m7
+P:0074 6FF000 rrrrrr  3  288  304     move  y:OldR7,r7  
+                              306    ; test point
+                              307    ;bset #HW_GP_B16_BITPOS,x:HW_GP0DOR
+                              308  
+P:0076 000004         4  292  309     rti
+                              311 ;///////////////////////////////////////////////////////////////////////////////
+                              312 ;
+                              313 ;>  Name:           SysRTCShutdown
+                              314 ;
+                              315 ;   Type:           Subroutine
+                              316 ;
+                              317 ;   Description:    In order to prevent corruption of RTC values, the CKRST bit
+                              318 ;                       can only be cleared within 0.5mS of HW_RTCLOW updates.
+                              319 ;
+                              320 ;   Inputs:         none
+                              321 ;
+                              322 ;   Outputs:        none
+                              323 ;                   
+                              324 ;   Notes:          Enabled in SDK2.105 & discovered that ROM clears CCR during
+                              325 ;                       POST, so if using RTC when powerdown, MUST disable POST
+                              326 ;                       bootmode.
+                              327 ;
+                              328 ;                   Uses a do loop
+                              329 ;<
+                              330 ;///////////////////////////////////////////////////////////////////////////////
+                              331 ;SysRTCShutdown
+                              332 ;rts
+                              333 ;safe RTC Shutdown is not needed on 35XX.
+                              335     endsec
+                              336         

@@ -1,0 +1,569 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfcbbbb.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;sw_stereocontro:
+                               96 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               97 ; 2    |// Copyright(C) SigmaTel, Inc. 2005
+                               98 ; 3    |//
+                               99 ; 4    |// File :         sw_stereocontrol.c
+                              100 ; 5    |// Description:   This file contain implementation of function sw_stereocontrol
+                              101 ; 6    |//                _xcall and sw_stereocontrol_reset.
+                              102 ; 7    |//                               
+                              103 ; 8    |////////////////////////////////////////////////////////////////////////////////
+                              104 ; 9    |
+                              105 ; 10   |#include "sw_stereocontrol.h"
+                              106 
+                              108 
+                              109 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              110 ; 2    |// Copyright(C) SigmaTel, Inc. 2005
+                              111 ; 3    |//
+                              112 ; 4    |// File :         sw_stereocontrol.h
+                              113 ; 5    |// Description:   This function contain declarations of functions and
+                              114 ; 6    |//                                sw_stereocontrol structure.
+                              115 ; 7    |////////////////////////////////////////////////////////////////////////////////
+                              116 ; 8    |
+                              117 ; 9    |extern void Update_IIRFiltCoeff(void);
+                              118 ; 10   |extern void sw_stereocontrol_reset(void);
+                              119 ; 11   |extern void sw_stereopath_xcall(int _X *pDai, int _X *pDa0, int n);
+                              120 ; 12   |
+                              121 ; 13   |
+                              122 ; 14   |extern int g_sd_audio_LprB0_i16;
+                              123 ; 15   |extern int g_sd_audio_LprB1_i16;
+                              124 ; 16   |extern int g_sd_audio_LprA1_i16;
+                              125 ; 17   |extern int g_sd_audio_LprA2_i16;
+                              126 ; 18   |
+                              127 ; 19   |#define DEFAULT_RSSI_ATTACK     24108
+                              128 ; 20   |#define DEFAULT_RSSI_DELAY      59299 
+                              129 ; 21   |#define DEFAULT_LPR_BW_TH_LO     5120
+                              130 ; 22   |#define DEFAULT_LPR_BW_TH_HI     7680
+                              131 ; 23   |#define DEFAULT_LPR_GA_TH          20
+                              132 ; 24   |#define DEFAULT_LMR_GA_TH          50
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              133 ; 25   |#define DEFAULT_LPR_BW_SL_SC     4800
+                              134 ; 26   |#define DEFAULT_LPR_BW_SL_SH       10
+                              135 ; 27   |
+                              136 ; 28   |#define DEFAULT_LPR_GA          32767
+                              137 ; 29   |#define DEFAULT_LMR_GA          32767
+                              138 ; 30   |
+                              139 ; 31   |// Default IIR filter coefficients for -3dB cutoff @ 17 kHz
+                              140 ; 32   |#define DEFAULT_B0               9403 
+                              141 ; 33   |#define DEFAULT_B1              18812 
+                              142 ; 34   |#define DEFAULT_B2         DEFAULT_B0 
+                              143 ; 35   |#define DEFAULT_A1             -16079 
+                              144 ; 36   |#define DEFAULT_A2              -5563
+                              145 ; 37   |
+                              146 ; 38   |#define COEF_SCALE                256           /* << 8 same as * 256 */
+                              147 ; 39   |        
+                              148 ; 40   |        
+                              149 ; 41   |
+                              150 ; 42   |
+                              151 ; 43   |_reentrant void sw_stereocontrol_xcall(unsigned short sd_audio_Rssi_u16);
+                              152 ; 44   |_reentrant void sw_stereocontrol_bwsweep(void);
+                              153 ; 45   | 
+                              154 ; 46   |extern int  _Y g_sd_audio_pCoefForcedMono_u1;               // Forced Mono control bit
+                              155 ; 47   |extern int  _Y g_sd_audio_pCoefBypassBlend_u1;              // Forced bypass of stereo ble
+                                  nd
+                              156 ; 48   |extern int  _Y g_sd_audio_pCoefBypassSoftmute_u1;           // Forced bypass of softmute
+                              157 ; 49   |
+                              158 ; 50   |typedef struct sw_stereocontrol_str
+                              159 ; 51   |{                                                  // *** Programmable Coef's
+                              160 ; 52   |  unsigned short sd_audio_pCoefRssiAttack_u16;    // prog coef RSSI attack
+                              161 ; 53   |  unsigned short sd_audio_pCoefRssiDecay_u16;     // prog coef RSSI decay
+                              162 ; 54   |
+                              163 ; 55   |  unsigned short sd_audio_pCoefLprBwThLo_u16;     // prog coef Low Th LPR BW
+                              164 ; 56   |  unsigned short sd_audio_pCoefLprBwThHi_u16;     // prog coef High Th LPR BW
+                              165 ; 57   | 
+                              166 ; 58   |  unsigned short sd_audio_pCoefLprGaTh_u16;       // prog coef Th LPR Gain (SoftMute)
+                              167 ; 59   |  unsigned short sd_audio_pCoefLmrGaTh_u16;       // prog coef Th LMR Gain (Blend)
+                              168 ; 60   |
+                              169 ; 61   |  unsigned short sd_audio_pCoefLprBwSlSc_u16;     // prog coef Slope scale LPR BW
+                              170 ; 62   |  unsigned short sd_audio_pCoefLprBwSlSh_u16;     // prog coef Slope shift LPR BW
+                              171 ; 63   |//  unsigned short sd_audio_pCoefLprGaSlSc_u16;     // prog coef Slope scale LPR Gain
+                              172 ; 64   |//  unsigned short sd_audio_pCoefLprGaSlSh_u16;     // prog coef Slope shift LPR Gain
+                              173 ; 65   |
+                              174 ; 66   |  char sd_audio_pCoefBypassBwCtl_u1;              // prog coef Slope shift LPR Gain
+                              175 ; 67   |                                                  // *** end of Programmable Coef's
+                              176 ; 68   |
+                              177 ; 69   |  unsigned short sd_audio_LprGa_u16;              // LPR Gain (SoftMute) desired
+                              178 ; 70   |  unsigned short sd_audio_LmrGa_u16;              // LMR Gain (Blend) desired
+                              179 ; 71   |
+                              180 ; 72   |  signed short sd_audio_LprB0_i16;                // LPR,LMR stereo filter coef
+                              181 ; 73   |  signed short sd_audio_LprB1_i16;                // LPR,LMR stereo filter coef  
+                              182 ; 74   |  signed short sd_audio_LprA1_i16;                // LPR,LMR stereo filter coef
+                              183 ; 75   |  signed short sd_audio_LprA2_i16;                // LPR,LMR stereo filter coef
+                              184 ; 76   |
+                              185 ; 77   |  unsigned long sd_audio_RssiDecoded_u24;         // integer decoded RSSI
+                              186 ; 78   |  signed short sd_audio_RssiLog_i16;              // 10log10(decoded RSSI)
+                              187 ; 79   |  unsigned short sd_audio_RssiMant_u16;           // mantissa of float-coded RSSI
+                              188 ; 80   |  unsigned short sd_audio_RssiExp_u16;            // exponent of float-coded RSSI
+                              189 ; 81   |  unsigned short sd_audio_Prssi_u16;              // power of 2 for RSSI
+                              190 ; 82   |
+                              191 ; 83   |  unsigned short sd_audio_ScaledTrueRssi_u16;     // scaled version for precision
+                              192 ; 84   |  unsigned short sd_audio_FilteredRssi_u16;       // Attack/Decay filtered RSSI
+                              193 ; 85   |  unsigned short sd_audio_PrevFilteredRssi_u16;   // previous version of above
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              194 ; 86   |//  unsigned short sd_audio_DecRssi_u16;            // Decimation modulo counter
+                              195 ; 87   |  
+                              196 ; 88   |  signed short sd_audio_ControlLpr_i16;           // master control for LPR
+                              197 ; 89   |  signed short sd_audio_ControlLmr_i16;           // master control for LMR
+                              198 ; 90   |  unsigned short sd_audio_LprBw_u16;              // LPR Bandwidth desired
+                              199 ; 91   |  unsigned short sd_audio_ScaledControlLmr_u16;   // Scaled down version Ctl LMR
+                              200 ; 92   |  unsigned short sd_audio_ScaledControlLpr_u16;   // Scaled down version Ctl LPR
+                              201 ; 93   |
+                              202 ; 94   |  signed short sd_audio_B0B_i16;                  // BW ctl B0 coef y-intercept
+                              203 ; 95   |  unsigned short sd_audio_B0S_u16;                // BW ctl B0 coef scale
+                              204 ; 96   |  signed short sd_audio_B0M_i16;                  // BW ctl B0 coef slope
+                              205 ; 97   |  signed short sd_audio_B1B_i16;                  // BW ctl B1 coef y-intercept
+                              206 ; 98   |  unsigned short sd_audio_B1S_u16;                // BW ctl B1 coef scale
+                              207 ; 99   |  signed short sd_audio_B1M_i16;                  // BW ctl B1 coef slope
+                              208 ; 100  |  signed short sd_audio_A1B_i16;                  // BW ctl A1 coef y-intercept
+                              209 ; 101  |  unsigned short sd_audio_A1S_u16;                // BW ctl A1 coef scale
+                              210 ; 102  |  signed short sd_audio_A1M_i16;                  // BW ctl A1 coef slope
+                              211 ; 103  |  signed short sd_audio_A2B_i16;                  // BW ctl A2 coef y-intercept
+                              212 ; 104  |  unsigned short sd_audio_A2S_u16;                // BW ctl A2 coef scale
+                              213 ; 105  |  signed short sd_audio_A2M_i16;                  // BW ctl A2 coef slope
+                              214 ; 106  |  unsigned short sd_audio_AdjBw_u16;              // Desired Filter BW scaled into range
+                              215 ; 107  |
+                              216 ; 108  |  unsigned long  sd_audio_Acc_u32;                // mimics H/W accumulator
+                              217 ; 109  |  signed short temp1_reg;                         // mimics 16 bit register
+                              218 ; 110  |  signed short temp2_reg;                         // mimics 16 bit register
+                              219 ; 111  |  signed short temp3_reg;                         // mimics 16 bit register
+                              220 ; 112  |
+                              221 ; 113  |}sw_stereocontrol_t;
+                              222 ; 114  |
+                              223 ; 115  |extern int gCOEF_SCALE;
+                              224 
+                              272 
+                              273 ; 116  |
+                              274 ; 117  |extern sw_stereocontrol_t sw_stereocontrol;
+                              275 
+                              277 
+                              278 ; 11   |   
+                              279 ; 12   |// **************************************************************************
+                              280 ; 13   |// ************ Global variables ********************************************
+                              281 ; 14   |// **************************************************************************
+                              282 ; 15   |
+                              283 ; 16   |int _Y g_sd_audio_LprB0_i16 = DEFAULT_B0 * COEF_SCALE;      // -3dB cutoff = 17 kHz
+                              284 
+                              285 
+Y:0000                        286         org     y,".ydatasw_stereocontrol",init:
+                              287 Fg_sd_audio_LprB0_i16:
+Y:0000 24BB00                 288         dc      $24bb00
+                              291 
+                              292 ; 17   |int _Y g_sd_audio_LprB1_i16 = DEFAULT_B1 * COEF_SCALE;      // -3dB cutoff = 17 kHz
+                              293 
+                              294 Fg_sd_audio_LprB1_i16:
+Y:0001 497C00                 295         dc      $497c00
+                              298 
+                              299 ; 18   |int _Y g_sd_audio_LprA1_i16 = DEFAULT_A1 * COEF_SCALE;      // -3dB cutoff = 17 kHz
+                              300 
+                              301 Fg_sd_audio_LprA1_i16:
+Y:0002 C13100                 302         dc      $c13100
+                              305 
+                              306 ; 19   |int _Y g_sd_audio_LprA2_i16 = DEFAULT_A2 * COEF_SCALE;      // -3dB cutoff = 17 kHz
+                              307 
+                              308 Fg_sd_audio_LprA2_i16:
+Y:0003 EA4500                 309         dc      $ea4500
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              312 
+                              313 ; 20   |
+                              314 ; 21   |int _Y g_sd_audio_pCoefForcedMono_u1     = 0;
+                              315 
+                              316 Fg_sd_audio_pCoefForcedMono_u1:
+Y:0004 000000                 317         dc      $000000
+                              320 
+                              321 ; 22   |int _Y g_sd_audio_pCoefBypassBlend_u1    = 0;
+                              322 
+                              323 Fg_sd_audio_pCoefBypassBlend_u1:
+Y:0005 000000                 324         dc      $000000
+                              327 
+                              328 ; 23   |int _Y g_sd_audio_pCoefBypassSoftmute_u1 = 0;
+                              329 
+                              330 Fg_sd_audio_pCoefBypassSoftmute_u1:
+Y:0006 000000                 331         dc      $000000
+                              334 
+                              335 ; 24   |int _Y g_sd_audio_pCoefBypassBwCtl_u1    = 0;
+                              336 
+                              337 Fg_sd_audio_pCoefBypassBwCtl_u1:
+Y:0007 000000                 338         dc      $000000
+                              341 
+                              342 ; 25   |
+                              343 ; 26   |_fract gLPR_Mult_fract = .99;
+                              344 
+                              345 FgLPR_Mult_fract:
+Y:0008 7EB852                 346         dc      $7eb852
+                              349 
+                              350 ; 27   |_fract gLMR_Mult_fract = .99;
+                              351 
+                              352 FgLMR_Mult_fract:
+Y:0009 7EB852                 353         dc      $7eb852
+                              356 
+                              357 ; 28   |
+                              358 ; 29   |_fract LPR_Data_fract = 0;
+                              359 
+                              360 FLPR_Data_fract:
+Y:000A 000000                 361         dc      $000000
+                              364 
+                              365 ; 30   |_fract LMR_Data_fract = 0;
+                              366 
+                              367 FLMR_Data_fract:
+Y:000B 000000                 368         dc      $000000
+                              371 
+                              372 ; 31   |_fract _circ _Y  LPR_XYData[5] = {0, 0, 0, 0, 0};       // LRP data to be filtered
+                              373 
+                              374 
+Y:0000                        375         org     y,".ydatasw_stereocontrol.LPR_XYData",init:
+                              376         baddr   m,5
+                              377 FLPR_XYData:
+Y:0000 000000 000000          378         dc      $000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000                     
+                              382 
+                              383 ; 32   |_fract _circ _Y  LMR_XYData[5] = {0, 0, 0, 0, 0};       // LMR data to be filtered
+                              384 
+                              385 
+Y:0000                        386         org     y,".ydatasw_stereocontrol.LMR_XYData",init:
+                              387         baddr   m,5
+                              388 FLMR_XYData:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0000 000000 000000          389         dc      $000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000                     
+                              392 
+                              393 ; 33   |
+                              394 ; 34   |_fract _circ _Y *_Y LPR_PtrXUpdate = &LPR_XYData[0];    // Address to store X(t) and start
+                                   of XYData
+                              395 
+                              396 
+Y:000C                        397         org     y,".ydatasw_stereocontrol",init:
+                              398 FLPR_PtrXUpdate:
+Y:000C rrrrrr 000004          399         dc      FLPR_XYData,5-1
+                              404 
+                              405 ; 35   |_fract _circ _Y *_Y LPR_PtrYUpdate = &LPR_XYData[2];    // Address to store Y which become
+                                  s Y(t-1) for next loop
+                              406 
+                              407 FLPR_PtrYUpdate:
+Y:000E rrrrrr 000004          408         dc      FLPR_XYData+2,5-1
+                              411 
+                              412 ; 36   |
+                              413 ; 37   |_fract _circ _Y *_Y LMR_PtrXUpdate = &LMR_XYData[0];    // Address to store X(t) and start
+                                   of XYData
+                              414 
+                              415 FLMR_PtrXUpdate:
+Y:0010 rrrrrr 000004          416         dc      FLMR_XYData,5-1
+                              419 
+                              420 ; 38   |_fract _circ _Y *_Y LMR_PtrYUpdate = &LMR_XYData[2];    // Address to store Y which become
+                                  s Y(t-1) for next loop
+                              421 
+                              422 FLMR_PtrYUpdate:
+Y:0012 rrrrrr 000004          423         dc      FLMR_XYData+2,5-1
+                              426 
+                              427 ; 39   |
+                              428 ; 40   |// Semaphore to indicate that global coefficients in variables g_sd_audio_* is ready to be
+                                   copied to IIRFiltCoeff[]
+                              429 ; 41   |int IIRFiltCoeffSemaphore = 0;
+                              430 
+                              431 FIIRFiltCoeffSemaphore:
+Y:0014 000000                 432         dc      $000000
+                              435 
+                              436 ; 42   |
+                              437 ; 43   |/* IIRFilterCoeff array is in Q23 format */
+                              438 ; 44   |int _circ _X IIRFiltCoeff[10] = {  // -3dB cutoff = 17 kHz
+                              439 
+                              440 
+X:0000                        441         org     x,".xdatasw_stereocontrol.IIRFiltCoeff",init:
+                              442         baddr   m,10
+                              443 FIIRFiltCoeff:
+X:0000 24BB00 497C00          444         dc      $24bb00,$497c00,$24bb00,$c13100,$ea4500,$24bb00,$497c00,$24bb00
+       24BB00 C13100              
+       EA4500 24BB00              
+       497C00 24BB00              
+X:0008 C13100 EA4500          445         dc      $c13100,$ea4500
+                              449 
+                              450 ; 45   |                                  DEFAULT_B0 * COEF_SCALE,  // LPR    
+                              451 ; 46   |                                  DEFAULT_B1 * COEF_SCALE,  // LPR   
+                              452 ; 47   |                                  DEFAULT_B2 * COEF_SCALE,  // LPR    
+                              453 ; 48   |                                  DEFAULT_A1 * COEF_SCALE,  // LPR   
+                              454 ; 49   |                                  DEFAULT_A2 * COEF_SCALE,  // LPR
+                              455 ; 50   |                                  
+                              456 ; 51   |                                  DEFAULT_B0 * COEF_SCALE,  // LMR   
+                              457 ; 52   |                                  DEFAULT_B1 * COEF_SCALE,  // LMR    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              458 ; 53   |                                  DEFAULT_B2 * COEF_SCALE,  // LMR     
+                              459 ; 54   |                                  DEFAULT_A1 * COEF_SCALE,  // LMR   
+                              460 ; 55   |                                  DEFAULT_A2 * COEF_SCALE   // LMR
+                              461 ; 56   |                                }; 
+                              462 ; 57   |
+                              463 ; 58   |int gCOEF_SCALE                  = COEF_SCALE;
+                              464 
+                              465 
+Y:0015                        466         org     y,".ydatasw_stereocontrol",init:
+                              467 FgCOEF_SCALE:
+Y:0015 000100                 468         dc      $000100
+                              471 
+                              472 ; 59   |
+                              473 ; 60   |sw_stereocontrol_t sw_stereocontrol = {
+                              474 
+                              475 Fsw_stereocontrol:
+Y:0016 005E2C 00E7A3          476         dc      $005e2c,$00e7a3,$001400,$001e00,$000014,$000032,$0012c0,$00000a
+       001400 001E00              
+       000014 000032              
+       0012C0 00000A              
+Y:001E 000000 007FFF          477         dc      $00,$007fff,$007fff,$0024bb,$00497c,$0024bb,$ffc131,$ffea45,$ffffff
+       007FFF 0024BB              
+       00497C 0024BB              
+       FFC131 FFEA45              
+       FFFFFF                     
+Y:0027 000000 000000          478         dc      $000000,$000000,$000000,$000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000 000000              
+       000000 000000              
+Y:002F 000000 000000          479         dc      $000000,$000000,$000000,$000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000 000000              
+       000000 000000              
+Y:0037 000000 000000          480         dc      $000000,$000000,$000000,$000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000 000000              
+       000000 000000              
+Y:003F 000000 000000          481         dc      $000000,$000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000 000000              
+                              484 
+                              485 ; 61   |                DEFAULT_RSSI_ATTACK,    
+                              486 ; 62   |                DEFAULT_RSSI_DELAY,      
+                              487 ; 63   |                DEFAULT_LPR_BW_TH_LO,     
+                              488 ; 64   |                DEFAULT_LPR_BW_TH_HI,      
+                              489 ; 65   |                DEFAULT_LPR_GA_TH,           
+                              490 ; 66   |                DEFAULT_LMR_GA_TH,          
+                              491 ; 67   |                DEFAULT_LPR_BW_SL_SC,     
+                              492 ; 68   |                DEFAULT_LPR_BW_SL_SH,
+                              493 ; 69   |                0,
+                              494 ; 70   |                DEFAULT_LPR_GA,  
+                              495 ; 71   |                DEFAULT_LMR_GA,          
+                              496 ; 72   |                DEFAULT_B0,               
+                              497 ; 73   |                DEFAULT_B1,              
+                              498 ; 74   |                DEFAULT_B2,          
+                              499 ; 75   |                DEFAULT_A1,               
+                              500 ; 76   |                DEFAULT_A2,
+                              501 ; 77   |                0, 0, 0, 0,  
+                              502 ; 78   |                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                              503 ; 79   |                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                              504 ; 80   |                0, 0, 0, 0, 0 
+                              505 ; 81   |                };
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              506 ; 82   |
+                              507 ; 83   |#if 0
+                              508 ; 84   |/////////////////////////////////////////////////////////////////////////////////
+                              509 ; 85   |// Name:           Update_IIRFiltCoeff
+                              510 ; 86   |//
+                              511 ; 87   |//  Type:           Function
+                              512 ; 88   |//  Description:    This function copies the IIR coefficients from global variabls g_sd_au
+                                  dio_*
+                              513 ; 89   |//                  to IIRFiltCoeff if semaphore IIRFiltCoeffSemaphore is set. The
+                              514 ; 90   |//                  semaphore is then cleared.
+                              515 ; 91   |//
+                              516 ; 92   |//  Inputs:         g_sd_audio_*  global variables for filter coefficients
+                              517 ; 93   |//
+                              518 ; 94   |//  Outputs:        IIRFiltCoeff[]
+                              519 ; 95   |//                  IRFiltCieffSemaphore cleared            
+                              520 ; 96   |//
+                              521 ; 97   |//  Notes:          Do not make a funclet
+                              522 ; 98   |//                  LPR and LMR filter coefficients are the same
+                              523 ; 99   |//                  This routine needs to be called right before sw_stereopath_xcall_asm
+                              524 ; 100  |//               
+                              525 ; 101  |/////////////////////////////////////////////////////////////////////////////////
+                              526 ; 102  |void Update_IIRFiltCoeff()
+                              527 ; 103  |{    
+                              528 ; 104  |/*
+                              529 ; 105  |    if (IIRFiltCoeffSemaphore)
+                              530 ; 106  |    {   
+                              531 ; 107  |        IIRFiltCoeff[0] = g_sd_audio_LprB0_i16;
+                              532 ; 108  |        IIRFiltCoeff[1] = g_sd_audio_LprB1_i16;
+                              533 ; 109  |        IIRFiltCoeff[2] = g_sd_audio_LprB0_i16;
+                              534 ; 110  |        IIRFiltCoeff[3] = g_sd_audio_LprA1_i16;
+                              535 ; 111  |        IIRFiltCoeff[4] = g_sd_audio_LprA2_i16;
+                              536 ; 112  |        IIRFiltCoeff[5] = g_sd_audio_LprB0_i16;
+                              537 ; 113  |        IIRFiltCoeff[6] = g_sd_audio_LprB1_i16;
+                              538 ; 114  |        IIRFiltCoeff[7] = g_sd_audio_LprB0_i16;
+                              539 ; 115  |        IIRFiltCoeff[8] = g_sd_audio_LprA1_i16;
+                              540 ; 116  |        IIRFiltCoeff[9] = g_sd_audio_LprA2_i16; 
+                              541 ; 117  |            
+                              542 ; 118  |        IIRFiltCoeffSemaphore = 0;    
+                              543 ; 119  |    }
+                              544 ; 120  |*/
+                              545 ; 121  |}
+                              546 ; 122  |#endif
+                              547 ; 123  |
+                              548 ; 124  |#if 0
+                              549 ; 125  |#ifdef REAL_I2S_DATA
+                              550 ; 126  |void StfmLowPassFilter(int iNumWords, volatile _fract _X * pInputSample, volatile _fract *
+                                   pFilteredOutput)
+                              551 ; 127  |#else
+                              552 ; 128  |void StfmLowPassFilter(int iNumWords, volatile _fract _Y * pInputSample, volatile _fract *
+                                   pFilteredOutput)
+                              553 ; 129  |#endif
+                              554 ; 130  |{
+                              555 ; 131  |/////////////////////////////////////////////////////////////////////////////////  
+                              556 ; 132  |//
+                              557 ; 133  |//   Name:   StfmLowPassFilter  - Simple version of IIR filter used for testing until ASM 
+                                  version is validated      
+                              558 ; 134  |//
+                              559 ; 135  |//  Input: 
+                              560 ; 136  |//
+                              561 ; 137  |//    _fract * pInputSample  Array of X samples of stereo data ( LPR, LMR ) 
+                              562 ; 138  |//         
+                              563 ; 139  |//   int num_samples         Number of stereo samples
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              564 ; 140  |//
+                              565 ; 141  |//  Output: 
+                              566 ; 142  |//
+                              567 ; 143  |//  _fract * pFilteredOutput Array of filtered Y stereo data (L, R)
+                              568 ; 144  |//
+                              569 ; 145  |//  Notes: Assumes no overflow is possible since all data is _fract type
+                              570 ; 146  |//         Input values are scaled by dividing by 2 to correct for times 2
+                              571 ; 147  |//         factor when doing matrix calculations
+                              572 ; 148  |// 
+                              573 ; 149  |// **************************************************************************
+                              574 ; 150  |// *** Stereo Processing ****************************************************
+                              575 ; 151  |// **************************************************************************
+                              576 ; 152  |// *** This block operates at Fs = 44.1kHz
+                              577 ; 153  |// ********
+                              578 ; 154  |// *** LPR path filter (2nd order IIR)
+                              579 ; 155  |/////////////////////////////////////////////////////////////////////////////////  
+                              580 ; 156  |
+                              581 ; 157  |        LPR_Data_fract = (*pInputSample++) >> 1;
+                              582 ; 158  |        LMR_Data_fract = (*pInputSample++) >> 1;
+                              583 ; 159  |             
+                              584 ; 160  |        *pFilteredOutput++ = (LPR_Data_fract + LMR_Data_fract);       // Left channel   
+                              585 ; 161  |        *pFilteredOutput++ = (LPR_Data_fract - LMR_Data_fract);       // Right channel
+                              586 ; 162  |}  
+                              587 ; 163  |
+                              588 ; 164  |
+                              589 ; 165  |#endif
+                              590 
+                              592 
+                              593         global  FIIRFiltCoeff, FIIRFiltCoeffSemaphore, FLMR_Data_fract
+                              594         global  FLMR_PtrXUpdate, FLMR_PtrYUpdate, FLMR_XYData
+                              595         global  FLPR_Data_fract, FLPR_PtrXUpdate, FLPR_PtrYUpdate
+                              596         global  FLPR_XYData, FgCOEF_SCALE, FgLMR_Mult_fract
+                              597         global  FgLPR_Mult_fract, Fg_sd_audio_LprA1_i16
+                              598         global  Fg_sd_audio_LprA2_i16, Fg_sd_audio_LprB0_i16
+                              599         global  Fg_sd_audio_LprB1_i16, Fg_sd_audio_pCoefBypassBlend_u1
+                              600         global  Fg_sd_audio_pCoefBypassBwCtl_u1
+                              601         global  Fg_sd_audio_pCoefBypassSoftmute_u1
+                              602         global  Fg_sd_audio_pCoefForcedMono_u1, Fsw_stereocontrol
+                              603 

@@ -1,0 +1,13 @@
+extern WORD g_wHostResourceTag;
+extern WORD wResourceDrive;
+extern WORD wResourceTag;
+extern BOOL g_bResourceGetDirty;
+extern  WORD g_wDirtyDrive;
+_reentrant WORD IsSystemDriveDirty(void);
+_reentrant WORD MarkSystemDriveDirty(void);
+_reentrant WORD MarkSystemDriveClean(void);
+_reentrant WORD ToggleSystemDrive(void);
+_reentrant int RestoreDriveFromBackup(int iDestinationDriveNum, int iSourceDriveNum);
+_reentrant WORD GetDriveNumberFromTag(WORD);
+_reentrant int RestoreDriveFromBackupMTP(int iDestinationDriveNum, int iSourceDriveNum);
+void SystemReboot(void);

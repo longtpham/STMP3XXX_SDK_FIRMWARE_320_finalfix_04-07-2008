@@ -1,0 +1,2450 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\usbmsc\Make\cc872a9b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -w68 -w66 -I..\output_3500\include
+                                3 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\usbmsc -I -I..\..
+                                4 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                                5 ;          -I..\..\..\..\..\System\Common\symbols -I
+                                6 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                                7 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                                8 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                                9 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               10 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               11 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               12 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               13 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               14 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               15 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive\include
+                               16 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               17 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               18 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive
+                               19 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               20 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive\include
+                               21 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               22 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               23 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media
+                               29 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               30 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               31 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               32 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               33 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               34 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               37 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include -I
+                               38 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               39 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               40 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               41 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               50 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               52 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               56 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               57 ;          -I..\..\..\..\..\devicedriver\media\include
+                               58 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               59 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               60 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               61 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               62 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               64 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               65 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               66 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               67 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               68 ;          -I..\..\..\..\..\DeviceDriver\Media\usb\Ch9
+                               69 ;          -I..\..\..\..\..\DeviceDriver\Media\scsi
+                               70 ;          -I..\..\..\..\..\DeviceDriver\Media\usbmsc
+                               71 ;          -I..\..\..\..\..\DeviceDriver\Media\mtp
+                               72 ;          -I..\..\..\..\..\System\Common\updater
+                               73 ;          -I..\..\..\..\..\libsource\sysserialnumber -DALL -DD3500 -DMMC
+                               74 ;          -DLIION -DTUNER_STFM1000 -DSTFM1000_LCD=TRUE -DDCDC_POWER_TRANSFER
+                               75 ;          -DBACKLIGHT -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DFAT16
+                               76 ;          -DDEVICE_3500 -DENGR_BD -DUSBMSC_BUILD -DBATTERY_TYPE_LI_ION
+                               77 ;          -DBATTERY_CHARGE -DUSE_PLAYLIST3_HOST -DASCII_ONLY -DRETAIL
+                               78 ;          -DDEVICE_3500 -DMMC -Dk_opt_performance_enhancement
+                               79 ;          -I..\..\..\..\..\devicedriver\display
+                               80 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -g -O2 -R -Cs
+                               81 ;          -MmyL
+                               82 
+                               90 
+                               91 ;batterycharge.c:
+                               92 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                               93 ; 2    |// Copyright(C) SigmaTel, Inc. 2003
+                               94 ; 3    |//
+                               95 ; 4    |// Filename: batterycharge.c
+                               96 ; 5    |// Description: Contains the core 
+                               97 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                               98 ; 7    |
+                               99 ; 8    |////////////////////////////////////////////////////////////////////////////////
+                              100 ; 9    |//   Includes and external references
+                              101 ; 10   |////////////////////////////////////////////////////////////////////////////////
+                              102 ; 11   |#include "types.h"
+                              103 
+                              105 
+                              106 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              107 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              108 ; 3    |//
+                              109 ; 4    |// Filename: types.h
+                              110 ; 5    |// Description: Standard data types
+                              111 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              112 ; 7    |
+                              113 ; 8    |#ifndef _TYPES_H
+                              114 ; 9    |#define _TYPES_H
+                              115 ; 10   |
+                              116 ; 11   |// TODO:  move this outta here!
+                              117 ; 12   |#if !defined(NOERROR)
+                              118 ; 13   |#define NOERROR 0
+                              119 ; 14   |#define SUCCESS 0
+                              120 ; 15   |#endif 
+                              121 ; 16   |#if !defined(SUCCESS)
+                              122 ; 17   |#define SUCCESS  0
+                              123 ; 18   |#endif
+                              124 ; 19   |#if !defined(ERROR)
+                              125 ; 20   |#define ERROR   -1
+                              126 ; 21   |#endif
+                              127 ; 22   |#if !defined(FALSE)
+                              128 ; 23   |#define FALSE 0
+                              129 ; 24   |#endif
+                              130 ; 25   |#if !defined(TRUE)
+                              131 ; 26   |#define TRUE  1
+                              132 ; 27   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              133 ; 28   |
+                              134 ; 29   |#if !defined(NULL)
+                              135 ; 30   |#define NULL 0
+                              136 ; 31   |#endif
+                              137 ; 32   |
+                              138 ; 33   |#define MAX_INT     0x7FFFFF
+                              139 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              140 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              141 ; 36   |#define MAX_ULONG   (-1) 
+                              142 ; 37   |
+                              143 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              144 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              145 ; 40   |
+                              146 ; 41   |
+                              147 ; 42   |#define BYTE    unsigned char       // btVarName
+                              148 ; 43   |#define CHAR    signed char         // cVarName
+                              149 ; 44   |#define USHORT  unsigned short      // usVarName
+                              150 ; 45   |#define SHORT   unsigned short      // sVarName
+                              151 ; 46   |#define WORD    unsigned int        // wVarName
+                              152 ; 47   |#define INT     signed int          // iVarName
+                              153 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              154 ; 49   |#define LONG    signed long         // lVarName
+                              155 ; 50   |#define BOOL    unsigned int        // bVarName
+                              156 ; 51   |#define FRACT   _fract              // frVarName
+                              157 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              158 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              159 ; 54   |#define FLOAT   float               // fVarName
+                              160 ; 55   |#define DBL     double              // dVarName
+                              161 ; 56   |#define ENUM    enum                // eVarName
+                              162 ; 57   |#define CMX     _complex            // cmxVarName
+                              163 ; 58   |typedef WORD UCS3;                   // 
+                              164 ; 59   |
+                              165 ; 60   |#define UINT16  unsigned short
+                              166 ; 61   |#define UINT8   unsigned char   
+                              167 ; 62   |#define UINT32  unsigned long
+                              168 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              169 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              170 ; 65   |#define WCHAR   UINT16
+                              171 ; 66   |
+                              172 ; 67   |//UINT128 is 16 bytes or 6 words
+                              173 ; 68   |typedef struct UINT128_3500 {   
+                              174 ; 69   |    int val[6];     
+                              175 ; 70   |} UINT128_3500;
+                              176 ; 71   |
+                              177 ; 72   |#define UINT128   UINT128_3500
+                              178 ; 73   |
+                              179 ; 74   |// Little endian word packed byte strings:   
+                              180 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              181 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              182 ; 77   |// Little endian word packed byte strings:   
+                              183 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              184 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              185 ; 80   |
+                              186 ; 81   |// Declare Memory Spaces To Use When Coding
+                              187 ; 82   |// A. Sector Buffers
+                              188 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              189 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              190 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              191 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              192 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              194 
+                              195 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              196 ; 88   |// B. Media DDI Memory
+                              197 ; 89   |#define MEDIA_DDI_MEM _Y
+                              198 ; 90   |
+                              199 ; 91   |
+                              200 ; 92   |
+                              201 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              202 ; 94   |// Examples of circular pointers:
+                              203 ; 95   |//    INT CIRC cpiVarName
+                              204 ; 96   |//    DWORD CIRC cpdwVarName
+                              205 ; 97   |
+                              206 ; 98   |#define RETCODE INT                 // rcVarName
+                              207 ; 99   |
+                              208 ; 100  |// generic bitfield structure
+                              209 ; 101  |struct Bitfield {
+                              210 ; 102  |    unsigned int B0  :1;
+                              211 ; 103  |    unsigned int B1  :1;
+                              212 ; 104  |    unsigned int B2  :1;
+                              213 ; 105  |    unsigned int B3  :1;
+                              214 ; 106  |    unsigned int B4  :1;
+                              215 ; 107  |    unsigned int B5  :1;
+                              216 ; 108  |    unsigned int B6  :1;
+                              217 ; 109  |    unsigned int B7  :1;
+                              218 ; 110  |    unsigned int B8  :1;
+                              219 ; 111  |    unsigned int B9  :1;
+                              220 ; 112  |    unsigned int B10 :1;
+                              221 ; 113  |    unsigned int B11 :1;
+                              222 ; 114  |    unsigned int B12 :1;
+                              223 ; 115  |    unsigned int B13 :1;
+                              224 ; 116  |    unsigned int B14 :1;
+                              225 ; 117  |    unsigned int B15 :1;
+                              226 ; 118  |    unsigned int B16 :1;
+                              227 ; 119  |    unsigned int B17 :1;
+                              228 ; 120  |    unsigned int B18 :1;
+                              229 ; 121  |    unsigned int B19 :1;
+                              230 ; 122  |    unsigned int B20 :1;
+                              231 ; 123  |    unsigned int B21 :1;
+                              232 ; 124  |    unsigned int B22 :1;
+                              233 ; 125  |    unsigned int B23 :1;
+                              234 ; 126  |};
+                              235 ; 127  |
+                              236 ; 128  |union BitInt {
+                              237 ; 129  |        struct Bitfield B;
+                              238 ; 130  |        int        I;
+                              239 ; 131  |};
+                              240 ; 132  |
+                              241 ; 133  |#define MAX_MSG_LENGTH 10
+                              242 ; 134  |struct CMessage
+                              243 ; 135  |{
+                              244 ; 136  |        unsigned int m_uLength;
+                              245 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              246 ; 138  |};
+                              247 ; 139  |
+                              248 ; 140  |typedef struct {
+                              249 ; 141  |    WORD m_wLength;
+                              250 ; 142  |    WORD m_wMessage;
+                              251 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              252 ; 144  |} Message;
+                              253 ; 145  |
+                              254 ; 146  |struct MessageQueueDescriptor
+                              255 ; 147  |{
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              256 ; 148  |        int *m_pBase;
+                              257 ; 149  |        int m_iModulo;
+                              258 ; 150  |        int m_iSize;
+                              259 ; 151  |        int *m_pHead;
+                              260 ; 152  |        int *m_pTail;
+                              261 ; 153  |};
+                              262 ; 154  |
+                              263 ; 155  |struct ModuleEntry
+                              264 ; 156  |{
+                              265 ; 157  |    int m_iSignaledEventMask;
+                              266 ; 158  |    int m_iWaitEventMask;
+                              267 ; 159  |    int m_iResourceOfCode;
+                              268 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              269 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              270 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              271 ; 163  |    int m_uTimeOutHigh;
+                              272 ; 164  |    int m_uTimeOutLow;
+                              273 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              274 ; 166  |};
+                              275 ; 167  |
+                              276 ; 168  |union WaitMask{
+                              277 ; 169  |    struct B{
+                              278 ; 170  |        unsigned int m_bNone     :1;
+                              279 ; 171  |        unsigned int m_bMessage  :1;
+                              280 ; 172  |        unsigned int m_bTimer    :1;
+                              281 ; 173  |        unsigned int m_bButton   :1;
+                              282 ; 174  |    } B;
+                              283 ; 175  |    int I;
+                              284 ; 176  |} ;
+                              285 ; 177  |
+                              286 ; 178  |
+                              287 ; 179  |struct Button {
+                              288 ; 180  |        WORD wButtonEvent;
+                              289 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              290 ; 182  |};
+                              291 ; 183  |
+                              292 ; 184  |struct Message {
+                              293 ; 185  |        WORD wMsgLength;
+                              294 ; 186  |        WORD wMsgCommand;
+                              295 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              296 ; 188  |};
+                              297 ; 189  |
+                              298 ; 190  |union EventTypes {
+                              299 ; 191  |        struct CMessage msg;
+                              300 ; 192  |        struct Button Button ;
+                              301 ; 193  |        struct Message Message;
+                              302 ; 194  |};
+                              303 ; 195  |
+                              304 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              305 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              306 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              307 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              308 ; 200  |
+                              309 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              310 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              311 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              312 ; 204  |
+                              313 ; 205  |#if DEBUG
+                              314 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              315 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              316 ; 208  |#else 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              317 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              318 ; 210  |#define DebugBuildAssert(x)    
+                              319 ; 211  |#endif
+                              320 ; 212  |
+                              321 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              322 ; 214  |//  #pragma asm
+                              323 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              324 ; 216  |//  #pragma endasm
+                              325 ; 217  |
+                              326 ; 218  |
+                              327 ; 219  |#ifdef COLOR_262K
+                              328 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              329 ; 221  |#elif defined(COLOR_65K)
+                              330 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              331 ; 223  |#else
+                              332 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              333 ; 225  |#endif
+                              334 ; 226  |    
+                              335 ; 227  |#endif // #ifndef _TYPES_H
+                              336 
+                              338 
+                              339 ; 12   |#include "batterycharge.h"
+                              340 
+                              342 
+                              343 ; 1    |#ifndef __BATTERYCHARGE_H
+                              344 ; 2    |#define __BATTERYCHARGE_H
+                              345 ; 3    |
+                              346 ; 4    |//entry point for menus. function called via SysCallFunction()
+                              347 ; 5    |#ifdef STMP_BUILD_PLAYER
+                              348 ; 6    |_reentrant int BatteryChargeStateMachine(int a, int b, int *c);
+                              349 ; 7    |#else
+                              350 ; 8    |_reentrant void BatteryChargeStateMachine(void);
+                              351 ; 9    |#endif
+                              352 ; 10   |
+                              353 ; 11   |_reentrant WORD BatteryChargeInitialize(void);
+                              354 ; 12   |_reentrant void BatteryChargeDisableCharging(BOOL);
+                              355 ; 13   |_reentrant void BatteryChargeEnableCharging(void);
+                              356 ; 14   |_reentrant BOOL BatteryChargeIsCharging(void);
+                              357 ; 15   |_reentrant BOOL BatteryChargeIsTrickleCharging(void);
+                              358 ; 16   |
+                              359 ; 17   |_reentrant WORD BatteryChargeImplementationInitialize(void);
+                              360 ; 18   |_reentrant void BatteryChargeImplementationSample(BOOL);
+                              361 ; 19   |_reentrant WORD BatteryChargeImplementatonGetCurrentLimit(void);
+                              362 ; 20   |
+                              363 ; 21   |
+                              364 ; 22   |#endif 
+                              365 
+                              367 
+                              368 ; 13   |#include "regsdcdc.h"
+                              369 
+                              371 
+                              372 ; 1    |#if !(defined(regsdcdcinc))
+                              373 ; 2    |
+                              374 ; 3    |#define regssysteminc 1
+                              375 ; 4    |
+                              376 ; 5    |
+                              377 ; 6    |
+                              378 ; 7    |#include "types.h"
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              379 
+                              381 
+                              382 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              383 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              384 ; 3    |//
+                              385 ; 4    |// Filename: types.h
+                              386 ; 5    |// Description: Standard data types
+                              387 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              388 ; 7    |
+                              389 ; 8    |#ifndef _TYPES_H
+                              390 ; 9    |#define _TYPES_H
+                              391 ; 10   |
+                              392 ; 11   |// TODO:  move this outta here!
+                              393 ; 12   |#if !defined(NOERROR)
+                              394 ; 13   |#define NOERROR 0
+                              395 ; 14   |#define SUCCESS 0
+                              396 ; 15   |#endif 
+                              397 ; 16   |#if !defined(SUCCESS)
+                              398 ; 17   |#define SUCCESS  0
+                              399 ; 18   |#endif
+                              400 ; 19   |#if !defined(ERROR)
+                              401 ; 20   |#define ERROR   -1
+                              402 ; 21   |#endif
+                              403 ; 22   |#if !defined(FALSE)
+                              404 ; 23   |#define FALSE 0
+                              405 ; 24   |#endif
+                              406 ; 25   |#if !defined(TRUE)
+                              407 ; 26   |#define TRUE  1
+                              408 ; 27   |#endif
+                              409 ; 28   |
+                              410 ; 29   |#if !defined(NULL)
+                              411 ; 30   |#define NULL 0
+                              412 ; 31   |#endif
+                              413 ; 32   |
+                              414 ; 33   |#define MAX_INT     0x7FFFFF
+                              415 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              416 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              417 ; 36   |#define MAX_ULONG   (-1) 
+                              418 ; 37   |
+                              419 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              420 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              421 ; 40   |
+                              422 ; 41   |
+                              423 ; 42   |#define BYTE    unsigned char       // btVarName
+                              424 ; 43   |#define CHAR    signed char         // cVarName
+                              425 ; 44   |#define USHORT  unsigned short      // usVarName
+                              426 ; 45   |#define SHORT   unsigned short      // sVarName
+                              427 ; 46   |#define WORD    unsigned int        // wVarName
+                              428 ; 47   |#define INT     signed int          // iVarName
+                              429 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              430 ; 49   |#define LONG    signed long         // lVarName
+                              431 ; 50   |#define BOOL    unsigned int        // bVarName
+                              432 ; 51   |#define FRACT   _fract              // frVarName
+                              433 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              434 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              435 ; 54   |#define FLOAT   float               // fVarName
+                              436 ; 55   |#define DBL     double              // dVarName
+                              437 ; 56   |#define ENUM    enum                // eVarName
+                              438 ; 57   |#define CMX     _complex            // cmxVarName
+                              439 ; 58   |typedef WORD UCS3;                   // 
+                              440 ; 59   |
+                              441 ; 60   |#define UINT16  unsigned short
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              442 ; 61   |#define UINT8   unsigned char   
+                              443 ; 62   |#define UINT32  unsigned long
+                              444 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              445 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              446 ; 65   |#define WCHAR   UINT16
+                              447 ; 66   |
+                              448 ; 67   |//UINT128 is 16 bytes or 6 words
+                              449 ; 68   |typedef struct UINT128_3500 {   
+                              450 ; 69   |    int val[6];     
+                              451 ; 70   |} UINT128_3500;
+                              452 ; 71   |
+                              453 ; 72   |#define UINT128   UINT128_3500
+                              454 ; 73   |
+                              455 ; 74   |// Little endian word packed byte strings:   
+                              456 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              457 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              458 ; 77   |// Little endian word packed byte strings:   
+                              459 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              460 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              461 ; 80   |
+                              462 ; 81   |// Declare Memory Spaces To Use When Coding
+                              463 ; 82   |// A. Sector Buffers
+                              464 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              465 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              466 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              467 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              468 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              469 ; 88   |// B. Media DDI Memory
+                              470 ; 89   |#define MEDIA_DDI_MEM _Y
+                              471 ; 90   |
+                              472 ; 91   |
+                              473 ; 92   |
+                              474 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              475 ; 94   |// Examples of circular pointers:
+                              476 ; 95   |//    INT CIRC cpiVarName
+                              477 ; 96   |//    DWORD CIRC cpdwVarName
+                              478 ; 97   |
+                              479 ; 98   |#define RETCODE INT                 // rcVarName
+                              480 ; 99   |
+                              481 ; 100  |// generic bitfield structure
+                              482 ; 101  |struct Bitfield {
+                              483 ; 102  |    unsigned int B0  :1;
+                              484 ; 103  |    unsigned int B1  :1;
+                              485 ; 104  |    unsigned int B2  :1;
+                              486 ; 105  |    unsigned int B3  :1;
+                              487 ; 106  |    unsigned int B4  :1;
+                              488 ; 107  |    unsigned int B5  :1;
+                              489 ; 108  |    unsigned int B6  :1;
+                              490 ; 109  |    unsigned int B7  :1;
+                              491 ; 110  |    unsigned int B8  :1;
+                              492 ; 111  |    unsigned int B9  :1;
+                              493 ; 112  |    unsigned int B10 :1;
+                              494 ; 113  |    unsigned int B11 :1;
+                              495 ; 114  |    unsigned int B12 :1;
+                              496 ; 115  |    unsigned int B13 :1;
+                              497 ; 116  |    unsigned int B14 :1;
+                              498 ; 117  |    unsigned int B15 :1;
+                              499 ; 118  |    unsigned int B16 :1;
+                              500 ; 119  |    unsigned int B17 :1;
+                              501 ; 120  |    unsigned int B18 :1;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              502 ; 121  |    unsigned int B19 :1;
+                              503 ; 122  |    unsigned int B20 :1;
+                              504 ; 123  |    unsigned int B21 :1;
+                              505 ; 124  |    unsigned int B22 :1;
+                              506 ; 125  |    unsigned int B23 :1;
+                              507 ; 126  |};
+                              508 ; 127  |
+                              509 ; 128  |union BitInt {
+                              510 ; 129  |        struct Bitfield B;
+                              511 ; 130  |        int        I;
+                              512 ; 131  |};
+                              513 ; 132  |
+                              514 ; 133  |#define MAX_MSG_LENGTH 10
+                              515 ; 134  |struct CMessage
+                              516 ; 135  |{
+                              517 ; 136  |        unsigned int m_uLength;
+                              518 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              519 ; 138  |};
+                              520 ; 139  |
+                              521 ; 140  |typedef struct {
+                              522 ; 141  |    WORD m_wLength;
+                              523 ; 142  |    WORD m_wMessage;
+                              524 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              525 ; 144  |} Message;
+                              526 ; 145  |
+                              527 ; 146  |struct MessageQueueDescriptor
+                              528 ; 147  |{
+                              529 ; 148  |        int *m_pBase;
+                              530 ; 149  |        int m_iModulo;
+                              531 ; 150  |        int m_iSize;
+                              532 ; 151  |        int *m_pHead;
+                              533 ; 152  |        int *m_pTail;
+                              534 ; 153  |};
+                              535 ; 154  |
+                              536 ; 155  |struct ModuleEntry
+                              537 ; 156  |{
+                              538 ; 157  |    int m_iSignaledEventMask;
+                              539 ; 158  |    int m_iWaitEventMask;
+                              540 ; 159  |    int m_iResourceOfCode;
+                              541 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              542 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              543 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              544 ; 163  |    int m_uTimeOutHigh;
+                              545 ; 164  |    int m_uTimeOutLow;
+                              546 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              547 ; 166  |};
+                              548 ; 167  |
+                              549 ; 168  |union WaitMask{
+                              550 ; 169  |    struct B{
+                              551 ; 170  |        unsigned int m_bNone     :1;
+                              552 ; 171  |        unsigned int m_bMessage  :1;
+                              553 ; 172  |        unsigned int m_bTimer    :1;
+                              554 ; 173  |        unsigned int m_bButton   :1;
+                              555 ; 174  |    } B;
+                              556 ; 175  |    int I;
+                              557 ; 176  |} ;
+                              558 ; 177  |
+                              559 ; 178  |
+                              560 ; 179  |struct Button {
+                              561 ; 180  |        WORD wButtonEvent;
+                              562 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              563 ; 182  |};
+                              564 ; 183  |
+                              565 ; 184  |struct Message {
+                              566 ; 185  |        WORD wMsgLength;
+                              567 ; 186  |        WORD wMsgCommand;
+                              568 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              569 ; 188  |};
+                              570 ; 189  |
+                              571 ; 190  |union EventTypes {
+                              572 ; 191  |        struct CMessage msg;
+                              573 ; 192  |        struct Button Button ;
+                              574 ; 193  |        struct Message Message;
+                              575 ; 194  |};
+                              576 ; 195  |
+                              577 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              578 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              579 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              580 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              581 ; 200  |
+                              582 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              583 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              584 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              585 ; 204  |
+                              586 ; 205  |#if DEBUG
+                              587 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              588 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              589 ; 208  |#else 
+                              590 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              591 ; 210  |#define DebugBuildAssert(x)    
+                              592 ; 211  |#endif
+                              593 ; 212  |
+                              594 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              595 ; 214  |//  #pragma asm
+                              596 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              597 ; 216  |//  #pragma endasm
+                              598 ; 217  |
+                              599 ; 218  |
+                              600 ; 219  |#ifdef COLOR_262K
+                              601 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              602 ; 221  |#elif defined(COLOR_65K)
+                              603 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              604 ; 223  |#else
+                              605 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              606 ; 225  |#endif
+                              607 ; 226  |    
+                              608 ; 227  |#endif // #ifndef _TYPES_H
+                              609 
+                              611 
+                              612 ; 8    |
+                              613 ; 9    |
+                              614 ; 10   |
+                              615 ; 11   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              616 ; 12   |
+                              617 ; 13   |//   SYSTEM STMP Registers 
+                              618 ; 14   |//      Last Edited 2.19.2003 M. May
+                              619 ; 15   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                              620 ; 16   |
+                              621 ; 17   |#define HW_DCDC_BASEADDR (0xFA0C)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              622 ; 18   |
+                              623 ; 19   |
+                              624 ; 20   |
+                              625 ; 21   |
+                              626 ; 22   |
+                              627 ; 23   |
+                              628 ; 24   |/////////////////////////////////////////////////////////////////////////////////
+                              629 ; 25   |
+                              630 ; 26   |//  DcDc#1 Control Register (HW_DCDC1_CTRL0) Bit Definitions
+                              631 ; 27   |
+                              632 ; 28   |#define HW_DCDC1_CTRL0_PLEVBU_WIDTH (5)
+                              633 ; 29   |#define HW_DCDC1_CTRL0_RSVD0_WIDTH (3)
+                              634 ; 30   |#define HW_DCDC1_CTRL0_PLEVBO_WIDTH (5)
+                              635 ; 31   |#define HW_DCDC1_CTRL0_RSVD1_WIDTH (3)
+                              636 ; 32   |#define HW_DCDC1_CTRL0_NLEV_WIDTH (5)
+                              637 ; 33   |
+                              638 ; 34   |#define HW_DCDC1_CTRL0_RSVD2_WIDTH (3)
+                              639 ; 35   |
+                              640 ; 36   |
+                              641 ; 37   |
+                              642 ; 38   |#define HW_DCDC1_CTRL0_PLEVBU_BITPOS (0)
+                              643 ; 39   |#define HW_DCDC1_CTRL0_PLEVBO_BITPOS (8)
+                              644 ; 40   |#define HW_DCDC1_CTRL0_NLEV_BITPOS (16)
+                              645 ; 41   |
+                              646 ; 42   |
+                              647 ; 43   |
+                              648 ; 44   |#define HW_DCDC1_CTRL0_PLEVBU_SETMASK (((1<<HW_DCDC1_CTRL0_PLEVBU_WIDTH)-1)<<HW_DCDC1_CTRL
+                                  0_PLEVBU_BITPOS)        
+                              649 ; 45   |#define HW_DCDC1_CTRL0_PLEVBO_SETMASK (((1<<HW_DCDC1_CTRL0_PLEVBO_WIDTH)-1)<<HW_DCDC1_CTRL
+                                  0_PLEVBO_BITPOS) 
+                              650 ; 46   |#define HW_DCDC1_CTRL0_NLEV_SETMASK (((1<<HW_DCDC1_CTRL0_NLEV_WIDTH)-1)<<HW_DCDC1_CTRL0_NL
+                                  EV_BITPOS)  
+                              651 ; 47   |
+                              652 ; 48   |
+                              653 ; 49   |
+                              654 ; 50   |#define HW_DCDC1_CTRL0_PLEVBU_CLRMASK (~(WORD)HW_DCDC1_CTRL0_PLEVBU_SETMASK)     
+                              655 ; 51   |#define HW_DCDC1_CTRL0_PLEVBO_CLRMASK (~(WORD)HW_DCDC1_CTRL0_PLEVBO_SETMASK) 
+                              656 ; 52   |#define HW_DCDC1_CTRL0_NLEV_CLRMASK (~(WORD)HW_DCDC1_CTRL0_NLEV_SETMASK)  
+                              657 ; 53   |
+                              658 ; 54   |
+                              659 ; 55   |
+                              660 ; 56   |
+                              661 ; 57   |
+                              662 ; 58   |typedef union               
+                              663 ; 59   |{
+                              664 ; 60   |    struct {
+                              665 ; 61   |        unsigned int PLEVBU           : HW_DCDC1_CTRL0_PLEVBU_WIDTH;
+                              666 ; 62   |        unsigned int RSVD0            : HW_DCDC1_CTRL0_RSVD0_WIDTH;
+                              667 ; 63   |        unsigned int PLEVBO           : HW_DCDC1_CTRL0_PLEVBO_WIDTH;
+                              668 ; 64   |        unsigned int RSVD1            : HW_DCDC1_CTRL0_RSVD1_WIDTH;
+                              669 ; 65   |        unsigned int NLEV             : HW_DCDC1_CTRL0_NLEV_WIDTH;
+                              670 ; 66   |        unsigned int RSVD2            : HW_DCDC1_CTRL0_RSVD2_WIDTH;
+                              671 ; 67   |    } B;
+                              672 ; 68   |    unsigned int I;
+                              673 ; 69   |} dcdc1_ctrl0_type;
+                              674 ; 70   |#define HW_DCDC1_CTRL0      (*(volatile dcdc1_ctrl0_type _X*) (HW_DCDC_BASEADDR))    /* Dc
+                                  Dc#1 Limit Level Register */
+                              675 ; 71   |
+                              676 ; 72   |
+                              677 ; 73   |
+                              678 ; 74   |
+                              679 ; 75   |/////////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              680 ; 76   |
+                              681 ; 77   |//  DCDc#1 Control Register1 (HW_DCDC1_CTRL1) Bit Definitions
+                              682 ; 78   |
+                              683 ; 79   |#define HW_DCDC1_CTRL1_C_WIDTH (4)
+                              684 ; 80   |#define HW_DCDC1_CTRL1_R_WIDTH (4)
+                              685 ; 81   |#define HW_DCDC1_CTRL1_FFOR_WIDTH (3)
+                              686 ; 82   |#define HW_DCDC1_CTRL1_RSVD0_WIDTH (1)
+                              687 ; 83   |#define HW_DCDC1_CTRL1_PFMCTRL_WIDTH (12)
+                              688 ; 84   |
+                              689 ; 85   |
+                              690 ; 86   |
+                              691 ; 87   |#define HW_DCDC1_CTRL1_C_BITPOS (0)
+                              692 ; 88   |#define HW_DCDC1_CTRL1_R_BITPOS (4)
+                              693 ; 89   |#define HW_DCDC1_CTRL1_FFOR_BITPOS (8)
+                              694 ; 90   |#define HW_DCDC1_CTRL1_PFMCTRL_BITPOS (12) 
+                              695 ; 91   |
+                              696 ; 92   |#define HW_DCDC1_CTRL1_C_SETMASK (((1<<HW_DCDC1_CTRL1_C_WIDTH)-1)<<HW_DCDC1_CTRL1_C_BITPOS
+                                  )        
+                              697 ; 93   |#define HW_DCDC1_CTRL1_R_SETMASK (((1<<HW_DCDC1_CTRL1_R_WIDTH)-1)<<HW_DCDC1_CTRL1_R_BITPOS
+                                  ) 
+                              698 ; 94   |#define HW_DCDC1_CTRL1_FFOR_SETMASK (((1<<HW_DCDC1_CTRL1_FFOR_WIDTH)-1)<<HW_DCDC1_CTRL1_FF
+                                  OR_BITPOS)  
+                              699 ; 95   |#define HW_DCDC1_CTRL1_PFMCTRL_SETMASK (((1<<HW_DCDC1_CTRL1_PFMCTRL_WIDTH)-1)<<HW_DCDC1_CT
+                                  RL1_PFMCTRL_BITPOS)   
+                              700 ; 96   |
+                              701 ; 97   |#define HW_DCDC1_CTRL1_C_CLRMASK (~(WORD)HW_DCDC1_CTRL1_C_SETMASK)     
+                              702 ; 98   |#define HW_DCDC1_CTRL1_R_CLRMASK (~(WORD)HW_DCDC1_CTRL1_R_SETMASK) 
+                              703 ; 99   |#define HW_DCDC1_CTRL1_FFOR_CLRMASK (~(WORD)HW_DCDC1_CTRL1_FFOR_SETMASK)  
+                              704 ; 100  |#define HW_DCDC1_CTRL1_PFMCTRL_CLRMASK (~(WORD)HW_DCDC1_CTRL1_PFMCTRL_SETMASK)  
+                              705 ; 101  |
+                              706 ; 102  |
+                              707 ; 103  |typedef union               
+                              708 ; 104  |{
+                              709 ; 105  |    struct {
+                              710 ; 106  |        unsigned int C       : HW_DCDC1_CTRL1_C_WIDTH;
+                              711 ; 107  |        unsigned int R                : HW_DCDC1_CTRL1_R_WIDTH;
+                              712 ; 108  |        unsigned int FFOR             : HW_DCDC1_CTRL1_FFOR_WIDTH;
+                              713 ; 109  |        unsigned int RSVD0            : HW_DCDC1_CTRL1_RSVD0_WIDTH;
+                              714 ; 110  |        unsigned int PFMCTRL          : HW_DCDC1_CTRL1_FFOR_WIDTH;
+                              715 ; 111  |    } B;
+                              716 ; 112  |    unsigned int I;
+                              717 ; 113  |} dcdc1_ctrl1_type;
+                              718 ; 114  |#define HW_DCDC1_CTRL1      (*(volatile dcdc1_ctrl1_type _X*) (HW_DCDC_BASEADDR+1))    /* 
+                                  DcDc#1 Ctrl #1 Register */
+                              719 ; 115  |
+                              720 ; 116  |
+                              721 ; 117  |
+                              722 ; 118  |
+                              723 ; 119  |/////////////////////////////////////////////////////////////////////////////////
+                              724 ; 120  |
+                              725 ; 121  |//  DcDc VDDIO Register (HW_DCDC_VDDIO) Bit Definitions
+                              726 ; 122  |
+                              727 ; 123  |#define HW_DCDC_VDDIO_VOLTAGE_LEVEL_WIDTH (5)
+                              728 ; 124  |#define HW_DCDC_VDDIO_RSVD0_WIDTH (3)
+                              729 ; 125  |#define HW_DCDC_VDDIO_BROWNOUT_LEVEL_WIDTH (5)
+                              730 ; 126  |#define HW_DCDC_VDDIO_RSVD1_WIDTH (3)
+                              731 ; 127  |#define HW_DCDC_VDDIO_BROWNOUT_ENABLE_WIDTH (1)
+                              732 ; 128  |#define HW_DCDC_VDDIO_RSVD2_WIDTH (3)
+                              733 ; 129  |#define HW_DCDC_VDDIO_BROWNOUT_STATUS_WIDTH (1)
+                              734 ; 130  |#define HW_DCDC_VDDIO_OK_WIDTH (1)
+                              735 ; 131  |#define HW_DCDC_VDDIO_RSVD3_WIDTH (2)
+                              736 ; 132  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              737 ; 133  |
+                              738 ; 134  |
+                              739 ; 135  |#define HW_DCDC_VDDIO_VOLTAGE_LEVEL_BITPOS (0)
+                              740 ; 136  |#define HW_DCDC_VDDIO_BROWNOUT_LEVEL_BITPOS (8)
+                              741 ; 137  |#define HW_DCDC_VDDIO_BROWNOUT_ENABLE_BITPOS (16)
+                              742 ; 138  |#define HW_DCDC_VDDIO_BROWNOUT_STATUS_BITPOS (20)
+                              743 ; 139  |#define HW_DCDC_VDDIO_OK_BITPOS (21)
+                              744 ; 140  |
+                              745 ; 141  |
+                              746 ; 142  |#define HW_DCDC_VDDIO_VOLTAGE_LEVEL_SETMASK (((1<<HW_DCDC_VDDIO_VOLTAGE_LEVEL_WIDTH)-1)<<H
+                                  W_DCDC_VDDIO_VOLTAGE_LEVEL_BITPOS)        
+                              747 ; 143  |#define HW_DCDC_VDDIO_BROWNOUT_LEVEL_SETMASK (((1<<HW_DCDC_VDDIO_BROWNOUT_LEVEL_WIDTH)-1)<
+                                  <HW_DCDC_VDDIO_BROWNOUT_LEVEL_BITPOS) 
+                              748 ; 144  |#define HW_DCDC_VDDIO_BROWNOUT_ENABLE_SETMASK (((1<<HW_DCDC_VDDIO_BROWNOUT_ENABLE_WIDTH)-1
+                                  )<<HW_DCDC_VDDIO_BROWNOUT_ENABLE_BITPOS)  
+                              749 ; 145  |#define HW_DCDC_VDDIO_BROWNOUT_STATUS_SETMASK (((1<<HW_DCDC_VDDIO_BROWNOUT_STATUS_WIDTH)-1
+                                  )<<HW_DCDC_VDDIO_BROWNOUT_STATUS_BITPOS)  
+                              750 ; 146  |
+                              751 ; 147  |
+                              752 ; 148  |
+                              753 ; 149  |#define HW_DCDC_VDDIO_VOLTAGE_LEVEL_CLRMASK (~(WORD)HW_DCDC_VDDIO_VOLTAGE_LEVEL_SETMASK)  
+                                     
+                              754 ; 150  |#define HW_DCDC_VDDIO_BROWNOUT_LEVEL_CLRMASK (~(WORD)HW_DCDC_VDDIO_BROWNOUT_LEVEL_SETMASK)
+                                   
+                              755 ; 151  |#define HW_DCDC_VDDIO_BROWNOUT_ENABLE_CLRMASK (~(WORD)HW_DCDC_VDDIO_BROWNOUT_ENABLE_SETMAS
+                                  K)  
+                              756 ; 152  |#define HW_DCDC_VDDIO_BROWNOUT_STATUS_CLRMASK (~(WORD)HW_DCDC_VDDIO_BROWNOUT_STATUS_SETMAS
+                                  K)  
+                              757 ; 153  |
+                              758 ; 154  |
+                              759 ; 155  |typedef union               
+                              760 ; 156  |{
+                              761 ; 157  |    struct {
+                              762 ; 158  |        unsigned int VOLTAGE_LEVEL    : HW_DCDC_VDDIO_VOLTAGE_LEVEL_WIDTH;
+                              763 ; 159  |        unsigned int RSVD0            : HW_DCDC_VDDIO_RSVD0_WIDTH;
+                              764 ; 160  |        unsigned int BROWNOUT_LEVEL   : HW_DCDC_VDDIO_BROWNOUT_LEVEL_WIDTH;
+                              765 ; 161  |        unsigned int RSVD1            : HW_DCDC_VDDIO_RSVD1_WIDTH;
+                              766 ; 162  |        unsigned int BROWNOUT_ENABLE  : HW_DCDC_VDDIO_BROWNOUT_ENABLE_WIDTH;
+                              767 ; 163  |        unsigned int RSVD2            : HW_DCDC_VDDIO_RSVD2_WIDTH;
+                              768 ; 164  |        unsigned int BROWNOUT_STATUS  : HW_DCDC_VDDIO_BROWNOUT_STATUS_WIDTH;
+                              769 ; 165  |                 unsigned int VDDIO_OK        : HW_DCDC_VDDIO_OK_WIDTH;
+                              770 ; 166  |        unsigned int RSVD3            : HW_DCDC_VDDIO_RSVD3_WIDTH;
+                              771 ; 167  |    } B;
+                              772 ; 168  |    unsigned int I;
+                              773 ; 169  |} dcdc_vddio_type;
+                              774 ; 170  |#define HW_DCDC_VDDIO      (*(volatile dcdc_vddio_type _X*) (HW_DCDC_BASEADDR+2))    /* Dc
+                                  Dc VDDIO Register */
+                              775 ; 171  |
+                              776 ; 172  |
+                              777 ; 173  |
+                              778 ; 174  |/////////////////////////////////////////////////////////////////////////////////
+                              779 ; 175  |//  DcDc VDDD Register (HW_DCDC_VDDD) Bit Definitions
+                              780 ; 176  |
+                              781 ; 177  |#define HW_DCDC_VDDD_VOLTAGE_LEVEL_WIDTH (5)
+                              782 ; 178  |#define HW_DCDC_VDDD_RSVD0_WIDTH (3)
+                              783 ; 179  |#define HW_DCDC_VDDD_BROWNOUT_LEVEL_WIDTH (5)
+                              784 ; 180  |#define HW_DCDC_VDDD_RSVD1_WIDTH (3)
+                              785 ; 181  |#define HW_DCDC_VDDD_BROWNOUT_ENABLE_WIDTH (1)
+                              786 ; 182  |#define HW_DCDC_VDDD_RSVD2_WIDTH (3)
+                              787 ; 183  |#define HW_DCDC_VDDD_BROWNOUT_STATUS_WIDTH (1)
+                              788 ; 184  |#define HW_DCDC_VDDD_OK_WIDTH (1)
+                              789 ; 185  |#define HW_DCDC_VDDD_RSVD3_WIDTH (2)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              790 ; 186  |
+                              791 ; 187  |#define HW_DCDC_VDDD_VOLTAGE_LEVEL_BITPOS (0)
+                              792 ; 188  |#define HW_DCDC_VDDD_BROWNOUT_LEVEL_BITPOS (8)
+                              793 ; 189  |#define HW_DCDC_VDDD_BROWNOUT_ENABLE_BITPOS (16)
+                              794 ; 190  |#define HW_DCDC_VDDD_BROWNOUT_STATUS_BITPOS (20)
+                              795 ; 191  |#define HW_DCDC_VDDD_OK_BITPOS (21)
+                              796 ; 192  |#define HW_DCDC_VDDD_VOLTAGE_LEVEL_SETMASK (((1<<HW_DCDC_VDDD_VOLTAGE_LEVEL_WIDTH)-1)<<HW_
+                                  DCDC_VDDD_VOLTAGE_LEVEL_BITPOS)        
+                              797 ; 193  |#define HW_DCDC_VDDD_BROWNOUT_LEVEL_SETMASK (((1<<HW_DCDC_VDDD_BROWNOUT_LEVEL_WIDTH)-1)<<H
+                                  W_DCDC_VDDD_BROWNOUT_LEVEL_BITPOS) 
+                              798 ; 194  |#define HW_DCDC_VDDD_BROWNOUT_ENABLE_SETMASK (((1<<HW_DCDC_VDDD_BROWNOUT_ENABLE_WIDTH)-1)<
+                                  <HW_DCDC_VDDD_BROWNOUT_ENABLE_BITPOS)  
+                              799 ; 195  |#define HW_DCDC_VDDD_BROWNOUT_STATUS_SETMASK (((1<<HW_DCDC_VDDD_BROWNOUT_STATUS_WIDTH)-1)<
+                                  <HW_DCDC_VDDD_BROWNOUT_STATUS_BITPOS)  
+                              800 ; 196  |
+                              801 ; 197  |#define HW_DCDC_VDDD_VOLTAGE_LEVEL_CLRMASK (~(WORD)HW_DCDC_VDDD_VOLTAGE_LEVEL_SETMASK)    
+                                   
+                              802 ; 198  |#define HW_DCDC_VDDD_BROWNOUT_LEVEL_CLRMASK (~(WORD)HW_DCDC_VDDD_BROWNOUT_LEVEL_SETMASK) 
+                              803 ; 199  |#define HW_DCDC_VDDD_BROWNOUT_ENABLE_CLRMASK (~(WORD)HW_DCDC_VDDD_BROWNOUT_ENABLE_SETMASK)
+                                    
+                              804 ; 200  |#define HW_DCDC_VDDD_BROWNOUT_STATUS_CLRMASK (~(WORD)HW_DCDC_VDDD_BROWNOUT_STATUS_SETMASK)
+                                    
+                              805 ; 201  |
+                              806 ; 202  |typedef union               
+                              807 ; 203  |{
+                              808 ; 204  |    struct {
+                              809 ; 205  |        unsigned int VOLTAGE_LEVEL    : HW_DCDC_VDDD_VOLTAGE_LEVEL_WIDTH;
+                              810 ; 206  |        unsigned int RSVD0            : HW_DCDC_VDDD_RSVD0_WIDTH;
+                              811 ; 207  |        unsigned int BROWNOUT_LEVEL   : HW_DCDC_VDDD_BROWNOUT_LEVEL_WIDTH;
+                              812 ; 208  |        unsigned int RSVD1            : HW_DCDC_VDDD_RSVD1_WIDTH;
+                              813 ; 209  |        unsigned int BROWNOUT_ENABLE  : HW_DCDC_VDDD_BROWNOUT_ENABLE_WIDTH;
+                              814 ; 210  |        unsigned int RSVD2            : HW_DCDC_VDDD_RSVD2_WIDTH;
+                              815 ; 211  |        unsigned int BROWNOUT_STATUS  : HW_DCDC_VDDD_BROWNOUT_STATUS_WIDTH;
+                              816 ; 212  |                 unsigned int VDD_OK           : HW_DCDC_VDDD_OK_WIDTH;
+                              817 ; 213  |        unsigned int RSVD3            : HW_DCDC_VDDD_RSVD3_WIDTH;
+                              818 ; 214  |    } B;
+                              819 ; 215  |   unsigned int I;
+                              820 ; 216  |        unsigned U;
+                              821 ; 217  |} dcdc_vddd_type;
+                              822 ; 218  |#define HW_DCDC_VDDD      (*(volatile dcdc_vddd_type _X*) (HW_DCDC_BASEADDR+3))    /* DcDc
+                                   VDDD Register */
+                              823 ; 219  |
+                              824 ; 220  |
+                              825 ; 221  |
+                              826 ; 222  |
+                              827 ; 223  |/////////////////////////////////////////////////////////////////////////////////
+                              828 ; 224  |
+                              829 ; 225  |//  DcDc Vdda Register (HW_DCDC_VDDA) Bit Definitions
+                              830 ; 226  |
+                              831 ; 227  |#define HW_DCDC_VDDA_VOLTAGE_LEVEL_WIDTH (5)
+                              832 ; 228  |#define HW_DCDC_VDDA_RSVD0_WIDTH (3)
+                              833 ; 229  |#define HW_DCDC_VDDA_BROWNOUT_LEVEL_WIDTH (5)
+                              834 ; 230  |#define HW_DCDC_VDDA_RSVD1_WIDTH (3)
+                              835 ; 231  |#define HW_DCDC_VDDA_BROWNOUT_ENABLE_WIDTH (1)
+                              836 ; 232  |#define HW_DCDC_VDDA_RSVD2_WIDTH (3)
+                              837 ; 233  |#define HW_DCDC_VDDA_BROWNOUT_STATUS_WIDTH (1)
+                              838 ; 234  |#define HW_DCDC_VDDA_OK_WIDTH (1)
+                              839 ; 235  |#define HW_DCDC_VDDA_RSVD3_WIDTH (2)
+                              840 ; 236  |
+                              841 ; 237  |
+                              842 ; 238  |
+                              843 ; 239  |#define HW_DCDC_VDDA_VOLTAGE_LEVEL_BITPOS (0)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              844 ; 240  |#define HW_DCDC_VDDA_BROWNOUT_LEVEL_BITPOS (8)
+                              845 ; 241  |#define HW_DCDC_VDDA_BROWNOUT_ENABLE_BITPOS (16)
+                              846 ; 242  |#define HW_DCDC_VDDA_BROWNOUT_STATUS_BITPOS (20)
+                              847 ; 243  |#define HW_DCDC_VDDA_OK_BITPOS (21)
+                              848 ; 244  |
+                              849 ; 245  |
+                              850 ; 246  |#define HW_DCDC_VDDA_VOLTAGE_LEVEL_SETMASK (((1<<HW_DCDC_VDDA_VOLTAGE_LEVEL_WIDTH)-1)<<HW_
+                                  DCDC_VDDA_VOLTAGE_LEVEL_BITPOS)        
+                              851 ; 247  |#define HW_DCDC_VDDA_BROWNOUT_LEVEL_SETMASK (((1<<HW_DCDC_VDDA_BROWNOUT_LEVEL_WIDTH)-1)<<H
+                                  W_DCDC_VDDA_BROWNOUT_LEVEL_BITPOS) 
+                              852 ; 248  |#define HW_DCDC_VDDA_BROWNOUT_ENABLE_SETMASK (((1<<HW_DCDC_VDDA_BROWNOUT_ENABLE_WIDTH)-1)<
+                                  <HW_DCDC_VDDA_BROWNOUT_ENABLE_BITPOS)  
+                              853 ; 249  |#define HW_DCDC_VDDA_BROWNOUT_STATUS_SETMASK (((1<<HW_DCDC_VDDA_BROWNOUT_STATUS_WIDTH)-1)<
+                                  <HW_DCDC_VDDA_BROWNOUT_STATUS_BITPOS)  
+                              854 ; 250  |
+                              855 ; 251  |
+                              856 ; 252  |
+                              857 ; 253  |#define HW_DCDC_VDDA_VOLTAGE_LEVEL_CLRMASK (~(WORD)HW_DCDC_VDDA_VOLTAGE_LEVEL_SETMASK)    
+                                   
+                              858 ; 254  |#define HW_DCDC_VDDA_BROWNOUT_LEVEL_CLRMASK (~(WORD)HW_DCDC_VDDA_BROWNOUT_LEVEL_SETMASK) 
+                              859 ; 255  |#define HW_DCDC_VDDA_BROWNOUT_ENABLE_CLRMASK (~(WORD)HW_DCDC_VDDA_BROWNOUT_ENABLE_SETMASK)
+                                    
+                              860 ; 256  |#define HW_DCDC_VDDA_BROWNOUT_STATUS_CLRMASK (~(WORD)HW_DCDC_VDDA_BROWNOUT_STATUS_SETMASK)
+                                    
+                              861 ; 257  |
+                              862 ; 258  |
+                              863 ; 259  |typedef union               
+                              864 ; 260  |{
+                              865 ; 261  |    struct {
+                              866 ; 262  |        unsigned int VOLTAGE_LEVEL    : HW_DCDC_VDDA_VOLTAGE_LEVEL_WIDTH;
+                              867 ; 263  |        unsigned int RSVD0            : HW_DCDC_VDDA_RSVD0_WIDTH;
+                              868 ; 264  |        unsigned int BROWNOUT_LEVEL   : HW_DCDC_VDDA_BROWNOUT_LEVEL_WIDTH;
+                              869 ; 265  |        unsigned int RSVD1            : HW_DCDC_VDDA_RSVD1_WIDTH;
+                              870 ; 266  |        unsigned int BROWNOUT_ENABLE  : HW_DCDC_VDDA_BROWNOUT_ENABLE_WIDTH;
+                              871 ; 267  |        unsigned int RSVD2            : HW_DCDC_VDDA_RSVD2_WIDTH;
+                              872 ; 268  |        unsigned int BROWNOUT_STATUS  : HW_DCDC_VDDA_BROWNOUT_STATUS_WIDTH;
+                              873 ; 269  |             unsigned int VDDA_OK          : HW_DCDC_VDDA_OK_WIDTH;
+                              874 ; 270  |        unsigned int RSVD3            : HW_DCDC_VDDA_RSVD3_WIDTH;
+                              875 ; 271  |    } B;
+                              876 ; 272  |    unsigned int I;
+                              877 ; 273  |} dcdc_vdda_type;
+                              878 ; 274  |#define HW_DCDC_VDDA      (*(volatile dcdc_vdda_type _X*) (HW_DCDC_BASEADDR+4))    /* DcDc
+                                   VDDA Register */
+                              879 ; 275  |
+                              880 ; 276  |
+                              881 ; 277  |
+                              882 ; 278  |
+                              883 ; 279  |/////////////////////////////////////////////////////////////////////////////////
+                              884 ; 280  |
+                              885 ; 281  |//  DcDc#2 Control Register 0 (HW_DCDC2_CTRL0) Bit Definitions
+                              886 ; 282  |
+                              887 ; 283  |#define HW_DCDC2_CTRL0_PLEVBU_WIDTH (5)
+                              888 ; 284  |#define HW_DCDC2_CTRL0_RSVD0_WIDTH (3)
+                              889 ; 285  |#define HW_DCDC2_CTRL0_PLEVBO_WIDTH (5)
+                              890 ; 286  |#define HW_DCDC2_CTRL0_RSVD1_WIDTH (3)
+                              891 ; 287  |#define HW_DCDC2_CTRL0_NLEV_WIDTH (5)
+                              892 ; 288  |#define HW_DCDC2_CTRL0_RSVD2_WIDTH (3)
+                              893 ; 289  |
+                              894 ; 290  |
+                              895 ; 291  |
+                              896 ; 292  |#define HW_DCDC2_CTRL0_PLEVBU_BITPOS (0)
+                              897 ; 293  |#define HW_DCDC2_CTRL0_PLEVBO_BITPOS (8)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              898 ; 294  |#define HW_DCDC2_CTRL0_NLEV_BITPOS (16)
+                              899 ; 295  |
+                              900 ; 296  |#define HW_DCDC2_CTRL0_PLEVBU_SETMASK (((1<<HW_DCDC2_CTRL0_PLEVBU_WIDTH)-1)<<HW_DCDC2_CTRL
+                                  0_PLEVBU_BITPOS)        
+                              901 ; 297  |#define HW_DCDC2_CTRL0_PLEVBO_SETMASK (((1<<HW_DCDC2_CTRL0_PLEVBO_WIDTH)-1)<<HW_DCDC2_CTRL
+                                  0_PLEVBO_BITPOS) 
+                              902 ; 298  |#define HW_DCDC2_CTRL0_NLEV_SETMASK (((1<<HW_DCDC2_CTRL0_NLEV_WIDTH)-1)<<HW_DCDC2_CTRL0_NL
+                                  EV_BITPOS)  
+                              903 ; 299  |
+                              904 ; 300  |#define HW_DCDC2_CTRL0_PLEVBU_CLRMASK (~(WORD)HW_DCDC2_CTRL0_PLEVBU_SETMASK)     
+                              905 ; 301  |#define HW_DCDC2_CTRL0_PLEVBO_CLRMASK (~(WORD)HW_DCDC2_CTRL0_PLEVBO_SETMASK) 
+                              906 ; 302  |#define HW_DCDC2_CTRL0_NLEV_CLRMASK (~(WORD)HW_DCDC2_CTRL0_NLEV_SETMASK)  
+                              907 ; 303  |
+                              908 ; 304  |
+                              909 ; 305  |typedef union               
+                              910 ; 306  |{
+                              911 ; 307  |    struct {
+                              912 ; 308  |        unsigned int PLEVBU           : HW_DCDC2_CTRL0_PLEVBU_WIDTH;
+                              913 ; 309  |        unsigned int RSVD0            : HW_DCDC2_CTRL0_RSVD0_WIDTH;
+                              914 ; 310  |        unsigned int PLEVBO           : HW_DCDC2_CTRL0_PLEVBO_WIDTH;
+                              915 ; 311  |        unsigned int RSVD1            : HW_DCDC2_CTRL0_RSVD1_WIDTH;
+                              916 ; 312  |        unsigned int NLEV             : HW_DCDC2_CTRL0_NLEV_WIDTH;
+                              917 ; 313  |        unsigned int RSVD2            : HW_DCDC2_CTRL0_RSVD2_WIDTH;
+                              918 ; 314  |    } B;
+                              919 ; 315  |    unsigned int I;
+                              920 ; 316  |} dcdc2_ctrl0_type; 
+                              921 ; 317  |#define HW_DCDC2_CTRL0      (*(volatile dcdc2_ctrl0_type _X*) (HW_DCDC_BASEADDR+5))    /* 
+                                  DcDc#2 Limit Level Register */
+                              922 ; 318  |
+                              923 ; 319  |
+                              924 ; 320  |
+                              925 ; 321  |
+                              926 ; 322  |/////////////////////////////////////////////////////////////////////////////////
+                              927 ; 323  |
+                              928 ; 324  |//  DcDc#2 Control Register #1 (HW_DCDC2_CTRL1) Bit Definitions
+                              929 ; 325  |
+                              930 ; 326  |#define HW_DCDC2_CTRL1_C_WIDTH (4)
+                              931 ; 327  |#define HW_DCDC2_CTRL1_R_WIDTH (4)
+                              932 ; 328  |#define HW_DCDC2_CTRL1_FFOR_WIDTH (3)
+                              933 ; 329  |#define HW_DCDC2_CTRL1_RSVD0_WIDTH (1)
+                              934 ; 330  |#define HW_DCDC2_CTRL1_PFMCTRL_WIDTH (12)
+                              935 ; 331  |
+                              936 ; 332  |
+                              937 ; 333  |#define HW_DCDC2_CTRL1_C_BITPOS (0)
+                              938 ; 334  |#define HW_DCDC2_CTRL1_R_BITPOS (4)
+                              939 ; 335  |#define HW_DCDC2_CTRL1_FFOR_BITPOS (8)
+                              940 ; 336  |#define HW_DCDC2_CTRL1_PFMCTRL_BITPOS (12)
+                              941 ; 337  |
+                              942 ; 338  |
+                              943 ; 339  |
+                              944 ; 340  |#define HW_DCDC2_CTRL1_C_SETMASK (((1<<HW_DCDC2_CTRL1_C_WIDTH)-1)<<HW_DCDC2_CTRL1_C_BITPOS
+                                  )        
+                              945 ; 341  |#define HW_DCDC2_CTRL1_R_SETMASK (((1<<HW_DCDC2_CTRL1_R_WIDTH)-1)<<HW_DCDC2_CTRL1_R_BITPOS
+                                  ) 
+                              946 ; 342  |#define HW_DCDC2_CTRL1_FFOR_SETMASK (((1<<HW_DCDC2_CTRL1_FFOR_WIDTH)-1)<<HW_DCDC2_CTRL1_FF
+                                  OR_BITPOS)  
+                              947 ; 343  |#define HW_DCDC2_CTRL1_PFMCTRL_SETMASK (((1<<HW_DCDC2_CTRL1_PFMCTRL_WIDTH)-1)<<HW_DCDC2_CT
+                                  RL1_PFMCTRL_BITPOS)  
+                              948 ; 344  |
+                              949 ; 345  |
+                              950 ; 346  |
+                              951 ; 347  |#define HW_DCDC2_CTRL1_C_CLRMASK (~(WORD)HW_DCDC2_CTRL1_C_SETMASK)     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              952 ; 348  |#define HW_DCDC2_CTRL1_R_CLRMASK (~(WORD)HW_DCDC2_CTRL1_R_SETMASK) 
+                              953 ; 349  |#define HW_DCDC2_CTRL1_FFOR_CLRMASK (~(WORD)HW_DCDC2_CTRL1_FFOR_SETMASK)  
+                              954 ; 350  |#define HW_DCDC2_CTRL1_PFMCTRL_CLRMASK (~(WORD)HW_DCDC2_CTRL1_PFMCTRL_SETMASK)  
+                              955 ; 351  |
+                              956 ; 352  |
+                              957 ; 353  |typedef union               
+                              958 ; 354  |{
+                              959 ; 355  |    struct {
+                              960 ; 356  |        unsigned int C                : HW_DCDC2_CTRL1_C_WIDTH;
+                              961 ; 357  |        unsigned int R                : HW_DCDC2_CTRL1_R_WIDTH;
+                              962 ; 358  |        unsigned int FFOR             : HW_DCDC2_CTRL1_FFOR_WIDTH;
+                              963 ; 359  |        unsigned int RSVD0            : HW_DCDC2_CTRL1_RSVD0_WIDTH;
+                              964 ; 360  |        unsigned int PFMCTRL          : HW_DCDC2_CTRL1_FFOR_WIDTH;
+                              965 ; 361  |    } B;
+                              966 ; 362  |    unsigned int I;
+                              967 ; 363  |} dcdc2_ctrl1_type;
+                              968 ; 364  |#define HW_DCDC2_CTRL1      (*(volatile dcdc2_ctrl1_type _X*) (HW_DCDC_BASEADDR+6))    /* 
+                                  DcDc#2 Ctrl Register #1 */
+                              969 ; 365  |
+                              970 ; 366  |
+                              971 ; 367  |
+                              972 ; 368  |
+                              973 ; 369  |/////////////////////////////////////////////////////////////////////////////////
+                              974 ; 370  |
+                              975 ; 371  |//  Speed Monitoring Register (HW_SPEED) Bit Definitions
+                              976 ; 372  |
+                              977 ; 373  |#define HW_SPEED_OSC1_PWRUP_WIDTH (1)
+                              978 ; 374  |#define HW_SPEED_OSC1_START_COUNT_WIDTH (1)
+                              979 ; 375  |#define HW_SPEED_RSVD0_WIDTH (2)
+                              980 ; 376  |#define HW_SPEED_RINGOSC1_WIDTH (7)
+                              981 ; 377  |#define HW_SPEED_RSVD1_WIDTH (1)
+                              982 ; 378  |#define HW_SPEED_OSC2_PWRUP_WIDTH (1)
+                              983 ; 379  |#define HW_SPEED_OSC2_START_COUNT_WIDTH (1)
+                              984 ; 380  |#define HW_SPEED_RSVD2_WIDTH (2)
+                              985 ; 381  |#define HW_SPEED_RINGOSC2_WIDTH (7)
+                              986 ; 382  |#define HW_SPEED_RSVD3_WIDTH (1)
+                              987 ; 383  |
+                              988 ; 384  |
+                              989 ; 385  |
+                              990 ; 386  |#define HW_SPEED_OSC1_PWRUP_BITPOS (0)
+                              991 ; 387  |#define HW_SPEED_OSC1_START_COUNT_BITPOS (1)
+                              992 ; 388  |#define HW_SPEED_RINGOSC1_BITPOS (4)
+                              993 ; 389  |#define HW_SPEED_OSC2_PWRUP_BITPOS (12)
+                              994 ; 390  |#define HW_SPEED_OSC2_START_COUNT_BITPOS (13)
+                              995 ; 391  |#define HW_SPEED_RINGOSC2_BITPOS (16)
+                              996 ; 392  |
+                              997 ; 393  |
+                              998 ; 394  |#define HW_SPEED_OSC1_PWRUP_SETMASK (((1<<HW_SPEED_OSC1_PWRUP_WIDTH)-1)<<HW_SPEED_OSC1_PWR
+                                  UP_BITPOS)        
+                              999 ; 395  |#define HW_SPEED_OSC1_START_COUNT_SETMASK (((1<<HW_SPEED_OSC1_START_COUNT_WIDTH)-1)<<HW_SP
+                                  EED_OSC1_START_COUNT_BITPOS)        
+                             1000 ; 396  |#define HW_SPEED_RINGOSC1_SETMASK (((1<<HW_SPEED_RINGOSC1_WIDTH)-1)<<HW_SPEED_RINGOSC1_BIT
+                                  POS) 
+                             1001 ; 397  |#define HW_SPEED_OSC2_PWRUP_SETMASK (((1<<HW_SPEED_OSC2_PWRUP_WIDTH)-1)<<HW_SPEED_OSC2_PWR
+                                  UP_BITPOS)        
+                             1002 ; 398  |
+                             1003 ; 399  |#define HW_SPEED_OSC2_START_COUNT_SETMASK (((1<<HW_SPEED_OSC2_START_COUNT_WIDTH)-1)<<HW_SP
+                                  EED_OSC2_START_COUNT_BITPOS)        
+                             1004 ; 400  |#define HW_SPEED_RINGOSC2_SETMASK (((1<<HW_SPEED_RINGOSC2_WIDTH)-1)<<HW_SPEED_RINGOSC2_BIT
+                                  POS) 
+                             1005 ; 401  |
+                             1006 ; 402  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1007 ; 403  |
+                             1008 ; 404  |#define HW_SPEED_OSC1_PWRUP_CLRMASK (~(WORD)HW_SPEED_OSC1_PWRUP_SETMASK)     
+                             1009 ; 405  |#define HW_SPEED_OSC1_START_COUNT_CLRMASK (~(WORD)HW_SPEED_OSC1_START_COUNT_SETMASK)     
+                             1010 ; 406  |#define HW_SPEED_RINGOSC1_CLRMASK (~(WORD)HW_SPEED_RINGOSC1_SETMASK) 
+                             1011 ; 407  |#define HW_SPEED_OSC2_PWRUP_CLRMASK (~(WORD)HW_SPEED_OSC2_PWRUP_SETMASK)   
+                             1012 ; 408  |#define HW_SPEED_OSC2_START_COUNT_CLRMASK (~(WORD)HW_SPEED_OSC2_START_COUNT_SETMASK)     
+                             1013 ; 409  |#define HW_SPEED_RINGOSC2_CLRMASK (~(WORD)HW_SPEED_RINGOSC2_SETMASK) 
+                             1014 ; 410  |
+                             1015 ; 411  |
+                             1016 ; 412  |typedef union               
+                             1017 ; 413  |{
+                             1018 ; 414  |    struct {
+                             1019 ; 415  |        unsigned int OSC1_PWRUP          : HW_SPEED_OSC1_PWRUP_WIDTH;
+                             1020 ; 416  |        unsigned int OSC1_START_COUNT    : HW_SPEED_OSC1_START_COUNT_WIDTH;
+                             1021 ; 417  |        unsigned int RSVD0               : HW_SPEED_RSVD0_WIDTH;
+                             1022 ; 418  |        unsigned int RINGOSC1            : HW_SPEED_RINGOSC1_WIDTH;
+                             1023 ; 419  |        unsigned int RSVD1               : HW_SPEED_RSVD1_WIDTH;
+                             1024 ; 420  |        unsigned int OSC2_PWRUP          : HW_SPEED_OSC2_PWRUP_WIDTH;
+                             1025 ; 421  |        unsigned int OSC2_START_COUNT    : HW_SPEED_OSC2_START_COUNT_WIDTH;
+                             1026 ; 422  |        unsigned int RSVD2               : HW_SPEED_RSVD2_WIDTH;
+                             1027 ; 423  |        unsigned int RINGOSC2            : HW_SPEED_RINGOSC2_WIDTH;
+                             1028 ; 424  |        unsigned int RSVD3               : HW_SPEED_RSVD3_WIDTH;
+                             1029 ; 425  |    } B;
+                             1030 ; 426  |    unsigned int I;
+                             1031 ; 427  |} speed_type;
+                             1032 ; 428  |#define HW_SPEED      (*(volatile speed_type _X*) (HW_DCDC_BASEADDR+7))    /* Speed Measur
+                                  ement Register */
+                             1033 ; 429  |
+                             1034 ; 430  |
+                             1035 ; 431  |
+                             1036 ; 432  |
+                             1037 ; 433  |
+                             1038 ; 434  |
+                             1039 ; 435  |
+                             1040 ; 436  |// DC DC Test Bit Register (HW_DCDCTBR) Definitions
+                             1041 ; 437  |#define HW_DCDC_TBR_DCDC1_ADJ_TN_WIDTH 4
+                             1042 ; 438  |#define HW_DCDC_TBR_DCDC1_DIS_5BIT_WIDTH 1
+                             1043 ; 439  |#define HW_DCDC_TBR_DCDC1_BAT_ADJ_WIDTH 1
+                             1044 ; 440  |#define HW_DCDC_TBR_DCDC1_CLK4X_WIDTH 1
+                             1045 ; 441  |#define HW_DCDC_TBR_DCDC1_CLK2X_WIDTH 1
+                             1046 ; 442  |#define HW_DCDC_TBR_DCDC1_NOZERO_WIDTH 1
+                             1047 ; 443  |#define HW_DCDC_TBR_DCDC1_VDD5V_ACTIVE_WIDTH 1
+                             1048 ; 444  |#define HW_DCDC_TBR_DCDC1_PFM_WIDTH 1
+                             1049 ; 445  |#define HW_DCDC_TBR_DCDC1_STOPCLK_WIDTH 1
+                             1050 ; 446  |#define HW_DCDC_TBR_PWRUP_VDDIO_BRNOUT_WIDTH 1
+                             1051 ; 447  |#define HW_DCDC_TBR_DCDC_ANA_LESSI_WIDTH 1
+                             1052 ; 448  |#define HW_DCDC_TBR_DCDC_MORE_CAP_WIDTH 1
+                             1053 ; 449  |#define HW_DCDC_TBR_DCDC_ANA_BGR_BIAS_WIDTH 1
+                             1054 ; 450  |#define HW_DCDC_TBR_DCDC1_NEW_SCHEME_WIDTH 1
+                             1055 ; 451  |#define HW_DCDC_TBR_DCDC1_HALF_FETS_WIDTH 1
+                             1056 ; 452  |#define HW_DCDC_TBR_DCDC2_DIS_5BIT_WIDTH 1
+                             1057 ; 453  |#define HW_DCDC_TBR_DCDC2_CLK4X_WIDTH 1
+                             1058 ; 454  |#define HW_DCDC_TBR_DCDC2_CLK2X_WIDTH 1
+                             1059 ; 455  |#define HW_DCDC_TBR_DCDC2_VDD5V_ACTIVE_WIDTH 1
+                             1060 ; 456  |#define HW_DCDC_TBR_DCDC2_PFM_WIDTH 1
+                             1061 ; 457  |#define HW_DCDC_TBR_DCDC2_STOPCLK_WIDTH 1
+                             1062 ; 458  |
+                             1063 ; 459  |#define HW_DCDC_TBR_DCDC1_ADJ_TN_BITPOS (0)
+                             1064 ; 460  |#define HW_DCDC_TBR_DCDC1_DIS_5BIT_BITPOS (4)
+                             1065 ; 461  |#define HW_DCDC_TBR_DCDC1_BAT_ADJ_BITPOS (5)
+                             1066 ; 462  |#define HW_DCDC_TBR_DCDC1_CLK4X_BITPOS (6)
+                             1067 ; 463  |#define HW_DCDC_TBR_DCDC1_CLK2X_BITPOS (7)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1068 ; 464  |#define HW_DCDC_TBR_DCDC1_NOZERO_BITPOS (8)
+                             1069 ; 465  |#define HW_DCDC_TBR_DCDC1_VDD5V_ACTIVE_BITPOS (9)
+                             1070 ; 466  |#define HW_DCDC_TBR_DCDC1_PFM_BITPOS (10)
+                             1071 ; 467  |#define HW_DCDC_TBR_DCDC1_STOPCLK_BITPOS (11)
+                             1072 ; 468  |#define HW_DCDC_TBR_PWRUP_VDDIO_BRNOUT_BITPOS (12)
+                             1073 ; 469  |#define HW_DCDC_TBR_DCDC_ANA_LESSI_BITPOS (13)
+                             1074 ; 470  |#define HW_DCDC_TBR_DCDC_MORE_CAP_BITPOS (14)
+                             1075 ; 471  |#define HW_DCDC_TBR_DCDC_DCDC_ANA_BGR_BIAS_BITPOS (15)
+                             1076 ; 472  |#define HW_DCDC_TBR_DCDC1_NEW_SCHEME_BITPOS (16)
+                             1077 ; 473  |#define HW_DCDC_TBR_DCDC1_HALF_FETS_BITPOS (17)
+                             1078 ; 474  |#define HW_DCDC_TBR_DCDC2_DIS_5BIT_BITPOS (18)
+                             1079 ; 475  |#define HW_DCDC_TBR_DCDC2_CLK4X_BITPOS (19)
+                             1080 ; 476  |#define HW_DCDC_TBR_DCDC2_CLK2X_BITPOS (20)
+                             1081 ; 477  |#define HW_DCDC_TBR_DCDC2_VDD5V_ACTIVE_BITPOS (21)
+                             1082 ; 478  |#define HW_DCDC_TBR_DCDC2_PFM_BITPOS (22)
+                             1083 ; 479  |#define HW_DCDC_TBR_DCDC2_STOPCLK_BITPOS (23)
+                             1084 ; 480  |
+                             1085 ; 481  |#define HW_DCDC_TBR_DCDC1_ADJ_TN_SETMASK (((1<<HW_DCDC_TBR_DCDC1_ADJ_TN_WIDTH)-1)<<HW_DCDC
+                                  _TBR_DCDC1_ADJ_TN_BITPOS)
+                             1086 ; 482  |#define HW_DCDC_TBR_DCDC1_BAT_ADJ_SETMASK (((1<<HW_DCDC_TBR_DCDC1_BAT_ADJ_WIDTH)-1)<<HW_DC
+                                  DC_TBR_DCDC1_BAT_ADJ_BITPOS)
+                             1087 ; 483  |#define HW_DCDC_TBR_DCDC_ANA_BGR_BIAS_SETMASK (((1<<HW_DCDC_TBR_DCDC_ANA_BGR_BIAS_WIDTH)-1
+                                  )<<HW_DCDC_TBR_DCDC_DCDC_ANA_BGR_BIAS_BITPOS)
+                             1088 ; 484  |
+                             1089 ; 485  |#define HW_DCDC_TBR_DCDC1_ADJ_TN_CLRMASK (~(WORD)HW_DCDC_TBR_DCDC1_ADJ_TN_SETMASK)
+                             1090 ; 486  |#define HW_DCDC_TBR_DCDC1_BAT_ADJ_CLRMASK (~(WORD)HW_DCDC_TBR_DCDC1_BAT_ADJ_SETMASK)
+                             1091 ; 487  |#define HW_DCDC_TBR_DCDC_ANA_BGR_BIAS_CLRMASK (~(WORD)HW_DCDC_TBR_DCDC_ANA_BGR_BIAS_SETMAS
+                                  K)
+                             1092 ; 488  |
+                             1093 ; 489  |// Defines for What needs to change to be able to use a higher Core voltage and when the c
+                                  hange should happen
+                             1094 ; 490  |#define HW_DCDC_VDDD_CHANGE_TBR_CUTOFF_VALUE ((18<<HW_DCDC_VDDD_VOLTAGE_LEVEL_BITPOS)&HW_D
+                                  CDC_VDDD_VOLTAGE_LEVEL_SETMASK)
+                             1095 ; 491  |#define HW_DCDC_TBR_VDDD_HI_VALUE ((1<<HW_DCDC_TBR_DCDC_DCDC_ANA_BGR_BIAS_BITPOS)&HW_DCDC_
+                                  TBR_DCDC_ANA_BGR_BIAS_SETMASK)
+                             1096 ; 492  |#define HW_DCDC_TBR_VDDD_LO_VALUE (((1<<HW_DCDC_TBR_DCDC_DCDC_ANA_BGR_BIAS_BITPOS)&HW_DCDC
+                                  _TBR_DCDC_ANA_BGR_BIAS_SETMASK)+((2<<HW_DCDC_TBR_DCDC1_ADJ_TN_BITPOS)&HW_DCDC_TBR_DCDC1_ADJ_TN_SET
+                                  MASK)+((1<<HW_DCDC_TBR_DCDC1_BAT_ADJ_BITPOS)&HW_DCDC_TBR_DCDC1_BAT_ADJ_SETMASK))
+                             1097 ; 493  |
+                             1098 ; 494  |typedef union               
+                             1099 ; 495  |{
+                             1100 ; 496  |    struct {
+                             1101 ; 497  |        unsigned int DCDC1_ADJ_TN               : HW_DCDC_TBR_DCDC1_ADJ_TN_WIDTH;
+                             1102 ; 498  |        unsigned int DCDC1_DIS_5BIT             : HW_DCDC_TBR_DCDC1_DIS_5BIT_WIDTH;
+                             1103 ; 499  |        unsigned int DCDC1_BAT_ADJ              : HW_DCDC_TBR_DCDC1_BAT_ADJ_WIDTH;
+                             1104 ; 500  |        unsigned int DCDC1_CLK4X                : HW_DCDC_TBR_DCDC1_CLK4X_WIDTH;
+                             1105 ; 501  |        unsigned int DCDC1_CLK2X                : HW_DCDC_TBR_DCDC1_CLK2X_WIDTH;
+                             1106 ; 502  |        unsigned int DCDC1_NOZERO               : HW_DCDC_TBR_DCDC1_NOZERO_WIDTH;
+                             1107 ; 503  |        unsigned int DCDC1_VDD5V_ACTIVE         : HW_DCDC_TBR_DCDC1_VDD5V_ACTIVE_WIDTH;
+                             1108 ; 504  |        unsigned int DCDC1_PFM                  : HW_DCDC_TBR_DCDC1_PFM_WIDTH;
+                             1109 ; 505  |        unsigned int DCDC1_STOPCLK              : HW_DCDC_TBR_DCDC1_STOPCLK_WIDTH;
+                             1110 ; 506  |        unsigned int PWRUP_VDDIO_BRNOUT         : HW_DCDC_TBR_PWRUP_VDDIO_BRNOUT_WIDTH;
+                             1111 ; 507  |        unsigned int DCDC_ANA_LESSI             : HW_DCDC_TBR_DCDC_ANA_LESSI_WIDTH;
+                             1112 ; 508  |        unsigned int DCDC_MORE_CAP              : HW_DCDC_TBR_DCDC_MORE_CAP_WIDTH;
+                             1113 ; 509  |        unsigned int DCDC_ANA_BGR_BIAS          : HW_DCDC_TBR_DCDC_ANA_BGR_BIAS_WIDTH;
+                             1114 ; 510  |        unsigned int DCDC1_NEW_SCHEME           : HW_DCDC_TBR_DCDC1_NEW_SCHEME_WIDTH;
+                             1115 ; 511  |        unsigned int DCDC1_HALF_FETS            : HW_DCDC_TBR_DCDC1_HALF_FETS_WIDTH;
+                             1116 ; 512  |        unsigned int DCDC2_DIS_5BIT             : HW_DCDC_TBR_DCDC2_DIS_5BIT_WIDTH;
+                             1117 ; 513  |        unsigned int DCDC2_CLK4X                : HW_DCDC_TBR_DCDC2_CLK4X_WIDTH;
+                             1118 ; 514  |        unsigned int DCDC2_CLK2X                : HW_DCDC_TBR_DCDC2_CLK2X_WIDTH;
+                             1119 ; 515  |        unsigned int DCDC2_VDD5V_ACTIVE         : HW_DCDC_TBR_DCDC2_VDD5V_ACTIVE_WIDTH;
+                             1120 ; 516  |        unsigned int DCDC2_PFM                  : HW_DCDC_TBR_DCDC2_PFM_WIDTH;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1121 ; 517  |        unsigned int DCDC2_STOPCLK              : HW_DCDC_TBR_DCDC2_STOPCLK_WIDTH;
+                             1122 ; 518  |    } B;
+                             1123 ; 519  |    unsigned int I;
+                             1124 ; 520  |} usb_dcdctbr_type;
+                             1125 ; 521  |#define HW_DCDC_TBR                     (*(volatile usb_dcdctbr_type _X*) (HW_DCDC_BASEADD
+                                  R+8))    /* Analog test bit register*/
+                             1126 ; 522  |
+                             1127 ; 523  |
+                             1128 ; 524  |/////////////////////////////////////////////////////////////////////////////////
+                             1129 ; 525  |
+                             1130 ; 526  |//  Analog Persistent Config (HW_VDD5V_PWR_CHARGE) Bit Definitions
+                             1131 ; 527  |
+                             1132 ; 528  |#define HW_VDD5V_PWR_CHARGE_BATT_CURRENT_WIDTH (6)
+                             1133 ; 529  |#define HW_VDD5V_PWR_CHARGE_RSVD0_WIDTH (2)
+                             1134 ; 530  |#define HW_VDD5V_PWR_CHARGE_PWD_WIDTH (1)
+                             1135 ; 531  |#define HW_VDD5V_PWR_CHARGE_RES_WIDTH (1)
+                             1136 ; 532  |#define HW_VDD5V_PWR_CHARGE_NIMH_WIDTH (1)
+                             1137 ; 533  |#define HW_VDD5V_PWR_CHARGE_LI_TYPE_WIDTH (1)
+                             1138 ; 534  |#define HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_WIDTH (1)
+                             1139 ; 535  |#define HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_WIDTH (1)
+                             1140 ; 536  |#define HW_VDD5V_PWR_CHARGE_DCANA_LP_WIDTH (1)
+                             1141 ; 537  |#define HW_VDD5V_PWR_CHARGE_TEST_USBREGS_WIDTH (1)
+                             1142 ; 538  |#define HW_VDD5V_PWR_CHARGE_DRV_BATT_WIDTH (1)
+                             1143 ; 539  |#define HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_WIDTH (1)
+                             1144 ; 540  |#define HW_VDD5V_PWR_CHARGE_RSVD1_WIDTH (2)
+                             1145 ; 541  |#define HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_WIDTH (1)
+                             1146 ; 542  |#define HW_VDD5V_PWR_CHARGE_BATT_INFO_WIDTH (2)
+                             1147 ; 543  |#define HW_VDD5V_PWR_CHARGE_RSVD2_WIDTH (3)
+                             1148 ; 544  |
+                             1149 ; 545  |#define HW_VDD5V_PWR_CHARGE_BATT_CURRENT_BITPOS (0)
+                             1150 ; 546  |#define HW_VDD5V_PWR_CHARGE_PWD_BITPOS (8)
+                             1151 ; 547  |#define HW_VDD5V_PWR_CHARGE_RES_BITPOS (9)
+                             1152 ; 548  |#define HW_VDD5V_PWR_CHARGE_NIMH_BITPOS (10)
+                             1153 ; 549  |
+                             1154 ; 550  |#define HW_VDD5V_PWR_CHARGE_LI_TYPE_BITPOS (11)
+                             1155 ; 551  |#define HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_BITPOS (12)
+                             1156 ; 552  |#define HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_BITPOS (13)
+                             1157 ; 553  |#define HW_VDD5V_PWR_CHARGE_DCANA_LP_BITPOS (14)
+                             1158 ; 554  |#define HW_VDD5V_PWR_CHARGE_TEST_USBREGS_BITPOS (15)
+                             1159 ; 555  |#define HW_VDD5V_PWR_CHARGE_DRV_BATT_BITPOS (16)
+                             1160 ; 556  |#define HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_BITPOS (17)
+                             1161 ; 557  |#define HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_BITPOS (20)
+                             1162 ; 558  |#define HW_VDD5V_PWR_CHARGE_BATT_INFO_BITPOS (21)
+                             1163 ; 559  |
+                             1164 ; 560  |#define HW_VDD5V_PWR_CHARGE_BATT_CURRENT_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_BATT_CURRENT_WI
+                                  DTH)-1)<<HW_VDD5V_PWR_CHARGE_BATT_CURRENT_BITPOS)        
+                             1165 ; 561  |#define HW_VDD5V_PWR_CHARGE_PWD_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_PWD_WIDTH)-1)<<HW_VDD5V_
+                                  PWR_CHARGE_PWD_BITPOS)        
+                             1166 ; 562  |#define HW_VDD5V_PWR_CHARGE_RES_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_RES_WIDTH)-1)<<HW_VDD5V_
+                                  PWR_CHARGE_RES_BITPOS) 
+                             1167 ; 563  |#define HW_VDD5V_PWR_CHARGE_NIMH_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_NIMH_WIDTH)-1)<<HW_VDD5
+                                  V_PWR_CHARGE_NIMH_BITPOS) 
+                             1168 ; 564  |#define HW_VDD5V_PWR_CHARGE_LI_TYPE_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_LI_TYPE_WIDTH)-1)<<H
+                                  W_VDD5V_PWR_CHARGE_LI_TYPE_BITPOS) 
+                             1169 ; 565  |#define HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_DISABLE_ILIMI
+                                  T_WIDTH)-1)<<HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_BITPOS)        
+                             1170 ; 566  |#define HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_PWDN_ON_IOB
+                                  RNOUT_WIDTH)-1)<<HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_BITPOS)        
+                             1171 ; 567  |#define HW_VDD5V_PWR_CHARGE_DCANA_LP_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_DCANA_LP_WIDTH)-1)<
+                                  <HW_VDD5V_PWR_CHARGE_DCANA_LP_BITPOS) 
+                             1172 ; 568  |#define HW_VDD5V_PWR_CHARGE_TEST_USBREGS_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_TEST_USBREGS_WI
+                                  DTH)-1)<<HW_VDD5V_PWR_CHARGE_TEST_USBREGS_BITPOS) 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1173 ; 569  |#define HW_VDD5V_PWR_CHARGE_DRV_BATT_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_DRV_BATT_WIDTH)-1)<
+                                  <HW_VDD5V_PWR_CHARGE_DRV_BATT_BITPOS) 
+                             1174 ; 570  |#define HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_WIDTH)
+                                  -1)<<HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_BITPOS) 
+                             1175 ; 571  |#define HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_
+                                  WIDTH)-1)<<HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_BITPOS) 
+                             1176 ; 572  |#define HW_VDD5V_PWR_CHARGE_BATT_INFO_SETMASK (((1<<HW_VDD5V_PWR_CHARGE_BATT_INFO_WIDTH)-1
+                                  )<<HW_VDD5V_PWR_CHARGE_BATT_INFO_BITPOS) 
+                             1177 ; 573  |
+                             1178 ; 574  |
+                             1179 ; 575  |#define HW_VDD5V_PWR_CHARGE_BATT_CURRENT_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_BATT_CURRENT_
+                                  SETMASK)     
+                             1180 ; 576  |#define HW_VDD5V_PWR_CHARGE_PWD_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_PWD_SETMASK)     
+                             1181 ; 577  |#define HW_VDD5V_PWR_CHARGE_RES_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_RES_SETMASK) 
+                             1182 ; 578  |#define HW_VDD5V_PWR_CHARGE_NIMH_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_NIMH_SETMASK) 
+                             1183 ; 579  |#define HW_VDD5V_PWR_CHARGE_LI_TYPE_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_LI_TYPE_SETMASK) 
+                             1184 ; 580  |#define HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_DISABLE_ILI
+                                  MIT_SETMASK)     
+                             1185 ; 581  |#define HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_PWDN_ON_I
+                                  OBRNOUT_SETMASK)     
+                             1186 ; 582  |#define HW_VDD5V_PWR_CHARGE_DCANA_LP_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_DCANA_LP_SETMASK)
+                                   
+                             1187 ; 583  |#define HW_VDD5V_PWR_CHARGE_TEST_USBREGS_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_TEST_USBREGS_
+                                  SETMASK) 
+                             1188 ; 584  |#define HW_VDD5V_PWR_CHARGE_DRV_BATT_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_DRV_BATT_SETMASK)
+                                   
+                             1189 ; 585  |#define HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_SETM
+                                  ASK) 
+                             1190 ; 586  |#define HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_VDD5V_PRESEN
+                                  T_SETMASK) 
+                             1191 ; 587  |#define HW_VDD5V_PWR_CHARGE_BATT_INFO_CLRMASK (~(WORD)HW_VDD5V_PWR_CHARGE_BATT_INFO_SETMAS
+                                  K) 
+                             1192 ; 588  |
+                             1193 ; 589  |typedef union               
+                             1194 ; 590  |{
+                             1195 ; 591  |    struct {
+                             1196 ; 592  |        unsigned int BATT_CURRENT               : HW_VDD5V_PWR_CHARGE_BATT_CURRENT_WIDTH;
+                             1197 ; 593  |        unsigned int RSVD0                      : HW_VDD5V_PWR_CHARGE_RSVD0_WIDTH;
+                             1198 ; 594  |        unsigned int PWD                        : HW_VDD5V_PWR_CHARGE_PWD_WIDTH;
+                             1199 ; 595  |        unsigned int RES                        : HW_VDD5V_PWR_CHARGE_RES_WIDTH;
+                             1200 ; 596  |        unsigned int NIMH                       : HW_VDD5V_PWR_CHARGE_NIMH_WIDTH;
+                             1201 ; 597  |        unsigned int LI_TYPE                    : HW_VDD5V_PWR_CHARGE_LI_TYPE_WIDTH;
+                             1202 ; 598  |        unsigned int DISABLE_ILIMIT             : HW_VDD5V_PWR_CHARGE_DISABLE_ILIMIT_WIDTH
+                                  ;
+                             1203 ; 599  |        unsigned int PWDN_ON_IOBRNOUT           : HW_VDD5V_PWR_CHARGE_PWDN_ON_IOBRNOUT_WID
+                                  TH;
+                             1204 ; 600  |        unsigned int DCANA_LP                   : HW_VDD5V_PWR_CHARGE_DCANA_LP_WIDTH;
+                             1205 ; 601  |        unsigned int TEST_USBREGS               : HW_VDD5V_PWR_CHARGE_TEST_USBREGS_WIDTH;
+                             1206 ; 602  |        unsigned int DRV_BATT                   : HW_VDD5V_PWR_CHARGE_DRV_BATT_WIDTH;
+                             1207 ; 603  |        unsigned int SWCHRG_BAT                 : HW_VDD5V_PWR_CHARGE_SWCHRG_BAT_WIDTH;
+                             1208 ; 604  |        unsigned int RSVD1                      : HW_VDD5V_PWR_CHARGE_RSVD1_WIDTH;
+                             1209 ; 605  |        unsigned int VDD5V_PRESENT              : HW_VDD5V_PWR_CHARGE_VDD5V_PRESENT_WIDTH;
+                                  
+                             1210 ; 606  |        unsigned int RSVD2                      : HW_VDD5V_PWR_CHARGE_RSVD2_WIDTH;
+                             1211 ; 607  |    } B;
+                             1212 ; 608  |    unsigned int I;
+                             1213 ; 609  |} usb_pwr_charge_type;
+                             1214 ; 610  |#define HW_VDD5V_PWR_CHARGE      (*(volatile usb_pwr_charge_type _X*) (HW_DCDC_BASEADDR+17
+                                  ))    /* Analog Persistent Config Register */
+                             1215 ; 611  |
+                             1216 ; 612  |#define HW_DCDC_PERSIST_AUTO_RESTART_STAT_WIDTH 1
+                             1217 ; 613  |#define HW_DCDC_PERSIST_DELAY_5V_AUTO_RESTART_STAT_WIDTH 1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1218 ; 614  |#define HW_DCDC_PERSIST_UPDATE_WIDTH 1
+                             1219 ; 615  |#define HW_DCDC_PERSIST_AUTO_RESTART_WIDTH 1
+                             1220 ; 616  |#define HW_DCDC_PERSIST_DELAY_5V_AUTO_RESTART_WIDTH 1
+                             1221 ; 617  |#define HW_DCDC_PERSIST_LOW_BATT_TYPE_WIDTH 1
+                             1222 ; 618  |#define HW_DCDC_PERSIST_LOW_BATTERY_ENABLE_WIDTH 1
+                             1223 ; 619  |#define HW_DCDC_PERSIST_SLEEP_XTAL_ENABLE_WIDTH 1
+                             1224 ; 620  |#define HW_DCDC_PERSIST_XTAL_TRIM1_WIDTH 1
+                             1225 ; 621  |#define HW_DCDC_PERSIST_XTAL_TRIM0_WIDTH 1
+                             1226 ; 622  |#define HW_DCDC_PERSIST_XTAL_BIAS_DOWN1_WIDTH 1
+                             1227 ; 623  |#define HW_DCDC_PERSIST_XTAL_BIAS_DOWN0_WIDTH 1
+                             1228 ; 624  |#define HW_DCDC_PERSIST_XTAL_TRM_ENABLE_WIDTH 1
+                             1229 ; 625  |#define HW_DCDC_PERSIST_RSRVD_WIDTH 2
+                             1230 ; 626  |
+                             1231 ; 627  |#define HW_DCDC_PERSIST_AUTO_RESTART_STAT_BITPOS 12
+                             1232 ; 628  |#define HW_DCDC_PERSIST_DELAY_5V_AUTO_RESTART_STAT_BITPOS 11
+                             1233 ; 629  |#define HW_DCDC_PERSIST_UPDATE_BITPOS 10
+                             1234 ; 630  |#define HW_DCDC_PERSIST_AUTO_RESTART_BITPOS 9
+                             1235 ; 631  |#define HW_DCDC_PERSIST_DELAY_5V_AUTO_RESTART_BITPOS 8 
+                             1236 ; 632  |#define HW_DCDC_PERSIST_LOW_BATT_TYPE_BITPOS 7
+                             1237 ; 633  |#define HW_DCDC_PERSIST_LOW_BATTERY_ENABLE_BITPOS 6
+                             1238 ; 634  |#define HW_DCDC_PERSIST_SLEEP_XTAL_ENABLE_BITPOS 5
+                             1239 ; 635  |#define HW_DCDC_PERSIST_XTAL_TRIM1_BITPOS 4
+                             1240 ; 636  |#define HW_DCDC_PERSIST_XTAL_TRIM0_BITPOS 3
+                             1241 ; 637  |#define HW_DCDC_PERSIST_XTAL_BIAS_DOWN1_BITPOS 2
+                             1242 ; 638  |#define HW_DCDC_PERSIST_XTAL_BIAS_DOWN0_BITPOS 1
+                             1243 ; 639  |#define HW_DCDC_PERSIST_XTAL_TRM_ENABLE_BITPOS 0
+                             1244 ; 640  |
+                             1245 ; 641  |typedef union               
+                             1246 ; 642  |{
+                             1247 ; 643  |    struct {       
+                             1248 ; 644  |       int XTAL_TRM_ENABLE             : HW_DCDC_PERSIST_XTAL_TRM_ENABLE_WIDTH;
+                             1249 ; 645  |       int XTAL_BIAS_DOWN0             : HW_DCDC_PERSIST_XTAL_BIAS_DOWN0_WIDTH;
+                             1250 ; 646  |       int XTAL_BIAS_DOWN1             : HW_DCDC_PERSIST_XTAL_BIAS_DOWN1_WIDTH;
+                             1251 ; 647  |       int XTAL_TRIM0                  : HW_DCDC_PERSIST_XTAL_TRIM0_WIDTH;
+                             1252 ; 648  |       int XTAL_TRIM1                  : HW_DCDC_PERSIST_XTAL_TRIM1_WIDTH;
+                             1253 ; 649  |       int SLEEP_XTAL_ENABLE           : HW_DCDC_PERSIST_SLEEP_XTAL_ENABLE_WIDTH;
+                             1254 ; 650  |       int LOW_BATTERY_ENABLE          : HW_DCDC_PERSIST_LOW_BATTERY_ENABLE_WIDTH;
+                             1255 ; 651  |       int LOW_BATT_TYPE               : HW_DCDC_PERSIST_LOW_BATT_TYPE_WIDTH;
+                             1256 ; 652  |       int DELAY_5V_AUTO_RESTART       : HW_DCDC_PERSIST_DELAY_5V_AUTO_RESTART_WIDTH;
+                             1257 ; 653  |       int AUTO_RESTART                : HW_DCDC_PERSIST_AUTO_RESTART_WIDTH;
+                             1258 ; 654  |       int UPDATE                      : HW_DCDC_PERSIST_UPDATE_WIDTH;
+                             1259 ; 655  |       int DELAY_5V_AUTO_RESTART_STAT  : HW_DCDC_PERSIST_DELAY_5V_AUTO_RESTART_STAT_WIDTH;
+                                  
+                             1260 ; 656  |       int AUTO_RESTART_STAT           : HW_DCDC_PERSIST_AUTO_RESTART_STAT_WIDTH;
+                             1261 ; 657  |       int RSRVD                       : HW_DCDC_PERSIST_RSRVD_WIDTH;
+                             1262 ; 658  |    } B;
+                             1263 ; 659  |    int I;
+                             1264 ; 660  |} usb_dcdcpersist_type;
+                             1265 ; 661  |#define HW_DCDC_PERSIST                (*(volatile usb_dcdcpersist_type _X*) (HW_DCDC_BASE
+                                  ADDR+15))    /* Analog test bit register*/
+                             1266 ; 662  |
+                             1267 ; 663  |
+                             1268 ; 664  |
+                             1269 ; 665  |#endif
+                             1270 ; 666  |
+                             1271 ; 667  |
+                             1272 ; 668  |
+                             1273 
+                             1275 
+                             1276 ; 14   |#include "regsusb20phy.h"
+                             1277 
+                             1279 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1280 ; 1    |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             1281 ; 2    |//;  Copyright(C) SigmaTel, Inc. 2002-2005
+                             1282 ; 3    |//;  File        : regsusbphy.inc
+                             1283 ; 4    |//;  Description : USB20 PHY Register definition
+                             1284 ; 5    |//;  Updated 2.23.2003 By M. Henson
+                             1285 ; 6    |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             1286 ; 7    |
+                             1287 ; 8    |// The following naming conventions are followed in this file.
+                             1288 ; 9    |// All registers are named using the format...
+                             1289 ; 10   |//     HW_<module>_<regname>
+                             1290 ; 11   |// where <module> is the module name which can be any of the following...
+                             1291 ; 12   |//     USB20
+                             1292 ; 13   |// (Note that when there is more than one copy of a particular module, the
+                             1293 ; 14   |// module name includes a number starting from 0 for the first instance of
+                             1294 ; 15   |// that module)
+                             1295 ; 16   |// <regname> is the specific register within that module
+                             1296 ; 17   |// We also define the following...
+                             1297 ; 18   |//     HW_<module>_<regname>_BITPOS
+                             1298 ; 19   |// which defines the starting bit (i.e. LSB) of a multi bit field
+                             1299 ; 20   |//     HW_<module>_<regname>_SETMASK
+                             1300 ; 21   |// which does something else, and
+                             1301 ; 22   |//     HW_<module>_<regname>_CLRMASK
+                             1302 ; 23   |// which does something else.
+                             1303 ; 24   |// Other rules
+                             1304 ; 25   |//     All caps
+                             1305 ; 26   |//     Numeric identifiers start at 0
+                             1306 ; 27   |
+                             1307 ; 28   |#if !(defined(regsusbphyinc))
+                             1308 ; 29   |#define regsusbphyinc 1
+                             1309 ; 30   |
+                             1310 ; 31   |#include "types.h"
+                             1311 
+                             1313 
+                             1314 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                             1315 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                             1316 ; 3    |//
+                             1317 ; 4    |// Filename: types.h
+                             1318 ; 5    |// Description: Standard data types
+                             1319 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                             1320 ; 7    |
+                             1321 ; 8    |#ifndef _TYPES_H
+                             1322 ; 9    |#define _TYPES_H
+                             1323 ; 10   |
+                             1324 ; 11   |// TODO:  move this outta here!
+                             1325 ; 12   |#if !defined(NOERROR)
+                             1326 ; 13   |#define NOERROR 0
+                             1327 ; 14   |#define SUCCESS 0
+                             1328 ; 15   |#endif 
+                             1329 ; 16   |#if !defined(SUCCESS)
+                             1330 ; 17   |#define SUCCESS  0
+                             1331 ; 18   |#endif
+                             1332 ; 19   |#if !defined(ERROR)
+                             1333 ; 20   |#define ERROR   -1
+                             1334 ; 21   |#endif
+                             1335 ; 22   |#if !defined(FALSE)
+                             1336 ; 23   |#define FALSE 0
+                             1337 ; 24   |#endif
+                             1338 ; 25   |#if !defined(TRUE)
+                             1339 ; 26   |#define TRUE  1
+                             1340 ; 27   |#endif
+                             1341 ; 28   |
+                             1342 ; 29   |#if !defined(NULL)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1343 ; 30   |#define NULL 0
+                             1344 ; 31   |#endif
+                             1345 ; 32   |
+                             1346 ; 33   |#define MAX_INT     0x7FFFFF
+                             1347 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                             1348 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                             1349 ; 36   |#define MAX_ULONG   (-1) 
+                             1350 ; 37   |
+                             1351 ; 38   |#define WORD_SIZE   24              // word size in bits
+                             1352 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                             1353 ; 40   |
+                             1354 ; 41   |
+                             1355 ; 42   |#define BYTE    unsigned char       // btVarName
+                             1356 ; 43   |#define CHAR    signed char         // cVarName
+                             1357 ; 44   |#define USHORT  unsigned short      // usVarName
+                             1358 ; 45   |#define SHORT   unsigned short      // sVarName
+                             1359 ; 46   |#define WORD    unsigned int        // wVarName
+                             1360 ; 47   |#define INT     signed int          // iVarName
+                             1361 ; 48   |#define DWORD   unsigned long       // dwVarName
+                             1362 ; 49   |#define LONG    signed long         // lVarName
+                             1363 ; 50   |#define BOOL    unsigned int        // bVarName
+                             1364 ; 51   |#define FRACT   _fract              // frVarName
+                             1365 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                             1366 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                             1367 ; 54   |#define FLOAT   float               // fVarName
+                             1368 ; 55   |#define DBL     double              // dVarName
+                             1369 ; 56   |#define ENUM    enum                // eVarName
+                             1370 ; 57   |#define CMX     _complex            // cmxVarName
+                             1371 ; 58   |typedef WORD UCS3;                   // 
+                             1372 ; 59   |
+                             1373 ; 60   |#define UINT16  unsigned short
+                             1374 ; 61   |#define UINT8   unsigned char   
+                             1375 ; 62   |#define UINT32  unsigned long
+                             1376 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                             1377 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                             1378 ; 65   |#define WCHAR   UINT16
+                             1379 ; 66   |
+                             1380 ; 67   |//UINT128 is 16 bytes or 6 words
+                             1381 ; 68   |typedef struct UINT128_3500 {   
+                             1382 ; 69   |    int val[6];     
+                             1383 ; 70   |} UINT128_3500;
+                             1384 ; 71   |
+                             1385 ; 72   |#define UINT128   UINT128_3500
+                             1386 ; 73   |
+                             1387 ; 74   |// Little endian word packed byte strings:   
+                             1388 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                             1389 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                             1390 ; 77   |// Little endian word packed byte strings:   
+                             1391 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                             1392 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                             1393 ; 80   |
+                             1394 ; 81   |// Declare Memory Spaces To Use When Coding
+                             1395 ; 82   |// A. Sector Buffers
+                             1396 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                             1397 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                             1398 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                             1399 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                             1400 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                             1401 ; 88   |// B. Media DDI Memory
+                             1402 ; 89   |#define MEDIA_DDI_MEM _Y
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1403 ; 90   |
+                             1404 ; 91   |
+                             1405 ; 92   |
+                             1406 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                             1407 ; 94   |// Examples of circular pointers:
+                             1408 ; 95   |//    INT CIRC cpiVarName
+                             1409 ; 96   |//    DWORD CIRC cpdwVarName
+                             1410 ; 97   |
+                             1411 ; 98   |#define RETCODE INT                 // rcVarName
+                             1412 ; 99   |
+                             1413 ; 100  |// generic bitfield structure
+                             1414 ; 101  |struct Bitfield {
+                             1415 ; 102  |    unsigned int B0  :1;
+                             1416 ; 103  |    unsigned int B1  :1;
+                             1417 ; 104  |    unsigned int B2  :1;
+                             1418 ; 105  |    unsigned int B3  :1;
+                             1419 ; 106  |    unsigned int B4  :1;
+                             1420 ; 107  |    unsigned int B5  :1;
+                             1421 ; 108  |    unsigned int B6  :1;
+                             1422 ; 109  |    unsigned int B7  :1;
+                             1423 ; 110  |    unsigned int B8  :1;
+                             1424 ; 111  |    unsigned int B9  :1;
+                             1425 ; 112  |    unsigned int B10 :1;
+                             1426 ; 113  |    unsigned int B11 :1;
+                             1427 ; 114  |    unsigned int B12 :1;
+                             1428 ; 115  |    unsigned int B13 :1;
+                             1429 ; 116  |    unsigned int B14 :1;
+                             1430 ; 117  |    unsigned int B15 :1;
+                             1431 ; 118  |    unsigned int B16 :1;
+                             1432 ; 119  |    unsigned int B17 :1;
+                             1433 ; 120  |    unsigned int B18 :1;
+                             1434 ; 121  |    unsigned int B19 :1;
+                             1435 ; 122  |    unsigned int B20 :1;
+                             1436 ; 123  |    unsigned int B21 :1;
+                             1437 ; 124  |    unsigned int B22 :1;
+                             1438 ; 125  |    unsigned int B23 :1;
+                             1439 ; 126  |};
+                             1440 ; 127  |
+                             1441 ; 128  |union BitInt {
+                             1442 ; 129  |        struct Bitfield B;
+                             1443 ; 130  |        int        I;
+                             1444 ; 131  |};
+                             1445 ; 132  |
+                             1446 ; 133  |#define MAX_MSG_LENGTH 10
+                             1447 ; 134  |struct CMessage
+                             1448 ; 135  |{
+                             1449 ; 136  |        unsigned int m_uLength;
+                             1450 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                             1451 ; 138  |};
+                             1452 ; 139  |
+                             1453 ; 140  |typedef struct {
+                             1454 ; 141  |    WORD m_wLength;
+                             1455 ; 142  |    WORD m_wMessage;
+                             1456 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                             1457 ; 144  |} Message;
+                             1458 ; 145  |
+                             1459 ; 146  |struct MessageQueueDescriptor
+                             1460 ; 147  |{
+                             1461 ; 148  |        int *m_pBase;
+                             1462 ; 149  |        int m_iModulo;
+                             1463 ; 150  |        int m_iSize;
+                             1464 ; 151  |        int *m_pHead;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1465 ; 152  |        int *m_pTail;
+                             1466 ; 153  |};
+                             1467 ; 154  |
+                             1468 ; 155  |struct ModuleEntry
+                             1469 ; 156  |{
+                             1470 ; 157  |    int m_iSignaledEventMask;
+                             1471 ; 158  |    int m_iWaitEventMask;
+                             1472 ; 159  |    int m_iResourceOfCode;
+                             1473 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                             1474 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                             1475 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                             1476 ; 163  |    int m_uTimeOutHigh;
+                             1477 ; 164  |    int m_uTimeOutLow;
+                             1478 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                             1479 ; 166  |};
+                             1480 ; 167  |
+                             1481 ; 168  |union WaitMask{
+                             1482 ; 169  |    struct B{
+                             1483 ; 170  |        unsigned int m_bNone     :1;
+                             1484 ; 171  |        unsigned int m_bMessage  :1;
+                             1485 ; 172  |        unsigned int m_bTimer    :1;
+                             1486 ; 173  |        unsigned int m_bButton   :1;
+                             1487 ; 174  |    } B;
+                             1488 ; 175  |    int I;
+                             1489 ; 176  |} ;
+                             1490 ; 177  |
+                             1491 ; 178  |
+                             1492 ; 179  |struct Button {
+                             1493 ; 180  |        WORD wButtonEvent;
+                             1494 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                             1495 ; 182  |};
+                             1496 ; 183  |
+                             1497 ; 184  |struct Message {
+                             1498 ; 185  |        WORD wMsgLength;
+                             1499 ; 186  |        WORD wMsgCommand;
+                             1500 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                             1501 ; 188  |};
+                             1502 ; 189  |
+                             1503 ; 190  |union EventTypes {
+                             1504 ; 191  |        struct CMessage msg;
+                             1505 ; 192  |        struct Button Button ;
+                             1506 ; 193  |        struct Message Message;
+                             1507 ; 194  |};
+                             1508 ; 195  |
+                             1509 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                             1510 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                             1511 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                             1512 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                             1513 ; 200  |
+                             1514 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                             1515 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                             1516 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                             1517 ; 204  |
+                             1518 ; 205  |#if DEBUG
+                             1519 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                             1520 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                             1521 ; 208  |#else 
+                             1522 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                             1523 ; 210  |#define DebugBuildAssert(x)    
+                             1524 ; 211  |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1525 ; 212  |
+                             1526 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                             1527 ; 214  |//  #pragma asm
+                             1528 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                             1529 ; 216  |//  #pragma endasm
+                             1530 ; 217  |
+                             1531 ; 218  |
+                             1532 ; 219  |#ifdef COLOR_262K
+                             1533 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                             1534 ; 221  |#elif defined(COLOR_65K)
+                             1535 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                             1536 ; 223  |#else
+                             1537 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                             1538 ; 225  |#endif
+                             1539 ; 226  |    
+                             1540 ; 227  |#endif // #ifndef _TYPES_H
+                             1541 
+                             1543 
+                             1544 ; 32   |
+                             1545 ; 33   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             1546 ; 34   |//   USB2.0 PHY STMP Registers 
+                             1547 ; 35   |//;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             1548 ; 36   |#define HW_USBPHY_BASEADDR (0xF210)
+                             1549 ; 37   |
+                             1550 ; 38   |
+                             1551 ; 39   |/////////////////////////////////////////////////////////////////////////////////
+                             1552 ; 40   |//  USB PHY Powerdown Register (HW_USBPHYPWD) Bit Definitions
+                             1553 ; 41   |
+                             1554 ; 42   |#define HW_USBPHYPWD_TXDISCON1500_BITPOS (5)
+                             1555 ; 43   |#define HW_USBPHYPWD_PLLVCOPWD_BITPOS (6)
+                             1556 ; 44   |#define HW_USBPHYPWD_PLLVCPPWD_BITPOS (7)
+                             1557 ; 45   |#define HW_USBPHYPWD_TXPWDFS_BITPOS (10)
+                             1558 ; 46   |#define HW_USBPHYPWD_TXPWDIBIAS_BITPOS (11)
+                             1559 ; 47   |#define HW_USBPHYPWD_TXPWDV2I_BITPOS (12)
+                             1560 ; 48   |#define HW_USBPHYPWD_TXPWDVBG_BITPOS (13)
+                             1561 ; 49   |#define HW_USBPHYPWD_TXPWDCOMP_BITPOS (14)
+                             1562 ; 50   |#define HW_USBPHYPWD_RXPWDDISCONDET_BITPOS (16)
+                             1563 ; 51   |#define HW_USBPHYPWD_RXPWDENV_BITPOS (17)
+                             1564 ; 52   |#define HW_USBPHYPWD_RXPWD1PT1_BITPOS (18)
+                             1565 ; 53   |#define HW_USBPHYPWD_RXPWDDIFF_BITPOS (19)
+                             1566 ; 54   |#define HW_USBPHYPWD_RXPWDRX_BITPOS (20)
+                             1567 ; 55   |#define HW_USBPHYPWD_PWDIBIAS_BITPOS (22)
+                             1568 ; 56   |#define HW_USBPHYPWD_REGRESET_BITPOS (23)
+                             1569 ; 57   |
+                             1570 ; 58   |#define HW_USBPHYPWD_TXDISCON1500_SETMASK (1<<HW_USBPHYPWD_TXDISCON1500_BITPOS)
+                             1571 ; 59   |#define HW_USBPHYPWD_PLLVCOPWD_SETMASK (1<<HW_USBPHYPWD_PLLVCOPWD_BITPOS)
+                             1572 ; 60   |#define HW_USBPHYPWD_PLLVCPPWD_SETMASK (1<<HW_USBPHYPWD_PLLVCPPWD_BITPOS)
+                             1573 ; 61   |#define HW_USBPHYPWD_TXPWDFS_SETMASK (1<<HW_USBPHYPWD_TXPWDFS_BITPOS)
+                             1574 ; 62   |#define HW_USBPHYPWD_TXPWDIBIAS_SETMASK (1<<HW_USBPHYPWD_TXPWDIBIAS_BITPOS)
+                             1575 ; 63   |#define HW_USBPHYPWD_TXPWDV2I_SETMASK (1<<HW_USBPHYPWD_TXPWDV2I_BITPOS)
+                             1576 ; 64   |#define HW_USBPHYPWD_TXPWDVBG_SETMASK (1<<HW_USBPHYPWD_TXPWDVBG_BITPOS)
+                             1577 ; 65   |#define HW_USBPHYPWD_TXPWDCOMP_SETMASK (1<<HW_USBPHYPWD_TXPWDCOMP_BITPOS)
+                             1578 ; 66   |#define HW_USBPHYPWD_RXPWDDISCONDET_SETMASK (1<<HW_USBPHYPWD_RXPWDDISCONDET_BITPOS)
+                             1579 ; 67   |#define HW_USBPHYPWD_RXPWDENV_SETMASK (1<<HW_USBPHYPWD_RXPWDENV_BITPOS)
+                             1580 ; 68   |#define HW_USBPHYPWD_RXPWD1PT1_SETMASK (1<<HW_USBPHYPWD_RXPWD1PT1_BITPOS)
+                             1581 ; 69   |#define HW_USBPHYPWD_RXPWDDIFF_SETMASK (1<<HW_USBPHYPWD_RXPWDDIFF_BITPOS)
+                             1582 ; 70   |#define HW_USBPHYPWD_RXPWDRX_SETMASK (1<<HW_USBPHYPWD_RXPWDRX_BITPOS)
+                             1583 ; 71   |#define HW_USBPHYPWD_PWDIBIAS_SETMASK (1<<HW_USBPHYPWD_PWDIBIAS_BITPOS)
+                             1584 ; 72   |#define HW_USBPHYPWD_REGRESET_SETMASK (1<<HW_USBPHYPWD_REGRESET_BITPOS)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1585 ; 73   |
+                             1586 ; 74   |#define HW_USBPHYPWD_TXDISCON1500_CLRMASK (~(WORD)HW_USBPHYPWD_TXDISCON1500_SETMASK)
+                             1587 ; 75   |#define HW_USBPHYPWD_PLLVCOPWD_CLRMASK (~(WORD)HW_USBPHYPWD_PLLVCOPWD_SETMASK)
+                             1588 ; 76   |#define HW_USBPHYPWD_PLLVCPPWD_CLRMASK (~(WORD)HW_USBPHYPWD_PLLVCPPWD_SETMASK)
+                             1589 ; 77   |#define HW_USBPHYPWD_TXPWDFS_CLRMASK (~(WORD)HW_USBPHYPWD_TXPWDFS_SETMASK)
+                             1590 ; 78   |#define HW_USBPHYPWD_TXPWDIBIAS_CLRMASK (~(WORD)HW_USBPHYPWD_TXPWDIBIAS_SETMASK)
+                             1591 ; 79   |#define HW_USBPHYPWD_TXPWDV2I_CLRMASK (~(WORD)HW_USBPHYPWD_TXPWDV2I_SETMASK)
+                             1592 ; 80   |#define HW_USBPHYPWD_TXPWDVBG_CLRMASK (~(WORD)HW_USBPHYPWD_TXPWDVBG_SETMASK)
+                             1593 ; 81   |#define HW_USBPHYPWD_TXPWDCOMP_CLRMASK (~(WORD)HW_USBPHYPWD_TXPWDCOMP_SETMASK)
+                             1594 ; 82   |#define HW_USBPHYPWD_RXPWDDISCONDET_CLRMASK (~(WORD)HW_USBPHYPWD_RXPWDDISCONDET_SETMASK)
+                             1595 ; 83   |#define HW_USBPHYPWD_RXPWDENV_CLRMASK (~(WORD)HW_USBPHYPWD_RXPWDENV_SETMASK)
+                             1596 ; 84   |#define HW_USBPHYPWD_RXPWD1PT1_CLRMASK (~(WORD)HW_USBPHYPWD_RXPWD1PT1_SETMASK)
+                             1597 ; 85   |#define HW_USBPHYPWD_RXPWDDIFF_CLRMASK (~(WORD)HW_USBPHYPWD_RXPWDDIFF_SETMASK)
+                             1598 ; 86   |#define HW_USBPHYPWD_RXPWDRX_CLRMASK (~(WORD)HW_USBPHYPWD_RXPWDRX_SETMASK)
+                             1599 ; 87   |#define HW_USBPHYPWD_PWDIBIAS_CLRMASK (~(WORD)HW_USBPHYPWD_PWDIBIAS_SETMASK)
+                             1600 ; 88   |#define HW_USBPHYPWD_REGRESET_CLRMASK (~(WORD)HW_USBPHYPWD_REGRESET_SETMASK)
+                             1601 ; 89   |
+                             1602 ; 90   |typedef union               
+                             1603 ; 91   |{
+                             1604 ; 92   |    struct {
+                             1605 ; 93   |        int RSVD0          :5;
+                             1606 ; 94   |        int TXDISCON1500   :1;
+                             1607 ; 95   |        int PLLVCOPWD      :1;
+                             1608 ; 96   |        int PLLVCPPWD      :1;
+                             1609 ; 97   |        int RSVD1          :2;
+                             1610 ; 98   |        int TXPWDFS        :1;
+                             1611 ; 99   |        int TXPWDIBIAS     :1;
+                             1612 ; 100  |        int TXPWDV2I       :1;
+                             1613 ; 101  |        int TXPWDVBG       :1;
+                             1614 ; 102  |        int TXPWDCOMP      :1;
+                             1615 ; 103  |        int RSVD2          :1;
+                             1616 ; 104  |        int RXPWDDISCONDET :1;
+                             1617 ; 105  |        int RXPWDENV       :1;
+                             1618 ; 106  |        int RXPWD1PT1      :1;
+                             1619 ; 107  |        int RXPWDDIFF      :1;
+                             1620 ; 108  |        int RXPWDRX        :1;
+                             1621 ; 109  |        int RSVD3          :1;
+                             1622 ; 110  |        int PWDIBIAS       :1;
+                             1623 ; 111  |        int REGRESET       :1;
+                             1624 ; 112  |    } B;
+                             1625 ; 113  |    int I;
+                             1626 ; 114  |} usbphypwd_type;
+                             1627 ; 115  |#define HW_USBPHYPWD      (*(volatile usbphypwd_type _X*) (HW_USBPHY_BASEADDR))    /* USB 
+                                  PHY Powerdown Register */
+                             1628 ; 116  |
+                             1629 ; 117  |/////////////////////////////////////////////////////////////////////////////////
+                             1630 ; 118  |//  USB PHY Transmit register (HW_USBPHYTX) Bit Definitions
+                             1631 ; 119  |#define HW_USBPHYTX_TXCAL1500_BITPOS (0)
+                             1632 ; 120  |#define HW_USBPHYTX_TXENCAL1500_BITPOS (5)
+                             1633 ; 121  |#define HW_USBPHYTX_TXHSXCVR_BITPOS (6)
+                             1634 ; 122  |#define HW_USBPHYTX_TXCALIBRATE_BITPOS (7)
+                             1635 ; 123  |#define HW_USBPHYTX_TXCAL45DN_BITPOS (8)
+                             1636 ; 124  |#define HW_USBPHYTX_TXENCAL45DN_BITPOS (13)
+                             1637 ; 125  |#define HW_USBPHYTX_TXHSTERM_BITPOS (14)
+                             1638 ; 126  |#define HW_USBPHYTX_TXSKEW_BITPOS (15)
+                             1639 ; 127  |#define HW_USBPHYTX_TXCAL45DP_BITPOS (16)
+                             1640 ; 128  |#define HW_USBPHYTX_TXENCAL45DP_BITPOS (21)
+                             1641 ; 129  |#define HW_USBPHYTX_TXFSHIZ_BITPOS (22)
+                             1642 ; 130  |#define HW_USBPHYTX_TXCOMPOUT_BITPOS (23)
+                             1643 ; 131  |
+                             1644 ; 132  |#define HW_USBPHYTX_TXCAL1500_WIDTH (4)
+                             1645 ; 133  |#define HW_USBPHYTX_TXENCAL1500_WIDTH (1)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1646 ; 134  |#define HW_USBPHYTX_TXHSXCVR_WIDTH (1)
+                             1647 ; 135  |#define HW_USBPHYTX_TXCALIBRATE_WIDTH (1)
+                             1648 ; 136  |#define HW_USBPHYTX_TXCAL45DN_WIDTH (4)
+                             1649 ; 137  |#define HW_USBPHYTX_TXENCAL45DN_WIDTH (1)
+                             1650 ; 138  |#define HW_USBPHYTX_TXHSTERM_WIDTH (1)
+                             1651 ; 139  |#define HW_USBPHYTX_TXSKEW_WIDTH (1)
+                             1652 ; 140  |#define HW_USBPHYTX_TXCAL45DP_WIDTH (4)
+                             1653 ; 141  |#define HW_USBPHYTX_TXENCAL45DP_WIDTH (1)
+                             1654 ; 142  |#define HW_USBPHYTX_TXFSHIZ_WIDTH (1)
+                             1655 ; 143  |#define HW_USBPHYTX_TXCOMPOUT_WIDTH (1)
+                             1656 ; 144  |
+                             1657 ; 145  |#define HW_USBPHYTX_TXCAL1500_SETMASK (((1<<HW_USBPHYTX_TXCAL1500_WIDTH)-1)<<HW_USBPHYTX_T
+                                  XCAL1500_BITPOS)
+                             1658 ; 146  |#define HW_USBPHYTX_TXENCAL1500_SETMASK (((1<<HW_USBPHYTX_TXENCAL1500_WIDTH)-1)<<HW_USBPHY
+                                  TX_TXENCAL1500_BITPOS)
+                             1659 ; 147  |#define HW_USBPHYTX_TXHSXCVR_SETMASK (((1<<HW_USBPHYTX_TXHSXCVR_WIDTH)-1)<<HW_USBPHYTX_TXH
+                                  SXCVR_BITPOS)
+                             1660 ; 148  |#define HW_USBPHYTX_TXCALIBRATE_SETMASK (((1<<HW_USBPHYTX_TXCALIBRATE_WIDTH)-1)<<HW_USBPHY
+                                  TX_TXCALIBRATE_BITPOS)
+                             1661 ; 149  |#define HW_USBPHYTX_TXCAL45DN_SETMASK (((1<<HW_USBPHYTX_TXCAL45DN_WIDTH)-1)<<HW_USBPHYTX_T
+                                  XCAL45DN_BITPOS)
+                             1662 ; 150  |#define HW_USBPHYTX_TXENCAL45DN_SETMASK (((1<<HW_USBPHYTX_TXENCAL45DN_WIDTH)-1)<<HW_USBPHY
+                                  TX_TXENCAL45DN_BITPOS)
+                             1663 ; 151  |#define HW_USBPHYTX_TXHSTERM_SETMASK (((1<<HW_USBPHYTX_TXHSTERM_WIDTH)-1)<<HW_USBPHYTX_TXH
+                                  STERM_BITPOS)
+                             1664 ; 152  |#define HW_USBPHYTX_TXSKEW_SETMASK (((1<<HW_USBPHYTX_TXSKEW_WIDTH)-1)<<HW_USBPHYTX_TXSKEW_
+                                  BITPOS)
+                             1665 ; 153  |#define HW_USBPHYTX_TXCAL45DP_SETMASK (((1<<HW_USBPHYTX_TXCAL45DP_WIDTH)-1)<<HW_USBPHYTX_T
+                                  XCAL45DP_BITPOS)
+                             1666 ; 154  |#define HW_USBPHYTX_TXENCAL45DP_SETMASK (((1<<HW_USBPHYTX_TXENCAL45DP_WIDTH)-1)<<HW_USBPHY
+                                  TX_TXENCAL45DP_BITPOS)
+                             1667 ; 155  |#define HW_USBPHYTX_TXFSHIZ_SETMASK (((1<<HW_USBPHYTX_TXFSHIZ_WIDTH)-1)<<HW_USBPHYTX_TXFSH
+                                  IZ_BITPOS)
+                             1668 ; 156  |#define HW_USBPHYTX_TXCOMPOUT_SETMASK (((1<<HW_USBPHYTX_TXCOMPOUT_WIDTH)-1)<<HW_USBPHYTX_T
+                                  XCOMPOUT_BITPOS)
+                             1669 ; 157  |
+                             1670 ; 158  |#define HW_USBPHYTX_TXCAL1500_CLRMASK (~(WORD)HW_USBPHYTX_TXCAL1500_SETMASK)
+                             1671 ; 159  |#define HW_USBPHYTX_TXENCAL1500_CLRMASK (~(WORD)HW_USBPHYTX_TXENCAL1500_SETMASK)
+                             1672 ; 160  |#define HW_USBPHYTX_TXHSXCVR_CLRMASK (~(WORD)HW_USBPHYTX_TXHSXCVR_SETMASK)
+                             1673 ; 161  |#define HW_USBPHYTX_TXCALIBRATE_CLRMASK (~(WORD)HW_USBPHYTX_TXCALIBRATE_SETMASK)
+                             1674 ; 162  |#define HW_USBPHYTX_TXCAL45DN_CLRMASK (~(WORD)HW_USBPHYTX_TXCAL45DN_SETMASK)
+                             1675 ; 163  |#define HW_USBPHYTX_TXENCAL45DN_CLRMASK (~(WORD)HW_USBPHYTX_TXENCAL45DN_SETMASK)
+                             1676 ; 164  |#define HW_USBPHYTX_TXHSTERM_CLRMASK (~(WORD)HW_USBPHYTX_TXHSTERM_SETMASK)
+                             1677 ; 165  |#define HW_USBPHYTX_TXSKEW_CLRMASK (~(WORD)HW_USBPHYTX_TXSKEW_SETMASK)
+                             1678 ; 166  |#define HW_USBPHYTX_TXCAL45DP_CLRMASK (~(WORD)HW_USBPHYTX_TXCAL45DP_SETMASK)
+                             1679 ; 167  |#define HW_USBPHYTX_TXENCAL45DP_CLRMASK (~(WORD)HW_USBPHYTX_TXENCAL45DP_SETMASK)
+                             1680 ; 168  |#define HW_USBPHYTX_TXFSHIZ_CLRMASK (~(WORD)HW_USBPHYTX_TXFSHIZ_SETMASK)
+                             1681 ; 169  |#define HW_USBPHYTX_TXCOMPOUT_CLRMASK (~(WORD)HW_USBPHYTX_TXCOMPOUT_SETMASK)
+                             1682 ; 170  |
+                             1683 ; 171  |typedef union               
+                             1684 ; 172  |{
+                             1685 ; 173  |    struct {
+                             1686 ; 174  |        int TXCAL1500          :4;
+                             1687 ; 175  |        int RSVD0              :1;
+                             1688 ; 176  |        int TXENCAL1500        :1;
+                             1689 ; 177  |        int TXHSXCVR           :1;
+                             1690 ; 178  |        int TXCALIBRATE        :1;
+                             1691 ; 179  |        int TXCAL45DN          :4;
+                             1692 ; 180  |        int RSVD1              :1;
+                             1693 ; 181  |        int TXENCAL45DN        :1;
+                             1694 ; 182  |        int TXHSTERM           :1;
+                             1695 ; 183  |        int TXSKEW             :1;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1696 ; 184  |        int TXCAL45DP          :4;
+                             1697 ; 185  |        int RSVD2              :1;
+                             1698 ; 186  |        int TXENCAL45DP        :1;
+                             1699 ; 187  |        int TXFSHIZ            :1;
+                             1700 ; 188  |        int TXCOMPOUT          :1;
+                             1701 ; 189  |    } B;
+                             1702 ; 190  |    int I;
+                             1703 ; 191  |} usbphytx_type;
+                             1704 ; 192  |#define HW_USBPHYTX      (*(volatile usbphytx_type _X*) (HW_USBPHY_BASEADDR+1))    
+                             1705 ; 193  |
+                             1706 ; 194  |/////////////////////////////////////////////////////////////////////////////////
+                             1707 ; 195  |//  USB PHY PLL register (HW_USBPHYPLL) Bit Definitions
+                             1708 ; 196  |#define HW_USBPHYPLL_PLLV2ISEL_BITPOS (0)
+                             1709 ; 197  |#define HW_USBPHYPLL_PLLCPDBLIP_BITPOS (5)
+                             1710 ; 198  |#define HW_USBPHYPLL_PLLVCOCLK2_BITPOS (6)
+                             1711 ; 199  |#define HW_USBPHYPLL_PLLVCOCLK24_BITPOS (7)
+                             1712 ; 200  |#define HW_USBPHYPLL_PLLCPNSEL_BITPOS (8)
+                             1713 ; 201  |#define HW_USBPHYPLL_PLLCLKDIVSEL_BITPOS (12)
+                             1714 ; 202  |#define HW_USBPHYPLL_PLLPFDRST_BITPOS (20)
+                             1715 ; 203  |#define HW_USBPHYPLL_PLLCPSHORTLFR_BITPOS (21)
+                             1716 ; 204  |#define HW_USBPHYPLL_PLLVCOKSTART_BITPOS (22)
+                             1717 ; 205  |#define HW_USBPHYPLL_PLLCLKDIVRSTZ_BITPOS (23)
+                             1718 ; 206  |
+                             1719 ; 207  |#define HW_USBPHYPLL_PLLV2ISEL_WIDTH (4)
+                             1720 ; 208  |#define HW_USBPHYPLL_PLLCPDBLIP_WIDTH (1)
+                             1721 ; 209  |#define HW_USBPHYPLL_PLLVCOCLK2_WIDTH (1)
+                             1722 ; 210  |#define HW_USBPHYPLL_PLLVCOCLK24_WIDTH (1)
+                             1723 ; 211  |#define HW_USBPHYPLL_PLLCPNSEL_WIDTH (4)
+                             1724 ; 212  |#define HW_USBPHYPLL_PLLCLKDIVSEL_WIDTH (4)
+                             1725 ; 213  |#define HW_USBPHYPLL_PLLPFDRST_WIDTH (1)
+                             1726 ; 214  |#define HW_USBPHYPLL_PLLCPSHORTLFR_WIDTH (1)
+                             1727 ; 215  |#define HW_USBPHYPLL_PLLVCOKSTART_WIDTH (1)
+                             1728 ; 216  |#define HW_USBPHYPLL_PLLCLKDIVRSTZ_WIDTH (1)
+                             1729 ; 217  |
+                             1730 ; 218  |#define HW_USBPHYPLL_PLLV2ISEL_SETMASK (((1<<HW_USBPHYPLL_PLLV2ISEL_WIDTH)-1)<<HW_USBPHYPL
+                                  L_PLLV2ISEL_BITPOS)
+                             1731 ; 219  |#define HW_USBPHYPLL_PLLCPDBLIP_SETMASK (((1<<HW_USBPHYPLL_PLLCPDBLIP_WIDTH)-1)<<HW_USBPHY
+                                  PLL_PLLCPDBLIP_BITPOS)
+                             1732 ; 220  |#define HW_USBPHYPLL_PLLVCOCLK2_SETMASK (((1<<HW_USBPHYPLL_PLLVCOCLK2_WIDTH)-1)<<HW_USBPHY
+                                  PLL_PLLVCOCLK2_BITPOS)
+                             1733 ; 221  |#define HW_USBPHYPLL_PLLVCOCLK24_SETMASK (((1<<HW_USBPHYPLL_PLLVCOCLK24_WIDTH)-1)<<HW_USBP
+                                  HYPLL_PLLVCOCLK24_BITPOS)
+                             1734 ; 222  |#define HW_USBPHYPLL_PLLCPNSEL_SETMASK (((1<<HW_USBPHYPLL_PLLCPNSEL_WIDTH)-1)<<HW_USBPHYPL
+                                  L_PLLCPNSEL_BITPOS)
+                             1735 ; 223  |#define HW_USBPHYPLL_PLLCLKDIVSEL_SETMASK (((1<<HW_USBPHYPLL_PLLCLKDIVSEL_WIDTH)-1)<<HW_US
+                                  BPHYPLL_PLLCLKDIVSEL_BITPOS)
+                             1736 ; 224  |#define HW_USBPHYPLL_PLLPFDRST_SETMASK (((1<<HW_USBPHYPLL_PLLPFDRST_WIDTH)-1)<<HW_USBPHYPL
+                                  L_PLLPFDRST_BITPOS)
+                             1737 ; 225  |#define HW_USBPHYPLL_PLLCPSHORTLFR_SETMASK (((1<<HW_USBPHYPLL_PLLCPSHORTLFR_WIDTH)-1)<<HW_
+                                  USBPHYPLL_PLLCPSHORTLFR_BITPOS)
+                             1738 ; 226  |#define HW_USBPHYPLL_PLLVCOKSTART_SETMASK (((1<<HW_USBPHYPLL_PLLVCOKSTART_WIDTH)-1)<<HW_US
+                                  BPHYPLL_PLLVCOKSTART_BITPOS)
+                             1739 ; 227  |#define HW_USBPHYPLL_PLLCLKDIVRSTZ_SETMASK (((1<<HW_USBPHYPLL_PLLCLKDIVRSTZ_WIDTH)-1)<<HW_
+                                  USBPHYPLL_PLLCLKDIVRSTZ_BITPOS)
+                             1740 ; 228  |
+                             1741 ; 229  |#define HW_USBPHYPLL_PLLV2ISEL_CLRMASK (~(WORD)HW_USBPHYPLL_PLLV2ISEL_SETMASK)
+                             1742 ; 230  |#define HW_USBPHYPLL_PLLCPDBLIP_CLRMASK (~(WORD)HW_USBPHYPLL_PLLCPDBLIP_SETMASK)
+                             1743 ; 231  |#define HW_USBPHYPLL_PLLVCOCLK2_CLRMASK (~(WORD)HW_USBPHYPLL_PLLVCOCLK2_SETMASK)
+                             1744 ; 232  |#define HW_USBPHYPLL_PLLVCOCLK24_CLRMASK (~(WORD)HW_USBPHYPLL_PLLVCOCLK24_SETMASK)
+                             1745 ; 233  |#define HW_USBPHYPLL_PLLCPNSEL_CLRMASK (~(WORD)HW_USBPHYPLL_PLLCPNSEL_SETMASK)
+                             1746 ; 234  |#define HW_USBPHYPLL_PLLCLKDIVSEL_CLRMASK (~(WORD)HW_USBPHYPLL_PLLCLKDIVSEL_SETMASK)
+                             1747 ; 235  |#define HW_USBPHYPLL_PLLPFDRST_CLRMASK (~(WORD)HW_USBPHYPLL_PLLPFDRST_SETMASK)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  31
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1748 ; 236  |#define HW_USBPHYPLL_PLLCPSHORTLFR_CLRMASK (~(WORD)HW_USBPHYPLL_PLLCPSHORTLFR_SETMASK)
+                             1749 ; 237  |#define HW_USBPHYPLL_PLLVCOKSTART_CLRMASK (~(WORD)HW_USBPHYPLL_PLLVCOKSTART_SETMASK)
+                             1750 ; 238  |#define HW_USBPHYPLL_PLLCLKDIVRSTZ_CLRMASK (~(WORD)HW_USBPHYPLL_PLLCLKDIVRSTZ_SETMASK)
+                             1751 ; 239  |
+                             1752 ; 240  |typedef union               
+                             1753 ; 241  |{
+                             1754 ; 242  |    struct {
+                             1755 ; 243  |        int PLLV2ISEL        :4;
+                             1756 ; 244  |        int RSVD0            :1;
+                             1757 ; 245  |        int PLLCPDBLIP       :1;
+                             1758 ; 246  |        int PLLVCOCLK2       :1;
+                             1759 ; 247  |        int PLLVCOCLK24      :1;
+                             1760 ; 248  |        int PLLCPNSEL        :4;
+                             1761 ; 249  |        int PLLCLKDIVSEL     :4;
+                             1762 ; 250  |        int RSVD1            :4;
+                             1763 ; 251  |        int PLLPFDRST        :1;
+                             1764 ; 252  |        int PLLCPSHORTLFR    :1;
+                             1765 ; 253  |        int PLLVCOKSTART     :1;
+                             1766 ; 254  |        int PLLCLKDIVRSTZ    :1;
+                             1767 ; 255  |    } B;
+                             1768 ; 256  |    int I;
+                             1769 ; 257  |} usbphypll_type;
+                             1770 ; 258  |#define HW_USBPHYPLL      (*(volatile usbphypll_type _X*) (HW_USBPHY_BASEADDR+2))    
+                             1771 ; 259  |
+                             1772 ; 260  |/////////////////////////////////////////////////////////////////////////////////
+                             1773 ; 261  |//  USB PHY PLL register (HW_USBPHYRX) Bit Definitions
+                             1774 ; 262  |#define HW_USBRX_ENVADJ_BITPOS (0)
+                             1775 ; 263  |#define HW_USBRX_DISCONADJ_BITPOS (4)
+                             1776 ; 264  |#define HW_USBRX_DEBUGMODE_BITPOS (8)
+                             1777 ; 265  |#define HW_USBRX_PLLLKTIMECTL_BITPOS (12)
+                             1778 ; 266  |#define HW_USBRX_PLLCKDIVCTL_BITPOS (16)
+                             1779 ; 267  |#define HW_USBRX_HOSTMODETEST_BITPOS (20)
+                             1780 ; 268  |#define HW_USBRX_FSCKSOURCESEL_BITPOS (21)
+                             1781 ; 269  |#define HW_USBRX_REGRXDBYPASS_BITPOS (22)
+                             1782 ; 270  |#define HW_USBRX_PLLLOCKED_BITPOS (23)
+                             1783 ; 271  |
+                             1784 ; 272  |#define HW_USBRX_ENVADJ_WIDTH (4)
+                             1785 ; 273  |#define HW_USBRX_DISCONADJ_WIDTH (4)
+                             1786 ; 274  |#define HW_USBRX_DEBUGMODE_WIDTH (4)
+                             1787 ; 275  |#define HW_USBRX_PLLLKTIMECTL_WIDTH (4)
+                             1788 ; 276  |#define HW_USBRX_PLLCKDIVCTL_WIDTH (4)
+                             1789 ; 277  |#define HW_USBRX_HOSTMODETEST_WIDTH (1)
+                             1790 ; 278  |#define HW_USBRX_FSCKSOURCESEL_WIDTH (1)
+                             1791 ; 279  |#define HW_USBRX_REGRXDBYPASS_WIDTH (1)
+                             1792 ; 280  |#define HW_USBRX_PLLLOCKED_WIDTH (1)
+                             1793 ; 281  |
+                             1794 ; 282  |#define HW_USBRX_ENVADJ_SETMASK (((1<<HW_USBRX_ENVADJ_WIDTH)-1)<<HW_USBRX_ENVADJ_BITPOS)
+                             1795 ; 283  |#define HW_USBRX_DISCONADJ_SETMASK (((1<<HW_USBRX_DISCONADJ_WIDTH)-1)<<HW_USBRX_DISCONADJ_
+                                  BITPOS)
+                             1796 ; 284  |#define HW_USBRX_DEBUGMODE_SETMASK (((1<<HW_USBRX_DEBUGMODE_WIDTH)-1)<<HW_USBRX_DEBUGMODE_
+                                  BITPOS)
+                             1797 ; 285  |#define HW_USBRX_PLLLKTIMECTL_SETMASK (((1<<HW_USBRX_PLLLKTIMECTL_WIDTH)-1)<<HW_USBRX_PLLL
+                                  KTIMECTL_BITPOS)
+                             1798 ; 286  |#define HW_USBRX_PLLCKDIVCTL_SETMASK (((1<<HW_USBRX_PLLCKDIVCTL_WIDTH)-1)<<HW_USBRX_PLLCKD
+                                  IVCTL_BITPOS)
+                             1799 ; 287  |// 480 MHz PLL is divided by named number here. Setmask divider field nibble of 7 gives ac
+                                  tual divider of 8 and so on. (8 gives 9, 9 gives 10)
+                             1800 ; 288  |//              480Mhz/7 =68.57Mhz
+                             1801 ; 289  |#define HW_USBPHYRX_PLLDIV_BY_7 0x060000
+                             1802 ; 290  |
+                             1803 ; 291  |//              480Mhz/8 ~60Mhz
+                             1804 ; 292  |#define HW_USBPHYRX_PLLDIV_BY_8 0x070000
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  32
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1805 ; 293  |
+                             1806 ; 294  |//              480Mhz/9 =53.3Mhz
+                             1807 ; 295  |#define HW_USBPHYRX_PLLDIV_BY_9 0x080000
+                             1808 ; 296  |
+                             1809 ; 297  |//              480Mhz/10 =48Mhz
+                             1810 ; 298  |#define HW_USBPHYRX_PLLDIV_BY_10 0x090000
+                             1811 ; 299  |
+                             1812 ; 300  |
+                             1813 ; 301  |#define HW_USBRX_HOSTMODETEST_SETMASK (((1<<HW_USBRX_HOSTMODETEST_WIDTH)-1)<<HW_USBRX_HOST
+                                  MODETEST_BITPOS)
+                             1814 ; 302  |#define HW_USBRX_FSCKSOURCESEL_SETMASK (((1<<HW_USBRX_FSCKSOURCESEL_WIDTH)-1)<<HW_USBRX_FS
+                                  CKSOURCESEL_BITPOS)
+                             1815 ; 303  |#define HW_USBRX_REGRXDBYPASS_SETMASK (((1<<HW_USBRX_REGRXDBYPASS_WIDTH)-1)<<HW_USBRX_REGR
+                                  XDBYPASS_BITPOS)
+                             1816 ; 304  |#define HW_USBRX_PLLLOCKED_SETMASK (((1<<HW_USBRX_PLLLOCKED_WIDTH)-1)<<HW_USBRX_PLLLOCKED_
+                                  BITPOS)
+                             1817 ; 305  |
+                             1818 ; 306  |#define HW_USBRX_ENVADJ_CLRMASK (~(WORD)HW_USBRX_ENVADJ_SETMASK)
+                             1819 ; 307  |#define HW_USBRX_DISCONADJ_CLRMASK (~(WORD)HW_USBRX_DISCONADJ_SETMASK)
+                             1820 ; 308  |#define HW_USBRX_DEBUGMODE_CLRMASK (~(WORD)HW_USBRX_DEBUGMODE_SETMASK)
+                             1821 ; 309  |#define HW_USBRX_PLLLKTIMECTL_CLRMASK (~(WORD)HW_USBRX_PLLLKTIMECTL_SETMASK)
+                             1822 ; 310  |#define HW_USBRX_PLLCKDIVCTL_CLRMASK (~(WORD)HW_USBRX_PLLCKDIVCTL_SETMASK)
+                             1823 ; 311  |#define HW_USBRX_HOSTMODETEST_CLRMASK (~(WORD)HW_USBRX_HOSTMODETEST_SETMASK)
+                             1824 ; 312  |#define HW_USBRX_FSCKSOURCESEL_CLRMASK (~(WORD)HW_USBRX_FSCKSOURCESEL_SETMASK)
+                             1825 ; 313  |#define HW_USBRX_REGRXDBYPASS_CLRMASK (~(WORD)HW_USBRX_REGRXDBYPASS_SETMASK)
+                             1826 ; 314  |#define HW_USBRX_PLLLOCKED_CLRMASK (~(WORD)HW_USBRX_PLLLOCKED_SETMASK)
+                             1827 ; 315  |
+                             1828 ; 316  |typedef union               
+                             1829 ; 317  |{
+                             1830 ; 318  |    struct {
+                             1831 ; 319  |     int ENVADJ               :4;
+                             1832 ; 320  |     int DISCONADJ            :4;
+                             1833 ; 321  |     int DEBUGMODE            :4;
+                             1834 ; 322  |     int PLLLKTIMECTL         :4;
+                             1835 ; 323  |     int PLLCKDIVCTL          :4;
+                             1836 ; 324  |     int HOSTMODETEST         :1;
+                             1837 ; 325  |     int FSCKSOURCESEL        :1;
+                             1838 ; 326  |     int REGRXDBYPASS         :1;
+                             1839 ; 327  |     int PLLLOCKED            :1;
+                             1840 ; 328  |    } B;
+                             1841 ; 329  |    int I;
+                             1842 ; 330  |} usbphyrx_type;
+                             1843 ; 331  |#define HW_USBPHYRX      (*(volatile usbphyrx_type _X*) (HW_USBPHY_BASEADDR+3))    
+                             1844 ; 332  |
+                             1845 ; 333  |#endif
+                             1846 ; 334  |
+                             1847 
+                             1849 
+                             1850 ; 15   |
+                             1851 ; 16   |
+                             1852 ; 17   |////////////////////////////////////////////////////////////////////////////////
+                             1853 ; 18   |// Variables
+                             1854 ; 19   |////////////////////////////////////////////////////////////////////////////////
+                             1855 ; 20   |//The charging starts out disabled, but not permanently
+                             1856 ; 21   |BOOL g_bBatteryChargeEnabled =FALSE;
+                             1857 
+                             1858 
+Y:0000                       1859         org     y,".ydatabatterycharge",init:
+                             1860 Fg_bBatteryChargeEnabled:
+Y:0000 000000                1861         dc      $000000
+                             1864 
+                             1865 ; 22   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  33
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1866 ; 23   |//NOTE:  maybe this PERMANENT thing should be stored in stickybits?
+                             1867 ; 24   |BOOL g_bBatteryChargePermanentlyDisabled=FALSE;
+                             1868 
+                             1869 Fg_bBatteryChargePermanentlyDisabled:
+Y:0001 000000                1870         dc      $000000
+                             1873 
+                             1874 ; 25   |
+                             1875 ; 26   |////////////////////////////////////////////////////////////////////////////////
+                             1876 ; 27   |// Code
+                             1877 ; 28   |////////////////////////////////////////////////////////////////////////////////
+                             1878 ; 29   |
+                             1879 ; 30   |#ifndef STMP_BUILD_PLAYER
+                             1880 ; 31   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1881 ; 32   |//
+                             1882 ; 33   |//>  Name:          BatteryChargeInitialize
+                             1883 ; 34   |//
+                             1884 ; 35   |//   Type:          Function 
+                             1885 ; 36   |//
+                             1886 ; 37   |//   Description:   Initialize the battery charge component.
+                             1887 ; 38   |//
+                             1888 ; 39   |//   Inputs:        none
+                             1889 ; 40   |//
+                             1890 ; 41   |//   Outputs:       SUCCESS or not 
+                             1891 ; 42   |//
+                             1892 ; 43   |//   Notes:         Current does nothing as the state variables are initialized by the 
+                             1893 ; 44   |//                  compiler without needing code.
+                             1894 ; 45   |//<
+                             1895 ; 46   |//////////////////////////////////////////////////////////////////////////////////////////
+                                  
+                             1896 ; 47   |_reentrant WORD BatteryChargeInitialize(void)
+                             1897 ; 48   |{
+                             1898 
+P:0000                       1899         org     p,".ptextbatterycharge":
+                             1947 FBatteryChargeInitialize:
+P:0000 055F7C         2    2 1948         movec   ssh,y:(r7)+
+                             1951 
+                             1952 ; 49   |    //currently, nothing to do.  These variables are initialized by the compiler.
+                             1953 ; 50   |    //g_bBatteryChargeEnabled =FALSE;
+                             1954 ; 51   |    //g_bBatteryChargePermanentlyDisabled=FALSE;
+                             1955 ; 52   |    
+                             1956 ; 53   |    HW_USBPHYPWD.B.PWDIBIAS = FALSE;//required to get it to operate
+                             1957 
+P:0001 0A7016 00F210  6    8 1959         bclr    #22,x:$F210
+                             1960 
+                             1961 ; 54   |
+                             1962 ; 55   |    return BatteryChargeImplementationInitialize();
+                             1963 
+P:0003 0BF080 rrrrrr  6   14 1965         jsr     FBatteryChargeImplementationInitialize
+                             1966 
+                             1967 ; 56   |}
+                             1968 
+P:0005 05FF7C         4   18 1970         movec   y:-(r7),ssh
+P:0006 000000         2   20 1973         nop
+P:0007 00000C         4   24 1974         rts
+                             1976 
+                             1977 ; 57   |
+                             1978 ; 58   |/////////////////////////////////////////////////////////////////////////////////////////
+                             1979 ; 59   |//
+                             1980 ; 60   |//>  Name:          BatteryChargeIsTrickleCharging
+                             1981 ; 61   |//
+                             1982 ; 62   |//   Type:          Function 
+                             1983 ; 63   |//
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  34
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1984 ; 64   |//   Description:   Returns TRUE if the battery is charging in trickle mode.
+                             1985 ; 65   |//
+                             1986 ; 66   |//   Inputs:        none 
+                             1987 ; 67   |//                  
+                             1988 ; 68   |//   Outputs:       TRUE or FALSE
+                             1989 ; 69   |//
+                             1990 ; 70   |//   Notes:         Should only be used as a display mechanism.   It may lag 
+                             1991 ; 71   |//                  (by several hundred milliseconds) the true state of the charging circu
+                                  it.
+                             1992 ; 72   |//<
+                             1993 ; 73   |//////////////////////////////////////////////////////////////////////////////////////////
+                                  
+                             1994 ; 74   |extern BOOL g_bTrickleChargingNow;
+                             1995 ; 75   |_reentrant BOOL BatteryChargeIsTrickleCharging(void)
+                             1996 ; 76   |{
+                             1997 
+                             2037 FBatteryChargeIsTrickleCharging:
+                             2040 
+                             2041 ; 77   |    BOOL bIsTrickleCharging = FALSE;
+                             2042 
+P:0008 200013         2   26 2044         clr     a   
+                             2046 
+                             2047 ; 78   |    if((!HW_VDD5V_PWR_CHARGE.B.PWD) && HW_VDD5V_PWR_CHARGE.B.VDD5V_PRESENT && g_bTrickleCh
+                                  argingNow)
+                             2048 
+P:0009 47F000 00FA1D  3   29 2050         move    x:$FA1D,y1
+P:000B 0AC728 rrrrrr  6   35 2051         jset    #8,y1,L5
+P:000D 44F000 00FA1D  3   38 2052         move    x:$FA1D,x0
+P:000F 0AC414 rrrrrr  6   44 2053         jclr    #20,x0,L5
+P:0011 5FF000 rrrrrr  3   47 2054         move    y:Fg_bTrickleChargingNow,b
+P:0013 2B0000         2   49 2055         move    #0,b2
+P:0014 20000B         2   51 2056         tst     b
+P:0015 0AF0AA rrrrrr  6   57 2057         jeq     L5
+                             2058 
+                             2059 ; 79   |        bIsTrickleCharging = TRUE;
+                             2060 
+P:0017 56F400 000001  3   60 2062         move    #>1,a
+                             2063 L5:
+                             2064 
+                             2065 ; 80   |    return bIsTrickleCharging;
+                             2066 ; 81   |}
+                             2067 
+P:0019 00000C         4   64 2069         rts
+                             2072 
+                             2073 ; 82   |
+                             2074 ; 83   |#endif
+                             2075 ; 84   |
+                             2076 ; 85   |/////////////////////////////////////////////////////////////////////////////////////////
+                             2077 ; 86   |//
+                             2078 ; 87   |//>  Name:          BatteryChargeStopCharging
+                             2079 ; 88   |//
+                             2080 ; 89   |//   Type:          Function 
+                             2081 ; 90   |//
+                             2082 ; 91   |//   Description:   Turns off battery charge.
+                             2083 ; 92   |//
+                             2084 ; 93   |//   Inputs:        BOOL bPermanent--"permanently" disable recharge (until power off) 
+                             2085 ; 94   |//                  
+                             2086 ; 95   |//
+                             2087 ; 96   |//   Outputs:       none 
+                             2088 ; 97   |//
+                             2089 ; 98   |//   Notes:         
+                             2090 ; 99   |//<
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  35
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2091 ; 100  |//////////////////////////////////////////////////////////////////////////////////////////
+                                  
+                             2092 ; 101  |_reentrant void BatteryChargeStopCharging(void)
+                             2093 ; 102  |{
+                             2094 
+                             2099 FBatteryChargeStopCharging:
+                             2100 
+                             2101 ; 103  |    //Power off the charging
+                             2102 ; 104  |    HW_VDD5V_PWR_CHARGE.B.PWD = TRUE;
+                             2103 
+P:001A 0A7028 00FA1D  6   70 2105         bset    #8,x:$FA1D
+                             2106 
+                             2107 ; 105  |    HW_VDD5V_PWR_CHARGE.B.BATT_CURRENT = 0;
+                             2108 
+P:001C 57F000 00FA1D  3   73 2110         move    x:$FA1D,b
+P:001E 45F400 FFFFC0  3   76 2111         move    #$FFFFC0,x1
+P:0020 20006E         2   78 2112         and     x1,b
+P:0021 557000 00FA1D  3   81 2113         move    b1,x:$FA1D
+                             2114 
+                             2115 ; 106  |#ifndef STMP_BUILD_PLAYER
+                             2116 ; 107  |        g_bTrickleChargingNow = FALSE;
+                             2117 
+P:0023 280000         2   83 2119         move    #0,a0
+P:0024 587000 rrrrrr  3   86 2120         move    a0,y:Fg_bTrickleChargingNow
+                             2121 
+                             2122 ; 108  |#endif
+                             2123 ; 109  |}
+                             2124 
+P:0026 00000C         4   90 2126         rts
+                             2128 
+                             2129 ; 110  | 
+                             2130 ; 111  |/////////////////////////////////////////////////////////////////////////////////////////
+                             2131 ; 112  |//
+                             2132 ; 113  |//>  Name:          BatteryChargeDisableCharging
+                             2133 ; 114  |//
+                             2134 ; 115  |//   Type:          Function 
+                             2135 ; 116  |//
+                             2136 ; 117  |//   Description:   Disables the battery charge circuit (maybe "permanently).
+                             2137 ; 118  |//
+                             2138 ; 119  |//   Inputs:        BOOL bPermanent--"permanently" disable recharge (until power off) 
+                             2139 ; 120  |//                  
+                             2140 ; 121  |//
+                             2141 ; 122  |//   Outputs:       none 
+                             2142 ; 123  |//
+                             2143 ; 124  |//   Notes:         
+                             2144 ; 125  |//<
+                             2145 ; 126  |//////////////////////////////////////////////////////////////////////////////////////////
+                                  
+                             2146 ; 127  |_reentrant void BatteryChargeDisableCharging(BOOL bPermanent)
+                             2147 ; 128  |{
+                             2148 
+                             2153 FBatteryChargeDisableCharging:
+P:0027 055F7C         2   92 2154         movec   ssh,y:(r7)+
+P:0028 205F00         2   94 2157         move    (r7)+
+P:0029 045FA0         2   96 2161         movec   m0,n7
+P:002A 000000         2   98 2162         nop
+P:002B 5C6F00         4  102 2163         move    a1,y:(r7+n7)
+                             2166 
+                             2167 ; 129  |    BatteryChargeStopCharging();
+                             2168 
+P:002C 0BF080 rrrrrr  6  108 2170         jsr     FBatteryChargeStopCharging
+                             2171 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  36
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2172 ; 130  |
+                             2173 ; 131  |    if(bPermanent)//once this is set, there's no turning back
+                             2174 
+P:002E 045FA0         2  110 2176         movec   m0,n7
+P:002F 000000         2  112 2177         nop
+P:0030 5FEF00         4  116 2178         move    y:(r7+n7),b
+P:0031 2B0000         2  118 2179         move    #0,b2
+P:0032 20000B         2  120 2180         tst     b
+P:0033 0AF0AA rrrrrr  6  126 2183         jeq     L6
+                             2184 
+                             2185 ; 132  |        g_bBatteryChargePermanentlyDisabled = TRUE;
+                             2186 
+P:0035 44F400 000001  3  129 2188         move    #>1,x0
+P:0037 4C7000 rrrrrr  3  132 2189         move    x0,y:Fg_bBatteryChargePermanentlyDisabled
+                             2190 
+                             2191 ; 133  |
+                             2192 ; 134  |    g_bBatteryChargeEnabled = FALSE;
+                             2193 
+P:0039 2D0000         2  134 2195 L6:     move    #0,b1
+P:003A 5D7000 rrrrrr  3  137 2197         move    b1,y:Fg_bBatteryChargeEnabled
+                             2198 
+                             2199 ; 135  |
+                             2200 ; 136  |}
+                             2201 
+P:003C 205700         2  139 2203         move    (r7)-
+P:003D 05FF7C         4  143 2205         movec   y:-(r7),ssh
+P:003E 000000         2  145 2208         nop
+P:003F 00000C         4  149 2209         rts
+                             2211 
+                             2212 ; 137  |
+                             2213 ; 138  |
+                             2214 ; 139  |/////////////////////////////////////////////////////////////////////////////////////////
+                             2215 ; 140  |//
+                             2216 ; 141  |//>  Name:          BatteryChargeEnableCharging
+                             2217 ; 142  |//
+                             2218 ; 143  |//   Type:          Function 
+                             2219 ; 144  |//
+                             2220 ; 145  |//   Description:   Enables battery charging.
+                             2221 ; 146  |//
+                             2222 ; 147  |//   Inputs:        none 
+                             2223 ; 148  |//                  
+                             2224 ; 149  |//   Outputs:       none 
+                             2225 ; 150  |//
+                             2226 ; 151  |//   Notes:         
+                             2227 ; 152  |//<
+                             2228 ; 153  |//////////////////////////////////////////////////////////////////////////////////////////
+                                  
+                             2229 ; 154  |_reentrant void BatteryChargeEnableCharging(void)
+                             2230 ; 155  |{
+                             2231 
+                             2236 FBatteryChargeEnableCharging:
+                             2237 
+                             2238 ; 156  |
+                             2239 ; 157  |    g_bBatteryChargeEnabled = TRUE;
+                             2240 
+P:0040 2D0100         2  151 2242         move    #1,b1
+P:0041 5D7000 rrrrrr  3  154 2243         move    b1,y:Fg_bBatteryChargeEnabled
+                             2244 
+                             2245 ; 158  |
+                             2246 ; 159  |}
+                             2247 
+P:0043 00000C         4  158 2249         rts
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  37
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2251 
+                             2252 ; 160  |
+                             2253 ; 161  |
+                             2254 ; 162  |/////////////////////////////////////////////////////////////////////////////////////////
+                             2255 ; 163  |//
+                             2256 ; 164  |//>  Name:          BatteryChargeIsCharging
+                             2257 ; 165  |//
+                             2258 ; 166  |//   Type:          Function 
+                             2259 ; 167  |//
+                             2260 ; 168  |//   Description:   Returns true if the battery charging hardware is enabled, and the 
+                             2261 ; 169  |//                  current limit is greater than 0.
+                             2262 ; 170  |//
+                             2263 ; 171  |//   Inputs:        none 
+                             2264 ; 172  |//                  
+                             2265 ; 173  |//   Outputs:       none 
+                             2266 ; 174  |//
+                             2267 ; 175  |//   Notes:         Should only be used as a display mechanism.   It may lag 
+                             2268 ; 176  |//                  (by several hundred milliseconds) the true state of the charging circu
+                                  it.
+                             2269 ; 177  |//<
+                             2270 ; 178  |//////////////////////////////////////////////////////////////////////////////////////////
+                                  
+                             2271 ; 179  |_reentrant BOOL BatteryChargeIsCharging(void)
+                             2272 ; 180  |{
+                             2273 
+                             2278 FBatteryChargeIsCharging:
+                             2281 
+                             2282 ; 181  |    BOOL bIsCharging = FALSE;
+                             2283 
+P:0044 200013         2  160 2285         clr     a   
+                             2287 
+                             2288 ; 182  |    if((!HW_VDD5V_PWR_CHARGE.B.PWD) && HW_VDD5V_PWR_CHARGE.B.VDD5V_PRESENT)
+                             2289 
+P:0045 46F000 00FA1D  3  163 2291         move    x:$FA1D,y0
+P:0047 0AC628 rrrrrr  6  169 2292         jset    #8,y0,L8
+P:0049 46F000 00FA1D  3  172 2293         move    x:$FA1D,y0
+P:004B 0AC614 rrrrrr  6  178 2294         jclr    #20,y0,L8
+                             2295 
+                             2296 ; 183  |        bIsCharging = TRUE;
+                             2297 
+P:004D 56F400 000001  3  181 2299         move    #>1,a
+                             2300 L8:
+                             2301 
+                             2302 ; 184  |    return bIsCharging;
+                             2303 ; 185  |}
+                             2304 
+P:004F 00000C         4  185 2306         rts
+                             2309 
+                             2310 ; 186  |
+                             2311 ; 187  |
+                             2312 
+                             2317 
+                             2318         extern  FBatteryChargeImplementationInitialize
+                             2319         extern  y:Fg_bTrickleChargingNow
+                             2320 
+                             2321         global  FBatteryChargeDisableCharging
+                             2322         global  FBatteryChargeEnableCharging, FBatteryChargeInitialize
+                             2323         global  FBatteryChargeIsCharging, FBatteryChargeIsTrickleCharging
+                             2324         global  FBatteryChargeStopCharging, Fg_bBatteryChargeEnabled
+                             2325         global  Fg_bBatteryChargePermanentlyDisabled
+                             2326 
+                             2327         local   L5, L6, L8
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  38
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2328 
+                             2329         calls   "BatteryChargeDisableCharging", "BatteryChargeStopCharging"
+                             2330         calls   "BatteryChargeInitialize", "BatteryChargeImplementationInitialize"
+                             2331 

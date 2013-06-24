@@ -1,0 +1,439 @@
+
+
+M a p   p e r   c l u s t e r
+=============================
+
+Cluster: P1_clstr
+Chips:	 P_iram
+
+Section        	Address     Size        Type        Chip        Chip Offset 
+<reserved>     	0x000000    0x000080    (absolute)  P_iram      0x000000    
+EXEC_Vectors_P 	0x000000    0x000002    (absolute)  P_iram      0x000000    
+VDDIO_BO_Vector_P
+                0x00000a    0x000002    (absolute)  P_iram      0x00000a    
+
+
+Cluster: P2_clstr
+Chips:	 P_iram
+
+Section        	Address     Size        Type        Chip        Chip Offset 
+SYSFUN_Stack_P 	0x000080    0x000017    P_far       P_iram      0x000080    
+BOOTMANAGER_Flash_P
+                0x000097    0x0000db    P_far       P_iram      0x000097    
+BOOTMANAGER_USB_P
+                0x000172    0x000133    P_far       P_iram      0x000172    
+BOOTROM_Flash_P	0x0002a5    0x0001ce    P_far       P_iram      0x0002a5    
+.ptextnanddevdrv
+                0x000473    0x0001cf    P_far       P_iram      0x000473    
+BOOTMANAGER_P  	0x000642    0x00029e    P_far       P_iram      0x000642    
+.ptextnanddevdrvapi
+                0x0008e0    0x0002a3    P_far       P_iram      0x0008e0    
+.pbssnanddevdrvapi
+                0x000b83    0x000001    P_far       P_iram      0x000b83    
+.pdatananddevdrvapi
+                0x000b84    0x000014    P_far       P_iram      0x000b84    
+.pdatananddesc 	0x000b98    0x000132    P_far       P_iram      0x000b98    
+.ptextnandra_utils
+                0x000cca    0x00012f    P_far       P_iram      0x000cca    
+.ptextnandhalcorrectecc
+                0x000df9    0x0000fa    P_far       P_iram      0x000df9    
+
+
+Cluster: X_boot_cluster
+Chips:	 X_iram
+
+Section        	Address     Size        Type        Chip        Chip Offset 
+Flash__X       	0x000000    0x000080    (absolute)  X_iram      0x000000    
+Flash_Buf_X    	0x000080    0x000182    X_far       X_iram      0x000080    
+
+
+Cluster: X_app_cluster
+Chips:	 X_iram
+
+Section        	Address     Size        Type        Chip        Chip Offset 
+USB20_Buffer   	0x000210    0x000156    X_far       X_iram      0x000210    
+.xovlnanddevdrv	0x000366    0x000001    X_far       X_iram      0x000366    
+.xbssnanddevdrvapi
+                0x000367    0x000005    X_far       X_iram      0x000367    
+SYSFUN_StackMem_X
+                0x00036c    0x00007e    X_far       X_iram      0x00036c    
+
+
+M A P   p e r   L O A D _ M O D
+===============================
+ 
+Symbols:  Space P
+                                  Sorted on symbol                                     Sorted on address
+                                  ----------------                                     -----------------
+      BOOTMANAGER_FLASH__SmNextCardInit - 0x0000a2                            SaveSystemStack - 0x000080
+                 BOOTROM_FLASH__ColLoop - 0x0003ec                         RestoreSystemStack - 0x00008c
+                BOOTROM_FLASH__ColsDone - 0x0003ef                             FlashInitPort1 - 0x000097
+            BOOTROM_FLASH__NandCopyData - 0x000323          BOOTMANAGER_FLASH__SmNextCardInit - 0x0000a2
+         BOOTROM_FLASH__WaitForComplete - 0x000463                        FlashInitPort1_Boot - 0x0000de
+              BOOTROM_FLASH__pagestatea - 0x00033a                             FlashInit_1p8V - 0x000124
+              BOOTROM_FLASH__pagestateb - 0x00034e                                  b1p8Volts - 0x00012b
+              BOOTROM_FLASH__pagestatec - 0x00036c                              FlashReceive1 - 0x00012c
+                BOOTROM_USB__pagestatea - 0x000255                                 FlashExit1 - 0x000149
+                BOOTROM_USB__pagestateb - 0x000268                                FlashError1 - 0x000151
+                BOOTROM_USB__pagestatec - 0x00028b                           FlashError1_Boot - 0x000164
+               BOOTROM_USB__usb_rx_done - 0x0002a0                                UsbInitPort - 0x000172
+                            BootManager - 0x000642                                 UsbReceive - 0x0001d3
+                                  Booty - 0x00064f                                    UsbExit - 0x00022c
+                              BootyInit - 0x0007f4                                   UsbError - 0x000232
+                        ChangeToBootUsb - 0x0008b6                          ProcessUsbEp1Data - 0x000238
+                           CheckTimeOut - 0x0008a1                    BOOTROM_USB__pagestatea - 0x000255
+                            DecryptWord - 0x000848                    BOOTROM_USB__pagestateb - 0x000268
+                          DelayLongBReg - 0x0007f0                    BOOTROM_USB__pagestatec - 0x00028b
+                              DetectUsb - 0x0007a5                   BOOTROM_USB__usb_rx_done - 0x0002a0
+                          DetectUsbExit - 0x0007c3                           NandSaveBootInfo - 0x0002a5
+                    FCommonWaitThenRead - 0x000a0c                         NandFindNextDevice - 0x0002b9
+                     FDetermineNandType - 0x000928                         NandFindPrevDevice - 0x0002d3
+                         FDivideByThree - 0x000b8d                         NandFillSinkBuffer - 0x0002eb
+              FGPFLASHNandPortFunctions - 0x000b84                BOOTROM_FLASH__NandCopyData - 0x000323
+                   FGetByteFromArrayInX - 0x000dde                  BOOTROM_FLASH__pagestatea - 0x00033a
+                       FInitGPFLASHPort - 0x000388                  BOOTROM_FLASH__pagestateb - 0x00034e
+              FLargeMLCDescriptorIdList - 0x000cac                  BOOTROM_FLASH__pagestatec - 0x00036c
+ FNANDDescriptorSubStructType1LargeAddr - 0x000bd3                           PowerUpFlashPads - 0x000384
+ FNANDDescriptorSubStructType1SmallAddr - 0x000bcd                          FPowerUpFlashPads - 0x000384
+ FNANDDescriptorSubStructType2LargeAddr - 0x000bfa                    FPowerUpFlashPads_16bit - 0x000386
+ FNANDDescriptorSubStructType2SmallAddr - 0x000bf4                     PowerUpFlashPads_16bit - 0x000386
+          FNANDDescriptorSubStructType4 - 0x000c1e                           FInitGPFLASHPort - 0x000388
+          FNANDDescriptorSubStructType5 - 0x000c2a                            InitGPFLASHPort - 0x000388
+                  FNANDHALCommon_ReadId - 0x00094a                       TerminateGPFLASHPort - 0x0003aa
+                FNANDHalCorrectECC_4Bit - 0x000e31                      FTerminateGPFLASHPort - 0x0003aa
+                 FNANDHalCorrectPartial - 0x000df9                            WriteCmdGPFLASH - 0x0003ac
+                 FNANDInitInterfacePort - 0x0009a5                           FWriteCmdGPFLASH - 0x0003ac
+                  FNANDRAGetBlockStatus - 0x000d29                           WriteAddrGPFLASH - 0x0003dc
+                         FNANDRAGetByte - 0x000d0e                          FWriteAddrGPFLASH - 0x0003dc
+                          FNANDRAGetLBA - 0x000d32                     BOOTROM_FLASH__ColLoop - 0x0003ec
+                     FNANDRAGetStmpCode - 0x000d9d                    BOOTROM_FLASH__ColsDone - 0x0003ef
+                 FNANDRA_ToStandardForm - 0x000cca                            ReadDataGPFLASH - 0x000425
+            FNANDTerminateInterfacePort - 0x0009c4                           FReadDataGPFLASH - 0x000425
+                           FNandHalInit - 0x0008e0                        WaitForReadyGPFLASH - 0x000452
+                    FNandIncBlockNumber - 0x00051f                       FWaitForReadyGPFLASH - 0x000452
+                   FNandIsBlockBoundary - 0x000618             BOOTROM_FLASH__WaitForComplete - 0x000463
+                          FNandLookupID - 0x000978                    FNandSearchForSTMPBlock - 0x000473
+             FNandReadSectorDataWrapper - 0x0009d6                        FNandIncBlockNumber - 0x00051f
+        FNandReadSectorRedundantWrapper - 0x000a0a             FNandSearchForSTMPBlockReverse - 0x00053a
+                FNandSearchForSTMPBlock - 0x000473                       FNandIsBlockBoundary - 0x000618
+         FNandSearchForSTMPBlockReverse - 0x00053a                             FcheckPadPower - 0x00062f
+                      FPowerUpFlashPads - 0x000384                                BootManager - 0x000642
+                FPowerUpFlashPads_16bit - 0x000386                           TempBlockTagSave - 0x00064e
+                       FReadDataGPFLASH - 0x000425                                      Booty - 0x00064f
+                             FResetNand - 0x000b52                            LoadRoutinePtrs - 0x000687
+                       FSm_CommandCodes - 0x000bb5                             RunInitRoutine - 0x000697
+                    FSm_DeviceDriverAPI - 0x000bb1                                     Getkey - 0x0006a6
+                   FSm_Large_Addressing - 0x000bc7                                   MainLoop - 0x0006ac
+              FSm_Large_BlockDescriptor - 0x000ba5                                   LoadYmem - 0x000703
+                   FSm_SectorDescriptor - 0x000b98                                   LoadXmem - 0x000713
+                   FSm_Small_Addressing - 0x000bc5                                   LoadLmem - 0x000723
+              FSm_Small_BlockDescriptor - 0x000ba2                                   LoadPmem - 0x00073a
+                  FTerminateGPFLASHPort - 0x0003aa                                   InitYmem - 0x00074a
+                FType1_128MB_16bit_NAND - 0x000bf1                                   InitXmem - 0x000758
+                 FType1_128MB_8bit_NAND - 0x000be5                                   InitLmem - 0x000766
+                 FType1_16MB_16bit_NAND - 0x000be8                                   InitPmem - 0x00077c
+                  FType1_16MB_8bit_NAND - 0x000bdc                                     Reboot - 0x00078a
+                 FType1_32MB_16bit_NAND - 0x000beb                                  DetectUsb - 0x0007a5
+                  FType1_32MB_8bit_NAND - 0x000bdf                              DetectUsbExit - 0x0007c3
+                 FType1_64MB_16bit_NAND - 0x000bee                        InitBatteryBrownout - 0x0007c4
+                  FType1_64MB_8bit_NAND - 0x000be2                             SysBrownOutIsr - 0x0007e1
+                   FType1_8MB_8bit_NAND - 0x000bd9                              DelayLongBReg - 0x0007f0
+                 FType2DescriptorIdList - 0x000c6e                                  BootyInit - 0x0007f4
+               FType2_1024MB_16bit_NAND - 0x000c15                                 NANDIs1_8V - 0x000822
+                FType2_1024MB_8bit_NAND - 0x000c12                                 NANDIs3_3V - 0x00082a
+                FType2_128MB_16bit_NAND - 0x000c03                               GetCipherKey - 0x000835
+                 FType2_128MB_8bit_NAND - 0x000c00                                    GetWord - 0x00083c
+               FType2_2048MB_16bit_NAND - 0x000c1b                                DecryptWord - 0x000848
+                FType2_2048MB_8bit_NAND - 0x000c18                             UpdateCheckSum - 0x000861
+                FType2_256MB_16bit_NAND - 0x000c09                          GetCheckSumTarget - 0x000868
+                 FType2_256MB_8bit_NAND - 0x000c06                           ValidateCheckSum - 0x000875
+                FType2_512MB_16bit_NAND - 0x000c0f                              VerifyVersion - 0x000886
+                 FType2_512MB_8bit_NAND - 0x000c0c                               SetupTimeOut - 0x000898
+                 FType2_BlockDescriptor - 0x000ba8                               CheckTimeOut - 0x0008a1
+                    FType2_CommandCodes - 0x000bbd                            ChangeToBootUsb - 0x0008b6
+                 FType2_DeviceDriverAPI - 0x000bb3                              VDDIOBrownout - 0x0008d0
+                FType2_Large_Addressing - 0x000bcb                               FNandHalInit - 0x0008e0
+                  FType2_ReadSectorData - 0x000a51                         FDetermineNandType - 0x000928
+                FType2_SectorDescriptor - 0x000b9d                      FNANDHALCommon_ReadId - 0x00094a
+                FType2_Small_Addressing - 0x000bc9                              FNandLookupID - 0x000978
+                  FType4_128MB_8bit_AND - 0x000c24                     FNANDInitInterfacePort - 0x0009a5
+                  FType4_512MB_8bit_AND - 0x000c27                FNANDTerminateInterfacePort - 0x0009c4
+                 FType4_BlockDescriptor - 0x000bab                 FNandReadSectorDataWrapper - 0x0009d6
+                 FType5_1024MB_MLC_NAND - 0x000c36            FNandReadSectorRedundantWrapper - 0x000a0a
+                 FType5_2048MB_MLC_NAND - 0x000c39                        FCommonWaitThenRead - 0x000a0c
+                  FType5_256MB_MLC_NAND - 0x000c30                      FType2_ReadSectorData - 0x000a51
+                  FType5_512MB_MLC_NAND - 0x000c33                                 FResetNand - 0x000b52
+                 FType5_BlockDescriptor - 0x000bae                           FpNandInitStruct - 0x000b83
+            FUniqueInitDescriptorIdList - 0x000c3c                  FGPFLASHNandPortFunctions - 0x000b84
+                   FWaitForReadyGPFLASH - 0x000452                        Fg_pCurrentNandPort - 0x000b8c
+                      FWriteAddrGPFLASH - 0x0003dc                             FDivideByThree - 0x000b8d
+                       FWriteCmdGPFLASH - 0x0003ac                       FSm_SectorDescriptor - 0x000b98
+                         FcheckPadPower - 0x00062f                    FType2_SectorDescriptor - 0x000b9d
+                    Fg_pCurrentNandPort - 0x000b8c                  FSm_Small_BlockDescriptor - 0x000ba2
+                            FlashError1 - 0x000151                  FSm_Large_BlockDescriptor - 0x000ba5
+                       FlashError1_Boot - 0x000164                     FType2_BlockDescriptor - 0x000ba8
+                             FlashExit1 - 0x000149                     FType4_BlockDescriptor - 0x000bab
+                         FlashInitPort1 - 0x000097                     FType5_BlockDescriptor - 0x000bae
+                    FlashInitPort1_Boot - 0x0000de                        FSm_DeviceDriverAPI - 0x000bb1
+                         FlashInit_1p8V - 0x000124                     FType2_DeviceDriverAPI - 0x000bb3
+                          FlashReceive1 - 0x00012c                           FSm_CommandCodes - 0x000bb5
+                       FpNandInitStruct - 0x000b83                        FType2_CommandCodes - 0x000bbd
+                    GetByteFromArrayInX - 0x000dde                       FSm_Small_Addressing - 0x000bc5
+                      GetCheckSumTarget - 0x000868                       FSm_Large_Addressing - 0x000bc7
+                           GetCipherKey - 0x000835                    FType2_Small_Addressing - 0x000bc9
+                                GetWord - 0x00083c                    FType2_Large_Addressing - 0x000bcb
+                              Get_CaseA - 0x000df5     FNANDDescriptorSubStructType1SmallAddr - 0x000bcd
+                              Get_CaseB - 0x000df1     FNANDDescriptorSubStructType1LargeAddr - 0x000bd3
+                              Get_CaseC - 0x000ded                       FType1_8MB_8bit_NAND - 0x000bd9
+                                 Getkey - 0x0006a6                      FType1_16MB_8bit_NAND - 0x000bdc
+                    InitBatteryBrownout - 0x0007c4                      FType1_32MB_8bit_NAND - 0x000bdf
+                        InitGPFLASHPort - 0x000388                      FType1_64MB_8bit_NAND - 0x000be2
+                               InitLmem - 0x000766                     FType1_128MB_8bit_NAND - 0x000be5
+                               InitPmem - 0x00077c                     FType1_16MB_16bit_NAND - 0x000be8
+                               InitXmem - 0x000758                     FType1_32MB_16bit_NAND - 0x000beb
+                               InitYmem - 0x00074a                     FType1_64MB_16bit_NAND - 0x000bee
+                               LoadLmem - 0x000723                    FType1_128MB_16bit_NAND - 0x000bf1
+                               LoadPmem - 0x00073a     FNANDDescriptorSubStructType2SmallAddr - 0x000bf4
+                        LoadRoutinePtrs - 0x000687     FNANDDescriptorSubStructType2LargeAddr - 0x000bfa
+                               LoadXmem - 0x000713                     FType2_128MB_8bit_NAND - 0x000c00
+                               LoadYmem - 0x000703                    FType2_128MB_16bit_NAND - 0x000c03
+                               MainLoop - 0x0006ac                     FType2_256MB_8bit_NAND - 0x000c06
+                             NANDIs1_8V - 0x000822                    FType2_256MB_16bit_NAND - 0x000c09
+                             NANDIs3_3V - 0x00082a                     FType2_512MB_8bit_NAND - 0x000c0c
+                     NandFillSinkBuffer - 0x0002eb                    FType2_512MB_16bit_NAND - 0x000c0f
+                     NandFindNextDevice - 0x0002b9                    FType2_1024MB_8bit_NAND - 0x000c12
+                     NandFindPrevDevice - 0x0002d3                   FType2_1024MB_16bit_NAND - 0x000c15
+                       NandSaveBootInfo - 0x0002a5                    FType2_2048MB_8bit_NAND - 0x000c18
+                       PowerUpFlashPads - 0x000384                   FType2_2048MB_16bit_NAND - 0x000c1b
+                 PowerUpFlashPads_16bit - 0x000386              FNANDDescriptorSubStructType4 - 0x000c1e
+                      ProcessUsbEp1Data - 0x000238                      FType4_128MB_8bit_AND - 0x000c24
+                        ReadDataGPFLASH - 0x000425                      FType4_512MB_8bit_AND - 0x000c27
+                                 Reboot - 0x00078a              FNANDDescriptorSubStructType5 - 0x000c2a
+                     RestoreSystemStack - 0x00008c                      FType5_256MB_MLC_NAND - 0x000c30
+                         RunInitRoutine - 0x000697                      FType5_512MB_MLC_NAND - 0x000c33
+                        SaveSystemStack - 0x000080                     FType5_1024MB_MLC_NAND - 0x000c36
+                           SetupTimeOut - 0x000898                     FType5_2048MB_MLC_NAND - 0x000c39
+                         SysBrownOutIsr - 0x0007e1                FUniqueInitDescriptorIdList - 0x000c3c
+                       TempBlockTagSave - 0x00064e                     FType2DescriptorIdList - 0x000c6e
+                   TerminateGPFLASHPort - 0x0003aa                  FLargeMLCDescriptorIdList - 0x000cac
+                         UpdateCheckSum - 0x000861                     FNANDRA_ToStandardForm - 0x000cca
+                               UsbError - 0x000232                             FNANDRAGetByte - 0x000d0e
+                                UsbExit - 0x00022c                      FNANDRAGetBlockStatus - 0x000d29
+                            UsbInitPort - 0x000172                              FNANDRAGetLBA - 0x000d32
+                             UsbReceive - 0x0001d3                         FNANDRAGetStmpCode - 0x000d9d
+                          VDDIOBrownout - 0x0008d0                       FGetByteFromArrayInX - 0x000dde
+                       ValidateCheckSum - 0x000875                        GetByteFromArrayInX - 0x000dde
+                          VerifyVersion - 0x000886                                  Get_CaseC - 0x000ded
+                    WaitForReadyGPFLASH - 0x000452                                  Get_CaseB - 0x000df1
+                       WriteAddrGPFLASH - 0x0003dc                                  Get_CaseA - 0x000df5
+                        WriteCmdGPFLASH - 0x0003ac                     FNANDHalCorrectPartial - 0x000df9
+                              b1p8Volts - 0x00012b                    FNANDHalCorrectECC_4Bit - 0x000e31
+ 
+Symbols:  Space X
+                                  Sorted on symbol                                     Sorted on address
+                                  ----------------                                     -----------------
+             BOOTROM_USB__USB_EP1BUFPTR - 0x000366                              FNandBlockNum - 0x000000
+                     BOOT_FLASH_BUF_END - 0x000202                            BOOT_RSRV_START - 0x000000
+                   BOOT_FLASH_BUF_START - 0x000080                         Boot_Reserve_Start - 0x000000
+                          BOOT_RSRV_END - 0x000080                               NandBlockNum - 0x000000
+                        BOOT_RSRV_START - 0x000000                              NandSectorNum - 0x000001
+                               BootInfo - 0x000005                             FNandSectorNum - 0x000001
+                      Boot_FlashBuf_End - 0x000202                              NandCurDevNum - 0x000002
+                    Boot_FlashBuf_Start - 0x000080                             FNandCurDevNum - 0x000002
+                       Boot_Reserve_End - 0x000080                    FpCurrentNANDDescriptor - 0x000003
+                     Boot_Reserve_Start - 0x000000                     pCurrentNANDDescriptor - 0x000003
+                           BootyVersion - 0x000011                       FCurrentNANDBusWidth - 0x000004
+                               CheckSum - 0x00000e                        CurrentNANDBusWidth - 0x000004
+                         CheckSumTarget - 0x00000f                                  FBootInfo - 0x000005
+                              CipherKey - 0x000010                                   BootInfo - 0x000005
+                    CurrentNANDBusWidth - 0x000004                                SaveCommand - 0x000006
+                           ErrorRoutine - 0x00000a                                ExitRoutine - 0x000007
+                            ExitRoutine - 0x000007                             ReceiveRoutine - 0x000008
+                              FBootInfo - 0x000005                                InitRoutine - 0x000009
+                   FCurrentNANDBusWidth - 0x000004                               ErrorRoutine - 0x00000a
+                          FFlashPageBuf - 0x000040                                  InitCount - 0x00000b
+                         FFlashPageBuf2 - 0x000080                                    InitPtr - 0x00000c
+                          FFlashSinkBuf - 0x00003f                                   StoreCSR - 0x00000d
+                          FNandBlockNum - 0x000000                                   CheckSum - 0x00000e
+                         FNandCurDevNum - 0x000002                             CheckSumTarget - 0x00000f
+                         FNandSectorNum - 0x000001                                  CipherKey - 0x000010
+                          FReadIDDecode - 0x000369                               BootyVersion - 0x000011
+                            FSectorSize - 0x00036b                                  WordCount - 0x000012
+                     FSectorSizeInWords - 0x000368                            TimeOutInitHigh - 0x000013
+              FSectorSizeInWordsPlusOne - 0x000367                             TimeOutInitLow - 0x000014
+                            FSmBlockTag - 0x000039                                TimeOutHigh - 0x000015
+                        FlashInitSaveY1 - 0x000038                                 TimeOutLow - 0x000016
+                         FlashLagniappe - 0x000020                                SmCard3Info - 0x000017
+                   FlashPageAddressHigh - 0x000024                                SmCard2Info - 0x000018
+                    FlashPageAddressLow - 0x000023                                SmCard1Info - 0x000019
+                           FlashPageBuf - 0x000040                                SmCard0Info - 0x00001a
+                          FlashPageBuf2 - 0x000080                                 SmCardInfo - 0x00001b
+                         FlashPageState - 0x000021                                    UsbInfo - 0x00001c
+                          FlashProgress - 0x000025                               LmemSaveHigh - 0x00001d
+                            FlashSaveY1 - 0x000022                           FlashSinkHeadPtr - 0x00001e
+                           FlashSinkBuf - 0x00003f                            USB_SINKHEADPTR - 0x00001e
+                       FlashSinkHeadPtr - 0x00001e                           FlashSinkTailPtr - 0x00001f
+                       FlashSinkTailPtr - 0x00001f                            USB_SINKTAILPTR - 0x00001f
+                FpCurrentNANDDescriptor - 0x000003                               UsbLagniappe - 0x000020
+                              InitCount - 0x00000b                             FlashLagniappe - 0x000020
+                                InitPtr - 0x00000c                             FlashPageState - 0x000021
+                            InitRoutine - 0x000009                               UsbPageState - 0x000021
+                            L1DataStack - 0x00036d                                FlashSaveY1 - 0x000022
+                                   L1Sp - 0x00036c                           UsbEp1IrqPending - 0x000022
+                           LmemSaveHigh - 0x00001d                        FlashPageAddressLow - 0x000023
+                           NandBlockNum - 0x000000                                UsbProgress - 0x000023
+                          NandCurDevNum - 0x000002                       FlashPageAddressHigh - 0x000024
+                           NandPortInit - 0x00003a                            UsbTimeOutCount - 0x000024
+                       NandReadPortData - 0x00003d                              FlashProgress - 0x000025
+                          NandSectorNum - 0x000001                             SmLookForBlock - 0x000026
+                      NandWritePortAddr - 0x00003c                                 SmPageSize - 0x000027
+                       NandWritePortCmd - 0x00003b                             SmFullPageSize - 0x000028
+                         ReceiveRoutine - 0x000008                                SmBlockSize - 0x000029
+                            SaveCommand - 0x000006                         SmDataStatusOffset - 0x00002a
+                             SmBlockMax - 0x000030                           SmDataStatusMask - 0x00002b
+                            SmBlockSize - 0x000029                          SmDataStatusShift - 0x00002c
+                      SmBlockStatusMask - 0x00002e                        SmBlockStatusOffset - 0x00002d
+                    SmBlockStatusOffset - 0x00002d                          SmBlockStatusMask - 0x00002e
+                     SmBlockStatusShift - 0x00002f                         SmBlockStatusShift - 0x00002f
+                             SmBlockTag - 0x000039                                 SmBlockMax - 0x000030
+                            SmCard0Info - 0x00001a                               SmTag0Offset - 0x000031
+                            SmCard1Info - 0x000019                                 SmTag0Mask - 0x000032
+                            SmCard2Info - 0x000018                                SmTag0Shift - 0x000033
+                            SmCard3Info - 0x000017                               SmTag1Offset - 0x000034
+                             SmCardInfo - 0x00001b                                 SmTag1Mask - 0x000035
+                                   SmCr - 0x000037                                SmTag1Shift - 0x000036
+                       SmDataStatusMask - 0x00002b                                       SmCr - 0x000037
+                     SmDataStatusOffset - 0x00002a                            FlashInitSaveY1 - 0x000038
+                      SmDataStatusShift - 0x00002c                                FSmBlockTag - 0x000039
+                         SmFullPageSize - 0x000028                                 SmBlockTag - 0x000039
+                         SmLookForBlock - 0x000026                               NandPortInit - 0x00003a
+                             SmPageSize - 0x000027                           NandWritePortCmd - 0x00003b
+                             SmTag0Mask - 0x000032                          NandWritePortAddr - 0x00003c
+                           SmTag0Offset - 0x000031                           NandReadPortData - 0x00003d
+                            SmTag0Shift - 0x000033                                  UsbSaveY1 - 0x00003e
+                             SmTag1Mask - 0x000035                               FlashSinkBuf - 0x00003f
+                           SmTag1Offset - 0x000034                              FFlashSinkBuf - 0x00003f
+                            SmTag1Shift - 0x000036                              FFlashPageBuf - 0x000040
+                               StoreCSR - 0x00000d                             USB_SINKBUFPTR - 0x000040
+                            TimeOutHigh - 0x000015                               FlashPageBuf - 0x000040
+                        TimeOutInitHigh - 0x000013                       BOOT_FLASH_BUF_START - 0x000080
+                         TimeOutInitLow - 0x000014                              FlashPageBuf2 - 0x000080
+                             TimeOutLow - 0x000016                        Boot_FlashBuf_Start - 0x000080
+                         USB_SINKBUFPTR - 0x000040                              BOOT_RSRV_END - 0x000080
+                        USB_SINKHEADPTR - 0x00001e                             FFlashPageBuf2 - 0x000080
+                        USB_SINKTAILPTR - 0x00001f                           Boot_Reserve_End - 0x000080
+                            Usb20Buffer - 0x000210                          Boot_FlashBuf_End - 0x000202
+                       UsbEp1IrqPending - 0x000022                         BOOT_FLASH_BUF_END - 0x000202
+                                UsbInfo - 0x00001c                                Usb20Buffer - 0x000210
+                           UsbLagniappe - 0x000020                 BOOTROM_USB__USB_EP1BUFPTR - 0x000366
+                           UsbPageState - 0x000021                  FSectorSizeInWordsPlusOne - 0x000367
+                            UsbProgress - 0x000023                         FSectorSizeInWords - 0x000368
+                              UsbSaveY1 - 0x00003e                              FReadIDDecode - 0x000369
+                        UsbTimeOutCount - 0x000024                                FSectorSize - 0x00036b
+                              WordCount - 0x000012                                       L1Sp - 0x00036c
+                 pCurrentNANDDescriptor - 0x000003                                L1DataStack - 0x00036d
+ 
+Symbols:  Space undefined
+                                  Sorted on symbol                                     Sorted on address
+                                  ----------------                                     -----------------
+                           BOOT_ATTEMPT - 0x000000                       SM_INFO_END_OF_CARDS - 0x000000
+                    BOOT_FLASH_BUF_SIZE - 0x000182                      USB_INFO_USB_DETECTED - 0x000000
+                      BOOT_INFO_ATTEMPT - 0x000016                               BOOT_ATTEMPT - 0x000000
+                     BOOT_INFO_CHECKSUM - 0x000011                          TIMEOUT_SLOW_HIGH - 0x000000
+              BOOT_INFO_INVALID_COMMAND - 0x000014                            TIMEOUT_USB_LOW - 0x000000
+                      BOOT_INFO_SUCCESS - 0x000015                   SM_INFO_LARGE_MEDIA_FLAG - 0x000001
+                      BOOT_INFO_TIMEOUT - 0x000012                            FLH_PAGESTATE_A - 0x000001
+                         BOOT_INFO_TYPE - 0x000017                               BOOT_SUCCESS - 0x000001
+                      BOOT_INFO_VERSION - 0x000013                  USB_INFO_USB_DISCONNECTED - 0x000001
+                         BOOT_RSRV_SIZE - 0x000202                            INVALID_COMMAND - 0x000002
+                           BOOT_SUCCESS - 0x000001                       USB_INFO_PLL_TIMEOUT - 0x000002
+                    BOOT_TEMP_RSRV_SIZE - 0x000080                     SM_INFO_16BIT_BUS_FLAG - 0x000002
+                        FLH_PAGESTATE_A - 0x000001                              VERSION_MAJOR - 0x000003
+                        INVALID_COMMAND - 0x000002                      USB_INFO_BOOT_TIMEOUT - 0x000003
+                               ROM_SIZE - 0x003000                            SM_END_OF_CARDS - 0x000003
+                        SM_END_OF_CARDS - 0x000003                     SM_INFO_LARGE_ADD_FLAG - 0x000003
+                 SM_INFO_16BIT_BUS_FLAG - 0x000002                     SM_INFO_SSFDC_CMD_FLAG - 0x000004
+                   SM_INFO_END_OF_CARDS - 0x000000                           TIMEOUT_USB_HIGH - 0x00000d
+                 SM_INFO_LARGE_ADD_FLAG - 0x000003                              SM_NUM_PARAMS - 0x000010
+               SM_INFO_LARGE_MEDIA_FLAG - 0x000001                         BOOT_INFO_CHECKSUM - 0x000011
+                 SM_INFO_SSFDC_CMD_FLAG - 0x000004                          BOOT_INFO_TIMEOUT - 0x000012
+                          SM_NUM_PARAMS - 0x000010                          BOOT_INFO_VERSION - 0x000013
+                      TIMEOUT_SLOW_HIGH - 0x000000                  BOOT_INFO_INVALID_COMMAND - 0x000014
+                       TIMEOUT_SLOW_LOW - 0x200000                          BOOT_INFO_SUCCESS - 0x000015
+                       TIMEOUT_USB_HIGH - 0x00000d                          BOOT_INFO_ATTEMPT - 0x000016
+                        TIMEOUT_USB_LOW - 0x000000                             BOOT_INFO_TYPE - 0x000017
+                  USB_INFO_BOOT_TIMEOUT - 0x000003                        BOOT_TEMP_RSRV_SIZE - 0x000080
+                   USB_INFO_PLL_TIMEOUT - 0x000002                             VERSION_MIDDLE - 0x0000c8
+                  USB_INFO_USB_DETECTED - 0x000000                        BOOT_FLASH_BUF_SIZE - 0x000182
+              USB_INFO_USB_DISCONNECTED - 0x000001                             BOOT_RSRV_SIZE - 0x000202
+                          VERSION_MAJOR - 0x000003                              VERSION_MINOR - 0x00038e
+                         VERSION_MIDDLE - 0x0000c8                                   ROM_SIZE - 0x003000
+                          VERSION_MINOR - 0x00038e                           TIMEOUT_SLOW_LOW - 0x200000
+
+
+Sections:
+
+bootmanager:
+                       Section   Address     Size        
+                 BOOTMANAGER_P - 0x000642    0x00029e
+                EXEC_Vectors_P - 0x000000    0x000002
+             VDDIO_BO_Vector_P - 0x00000a    0x000002
+
+bootmanagerflash:
+                       Section   Address     Size        
+           BOOTMANAGER_Flash_P - 0x000097    0x0000db
+
+3500bootmanagerusb:
+                       Section   Address     Size        
+             BOOTMANAGER_USB_P - 0x000172    0x000133
+                  USB20_Buffer - 0x000210    0x000156
+
+3500bootmanagermem:
+                       Section   Address     Size        
+                   Flash_Buf_X - 0x000080    0x000182
+                      Flash__X - 0x000000    0x000080
+
+stackmem:
+                       Section   Address     Size        
+             SYSFUN_StackMem_X - 0x00036c    0x00007e
+             SYSFUN_StackMem_Y - 0x000000    0x000000
+
+stack:
+                       Section   Address     Size        
+                SYSFUN_Stack_P - 0x000080    0x000017
+
+nanddevicedriver:
+                       Section   Address     Size        
+               BOOTROM_Flash_P - 0x0002a5    0x0000df
+
+nanddesc:
+                       Section   Address     Size        
+                .pdatananddesc - 0x000b98    0x000132
+
+nanddevdrv:
+                       Section   Address     Size        
+              .ptextnanddevdrv - 0x000473    0x0001cf
+ .xovlnanddevdrv@checkPadPower - 0x000366    0x000001
+
+nanddevdrvapi:
+                       Section   Address     Size        
+            .pbssnanddevdrvapi - 0x000b83    0x000001
+           .pdatananddevdrvapi - 0x000b84    0x000014
+           .ptextnanddevdrvapi - 0x0008e0    0x0002a3
+            .xbssnanddevdrvapi - 0x000367    0x000005
+
+nandhal:
+                       Section   Address     Size        
+               BOOTROM_Flash_P - 0x000384    0x000004
+
+gpflash_hal:
+                       Section   Address     Size        
+               BOOTROM_Flash_P - 0x000388    0x0000eb
+
+nandra_utils:
+                       Section   Address     Size        
+            .ptextnandra_utils - 0x000cca    0x00012f
+
+nandhalcorrectecc:
+                       Section   Address     Size        
+       .ptextnandhalcorrectecc - 0x000df9    0x0000fa

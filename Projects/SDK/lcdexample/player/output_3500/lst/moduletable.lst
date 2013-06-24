@@ -1,0 +1,112 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\fgndmodules\moduletable.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; STMP Foreground Module Table
+                                5 ;******************************************************************************
+                                6         
+                                7 ;*******************************************************************************
+                                8 ;  Include files
+                                9 ;*******************************************************************************
+                               10                 include "dacmemy.xref"        
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ; Filename: dacmemy.xref
+                                5 ; Description: XREFs for dacmemy.asm
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                               10 DACMEMY_XREF equ 1
+                               11 ;*******************************************************************************
+                               12 ;  Extern definitions
+                               13 ;*******************************************************************************
+                               23 ;*******************************************************************************
+                               24 ;  Global definitions
+                               25 ;*******************************************************************************
+                               40 ;*******************************************************************************
+                               41 ;  X memory
+                               42 ;*******************************************************************************
+                               44 ;*******************************************************************************
+                               45 ;  Y memory
+                               46 ;*******************************************************************************
+                               62 NUM_FGND_MODULES    equ 3
+Y:0000                         66         org     y,"FgndModuleTable":
+                               68 ; Place this module here, if we need an equalizer for FM playback
+                               69 ; ADC driver for FM input.
+                               70 ; FM module must reset it back to EmptyFunction, if not used.
+                               71 ; Set the descriptors to something valid for timebeing. Does not do anything.
+                               72 ModuleControlBlockBase
+                               73 FMADCModuleBase
+                               74 ;                       dc                      1                                               ; 
+                                  Module Enable Flag always 1
+                               75 ;                       dc                      0                                               ; 
+                                  IOBufIdenticalFlag
+                               76 ;                       dc                      DacBufDescriptor                ; Source buffer de
+                                  scriptor
+                               77 ;                       dc                      DacBufDescriptor                ; Sink Buffer desc
+                                  riptor
+                               78 ;                       dc                      EmptyFunction                   ; Routine
+                               79 ;                       dc                      0                                               ; 
+                                  Parameter0
+                               80 ;                       dc                      0                                               ; 
+                                  Parameter1
+                               82 ; This is the normally the first working module
+                               83 ; Copies decoder/ADC output to a WorkBuffer. For non-compatible 
+                               84 ; output buffer decoders.
+                               85 CopyModuleBase
+Y:0000 000001                  86                         dc                      1                                               ; 
+                                  Module Enable Flag always 1
+Y:0001 000000                  87                         dc                      0                                               ; 
+                                  IOBufIdenticalFlag
+                               88 CopyBufSourceDesc
+Y:0002 000000                  89                         dc                      0                                               ; 
+                                  Source buffer descriptor. Written by CopyBufferInit
+                               90 CopyBufSinkDesc
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0003 rrrrrr                  91                         dc                      EffectsDescriptor               ; Sink Buffer desc
+                                  riptor
+Y:0004 rrrrrr                  92                         dc                      CopytoEffectsBuffer             ; Routine
+                               93 DecoderOutputChannelType
+Y:0005 000000                  94                         dc                      0                                               ; 
+                                  0 = Mono, 1 = Stereo.
+                               95 DecoderOutputBufferType
+Y:0006 000000                  96                         dc                      0                                               ; 
+                                  0 = X memory, 1 = Y memory.
+                               98 ; Place all the other effects' modules below.
+                              102 GeqModuleBase
+Y:0007 000000                 103                         dc                      0                                               ; 
+                                  Module Enable Flag / disable by default. Saves 4 hrs AA batt life for nonscroll songs.
+Y:0008 000001                 104                         dc                      1                                               ; 
+                                  IOBufIdenticalFlag
+Y:0009 rrrrrr                 105                         dc                      EffectsDescriptor               ; Source buffer de
+                                  scriptor
+Y:000A rrrrrr                 106                         dc                      EffectsDescriptor               ; Sink Buffer desc
+                                  riptor
+Y:000B rrrrrr                 107                         dc                      GeqProcess                              ; Routine
+Y:000C 000000                 108                         dc                      0                                               ; 
+                                  Parameter0
+Y:000D 000000                 109                         dc                      0                                               ; 
+                                  Parameter1
+                              121 ;SPECTRUM_ANAL is defined or undefined in config.mk
+                              133 ; This is the last module in the list
+                              134 DacModuleBase
+Y:000E 000001                 135                         dc                      1                                               ; 
+                                  Module Enable Flag
+Y:000F 000000                 136                         dc                      0                                               ; 
+                                  IOBufIdenticalFlag
+                              137 DacSourceBufDesc
+Y:0010 rrrrrr                 138                         dc                      EffectsDescriptor               ; Source buffer de
+                                  scriptor
+                              139 DacSinkBufDesc
+Y:0011 rrrrrr                 140                         dc                      DacBufDescriptor                ; Sink Buffer desc
+                                  riptor
+Y:0012 rrrrrr                 141                         dc                      DacDriverProcess                ; Routine
+Y:0013 000000                 142                         dc                      0                                               ; 
+                                  Parameter0
+Y:0014 000000                 143                         dc                      0                                               ; 
+                                  Parameter1

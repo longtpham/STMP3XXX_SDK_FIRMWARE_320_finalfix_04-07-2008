@@ -1,0 +1,1288 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\hardware\display\sal\framebuffer\asmframebuffer.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1     include "sysmacro.asm"
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : sysmacro.asm
+                                5 ;  Description : Misc System Macros
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     define   SysMacro_asm    '1'
+                               10     page    255,255,0
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Macros
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   Includes
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               21 ;   External Definitions
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               25 ;   External References
+                               26 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;///////////////////////////////////////////////////////////////////////////////
+                               29 ;   Equates
+                               30 ;///////////////////////////////////////////////////////////////////////////////
+                               31         
+                               32 ;///////////////////////////////////////////////////////////////////////////////
+                               33 ;   X Memory
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35         
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37 ;   Y Memory
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               39         
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               41 ;   P Memory
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               45 ;
+                               46 ;>  Name:           push
+                               47 ;
+                               48 ;   Type:           Macro
+                               49 ;
+                               50 ;   Description:    Push a 24-bit value onto the data stack
+                               51 ;
+                               52 ;   Inputs:         Usage : push reg
+                               53 ;                   reg = any core register that is 24-bits or less
+                               54 ;
+                               55 ;   Outputs:        none
+                               56 ;                   
+                               57 ;   Notes:          For every push, there must be a corresponding pop to keep
+                               58 ;                   data stack balanced.
+                               59 ;
+                               60 ;   SeeAlso:        pop
+                               61 ;<
+                               62 ;///////////////////////////////////////////////////////////////////////////////
+                               63 push    macro   reg
+                               64     move    reg,y:(r7)+
+                               65     endm
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               68 ;
+                               69 ;>  Name:           pop
+                               70 ;
+                               71 ;   Type:           Macro
+                               72 ;
+                               73 ;   Description:    Pop a 24-bit value from the data stack
+                               74 ;
+                               75 ;   Inputs:         Usage : pop reg
+                               76 ;                   reg = any core register that is 24-bits or less
+                               77 ;
+                               78 ;   Outputs:        none
+                               79 ;                   
+                               80 ;   Notes:          For every pop, there must be a corresponding push to keep
+                               81 ;                   data stack balanced.
+                               82 ;
+                               83 ;   SeeAlso:        push
+                               84 ;<
+                               85 ;///////////////////////////////////////////////////////////////////////////////
+                               86 pop     macro   reg
+                               87     move    y:-(r7),reg
+                               88     endm
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+                               91 ;
+                               92 ;>  Name:           CallFunclet
+                               93 ;
+                               94 ;   Type:           Macro
+                               95 ;
+                               96 ;   Description:    Loads and Executes the funclet defined by the Resource argument
+                               97 ;
+                               98 ;   Inputs:         Resource = Resource number for the specific funclet.
+                               99 ;
+                              100 ;   Outputs:        none
+                              101 ;                   
+                              102 ;   Notes:          Jumps to SysCallFunclet.   TODO: change to a label instead of hard addresses like $80
+                              103 ;<
+                              104 ;///////////////////////////////////////////////////////////////////////////////
+                              105 ; if ((@DEF('STMP_BUILD_PLAYER'))||(@DEF('PLAYER'))) ; sdk3.110 and before did this. 3.120 add short jump for mtp.
+                              107 CallFunclet   macro Resource
+                              108     jsr       $80
+                              109     DC       Resource  ; 1 word
+                              110  endm    
+                              111 CallFunclet2   macro Resource
+                              112  if ((@DEF('STMP_BUILD_PLAYER'))||(@DEF('PLAYER')))
+                              113     jsr       $82
+                              114     DC       Resource  ; 1 word
+                              115  else ;;; MTP
+                              116     jsr       $80
+                              117     DC       Resource  ; 1 word
+                              118  endif
+                              119     endm    
+                              130 ;///////////////////////////////////////////////////////////////////////////////
+                              131 ;
+                              132 ;>  Name:           error
+                              133 ;
+                              134 ;   Type:           Macro
+                              135 ;
+                              136 ;   Description:    Fatal system error macro.  This macro works in conjunction
+                              137 ;                   with contents of syserror.asm.  Depending upon the build
+                              138 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              139 ;                   a "debug" statement or a JMP to an error handling reset routine.
+                              140 ;
+                              141 ;   Inputs:         none 
+                              142 ;   Outputs:        none                   
+                              143 ;   Notes:          Can use debugOrContinue or ccerror for conditional halts. 
+                              144 ;                   SystemHalt() C macro uses this asm macro.
+                              145 ;<
+                              146 ;///////////////////////////////////////////////////////////////////////////////
+                              147 error   macro
+                              148   if (@DEF('BETA')||@DEF('RETAIL')||@DEF('TRACEBUFFER'))
+                              149     jmp $000C ;Use vector at P:000C to shutdown & restart the STMP device. 
+                              150               ; Jmp to addr in low 12 bits is 1 word smaller than jsr. (changed apr 6 '05)
+                              151   else
+                              152     debug
+                              153   endif ; if ( @DEF('BETA')||@DEF('RETAIL') 
+                              154     endm
+                              156 ;///////////////////////////////////////////////////////////////////////////////
+                              157 ;
+                              158 ;   Name:           debugOrContinue
+                              159 ;   Type:           Macro
+                              160 ;   Description:    System error macro. Depending upon the build
+                              161 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              162 ;                   a "debug" statement or nothing to allow continued execution.
+                              163 ;   Inputs:         none 
+                              164 ;   Outputs:        none
+                              165 ;   Notes:          none
+                              166 ;
+                              167 ;///////////////////////////////////////////////////////////////////////////////
+                              168 debugOrContinue   macro
+                              169   if (@DEF('DEBUG'))
+                              170     debug
+                              171     nop
+                              172   endif 
+                              173     endm
+                              175 ;///////////////////////////////////////////////////////////////////////////////
+                              176 ;
+                              177 ;   Name:           debugOrShutdown
+                              178 ;   Type:           Macro
+                              179 ;   Description:    System error macro. Depending upon the build
+                              180 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              181 ;                   a "debug" statement or Prevent RETAIL build from hanging on 
+                              182 ;                   debug line by attempting graceful shutdown.
+                              183 ;   Inputs:         none 
+                              184 ;   Outputs:        none
+                              185 ;   Notes:          See SystemShutdownFinal in SystemAPI.asm
+                              186 ;
+                              187 ;///////////////////////////////////////////////////////////////////////////////
+                              188 ;debugOrShutdown   macro
+                              189 ;  if (@DEF('DEBUG'))
+                              190 ;    debug
+                              191 ;    nop
+                              192 ;  else  ; ( @DEF('BETA')||@DEF('RETAIL')
+                              193 ;    jmp SystemShutdownFinal                ; reference not resolved
+                              194 ;  endif 
+                              195 ;    endm
+                              198 ;///////////////////////////////////////////////////////////////////////////////
+                              199 ;> Name:            ccerror
+                              200 ;
+                              201 ;  Type:            Macro
+                              202 ;  Description:     Conditional fatal system error macro.  If the indicated
+                              203 ;                   condition code ("CC") is met, signal the error.  (See "error",
+                              204 ;                   above for more info on error hanlding.)
+                              205 ;                   The allowed condition condition codes are
+                              206 ;
+                              207 ;                       cc, cs, ec, eq, es, ge, gt, lc, le, ls, lt, 
+                              208 ;                       mi, ne, nr, pl, nn 
+                              209 ;
+                              210 ;  Inputs:          condition
+                              211 ;
+                              212 ;  Outputs:         none
+                              213 ;
+                              214 ;  Notes:           The normal way of using these macros is shown below:
+                              215 ;
+                              216 ;                       <some operation which sets/clears a condition code>
+                              217 ;                       ccerror cs             ; Error if carry is set
+                              218 ;                       <normal continuation>
+                              219 ;
+                              220 ;                   This can replace old code of the form:
+                              221 ;
+                              222 ;                       <some operation which sets/clears a condition code>
+                              223 ;                       jcc     _OK
+                              224 ;                       error
+                              225 ;                   _OK
+                              226 ;                       <normal continuation>
+                              227 ;
+                              228 ;                   Depending on the BETA/RETAIL flags, the first operation can
+                              229 ;                   save one or two words of program memory over the second method.
+                              230 ;<
+                              231 ;///////////////////////////////////////////////////////////////////////////////
+                              232 ccerror macro   condition
+                              233   if (@DEF('BETA')||@DEF('RETAIL'))
+                              234     js\condition $000C
+                              235   else
+                              236     debug\condition
+                              237   endif ; if ( @DEF('BETA')||@DEF('RETAIL') 
+                              238     endm
+                              240 ;///////////////////////////////////////////////////////////////////////////////
+                              241 ;> Name: GetLogicalDriveNumForResourceBin
+                              242 ;
+                              243 ; Description: Used for our RestoreDriveFromBackup routine.
+                              244 ; INPUT: 1 for primary resource.bin
+                              245 ;        2 for secondary resource.bin
+                              246 ;        3 for master redundant resource.bin that is used to restore 1 and 2 at power up if needed.
+                              247 ;
+                              248 ; NOTE: If the drive arrays is modified in ddiproject.c then the values below will
+                              249 ;       have to change. Inspect that file to verify these values are correct.
+                              250 ;
+                              251 ;<
+                              252 ;///////////////////////////////////////////////////////////////////////////////
+                              253 GetLogicalDriveNumForResourceBin macro drive
+                              254     if (drive==0)
+                              255     fail    "drive=0 invalid value used in GetLogicalDriveNumForresourceBin macro"
+                              256     endif
+                              258     if (drive>3)
+                              259     fail    "drive>3 invalid value used in GetLogicalDriveNumForresourceBin macro"
+                              260     endif
+                              262     if (@DEF('MMC'))
+                              264         if drive==1
+                              265              move   #>6,a
+                              266         endif
+                              267     
+                              268         if drive==2
+                              269              move   #>7,a
+                              270         endif
+                              272         if drive==3
+                              273              move   #>8,a
+                              274         endif
+                              275     else
+                              277         if drive==1
+                              278              move   #>5,a
+                              279         endif
+                              280     
+                              281         if drive==2
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              282              move   #>6,a
+                              283         endif
+                              285         if drive==3
+                              286              move   #>7,a
+                              287         endif
+                              288     endif
+                              289  endm
+                              291 ;///////////////////////////////////////////////////////////////////////////////
+                              292 ;
+                              293 ;>  Name:           SaveRange
+                              294 ;
+                              295 ;   Type:           Macro
+                              296 ;
+                              297 ;   Description:    This is a supporting macro for saving memory locations to
+                              298 ;                   the settings.dat file at shutdown, for later restoration
+                              299 ;                   at system startup.
+                              300 ;
+                              301 ;   Inputs:         Usage : SaveRange Label,Length
+                              302 ;                        
+                              303 ;   Outputs:        
+                              304 ;                   
+                              305 ;   Notes:          This macro automatically determines the memory space of the
+                              306 ;                   label specified.  It then constructs a command that is 
+                              307 ;                   written to settings.dat by SysSaveSettings, and is
+                              308 ;                   understood by the SysLoadSettings function to restore the
+                              309 ;                   memory locations.  For the SaveRange macro to be recognized 
+                              310 ;                   by the SysSaveSettings function.  The section name where the
+                              311 ;                   SaveRange command is used, must be included in the 
+                              312 ;                   Settings_Y cluster in the stmp3400.dsc file.  The makefile
+                              313 ;                   will then extract these commands as a resource to be used
+                              314 ;                   by SysSaveSettings and SysLoadSettings.
+                              315 ;
+                              316 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRangeX, 
+                              317 ;                   SaveRangeY, SaveRangeP, SaveRangeL
+                              318 ;
+                              319 ;<
+                              320 ;///////////////////////////////////////////////////////////////////////////////
+                              321 SaveRange macro Label,Length
+                              322     if @MSP(Label)==0  ;None
+                              323     fail    "Invalid label used in SaveRange macro"
+                              324     dc      Label
+                              325     endif ; if @MSP(Label)==0
+                              327     if @MSP(Label)==1  ;X
+                              328     dc      $800000|Label
+                              329     endif ; if @MSP(Label)==1
+                              331     if @MSP(Label)==2  ;Y
+                              332     dc      $400000|Label
+                              333     endif ; if @MSP(Label)==2
+                              335     if @MSP(Label)==3  ;L
+                              336     dc      $200000|Label
+                              337     endif ; if @MSP(Label)==3
+                              339     if @MSP(Label)==4  ;P
+                              340     dc      $100000|Label
+                              341     endif ; if @MSP(Label)==4
+                              343     if @MSP(Label)==5  ;E
+                              344     fail    "Invalid label used in SaveRange macro"
+                              345     dc      Label
+                              346     endif ; if @MSP(Label)==5
+                              348     dc      Length*3
+                              349     endm
+                              351 ;///////////////////////////////////////////////////////////////////////////////
+                              352 ;
+                              353 ;>  Name:           SaveRangeY
+                              354 ;
+                              355 ;   Type:           Macro
+                              356 ;
+                              357 ;   Description:    This is a supporting macro for saving memory locations to
+                              358 ;                   the settings.dat file at shutdown, for later restoration
+                              359 ;                   at system startup.
+                              360 ;
+                              361 ;   Inputs:         Usage : SaveRangeY Label,Length
+                              362 ;                        
+                              363 ;   Outputs:        
+                              364 ;                   
+                              365 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              366 ;                   can take a numeric address, or a label, but will only
+                              367 ;                   create a save memory command that indicates Y memory
+                              368 ;                   to be saved.
+                              369 ;
+                              370 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              371 ;                   SaveRangeX, SaveRangeP, SaveRangeL
+                              372 ;
+                              373 ;<
+                              374 ;///////////////////////////////////////////////////////////////////////////////
+                              375 SaveRangeY macro Address,Length
+                              376     dc      $400000|Address
+                              377     dc      Length*3
+                              378     endm
+                              380 ;///////////////////////////////////////////////////////////////////////////////
+                              381 ;
+                              382 ;>  Name:           SaveRangeX
+                              383 ;
+                              384 ;   Type:           Macro
+                              385 ;
+                              386 ;   Description:    This is a supporting macro for saving memory locations to
+                              387 ;                   the settings.dat file at shutdown, for later restoration
+                              388 ;                   at system startup.
+                              389 ;
+                              390 ;   Inputs:         Usage : SaveRangeX Label,Length
+                              391 ;                        
+                              392 ;   Outputs:        
+                              393 ;                   
+                              394 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              395 ;                   can take a numeric address, or a label, but will only
+                              396 ;                   create a save memory command that indicates X memory
+                              397 ;                   to be saved.
+                              398 ;
+                              399 ;   See Also:       SysLoadSettings, SysSaveSettings, SaveRange, 
+                              400 ;                   SaveRangeY, SaveRangeP, SaveRangeL
+                              401 ;
+                              402 ;<
+                              403 ;///////////////////////////////////////////////////////////////////////////////
+                              404 SaveRangeX macro Address,Length
+                              405     dc      $800000|Address
+                              406     dc      Length*3
+                              407     endm
+                              409 ;///////////////////////////////////////////////////////////////////////////////
+                              410 ;
+                              411 ;>  Name:           SaveRangeL
+                              412 ;
+                              413 ;   Type:           Macro
+                              414 ;
+                              415 ;   Description:    This is a supporting macro for saving memory locations to
+                              416 ;                   the settings.dat file at shutdown, for later restoration
+                              417 ;                   at system startup.
+                              418 ;
+                              419 ;   Inputs:         Usage : SaveRangeL Label,Length
+                              420 ;                        
+                              421 ;   Outputs:        
+                              422 ;                   
+                              423 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              424 ;                   can take a numeric address, or a label, but will only
+                              425 ;                   create a save memory command that indicates L memory
+                              426 ;                   to be saved.
+                              427 ;
+                              428 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              429 ;                   SaveRangeX, SaveRangeY, SaveRangeP
+                              430 ;
+                              431 ;<
+                              432 ;///////////////////////////////////////////////////////////////////////////////
+                              433 SaveRangeL macro Address,Length
+                              434     dc      $200000|Address
+                              435     dc      Length*3
+                              436     endm
+                              438 ;///////////////////////////////////////////////////////////////////////////////
+                              439 ;
+                              440 ;>  Name:           SaveRangeP
+                              441 ;
+                              442 ;   Type:           Macro
+                              443 ;
+                              444 ;   Description:    This is a supporting macro for saving memory locations to
+                              445 ;                   the settings.dat file at shutdown, for later restoration
+                              446 ;                   at system startup.
+                              447 ;
+                              448 ;   Inputs:         Usage : SaveRangeP Label,Length
+                              449 ;                        
+                              450 ;   Outputs:        
+                              451 ;                   
+                              452 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              453 ;                   can take a numeric address, or a label, but will only
+                              454 ;                   create a save memory command that indicates P memory
+                              455 ;                   to be saved.
+                              456 ;
+                              457 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              458 ;                   SaveRangeX, SaveRangeY, SaveRangeL
+                              459 ;
+                              460 ;<
+                              461 ;///////////////////////////////////////////////////////////////////////////////
+                              462 SaveRangeP macro Address,Length
+                              463     dc      $100000|Address
+                              464     dc      Length*3
+                              465     endm
+                              468 ;///////////////////////////////////////////////////////////////////////////////
+                              469 ;       BUTTON MACROS
+                              470 ;///////////////////////////////////////////////////////////////////////////////
+                              472 ;///////////////////////////////////////////////////////////////////////////////
+                              473 ;
+                              474 ;>  Name:           DEFINE_ROW
+                              475 ;
+                              476 ;   Type:           Macro
+                              477 ;
+                              478 ;   Description:    This is a supporting macro for defining the GPIO setup for 
+                              479 ;                   the scan matrix.
+                              480 ;
+                              481 ;   Inputs:         Usage : DEFINE_ROW RowNumber,WhichGPIORegister,WhichBit
+                              482 ;                        
+                              483 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              484 ;                   
+                              485 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              486 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              487 ;                   completely define the players button scan matrix, non scan buttons, and
+                              488 ;                   how these buttons map to events as recieved by the menus.  There must be one of these
+                              489 ;                   macro definitions for each row in the scan matrix.
+                              490 ;
+                              491 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              492 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              493 ;
+                              494 ;<
+                              495 ;///////////////////////////////////////////////////////////////////////////////
+                              497 DEFINE_ROW macro RowNumber,WhichGPIO,WhichBit
+                              498     BUTTON_GPIO_ENABLE_ROW_\RowNumber:  equ HW_\WhichGPIO\ENR
+                              499     BUTTON_GPIO_SENSE_ROW_\RowNumber:   equ HW_\WhichGPIO\DIR
+                              500     BUTTON_BITPOS_ROW_\RowNumber:       equ 1<<\WhichBit
+                              501     endm
+                              503 ;///////////////////////////////////////////////////////////////////////////////
+                              504 ;
+                              505 ;>  Name:           DEFINE_COLUMN
+                              506 ;
+                              507 ;   Type:           Macro
+                              508 ;
+                              509 ;   Description:    This is a supporting macro for defining the GPIO setup for 
+                              510 ;                   the scan matrix.
+                              511 ;
+                              512 ;   Inputs:         Usage : DEFINE_COLUMN ColumnNumber,WhichGPIORegister,WhichBit
+                              513 ;                        
+                              514 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              515 ;                   
+                              516 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              517 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              518 ;                   completely define the players button scan matrix, non scan buttons, and
+                              519 ;                   how these buttons map to events as recieved by the menus.  There must be one
+                              520 ;                   of these macro definitions for each column in the scan matrix.
+                              521 ;
+                              522 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              523 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              524 ;
+                              525 ;<
+                              526 ;///////////////////////////////////////////////////////////////////////////////
+                              527 DEFINE_COLUMN macro ColumnNumber,WhichGPIO,WhichBit
+                              528     BUTTON_GPIO_ENABLE_COLUMN_\ColumnNumber:        equ HW_\WhichGPIO\ENR
+                              529     BUTTON_GPIO_DATA_OUT_COLUMN_\ColumnNumber:      equ HW_\WhichGPIO\DOR
+                              530     BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_\ColumnNumber: equ HW_\WhichGPIO\DOER
+                              531     BUTTON_BITPOS_COLUMN_\ColumnNumber:             equ 1<<\WhichBit
+                              532     endm
+                              534 ;///////////////////////////////////////////////////////////////////////////////
+                              535 ;
+                              536 ;>  Name:           DEFINE_SCAN_BUTTON_EVENT
+                              537 ;
+                              538 ;   Type:           Macro
+                              539 ;
+                              540 ;   Description:    This is a supporting macro for defining the mapping between a scan
+                              541 ;                   matrix location and a button event.
+                              542 ;
+                              543 ;   Inputs:         Usage : DEFINE_SCAN_BUTTON_EVENT Column,Row,EventNumber,ButtonName.  
+                              544 ;                       Column is in the format COL0,COL1,COL2, etc.  
+                              545 ;                       Row is in the format ROW0,ROW1,etc. 
+                              546 ;                       The EventNumber is an integer with a single bit set that is unique to all button events
+                              547 ;                       ButtonName is a label by which this button event can be referenced in the event mapping.
+                              548 ;                        
+                              549 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              550 ;                   
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              551 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              552 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              553 ;                   completely define the players button scan matrix, non scan buttons, and
+                              554 ;                   how these buttons map to events as recieved by the menus. This macro sets up buttons for each
+                              555 ;                   spot in the button scan matrix.  Each place in the matrix must be defined, even if no
+                              556 ;                   physical button exists in it.  Use $000000 for placeholders.
+                              557 ;
+                              558 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              559 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              560 ;
+                              561 ;<
+                              562 ;///////////////////////////////////////////////////////////////////////////////
+                              563 DEFINE_SCAN_BUTTON_EVENT macro Column,Row,EventNumber,ButtonName
+                              564     BUTTON_EVENT_\Column\Row:  equ \EventNumber
+                              565     ButtonName: equ \EventNumber
+                              566     endm 
+                              568 ;///////////////////////////////////////////////////////////////////////////////
+                              569 ;
+                              570 ;>  Name:           DEFINE_NON_SCAN_BUTTON
+                              571 ;
+                              572 ;   Type:           Macro
+                              573 ;
+                              574 ;   Description:    This is a supporting macro for defining a non scan button.
+                              575 ;
+                              576 ;   Inputs:         Usage : DEFINE_NON_SCAN_BUTTON NSNumber,WhichGPIO,WhichBit.  
+                              577 ;                       NSNumber is a unique number (starting at 0) and counting up to BUTTON_NON_SCAN_BUTTONS-1
+                              578 ;                       WhichGPIO is the GPIO register used
+                              579 ;                       WhichBit is the bit in this register.
+                              580 ;                        
+                              581 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              582 ;                   
+                              583 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              584 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              585 ;                   completely define the players button scan matrix, non scan buttons, and
+                              586 ;                   how these buttons map to events as recieved by the menus. This macro sets up non scan
+                              587 ;                   buttons.  Use DEFINE_NON_SCAN_BUTTON_EVENT to define the event generated by this non scan
+                              588 ;                   button.
+                              589 ;
+                              590 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              591 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              592 ;
+                              593 ;<
+                              594 ;///////////////////////////////////////////////////////////////////////////////
+                              595 DEFINE_NON_SCAN_BUTTON macro NSNumber,WhichGPIO,WhichBit
+                              596     BUTTON_GPIO_ENABLE_NON_SCAN_\NSNumber:  equ HW_\WhichGPIO\ENR
+                              597     BUTTON_GPIO_SENSE_NON_SCAN_\NSNumber:   equ HW_\WhichGPIO\DIR
+                              598     BUTTON_BITPOS_NON_SCAN_\NSNumber:       equ 1<<\WhichBit
+                              599     BUTTON_REAL_BITPOS_NON_SCAN_\NSNumber:  equ \WhichBit
+                              600     endm
+                              602 ;///////////////////////////////////////////////////////////////////////////////
+                              603 ;
+                              604 ;>  Name:           DEFINE_NON_SCAN_BUTTON_EVENT
+                              605 ;
+                              606 ;   Type:           Macro
+                              607 ;
+                              608 ;   Description:    This is a supporting macro for defining a non scan button.
+                              609 ;
+                              610 ;   Inputs:         Usage : DEFINE_NON_SCAN_BUTTON_EVENT Number,EventNumber,ButtonName  
+                              611 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_NON_SCAN_BUTTONS-1
+                              612 ;                       EventNumber is an integer with 1 bit set that is unique to all other buttons
+                              613 ;                       ButtonName is a label later referenced in the event mapping
+                              614 ;                        
+                              615 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              616 ;                   
+                              617 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              618 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              619 ;                   completely define the players button scan matrix, non scan buttons, and
+                              620 ;                   how these buttons map to events as recieved by the menus. This macro sets up non scan
+                              621 ;                   buttons.  
+                              622 ;
+                              623 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              624 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              625 ;
+                              626 ;<
+                              627 ;///////////////////////////////////////////////////////////////////////////////
+                              628 DEFINE_NON_SCAN_BUTTON_EVENT macro Number,EventNumber,ButtonName
+                              629     BUTTON_EVENT_NONSCAN\Number:  equ \EventNumber
+                              630     ButtonName: equ \EventNumber
+                              631     endm 
+                              635 ;///////////////////////////////////////////////////////////////////////////////
+                              636 ;> Name: DEFINE_LRADC_BUTTON
+                              637 ;
+                              638 ;  Type: Macro
+                              639 ;
+                              640 ;  Description: This is a supporting macro for defining an Low Resolution ADC (LRADC)-based button
+                              641 ;
+                              642 ;  Inputs:      Usage : DEFINE_LRADC_BUTTON LBNumber,UpperLimitVoltage
+                              643 ;
+                              644 ;  Outputs:     Sets up equates required for data structures in button.asm
+                              645 ;
+                              646 ;  Notes:       Must be used in conjuction with DEFINE_LRADC_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              647 ;                   completely define the player's LRADC buttons and how these buttons map to 
+                              648 ;                   events as recieved by the menus. This macro sets up LRADC buttons.  Use 
+                              649 ;                   DEFINE_LRADC_BUTTON_EVENT to define the event generated by this LRADC button.
+                              650 ;
+                              651 ;   SeeAlso:        DEFINE_LRADC_BUTTON_EVENT, DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              652 ;                   DEFINE_NON_SCAN_BUTTON, DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              653 ;<
+                              654 ;///////////////////////////////////////////////////////////////////////////////
+                              655 DEFINE_LRADC_BUTTON     macro   num,level
+                              656     BUTTON_LRADC_LEVEL_\num:    equ level
+                              657     endm
+                              661 ;///////////////////////////////////////////////////////////////////////////////
+                              662 ;> Name: DEFINE_LRADC_BUTTON_EVENT
+                              663 ;
+                              664 ;  Type: Macro
+                              665 ;
+                              666 ;  Description:     This is a supporting macro for defining a Low Resolution ADC (LRADC)-based button.
+                              667 ;
+                              668 ;  Inputs:          Usage : DEFINE_LRADC_BUTTON_EVENT Number,EventNumber,ButtonName  
+                              669 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_LRADC_BUTTONS-1
+                              670 ;                       EventNumber is an integer with 1 bit set that is unique to all other buttons
+                              671 ;                       ButtonName is a label later referenced in the event mapping
+                              672  
+                              673 ;
+                              674 ;  Outputs:         Sets up equates required for data structures in button.asm
+                              675 ;
+                              676 ;  Notes:           Must be used in conjuction with DEFINE_LRADC_BUTTON, and DEFINE_MAPPED_EVENT to
+                              677 ;                   completely define the player's LRADC buttons and how these buttons map to events 
+                              678 ;                   as recieved by the menus. This macro sets up LRADC buttons.
+                              679 ;
+                              680 ;
+                              681 ;   SeeAlso:        DEFINE_LRADC_BUTTON, DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              682 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              683 ;<
+                              684 ;///////////////////////////////////////////////////////////////////////////////
+                              685 DEFINE_LRADC_BUTTON_EVENT      macro   num,EventNumber,ButtonName
+                              686     BUTTON_EVENT_LRADC_BUTTON\num: equ \EventNumber
+                              687     ButtonName:     equ     \EventNumber   
+                              688     endm
+                              689   
+                              692 ;///////////////////////////////////////////////////////////////////////////////
+                              693 ;
+                              694 ;>  Name:           DEFINE_MAPPED_EVENT
+                              695 ;
+                              696 ;   Type:           Macro
+                              697 ;
+                              698 ;   Description:    This is a supporting macro for defining button events.
+                              699 ;
+                              700 ;   Inputs:         Usage : DEFINE_MAPPED_EVENT Number,Action,ButtonNames 
+                              701 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_MAPPED_EVENTS-1
+                              702 ;                       Action is either PRESS_RELEASE or PRESS_HOLD
+                              703 ;                       ButtonNames is a collection of labels defined for scan or non scan buttons that relate
+                              704 ;                           to this button event.
+                              705 ;                        
+                              706 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              707 ;                   
+                              708 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              709 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              710 ;                   completely define the players button scan matrix, non scan buttons, and
+                              711 ;                   how these buttons map to events as recieved by the menus. This macro sets up the mapping
+                              712 ;                   between scan and non scan buttons, and the eventual event number that is sent to the menus.
+                              713 ;
+                              714 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              715 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              716 ;
+                              717 ;<
+                              718 ;///////////////////////////////////////////////////////////////////////////////
+                              719 DEFINE_MAPPED_EVENT macro Number,Action,ButtonNames
+                              720     
+                              721   IF (@SCP("Action","PRESS_RELEASE"))
+                              722     BUTTON_EVENT_\Number:  equ ButtonNames
+                              723   else 
+                              724     if (@SCP("Action","PRESS_HOLD"))
+                              725         BUTTON_EVENT_\Number:  equ $800000|ButtonNames
+                              726     else
+                              727         ERROR "Unknown Action for DEFINE_MAPPED_EVENT" 
+                              728     endif
+                              729   endif 
+                              730     endm
+                              733 ;///////////////////////////////////////////////////////////////////////////////
+                              734 ;
+                              735 ;>  Name:           DEFINE_2BUTTON_MAPPED_EVENT
+                              736 ;
+                              737 ;   Type:           Macro
+                              738 ;
+                              739 ;   Description:    This is a supporting macro for defining button events.
+                              740 ;
+                              741 ;   Inputs:         Usage : DEFINE_2BUTTON_MAPPED_EVENT Number,Action,Event1,Event2 
+                              742 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_MAPPED_EVENTS-1
+                              743 ;                       Action is either PRESS_RELEASE or PRESS_HOLD
+                              744 ;                       Event1 is 1 of 2 previously defined button events
+                              745 ;                       Event2 is 2 of 2 previously defined button events
+                              746 ;                        
+                              747 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              748 ;                   
+                              749 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              750 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              751 ;                   completely define the players button scan matrix, non scan buttons, and
+                              752 ;                   how these buttons map to events as recieved by the menus. This macro sets up the mapping
+                              753 ;                   between scan and non scan buttons, and the eventual event number that is sent to the menus.
+                              754 ;
+                              755 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              756 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              757 ;
+                              758 ;<
+                              759 ;///////////////////////////////////////////////////////////////////////////////
+                              760 DEFINE_2BUTTON_MAPPED_EVENT macro Number,Action,Event1,Event2
+                              761     
+                              762   IF (@SCP("Action","PRESS_RELEASE"))
+                              763     BUTTON_EVENT_\Number:  equ BUTTON_EVENT_\Event1|BUTTON_EVENT_\Event2
+                              764   else 
+                              765     if (@SCP("Action","PRESS_HOLD"))
+                              766         BUTTON_EVENT_\Number:  equ BUTTON_EVENT_\Event1|BUTTON_EVENT_\Event2|$800000
+                              767     else
+                              768         ERROR "Unknown Action for DEFINE_MAPPED_EVENT" 
+                              769     endif
+                              770   endif 
+                              771   endm
+                              773 ;///////////////////////////////////////////////////////////////////////////////
+                              774 ;
+                              775 ;>  Name:           StackCheckIn
+                              776 ;
+                              777 ;   Type:           Macro
+                              778 ;
+                              779 ;   Description:    Records the current stack pointer on the stack
+                              780 ;
+                              781 ;   Inputs:         none
+                              782 ;                        
+                              783 ;   Outputs:        places the current PC and the current software stack pointer on the stack
+                              784 ;   
+                              785 ;   Notes:          This does not modify any registers (except r7)                
+                              786 ;
+                              787 ;   SeeAlso:        FStackCheckIn
+                              788 ;
+                              789 ;<
+                              790 ;///////////////////////////////////////////////////////////////////////////////
+                              791 StackCheckIn macro
+                              792   if (@DEF('DEBUG'))
+                              793     extern FStackCheckIn
+                              794     jsr FStackCheckIn
+                              795   endif
+                              796   endm
+                              798 ;///////////////////////////////////////////////////////////////////////////////
+                              799 ;
+                              800 ;>  Name:           StackCheckOut
+                              801 ;
+                              802 ;   Type:           Macro
+                              803 ;
+                              804 ;   Description:    Verifies that the stack is still balanced
+                              805 ;
+                              806 ;   Inputs:         none
+                              807 ;                        
+                              808 ;   Outputs:        none (though hits a debug if the stack is unbalanced)
+                              809 ;   
+                              810 ;   Notes:          This does not modify any registers (except r7) 
+                              811 ;
+                              812 ;   SeeAlso:        FStackCheckOut
+                              813 ;
+                              814 ;<
+                              815 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              816 StackCheckOut macro
+                              817   if (@DEF('DEBUG'))
+                              818     extern FStackCheckOut
+                              819     jsr FStackCheckOut
+                              820   endif 
+                              821   endm
+                              824 ;///////////////////////////////////////////////////////////////////////////////
+                              825 ;
+                              826 ;>  Name:           InstrumentPushContext 
+                              827 ;
+                              828 ;   Type:           Macro
+                              829 ;
+                              830 ;   Description:    calls the instrument functions specified.
+                              831 ;
+                              832 ;   Inputs:         new context
+                              833 ;                   new value
+                              834 ;                        
+                              835 ;   Outputs:        
+                              836 ;   
+                              837 ;   Notes:          This does not modify any registers  
+                              838 ;
+                              839 ;   SeeAlso:        
+                              840 ;
+                              841 ;<
+                              842 ;///////////////////////////////////////////////////////////////////////////////
+                              843 InstrumentPushContext macro context,value
+                              844   if (@DEF('USE_INSTRUMENTATION'))
+                              845     extern FInstrumentPushContext
+                              846     extern PushAandB
+                              847     extern PopAandB
+                              848     jsr PushAandB
+                              849     move    #>context,a
+                              850     move    #>value,b
+                              851     jsr FInstrumentPushContext
+                              852     jsr PopAandB
+                              853   endif 
+                              854   endm
+                              856 ;///////////////////////////////////////////////////////////////////////////////
+                              857 ;
+                              858 ;>  Name:           InstrumentPopContext 
+                              859 ;
+                              860 ;   Type:           Macro
+                              861 ;
+                              862 ;   Description:    calls the instrument functions specified.
+                              863 ;
+                              864 ;   Inputs:         none
+                              865 ;                        
+                              866 ;   Outputs:        none
+                              867 ;   
+                              868 ;   Notes:          This does not modify any registers  
+                              869 ;
+                              870 ;   SeeAlso:        
+                              871 ;
+                              872 ;<
+                              873 ;///////////////////////////////////////////////////////////////////////////////
+                              874 InstrumentPopContext macro 
+                              875   if (@DEF('USE_INSTRUMENTATION'))
+                              876     extern FInstrumentPopContext
+                              877     jsr FInstrumentPopContext
+                              878   endif 
+                              879   endm
+                              881 ;///////////////////////////////////////////////////////////////////////////////
+                              882 ;
+                              883 ;>  Name:           InstrumentSetValue 
+                              884 ;
+                              885 ;   Type:           Macro
+                              886 ;
+                              887 ;   Description:    calls the instrument functions specified.
+                              888 ;
+                              889 ;   Inputs:         Value
+                              890 ;                        
+                              891 ;   Outputs:        none
+                              892 ;   
+                              893 ;   Notes:          This does not modify any registers  
+                              894 ;
+                              895 ;   SeeAlso:        
+                              896 ;
+                              897 ;<
+                              898 ;///////////////////////////////////////////////////////////////////////////////
+                              899 InstrumentSetValue macro value
+                              900   if (@DEF('USE_INSTRUMENTATION'))
+                              901     extern FInstrumentSetValue
+                              902     jsr PushA
+                              903     move #>value,a
+                              904     jsr FInstrumentSetValue
+                              905     jsr PopA
+                              906   endif 
+                              907   endm
+                              910 ;///////////////////////////////////////////////////////////////////////////////
+                              911 ;
+                              912 ;>  Name:           InstrumentSetEvent 
+                              913 ;
+                              914 ;   Type:           Macro
+                              915 ;
+                              916 ;   Description:    calls the instrument functions specified.
+                              917 ;
+                              918 ;   Inputs:         Value
+                              919 ;                        
+                              920 ;   Outputs:        none
+                              921 ;   
+                              922 ;   Notes:          This does not modify any registers  
+                              923 ;
+                              924 ;   SeeAlso:        
+                              925 ;
+                              926 ;<
+                              927 ;///////////////////////////////////////////////////////////////////////////////
+                              928 InstrumentSetEvent macro event
+                              929   if (@DEF('USE_INSTRUMENTATION'))
+                              930     extern FInstrumentSetEvent
+                              931     jsr PushA
+                              932     move #>event,a
+                              933     jsr FInstrumentSetEvent
+                              934     jsr PopA
+                              935   endif 
+                              936   endm
+                              938 ;///////////////////////////////////////////////////////////////////////////////
+                              939 ;
+                              940 ;>  Name:           InstrumentClearEvent 
+                              941 ;
+                              942 ;   Type:           Macro
+                              943 ;
+                              944 ;   Description:    calls the instrument functions specified.
+                              945 ;
+                              946 ;   Inputs:         event
+                              947 ;                        
+                              948 ;   Outputs:        none
+                              949 ;   
+                              950 ;   Notes:          This does not modify any registers  
+                              951 ;
+                              952 ;   SeeAlso:        
+                              953 ;
+                              954 ;<
+                              955 ;///////////////////////////////////////////////////////////////////////////////
+                              956 InstrumentClearEvent macro event
+                              957   if (@DEF('USE_INSTRUMENTATION'))
+                              958     extern FInstrumentClearEvent
+                              959     jsr PushA
+                              960     move #>event,a
+                              961     jsr FInstrumentClearEvent
+                              962     jsr PopA
+                              963   endif 
+                              964   endm
+                              966 ;///////////////////////////////////////////////////////////////////////////////
+                              967 ;
+                              968 ;>  Name:           InstrumentToggleEvent 
+                              969 ;
+                              970 ;   Type:           Macro
+                              971 ;
+                              972 ;   Description:    calls the instrument functions specified.
+                              973 ;
+                              974 ;   Inputs:         event
+                              975 ;                        
+                              976 ;   Outputs:        none
+                              977 ;   
+                              978 ;   Notes:          This does not modify any registers  
+                              979 ;
+                              980 ;   SeeAlso:        
+                              981 ;
+                              982 ;<
+                              983 ;///////////////////////////////////////////////////////////////////////////////
+                              984 InstrumentToggleEvent macro event
+                              985   if (@DEF('USE_INSTRUMENTATION'))
+                              986     extern FInstrumentToggleEvent
+                              987     jsr PushA
+                              988     move #>event,a
+                              989     jsr FInstrumentToggleEvent
+                              990     jsr PopA
+                              991   endif 
+                              992   endm
+                                2     include "const.xref"
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 const.EXTERN 
+                                5 ;******************************************************************************
+                                7    DEFINE   const_xref  '1'
+                               42     ; Parthus compatability
+                                7     DEFINE  GetByteFromArray    'GetByteFromArrayInY'
+                                8     DEFINE  PutByteInArray      'PutByteInArrayInY'
+                               20     opt OP
+                               21     opt OPSPEED
+                               22     opt OPSP
+Y:0000                         24     org y,"Framebuffer_y":
+Y:0000 000000                  25 xDestination                    dc  0
+Y:0001 000000                  26 yDestination                    dc  0
+                               27 ;bInvert                         n1
+                               28 ;pSource                         r1
+                               29 ;pDestination                    r2
+                               30 ;iSourceWidth                    n5
+Y:0002 000000                  31 iSourceHeight                   dc  0
+                               32 ;iDestinationWidth               n6
+                               33 ;iInitialSourceBytePosition      r3
+Y:0003 000000                  34 iInitialDestinationBytePosition dc  0
+                               35 ;iSourceBytePosition             r5
+                               36 ;iDestinationBytePosition        r6
+                               37 ;iByteInStripe                   do loop
+                               38 ;iStandardMultiply               r4
+Y:0004 000000                  40 iXBytesInStripe                 dc  0
+Y:0005 000000                  41 iWholeBytesInStripe             dc  0
+Y:0006 000000                  43 iNotTopByteMask             dc  0     
+Y:0007 000000                  44 iTopByteMask                dc  0
+Y:0008 000000                  45 iBottomByteMask             dc  0
+Y:0009 000000                  46 iNotBottomByteMask          dc  0
+                               48 ;state indicator            n2
+                               49 PARTIAL_TOP_BYTE            equ 15
+                               50 PARTIAL_BOTTOM_BYTE         equ 14
+                               51 PUSH_ZERO_INTO_SOURCE       equ 13
+                               53 ;n3,n4 are still free to use in optimization below...
+P:0000                         55     org p,".ptextframebuffer":
+                               57 FSALDisplayCopyBitmapToBitmap
+                               58     ;a1   xDestination
+                               59     ;b1   yDestination
+                               60     ;x0   bInvert
+                               61     ;r0   pSource
+                               62     ;r4   pDestination
+                               63 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                               64     push SSH
+P:0000 055F7C         2    2   64     movec   SSH,y:(r7)+
+P:0001 209900         2    4   70     move x0,n1                          ;store off all values for later
+P:0002 5C7000 rrrrrr  3    7   67     move a1,y:xDestination
+P:0004 5D7000 rrrrrr  3   10   68     move b1,y:yDestination
+                               75     ;push mask
+P:0006 4CD800         2   12   76     move y:(r0)+,x0                             ;get the source width
+P:0007 209D00         2   14   77     move  x0,a  x0,n5	         y:(r0)+,y0 
+P:0008 4ED840         2   16   77     add   x0,a  x0,n5	         y:(r0)+,y0 
+P:0009 4FDC58         2   18   81     add   y0,b      y:xDestination,a	         y:(r4)+,y1
+P:000A 20FE00         2   20   73     move y1,n6                 ;store off the destination width
+P:000B 218400         2   22   80     move  a1,x0
+P:000C 205C00         2   24   74     move y:(r4)+
+P:000D 4E7000 rrrrrr  3   27   79     move    y0,y:iSourceHeight
+P:000F 21A600         2   29   82     move  b1,y0
+P:0010 5EF000 rrrrrr  3   32   81     move  y0,b      y:xDestination,a	         y:(r4)+,y1
+P:0012 5FF000 rrrrrr  3   35   83     move  y:yDestination,b
+                               85     push    n1
+P:0014 795F00         2   37   85     move    n1,y:(r7)+
+                               86     push    r4                      ;push destination pointer
+P:0015 6C5F00         2   39   86     move    r4,y:(r7)+
+                               87     push    r0                      ;"    source pointer
+P:0016 685F00         2   41   87     move    r0,y:(r7)+
+                               88     push    n5                      ;"    source width
+P:0017 7D5F00         2   43   88     move    n5,y:(r7)+
+                               89     push    n6                      ;"    destination width
+P:0018 7E5F00         2   45   89     move    n6,y:(r7)+
+P:0019 0BF080 rrrrrr  6   51   90     jsr     FPushMask
+                               91     pop     n6                      ;pop destination width
+P:001B 7EFF00         4   55   91     move    y:-(r7),n6
+                               92     pop     n5                      ;"   source width
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:001C 7DFF00         4   59   92     move    y:-(r7),n5
+                               93     pop     r1                      ;"   source pointer
+P:001D 69FF00         4   63   93     move    y:-(r7),r1
+                               94     pop     r2                      ;"   destination pointer
+                               95     pop     n1
+                               96     ;make sure the destination is within the mask
+P:001E 5EF000 rrrrrr  3   66   98     move    y:xDestination,a 
+P:0020 4FF000 rrrrrr  3   69   97     move    y:Fg_iMaskRight,y1
+P:0022 6AFF75         4   73   99     cmp     y1,a	            y:-(r7),r2
+P:0023 79FF00         4   77   95     move    y:-(r7),n1
+P:0024 0AF0A7 rrrrrr  6   83  100     jgt     _ExitDisplayCopyFrameBufferToFrameBuffer
+P:0026 23A400         2   85  101     move    n5,x0
+P:0027 4FF040 rrrrrr  3   88  102     add     x0,a	            y:Fg_iMaskLeft,y1
+P:0029 200075         2   90  104     cmp     y1,a
+P:002A 0AF0A9 rrrrrr  6   96  105     jlt     _ExitDisplayCopyFrameBufferToFrameBuffer
+P:002C 5EF000 rrrrrr  3   99  108     move    y:yDestination,a 
+P:002E 4FF000 rrrrrr  3  102  107     move    y:Fg_iMaskTop,y1
+P:0030 200075         2  104  109     cmp     y1,a
+P:0031 0AF0A7 rrrrrr  6  110  110     jgt     _ExitDisplayCopyFrameBufferToFrameBuffer
+P:0033 4CF000 rrrrrr  3  113  111     move    y:iSourceHeight,x0
+P:0035 4FF040 rrrrrr  3  116  112     add     x0,a	            y:Fg_iMaskBottom,y1
+P:0037 200075         2  118  114     cmp     y1,a
+P:0038 0AF0A9 rrrrrr  6  124  115     jlt     _ExitDisplayCopyFrameBufferToFrameBuffer
+                              118     ;if we're here, some part of the bitmap must overlap the mask rectangle
+                              120 _DetermineBitOffset
+                              121     ;determine bit offset for the general case 
+P:003A 5EF000 rrrrrr  3  127  123     move    y:yDestination,a
+P:003C 45F400 000007  3  130  122     move    #>$000007,x1
+P:003E 60F466 rrrrrr  3  133  124     and     x1,a	            #Const_008000,r0
+                              129     
+P:0040 219813         2  135  130     clr     a	            a1,n0
+P:0041 219A00         2  137  131     move    a1,n2               ;clear out our special condition flags
+P:0042 044814         4  141  128     lua     (r0)+n0,r4
+                              133 _DetermineTopPartialByteMask
+P:0043 5EF000 rrrrrr  3  144  134     move    y:Fg_iMaskTop,a     ;get the Fg_iMaskTop, which will be the top bit we put down (since it is no bigger than the current bitmap)
+P:0045 45F400 000007  3  147  135     move    #>$000007,x1        ;see if its byte-aligned
+P:0047 200066         2  149  136     and     x1,a  
+P:0048 0AF0AA rrrrrr  6  155  137     jeq     _NoTopMask          ;if it is aligned (Fg_iMaskTop&7 == 0), skip out of this.
+P:004A 0ADA6F         4  159  138     bset    #PARTIAL_TOP_BYTE,n2              ;not aligned--set the 'top' partial byte flag
+P:004B 219800         2  161  139     move    a1,n0               ;set up some stuff to get the shift array multiplier
+P:004C 60F400 rrrrrr  3  164  140     move    #Const_008000,r0     ;get the pointer to the shift array
+P:004E 44F400 0000FF  3  167  141     move    #>$ff,x0            ;load up our nominal mask
+P:0050 4EE800         4  171  142     move    y:(r0+n0),y0        ;get the shift multipler
+P:0051 2000D0         2  173  143     mpy     x0,y0,a             ;this shifts the noiminal mask over
+P:0052 200046         2  175  144     and     x0,a                ;now our top partial byte mask is in a1
+P:0053 5C7017 rrrrrr  3  178  146     not     a	            a1,y:iTopByteMask
+P:0055 200046         2  180  147     and     x0,a
+P:0056 5C7000 rrrrrr  3  183  148     move    a1,y:iNotTopByteMask
+                              149 _NoTopMask
+                              152 _DetermineBottomByteMask
+P:0058 5EF000 rrrrrr  3  186  153     move    y:Fg_iMaskBottom,a  ;get the Fg_iMaskBottom (since it will always be no bigger than the current bitmap)
+P:005A 45F400 000007  3  189  154     move    #>$000007,x1        ;
+P:005C 200066         2  191  155     and     x1,a                ;see if its byte aligned
+P:005D 0AF0AA rrrrrr  6  197  156     jeq     _NoBottomMask
+P:005F 0ADA6E         4  201  157     bset    #PARTIAL_BOTTOM_BYTE,n2              ;set the 'bottom' partial byte flag if not aligned
+P:0060 219800         2  203  158     move    a1,n0               ;move the bitoffset into the index register
+P:0061 60F400 rrrrrr  3  206  159     move    #Const_008000,r0     ;get the pointer to the shift array
+P:0063 44F400 0000FF  3  209  160     move    #>$ff,x0            ;put our nominal shift into x0
+P:0065 4EE800         4  213  161     move    y:(r0+n0),y0        ;find out the shift multiplier
+P:0066 2000D0         2  215  162     mpy     x0,y0,a             ;shift the mask
+P:0067 5C7017 rrrrrr  3  218  164     not     a	            a1,y:iNotBottomByteMask
+P:0069 200046         2  220  165     and     x0,a                ;we just want the lower 8 bits
+P:006A 5C7000 rrrrrr  3  223  166     move    a1,y:iBottomByteMask
+                              167 _NoBottomMask
+                              170     ;determine starting byte position in source and destination
+P:006C 5EF000 rrrrrr  3  226  171     move    y:Fg_iMaskLeft,a
+P:006E 4CF000 rrrrrr  3  229  172     move    y:xDestination,x0 
+P:0070 200044         2  231  173     sub     x0,a  
+P:0071 0AF0A1 rrrrrr  6  237  174     jge     _XDestinationInsideOfLeftMask
+P:0073 200013         2  239  175     clr     a
+                              176 _XDestinationInsideOfLeftMask
+P:0074 219340         2  241  178     add     x0,a	            a1,r3
+P:0075 5C7000 rrrrrr  3  244  179     move    a1,y:iInitialDestinationBytePosition
+                              181     ;find the end position
+P:0077 23A400         2  246  183     move    n5,x0
+P:0078 5FF000 rrrrrr  3  249  182     move    y:xDestination,b
+P:007A 4DF048 rrrrrr  3  252  184     add     x0,b	            y:Fg_iMaskRight,x1
+P:007C 21876D         2  254  186     cmp     x1,b	            a1,y1                               ;starting byte position is in y1
+P:007D 0AF0A9 rrrrrr  6  260  187     jlt     _XDestinationInsideOfRightMask
+P:007F 20AF00         2  262  188     move    x1,b
+                              189 _XDestinationInsideOfRightMask
+P:0080 20007C         2  264  190     sub     y1,b
+P:0081 0AF0AF rrrrrr  6  270  191     jle     _ExitDisplayCopyFrameBufferToFrameBuffer
+P:0083 5F7000 rrrrrr  3  273  192     move    b,y:iXBytesInStripe
+                              194 _FindSourceInitialBytePosition
+                              195     ;is the top mask lower than  yDestination?
+P:0085 5EF000 rrrrrr  3  276  197     move    y:Fg_iMaskTop,a
+P:0087 4CF000 rrrrrr  3  279  198     move    y:yDestination,x0 
+P:0089 200044         2  281  199     sub     x0,a
+P:008A 0AF0A7 rrrrrr  6  287  200     jgt     _YDestinationInsideOfMask
+P:008C 200013         2  289  201         clr     a                           ;source
+                              202 _YDestinationInsideOfMask
+P:008D 21C400         2  291  203     move    a,x0
+P:008E 0103D0         2  293  204     mpy     x0,#3,a                         ;a should have the byte count offset
+P:008F 210F00         2  295  205     move    a0,b
+P:0090 20000B         2  297  206     tst b    
+P:0091 0AF0A2 rrrrrr  6  303  207     jne _NoPushZeroIntoSource
+P:0093 0ADA6D         4  307  208         bset    #PUSH_ZERO_INTO_SOURCE,n2
+                              209 _NoPushZeroIntoSource
+P:0094 218400         2  309  210     move    a1,x0                           ;take this byte count offset, and change the iSourceBytePosition 
+P:0095 23A600         2  311  211     move    n5,y0                           ;n5 is the source width
+P:0096 2265D0         2  313  212     mpy     x0,y0,a	            a       r3,x1                   ;get the original byte index due to the X position
+P:0097 200022         2  315  213     asr     a       r3,x1                   ;get the original byte index due to the X position
+P:0098 210E00         2  317  214     move    a0,a                            ;add them together
+P:0099 200060         2  319  215     add     x1,a
+P:009A 219300         2  321  216     move    a1,r3                           ;put the byte offset back into R3
+                              218 _FindDestinationInitialBytePosition
+P:009B 4CF000 rrrrrr  3  324  219     move    y:Fg_iMaskTop,x0
+P:009D 23C600         2  326  223     move    n6,y0
+P:009E 0103D0         2  328  220     mpy     x0,#3,a                         ;a should have the byte count offset
+P:009F 218400         2  330  222     move    a1,x0                           ;take this byte count offset, and change the iDestinationBytePosition 
+P:00A0 4DF0D0 rrrrrr  3  333  224     mpy     x0,y0,a	            a   y:iInitialDestinationBytePosition,x1
+P:00A2 200022         2  335  225     asr     a   y:iInitialDestinationBytePosition,x1
+P:00A3 210E00         2  337  226     move    a0,a
+P:00A4 200060         2  339  227     add     x1,a
+P:00A5 5C7000 rrrrrr  3  342  228     move    a1,y:iInitialDestinationBytePosition
+                              230     
+                              231 _DetermineWholeBytesInEachYStripe
+P:00A7 4CF000 rrrrrr  3  345  232     move    y:Fg_iMaskTop,x0
+P:00A9 4DF000 rrrrrr  3  348  234     move    y:Fg_iMaskBottom,x1
+P:00AB 0103D0         2  350  233     mpy     x0,#3,a
+P:00AC 0103F8         2  352  235     mpy     x1,#3,b
+P:00AD 218400         2  354  236     move    a1,x0
+P:00AE 21AF00         2  356  237     move    b1,b
+P:00AF 20004C         2  358  238     sub     x0,b
+P:00B0 5D7000 rrrrrr  3  361  239     move    b1,y:iWholeBytesInStripe
+                              240     
+                              242 _ForEachVerticalStripe
+                              243         ; set up source and destination initial byte positions
+P:00B2 6EF013 rrrrrr  3  364  247         clr a	                y:iInitialDestinationBytePosition,r6
+P:00B4 227500         2  366  244         move    r3,r5
+                              248         ;preload the top, mask off everything
+P:00B5 0ADA0D rrrrrr  6  372  249         jclr    #PUSH_ZERO_INTO_SOURCE,n2,_InitialLoadAndShift
+                              250             push    a0
+P:00B7 585F00         2  374  250     move    a0,y:(r7)+
+P:00B8 0AF080 rrrrrr  6  380  251             jmp     _TopByte
+                              252 _InitialLoadAndShift
+                              253         ;get the source byte
+P:00BA 200013         2  382  254         clr     a 
+P:00BB 0AD921 rrrrrr  6  388  255         jset    #1,n1,_continue1
+P:00BD 223000         2  390  256             move    r1,r0
+P:00BE 22AE00         2  392  257             move    r5,a
+P:00BF 0BF080 rrrrrr  6  398  258             jsr     GetByteFromArray
+P:00C1 204D00         2  400  259             move    (r5)+n5     ;increment the source pointer down
+                              260         ;invert it or clear it (depending on what we're doing
+                              261 _continue1
+P:00C2 0AD900 rrrrrr  6  406  262         jclr    #0,n1,_DontInvert1
+P:00C4 44F417 0000FF  3  409  263             not     a   #>$ff,x0
+P:00C6 200046         2  411  264             and     x0,a
+                              265 _DontInvert1
+                              266         ;shift it to the right position
+P:00C7 218400         2  413  267         move    a1,x0
+P:00C8 4FE400         2  415  268         move    y:(r4),y1
+P:00C9 2000C8         2  417  269         mpy     x0,y1,b                     ;shift the source byte to the correct position
+                              270         push    b1                          ;push it onto the stack.
+P:00CA 5D5F00         2  419  270     move    b1,y:(r7)+
+                              272 _TopByte        
+                              273         ;get the old saved part to build an entire byte
+P:00CB 200013         2  421  274         clr     a 
+P:00CC 0AD921 rrrrrr  6  427  276         jset    #1,n1,_continue2
+P:00CE 223000         2  429  277             move    r1,r0
+P:00CF 22AE00         2  431  278             move    r5,a
+P:00D0 0BF080 rrrrrr  6  437  279             jsr     GetByteFromArray
+P:00D2 204D00         2  439  280             move    (r5)+n5     ;increment the source pointer down
+                              281         ;invert it or clear it (depending on what we're doing
+                              282 _continue2
+P:00D3 0AD900 rrrrrr  6  445  283         jclr    #0,n1,_DontInvert2
+P:00D5 44F417 0000FF  3  448  284             not     a   #>$ff,x0
+P:00D7 200046         2  450  285             and     x0,a
+                              286 _DontInvert2
+                              287             ;shift it to the right position
+                              288         pop     x1                          ;get the old saved part
+P:00D8 218400         2  452  289         move    a1,x0
+P:00D9 4FE400         2  454  290         move    y:(r4),y1
+P:00DA 4DFFC8         4  458  291         mpy     x0,y1,b	            y:-(r7),x1
+                              292         push    b1                          ;push the remainder onto the stack.
+P:00DB 5D5F00         2  460  292     move    b1,y:(r7)+
+P:00DC 212600         2  462  294         move    b0,y0
+P:00DD 4C8000r        2  464  293         move    y:<Const_000080,x0          ;move the shifted piece to b0, right justified
+P:00DE 2000D8         2  466  295         mpy     x0,y0,b
+P:00DF 20006A         2  468  296         or      x1,b                        ;here we have the entire byte
+P:00E0 0ADA0F rrrrrr  6  474  298         jclr    #PARTIAL_TOP_BYTE,n2,_NoTopMaskToApply
+                              299             push    b1
+P:00E2 225000         2  476  300             move    r2,r0                       ;get the destination byte
+P:00E3 22CE00         2  478  301             move    r6,a                        ;
+P:00E4 5D5F00         2  480  299     move    b1,y:(r7)+
+P:00E5 0BF080 rrrrrr  6  486  302             jsr     GetByteFromArray
+P:00E7 4CF000 rrrrrr  3  489  303             move    y:iTopByteMask,x0           ;get the top mask
+P:00E9 5FFF46         4  493  304             and     x0,a	            y:-(r7),b
+                              305             pop     b                           ;get the old saved byte
+P:00EA 4CF000 rrrrrr  3  496  306             move    y:iNotTopByteMask,x0        
+P:00EC 21844E         2  498  307             and     x0,b	                    a1,x0
+P:00ED 20004A         2  500  309             or      x0,b                        ;or it together
+                              311 _NoTopMaskToApply
+P:00EE 200013         2  502  312         clr     a
+P:00EF 58F000 rrrrrr  3  505  313         move    y:iWholeBytesInStripe,a0
+P:00F1 200003         2  507  314         tst     a
+P:00F2 0AF0A2 rrrrrr  6  513  315         jne _dostripe
+P:00F4 0AF080 rrrrrr  6  519  316         jmp _byteloop
+                              317 _dostripe
+P:00F6 06C800 rrrrrr  6  525  318         do a0,_byteloop
+                              319 _ForEachByte
+P:00F8 225000         2  527  320             move    r2,r0               
+P:00F9 22CE00         2  529  321             move    r6,a
+P:00FA 0BF080 rrrrrr  6  535  322             jsr     PutByteInArray              ;write it to the destination buffer
+P:00FC 204E13         2  537  325             clr     a	                    (r6)+n6    
+P:00FD 0AD921 rrrrrr  6  543  327             jset    #1,n1,_continue3
+P:00FF 223000         2  545  328                 move    r1,r0
+P:0100 22AE00         2  547  329                 move    r5,a
+P:0101 0BF080 rrrrrr  6  553  330                 jsr     GetByteFromArray
+P:0103 204D00         2  555  331                 move    (r5)+n5     ;increment the source pointer down
+                              332             ;invert it or clear it (depending on what we're doing
+                              333 _continue3
+P:0104 0AD900 rrrrrr  6  561  334             jclr    #0,n1,_DontInvert3
+P:0106 44F417 0000FF  3  564  335                 not     a   #>$ff,x0
+P:0108 200046         2  566  336                 and     x0,a
+                              337 _DontInvert3
+                              338                 ;shift it to the right position
+                              339             pop     x1                          ;get the old saved part
+P:0109 218400         2  568  340             move    a1,x0
+P:010A 4FE400         2  570  341             move    y:(r4),y1
+P:010B 4DFFC8         4  574  342             mpy     x0,y1,b	            y:-(r7),x1
+                              343             push    b1                          ;push the remainder onto the stack.
+P:010C 5D5F00         2  576  343     move    b1,y:(r7)+
+P:010D 212600         2  578  345             move    b0,y0
+P:010E 4C8000r        2  580  344             move    y:<Const_000080,x0          ;move the shifted piece to b0, right justified
+P:010F 2000D8         2  582  346             mpy     x0,y0,b
+P:0110 20006A         2  584  347             or      x1,b                        ;here we have the entire byte
+                        (59)  349 _byteloop 
+                              350         pop     a                               ;get rid of the old value pushed on
+P:0111 5EFF00         4  588  350     move    y:-(r7),a
+P:0112 0ADA0E rrrrrr  6  594  351         jclr    #PARTIAL_BOTTOM_BYTE,n2,_NoBottomByteMask
+                              352         push    b1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0114 225000         2  596  353         move    r2,r0                       ;get the destination buffer data so we can or the left over with it
+P:0115 22CE00         2  598  354         move    r6,a 
+P:0116 5D5F00         2  600  352     move    b1,y:(r7)+
+P:0117 0BF080 rrrrrr  6  606  355         jsr     GetByteFromArray
+P:0119 4FF000 rrrrrr  3  609  356         move    y:iBottomByteMask,y1
+P:011B 5DFF76         4  613  357         and     y1,a	            y:-(r7),b1
+P:011C 218400         2  615  358         move    a1,x0
+                              359         pop     b1
+P:011D 4FF000 rrrrrr  3  618  360         move    y:iNotBottomByteMask,y1
+P:011F 22CE7E         2  620  361         and     y1,b	                r6,a 
+P:0120 22504A         2  622  362         or      x0,b	                r2,r0               
+P:0121 0BF080 rrrrrr  6  628  365         jsr     PutByteInArray              ;write it to the destination buffer
+                              366 _NoBottomByteMask
+                              367 _DoneWithStripe
+P:0123 58F000 rrrrrr  3  631  370         move    y:iInitialDestinationBytePosition,a0        ;incrememnt the destination initial byte over one
+P:0125 000008         2  633  371         inc     a
+P:0126 587000 rrrrrr  3  636  373         move    a0,y:iInitialDestinationBytePosition
+P:0128 211613         2  638  375         clr     a	                a0,r6
+P:0129 58F000 rrrrrr  3  641  376         move    y:iXBytesInStripe,a0
+P:012B 00000A         2  643  377         dec     a
+P:012C 205B03         2  645  379         tst     a	                (r3)+                                   ;increment the source initial byte over one
+P:012D 587000 rrrrrr  3  648  378         move    a0,y:iXBytesInStripe
+P:012F 0AF0A2 rrrrrr  6  654  380         jne _ForEachVerticalStripe
+                              381     ;ok, we're done.. YAY
+                              383 _ExitDisplayCopyFrameBufferToFrameBuffer
+                              384     ;finish up by popping off the source bitmap mask
+P:0131 0BF080 rrrrrr  6  660  385     jsr FPopMask
+                              387     pop SSH
+P:0133 05FF7C         4  664  387     movec   y:-(r7),SSH
+P:0134 000000         2  666  387         nop             ; (inserted)
+P:0135 00000C         4  670  389     rts

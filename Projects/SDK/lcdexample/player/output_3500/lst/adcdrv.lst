@@ -1,0 +1,742 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\analog\adc\adcdrv.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ; STMP ADC Driver Module
+                                5 ;******************************************************************************
+                                6 ; Module Files:
+                                7 ;   \common\adc\adcdrv.asm
+                                8 ;   \common\adc\adcmemx.asm
+                                9 ;   \common\adc\adcmemy.asm
+                               10 ;   \inc\adcequ.asm
+                               11 ;
+                               12 ;******************************************************************************
+                               13     section AdcDrv
+                               14 ;*******************************************************************************
+                               15 ;  Include files
+                               16 ;*******************************************************************************
+                               18         page    132,60,0,0,0
+                               35     list
+                               36     page    132,60,0,0,0
+                               38 ;*******************************************************************************
+                               39 ;  Extern definitions
+                               40 ;*******************************************************************************
+                               46     
+                               47 ;*******************************************************************************
+                               48 ;  Extern references
+                               49 ;*******************************************************************************
+                               87 ;    EXTERN    AdcFlt1StateVarsCh0
+                               88 ;    EXTERN    AdcFlt1StatePtrCh0
+                               94 ;    EXTERN    AdcFlt1StateVarsCh1    
+                               95 ;    EXTERN    AdcFlt1StatePtrCh1
+                              103   ; stmp6964  Remove DC offset
+                              106   ;  EXTERN  MP3EncoderSourceBufDesc2
+                              108     comment ~
+                              109     ; TODO - Get rid of this stuff!!!! Used only for adpcm dev.
+                              110     EXTERN    CurrAdcIsrCount
+                              111     EXTERN    CurrAdcOfCount
+                              112     EXTERN    CurrAdcSinkEmptySpace
+                              113     ~
+                              114     
+                              115 ;*******************************************************************************
+                              116 ;  Code start
+                              117 ;*******************************************************************************
+P:0000                        119     org p,".pAdcDrv":
+                              120 ;******************************************************************************
+                              121 ;       AdcDriverInit
+                              122 ;
+                              123 ;       Same as all other init routines.  Must set internal status to
+                              124 ;       conditions.
+                              125 ;       r0 : Contains pointer to the buffer descriptor
+                              126 ;******************************************************************************
+                              127 AdcDriverInit
+P:0000 687000 rrrrrr  3    3  128     move    r0,y:AdcSinkBufDesc
+P:0002 205800         2    5  129     move    (r0)+
+P:0003 68E000         2    7  130     move    y:(r0),r0
+P:0004 687000 rrrrrr  3   10  131     move    r0,y:AdcEncoderBufModPtr    
+                              132     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0006 200013         2   12  133     clr     a
+P:0007 5E7000 rrrrrr  3   15  134     move    a,y:AdcIsrEntryCount
+P:0009 5E7000 rrrrrr  3   18  135     move    a,y:AdcOfErrCount
+P:000B 5E7000 rrrrrr  3   21  136     move    a,y:AdcIsrSampleCountHigh
+P:000D 5E7000 rrrrrr  3   24  137     move    a,y:AdcIsrSampleCountLow
+P:000F 5E7000 rrrrrr  3   27  138     move    a,y:AdcSoftOfCount
+P:0011 00000C         4   31  139     rts
+                              141 ;******************************************************************************
+                              142 ;       AdcDriverEnablePort
+                              143 ;
+                              144 ;       Arguments:
+                              145 ;
+                              146 ;******************************************************************************
+                              147 AdcDriverEnablePort
+P:0012 0BF080 rrrrrr  6   37  148     jsr     ClearADCFilterStates    
+P:0014 4CF000 rrrrrr  3   40  158         move    y:Const_000000,x0                   ; Clear ADCCSR.  This enables the ADC clocks
+P:0016 447000 00FB00  3   43  159         move    x0,x:HW_ADCCSR
+P:0018 0A7009 00FA0B  6   49  161         bclr    #HW_MIXPWRDNR_PR0_BITPOS,x:HW_MIXPWRDNR ; Enable ADC and input MUX circuitry
+                              165     ; 1. Program x:HW_ADCBAR (ADC Base Address Register)
+P:001A 68F000 rrrrrr  3   52  166     move    y:AdcDrvSinkBufDescPtr,r0 ; get sink buffer descriptor ptr
+P:001C 70F400 000000  3   55  167     move    #>BD_BufferBaseAddress,n0
+P:001E 000000         2   57  168     nop
+P:001F 4CE800         4   61  169     move    y:(r0+n0),x0            ; x0 = buffer base address
+P:0020 447000 00FB05  3   64  170     move    x0,x:HW_ADCBAR          ; init ADC port base addr reg with the buffer base address
+                              172     ; 2. Program x:HW_ADCMR (ADC Modulo Register)
+P:0022 70F400 000001  3   67  173     move    #>BD_BufferModulo,n0    ; offset for the sink buffer modulo
+P:0024 000000         2   69  174     nop
+P:0025 4CE800         4   73  175     move    y:(r0+n0),x0            ; x0 = buffer modulo
+P:0026 447000 00FB04  3   76  176     move    x0,x:HW_ADCMR           ; init ADC port modulo register with the buffer modulo
+                              178     ; 3. Program x:HW_ADCCPR (Adc Current Position Register)
+                              179     ;    CPR = offset from base address.
+P:0028 70F400 000004  3   79  180     move    #>BD_TailPtr,n0
+P:002A 000000         2   81  181     nop
+P:002B 5EE800         4   85  182     move    y:(r0+n0),a             ; a = tail ptr
+P:002C 70F400 000000  3   88  183     move    #>BD_BufferBaseAddress,n0
+P:002E 000000         2   90  184     nop
+P:002F 4CE800         4   94  185     move    y:(r0+n0),x0            ; x0 = base address
+P:0030 200044         2   96  186     sub     x0,a
+P:0031 567000 00FB03  3   99  187     move    a,x:HW_ADCCPR           ; current position register
+                              189     ; 4. Program x:HW_ADCWCR (ADC Word Count Register)
+P:0033 44F400 000040  3  102  190     move    #>AdcBlockSize,x0
+P:0035 447000 00FB02  3  105  191     move    x0,x:HW_ADCWCR          ; keep a constant interrupt rate
+                              193     ; 5. Program x:HW_ADCSRR (Sample Rate Register)
+                              194     
+                              198         ; No such bit on 3410 device. DAC and ADC have 2 separate dividers        
+                              200     
+P:0037 44F000 00FA00  3  108  215         move    x:HW_CCR,x0             ; save the adiv bits
+P:0039 56F400 7000E0  3  111  216         move    #>(HW_CCR_ADCDIV_SETMASK|HW_CCR_DACDIV_SETMASK),a
+P:003B 200046         2  113  217         and     x0,a
+P:003C 547000 rrrrrr  3  116  218         move    a1,x:AdcIsrSave_adiv
+                              220         ;set ADCDIV to 0(for FAnalog = 6MHz) and DACDIV to 7(for FAnalog = 1MHz)
+                              221                 ;move    #>(HW_CCR_ADCDIV_SETMASK|HW_CCR_DACDIV_SETMASK),a
+                              222         ;or      x0,a
+                              223         ;move    a1,x:HW_CCR
+                              225                 ; Set DACDIV to 7(for FAnalog = 1MHz)
+P:003E 56F400 700000  3  119  226                 move    #>(HW_CCR_DACDIV_SETMASK),a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0040 200042         2  121  227         or      x0,a
+P:0041 547000 00FA00  3  124  228         move    a1,x:HW_CCR
+                              230                 ; For Sampling Rates greater than 22050Hz FAnalog = 6MHz for better SNR #'s
+                              231                 ; and for sampling rates less than 22050Hz FAnalog is still maintained at 1MHz 
+                              232                 ; because with 6MHz and even with no scaling after analog to digital conversion, 
+                              233                 ; output signal is getting clipped. 
+P:0043 200013         2  126  234                 clr a
+P:0044 20001B         2  128  235                 clr b
+P:0045 5EF000 rrrrrr  3  131  236                 move    y:Fg_wEncSamplingRate,a
+P:0047 57F400 003E80  3  134  237                 move    #>16000,b
+P:0049 200005         2  136  238                 cmp     b,a
+P:004A 0AF0A7 rrrrrr  6  142  239                 jgt     FAnalog6MHz
+                              241 FAnalog1MHz
+P:004C 200013         2  144  242                 clr a
+                              243                 ; Set ADCDIV to 7(for FAnalog = 1MHz)
+P:004D 56F400 0000E0  3  147  244                 move    #>(HW_CCR_ADCDIV_SETMASK),a
+P:004F 200042         2  149  245         or              x0,a
+P:0050 547000 00FA00  3  152  246         move    a1,x:HW_CCR
+P:0052 0AF080 rrrrrr  6  158  247                 jmp FAnalogComplete
+                              249 FAnalog6MHz
+P:0054 200013         2  160  250                 clr a
+                              251                 ; Set ADCDIV to 0(for FAnalog = 6MHz)
+P:0055 56F400 0000E0  3  163  252                 move    #>(HW_CCR_ADCDIV_SETMASK),a
+P:0057 200017         2  165  253                 not             a
+P:0058 200046         2  167  254         and     x0,a
+P:0059 547000 00FA00  3  170  255         move    a1,x:HW_CCR
+                              256 FAnalogComplete
+                              259                                         ; set the sample rate
+P:005B 4CF000 rrrrrr  3  173  260     move    y:EncADCSRR,x0
+P:005D 447000 00FB01  3  176  261     move    x0,x:HW_ADCSRR
+                              262     
+                              263     ; enable the port
+P:005F 200013         2  178  264     clr     a
+P:0060 567000 00FB00  3  181  265     move    a,x:HW_ADCCSR           ; clear out any old stuff
+P:0062 0ACC60         4  185  266     bset    #HW_ADCCSR_TXEN_BITPOS,a1
+P:0063 0ACC61         4  189  267     bset    #HW_ADCCSR_TXIEN_BITPOS,a1
+P:0064 547000 00FB00  3  192  268     move    a1,x:HW_ADCCSR
+                              270     ; Enable Low Pass Filter after Sigma Delta for better ADC SNR 
+P:0066 200013         2  194  271         clr             a
+P:0067 44F000 00FB00  3  197  272         move    x:HW_ADCCSR,x0             
+P:0069 56F400 000F00  3  200  273     move    #>(HW_ADCCSR_LPFMODE_SETMASK),a
+P:006B 200042         2  202  274     or      x0,a
+P:006C 547000 00FB00  3  205  275     move    a1,x:HW_ADCCSR
+P:006E 00000C         4  209  277     rts
+                              281 ClearADCFilterStates
+P:006F 200013         2  211  282     clr     a
+P:0070 05F060 rrrrrr  4  215  283     movec   y:Const_ffffff,m0
+P:0072 05F064 rrrrrr  4  219  284     movec   y:Const_ffffff,m4
+                              285      
+                              286 ;    move    #AdcFlt1StateVarsCh0,r0
+                              287 ;    move    r0,x:AdcFlt1StatePtrCh0
+                              288 ;    move    #AdcFlt1StateVarsCh1,r4
+                              289 ;    move    r4,x:AdcFlt1StatePtrCh1
+                              290 ;    do      #AdcFlt1NTaps,_flt1_loop
+                              291 ;        move    a,x:(r0)+
+                              292 ;        move    a,x:(r4)+
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              293 ;_flt1_loop
+P:0074 60F400 rrrrrr  3  222  295     move    #AdcFlt2StateVarsCh0,r0
+P:0076 607000 rrrrrr  3  225  296     move    r0,x:AdcFlt2StatePtrCh0
+P:0078 64F400 rrrrrr  3  228  297     move    #AdcFlt2StateVarsCh1,r4
+P:007A 647000 rrrrrr  3  231  298     move    r4,x:AdcFlt2StatePtrCh1
+P:007C 061480 rrrrrr  6  237  300     do      #20,_flt2_loop          
+                              301 ;        move    a,x:(r0)+
+P:007E 5E5800         2  239  302         move    a,y:(r0)+
+                              303 ;        move    a,x:(r4)+
+P:007F 5E5C00         2  241  304         move    a,y:(r4)+
+                         (4)  305 _flt2_loop
+P:0080 60F400 rrrrrr  3  244  307     move    #AdcFlt3StateVarsCh0,r0
+P:0082 607000 rrrrrr  3  247  308     move    r0,x:AdcFlt3StatePtrCh0
+P:0084 64F400 rrrrrr  3  250  309     move    #AdcFlt3StateVarsCh1,r4
+P:0086 647000 rrrrrr  3  253  310     move    r4,x:AdcFlt3StatePtrCh1
+P:0088 064680 rrrrrr  6  259  312     do      #70,_flt3_loop          
+P:008A 565800         2  261  313         move    a,x:(r0)+
+P:008B 565C00         2  263  314         move    a,x:(r4)+
+                              315         
+                         (4)  316 _flt3_loop
+P:008C 00000C         4  267  317     rts
+                              325 ;******************************************************************************
+                              326 ;       AdcDriverDisablePort
+                              327 ;
+                              328 ;******************************************************************************
+                              329 AdcDriverDisablePort
+P:008D 0A7000 00FB00  6  273  330     bclr    #HW_ADCCSR_TXEN_BITPOS,x:HW_ADCCSR
+                              331     
+                              332     ; restore the ADIV bits
+P:008F 44F013 00FA00  3  276  333     clr     a           x:HW_CCR,x0
+P:0091 56F400 8FFF1F  3  279  341         move    #>(HW_CCR_ADCDIV_CLRMASK&HW_CCR_DACDIV_CLRMASK),a
+                              343                                                         ; Power savings:
+P:0093 0A7029 00FA0B  6  285  344         bset    #HW_MIXPWRDNR_PR0_BITPOS,x:HW_MIXPWRDNR ;   Disable ADC and input MUX circuitry
+P:0095 0A7037 00FB00  6  291  345         bset    #HW_ADCCSR_CLKGT_BITPOS,x:HW_ADCCSR     ;   Disable ADC clocks
+P:0097 44F046 rrrrrr  3  294  349     and     x0,a        x:AdcIsrSave_adiv,x0
+P:0099 200042         2  296  350     or      x0,a
+P:009A 547000 00FA00  3  299  351     move    a1,x:HW_CCR
+                              353         
+P:009C 00000C         4  303  354     rts
+                              359 
+                              360 ;******************************************************************************
+                              361 ;       AdcDriverIsr
+                              362 ;
+                              363 ;       This is the ISR that is vectored in the vector table.  It must
+                              364 ;       return with an rti since it will be called at interrupt time.  It
+                              365 ;       will use the AdcDriverProcess routine to complete its functionality.
+                              366 ;
+                              367 ;               The job of the ADC ISR is to take new samples from the ADC Source Buffer
+                              368 ;               (which were put there by the ADC DMA), filter-decimate them (decimate by 
+                              369 ;               8), and leave the results in the ADC Sink Buffer (aka the Encoder Source 
+                              370 ;               Buffer).  The data in the Adc Source Buffer is interleaved stereo.  The
+                              371 ;               output buffer may be either inlerleaved stereo or mono (the other channel
+                              372 ;               is discarded).
+                              373 ;
+                              374 ;               The ADC ISR gets called when either the ADC Word Count goes to zero or
+                              375 ;               when there is an ADC Overrun.  An ADC Overrun occurs one sample period
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              376 ;               after the Word Count goes to zero, if the Word Count has not been reset
+                              377 ;               in time (e.g. when interrupts are blocked)  Note the the "sample period"
+                              378 ;               in this situation is for the 8x oversampled rate, so it can be rather short.
+                              379 ;               In any case, an Overrun interrupt (TXEXC - Transmit exception) is always
+                              380 ;               coupled with a regular "done" interrupt (TXI), where the Word Count has 
+                              381 ;               gone to zero.
+                              382 ;
+                              383 ;               The ADC Source Buffer and ADC Sink Buffers are ring (modulo) buffers - 
+                              384 ;               they wrap around.  The ADC hardware automatically wraps around for the ADC 
+                              385 ;               Source buffer.  Both buffers have "head" and "tail" pointers.  The "head"
+                              386 ;               points at the next samples to be added to the buffer.  The "tail" points
+                              387 ;               at the next sample to be taken from the buffer (for processing).
+                              388 ;
+                              389 ;               Even if the Word Count goes to zero, the ADC continues to sample and DMA
+                              390 ;               data into the ADC Source Buffer.  The Word Count "wraps" around, and the
+                              391 ;               Current Position Register (HW_ADCCPR) continues to advance (modulo the 
+                              392 ;               buffer size).  So, if interrupts are blocked, an Overrun may be declared
+                              393 ;               but no data is actually lost (unless interrupts are blocked long enough
+                              394 ;               for the Current Position to catch up with the "tail" pointer).
+                              395 ;
+                              396 ;               The scheme of the ADC ISR is *not* to handle a fixed set of samples on
+                              397 ;               each interrupt.  Instead, the ISR processes as much data as it can.  How
+                              398 ;               much that is depends on how many unprocessed samples there are in the
+                              399 ;               ADC Source Buffer and on how much empty space is available in the ADC
+                              400 ;               Sink Buffer (Encoder Source Buffer).  You may have 64 input samples available
+                              401 ;               for processing but the Encoder may not have enough space to accept all of
+                              402 ;               the results.  So, although the ISR nominally processes AdcBlockSize samples
+                              403 ;               (typically, 64) on each pass, the actual number may vary from one time
+                              404 ;               to the next.
+                              405 ;
+                              406 ;               Likewise, the Word Count Register is not always reset to the same number.
+                              408 ;
+                              409 ;       NOTE: For testing purposes, there are some "if (@def..." conditions
+                              410 ;       below (PRESCALE and NOFILTS).  These can be used to study the effects
+                              411 ;       of certain parts of the algorithm.  If PRESCALE is defined, the scaling
+                              412 ;       factor will be applied before the filter-decimators, instead of after.
+                              413 ;       This may cause numerical overflow in the filters.  If NOFILTS is defined,
+                              414 ;       the filter stages will be disabled;  decimation will still take place,
+                              415 ;       but aliasing will occur.
+                              416 ;******************************************************************************
+                              417 AdcDriverIsr
+                              420         ; Clear the DM bit (double-precision multiply mode, bit 6) of the Mode Register
+                              421         ; This will be returned to its previous state when the RTI occurs (since the SR
+                              422         ; will be popped back off System Stack Low (SSL).
+                              423         ; Accumulator behavior is unpredictable when the DM bit is set.
+                              424         ; Next cycle after clearing it should NOT be an ALU instruction.
+P:009D 00BFB8         2  305  425         andi #$BF,mr
+                              427     push    x0          ; Save this
+P:009E 4C5F00         2  307  427     move    x0,y:(r7)+
+                              428     
+                              429     ; Check if spurious interrupt. If so exit ...
+P:009F 44F000 00F302  3  310  430     move    x:HW_ICLSTATUS0R,x0
+P:00A1 000000         2  312  431     nop
+P:00A2 0AC422 rrrrrr  6  318  432     jset    #HW_ICLSTATUS0R_SST2_BITPOS,x0,realADCInt       ;Check ADC Refill
+P:00A4 0AC423 rrrrrr  6  324  433     jset    #HW_ICLSTATUS0R_SST3_BITPOS,x0,realADCInt       ;Check ADC Overflow
+                              435     ; None of the above, exit interruption
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              437     pop     x0          ; Restore x0
+P:00A6 4CFF00         4  328  437     move    y:-(r7),x0
+P:00A7 000004         4  332  438     rti
+                              443 realADCInt
+                              444     pop     x0          ; put back the old value
+P:00A8 4CFF00         4  336  444     move    y:-(r7),x0
+                              448 ;///////////////////////////////////////////////////////////////////////////////
+                              449 ;  Save state
+                              450 ;///////////////////////////////////////////////////////////////////////////////
+                              452 saveRegisters
+P:00A9 6F7000 rrrrrr  3  339  453     move    r7,y:IntL3_SaveR7       ; save minimal reg set to local
+P:00AB 057067 rrrrrr  4  343  454     movec   m7,y:IntL3_SaveM7
+P:00AD 6E7000 rrrrrr  3  346  455     move    r6,y:IntL3_SaveR6
+P:00AF 67F400 rrrrrr  3  349  456     move    #>L3DataStack,r7        ; setup the L2 data stack
+P:00B1 058067r        2  351  457     movec   y:<Const_ffffff,m7
+P:00B2 66F400 rrrrrr  3  354  458     move    #adcSaveRegReturn,r6   ; setup the return address
+P:00B4 0AF080 rrrrrr  6  360  459     jmp     SaveRegs                ; save the remaining registers
+                              460 adcSaveRegReturn
+P:00B6 66F400 rrrrrr  3  363  461     move    #adcSaveSysStackRtn,r6 ; setup the return address
+P:00B8 65F400 rrrrrr  3  366  462     move    #L3Sp,r5                ; pointer to the SP local save
+P:00BA 0AF080 rrrrrr  6  372  463     jmp     SaveSystemStack         ; save the hardware stack
+                              464 adcSaveSysStackRtn
+P:00BC 677000 rrrrrr  3  375  465     move    r7,x:AdcIsrSaver7       ; needed because r7 is used below
+P:00BE 0BF080 rrrrrr  6  381  467     jsr     SysAllLinear    
+                              471 ;///////////////////////////////////////////////////////////////////////////////
+                              472 ;  keep track of entries to this isr
+                              473 ;///////////////////////////////////////////////////////////////////////////////
+P:00C0 200013         2  383  475     clr     a
+P:00C1 58F000 rrrrrr  3  386  476     move    y:AdcIsrEntryCount,a0
+P:00C3 000008         2  388  477     inc     a
+P:00C4 587000 rrrrrr  3  391  478     move    a0,y:AdcIsrEntryCount
+                              482 ;///////////////////////////////////////////////////////////////////////////////
+                              483 ;  Determine how much unprocessed data is in the Adc Source Buf
+                              484 ;
+                              485 ;   oldFilledSpace = GetFilledSpace(AdcBuf)             // What size was it?
+                              486 ;   AdcSourceheadPtr = AdcSourceBaseAddr + HW_ADCCPR    // Update Head Ptr
+                              487 ;   newFilledSpace = GetFilledSpace(AdcBuf)             // What size, now?
+                              488 ;   if(newFilledSpace < oldFilledSpace) {
+                              489 ;       HardwareTailOverrun
+                              490 ;   }
+                              491 ;
+                              492 ;///////////////////////////////////////////////////////////////////////////////
+P:00C6 68F000 rrrrrr  3  394  494     move    y:AdcSourceBufDesc,r0   ; oldFilledSpace = GetFilledSpace(AdcBuf)    // What size was 
+                                  it?
+P:00C8 05F420 00FFFF  4  398  495     movec   #$ffff,m0
+P:00CA 0BF080 rrrrrr  6  404  496     jsr     GetFilledSpace
+P:00CC 21CF00         2  406  497     move    a,b                     ; (b = oldFilledSpace)
+                              499                                     
+P:00CD 5EF000 rrrrrr  3  409  500     move    y:AdcBufAddrPtr,a       ; AdcSourceheadPtr = AdcSourceBaseAddr + 
+P:00CF 45F000 00FB03  3  412  501     move    x:HW_ADCCPR,x1          ;                    HW_ADCCPR     // Update Head Ptr
+P:00D1 200060         2  414  502     add     x1,a
+P:00D2 5C7000 rrrrrr  3  417  503     move    a1,y:AdcBufHeadPtr
+P:00D4 68F000 rrrrrr  3  420  505     move    y:AdcSourceBufDesc,r0
+P:00D6 05F420 00FFFF  4  424  506     movec   #$ffff,m0
+P:00D8 0BF080 rrrrrr  6  430  507     jsr     GetFilledSpace          ; (a = newFilledSpace)
+P:00DA 200005         2  432  509     cmp     b,a                     ; if(newFilledSpace < oldFilledSpace) {
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00DB 0AF0A1 rrrrrr  6  438  510     jge     adc_no_tail_overrun     ;   Tail Overrun (the head caught up with the tail)
+P:00DD 0BF080 rrrrrr  6  444  511     jsr     adc_tail_overrun        ; }
+                              513 adc_no_tail_overrun
+                              517 ;///////////////////////////////////////////////////////////////////////////////
+                              518 ; see how much empty space the sink buffer has
+                              519 ;  
+                              520 ;   AdcSinkBufSpace = GetEmptySpace(AdcSinkBuf)
+                              521 ;   //if (AdcSinkBufSpace <= 0) {
+                              522 ;   //    ADC Sink Buffer Overrun
+                              523 ;   //}
+                              525 ;///////////////////////////////////////////////////////////////////////////////
+P:00DF 6CF000 rrrrrr  3  447  528     move    y:AdcSinkBufDesc,r4
+P:00E1 05F424 00FFFF  4  451  529     movec   #$ffff,m4
+P:00E3 0BF080 rrrrrr  6  457  530     jsr     GetEmptySpace           ; a = AdcSinkBufSpace
+                              534 ;///////////////////////////////////////////////////////////////////////////////
+                              535 ;  if (mono)
+                              536 ;     AdcSinkBufNumSamples = AdcSinkBufSpace
+                              537 ;  else
+                              538 ;     AdcSinkBufNumSamples = AdcSinkBufSpace/2
+                              539 ;///////////////////////////////////////////////////////////////////////////////
+P:00E5 4CF000 rrrrrr  3  460  541     move    y:Fg_wEncNumberOfChannels,x0
+P:00E7 06C420         4  464  542     rep     x0
+P:00E8 200022         2  466  543     asr     A
+P:00E9 200032         2  468  544     asl     A                       
+                              547 ;///////////////////////////////////////////////////////////////////////////////
+                              548 ;  get amount of data waiting in source buffer
+                              549 ;
+                              550 ;   AdcSrcBufSpace = GetFilledSpace(AdcBuf)
+                              551 ;   AdcSrcBufNumSamples = AdcSrcBufSpace / (8 * 2)   // decimate by 8, stereo input
+                              552 ;   NumSamplesToProcess = MIN(AdcSrcBufNumSamples, AdcSinkBufNumSamples)
+                              553 ;
+                              554 ;///////////////////////////////////////////////////////////////////////////////
+                              556     push    a1                      ; temp save AdcSinkBufNumSamples
+P:00EA 5C5F00         2  470  556     move    a1,y:(r7)+
+P:00EB 68F000 rrrrrr  3  473  558     move    y:AdcSourceBufDesc,r0   ; AdcSrcBufSpace = GetFilledSpace(AdcBuf)
+P:00ED 05F420 00FFFF  4  477  559     movec   #$ffff,m0
+P:00EF 0BF080 rrrrrr  6  483  560     jsr     GetFilledSpace
+P:00F1 0604A0         4  487  562     rep     #4                      ; AdcSrcBufNumSamples = 
+P:00F2 200022         2  489  563     asr     a                       ;       AdcSrcBufSpace / (8 * 2) // decimate by 8, stereo inpu
+                                  t
+                              566     pop     x0                      ; NumSamplesToProcess = MIN(AdcSrcBufNumSamples, AdcSinkBufNum
+                                  Samples)
+P:00F3 4CFF00         4  493  566     move    y:-(r7),x0
+P:00F4 200045         2  495  567     cmp     x0,a
+P:00F5 0AF0A1 rrrrrr  6  501  568     jge     use_sink_count
+P:00F7 218400         2  503  569     move    a1,x0
+                              570 use_sink_count
+P:00F8 200041         2  505  571     tfr     x0,A
+                              576 ;///////////////////////////////////////////////////////////////////////////////
+                              577 ;  if (NumSamples <= 0)
+                              578 ;       exit
+                              579 ;///////////////////////////////////////////////////////////////////////////////
+P:00F9 200003         2  507  581     tst     a 
+P:00FA 0AF0AF rrrrrr  6  513  582     jle     reset_word_count
+                              588 ;///////////////////////////////////////////////////////////////////////////////
+                              589 ;  Filter-decimate the data from the Adc Src Buf to the Adc Sink Buf
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              590 ;///////////////////////////////////////////////////////////////////////////////
+P:00FC 4DF000 rrrrrr  3  516  592     move    y:EncAdcGain,x1  ;  get scaling factor (sample-rate dependent)
+                              593                              
+P:00FE 0513A1         2  518  595     movec   #AdcFlt2NTaps-1,m1
+P:00FF 0465A1         2  520  596     movec   m1,m5
+P:0100 0545A2         2  522  598     movec   #AdcFlt3NTaps-1,m2
+P:0101 0466A2         2  524  599     movec   m2,m6
+P:0102 447000 rrrrrr  3  527  601     move    x0,x:ADCProcessSampleCount
+P:0104 61F000 rrrrrr  3  530  603     move    x:AdcFlt2StatePtrCh0,r1            ; Use R1 and R5 for the second filter    
+P:0106 62F000 rrrrrr  3  533  604     move    x:AdcFlt3StatePtrCh0,r2            ; Use R2 and R6 for the third filter    
+P:0108 6BF000 rrrrrr  3  536  607     move    y:AdcBufTailPtr,r3
+P:010A 6B7000 rrrrrr  3  539  608     move    r3,y:AdcBufTailPtrTemp      
+P:010C 6BF000 rrrrrr  3  542  610     move    y:AdcSinkBufDesc,r3
+P:010E 73F400 000003  3  545  611     move    #>BD_HdPtr,n3
+P:0110 000000         2  547  612     nop
+P:0111 6BEB00         4  551  613     move    y:(r3+n3),r3
+P:0112 6B7000 rrrrrr  3  554  614     move    r3,y:EncoderBufHeadPtrTemp  
+P:0114 4FF000 rrrrrr  3  557  616     move y:EncAdcLChOffset,y1   ; stmp6964 Remove DC Offset
+                              617      
+P:0116 0BF080 rrrrrr  6  563  618     jsr     ProcessSingleChannel
+P:0118 617000 rrrrrr  3  566  620     move    r1,x:AdcFlt2StatePtrCh0
+P:011A 627000 rrrrrr  3  569  621     move    r2,x:AdcFlt3StatePtrCh0
+                              622     
+P:011C 68F000 rrrrrr  3  572  623     move    y:AdcBufTailPtrTemp,r0      
+P:011E 6BF000 rrrrrr  3  575  624     move    y:AdcBufTailPtr,r3    
+P:0120 000000         2  577  625     nop      
+P:0121 205B00         2  579  626     move    (r3)+
+P:0122 687000 rrrrrr  3  582  627     move    r0,y:AdcBufTailPtr
+P:0124 6B7000 rrrrrr  3  585  628     move    r3,y:AdcBufTailPtrTemp      
+P:0126 68F000 rrrrrr  3  588  630     move    y:EncoderBufHeadPtrTemp,r0
+P:0128 6BF000 rrrrrr  3  591  631     move    y:AdcSinkBufDesc,r3
+P:012A 73F400 000003  3  594  632     move    #>BD_HdPtr,n3
+P:012C 000000         2  596  633     nop
+P:012D 204B00         2  598  634     move    (r3)+n3
+P:012E 000000         2  600  635     nop
+P:012F 4EE300         2  602  636     move    y:(r3),y0
+P:0130 686300         2  604  637     move    r0,y:(r3)
+P:0131 20D300         2  606  638     move    y0,r3
+P:0132 000000         2  608  639     nop
+P:0133 205B00         2  610  640     move    (r3)+
+P:0134 6B7000 rrrrrr  3  613  641     move    r3,y:EncoderBufHeadPtrTemp  
+                              643 ;; Start - Save in descriptor used by DAC  
+                              644 ;    move    #>MP3EncoderSourceBufDesc2,r3
+                              645 ;    nop
+                              646 ;    move    (r3)+n3     ; point to HdPtr
+                              647 ;    nop
+                              648 ;    move    r0,y:(r3)    
+                              649 ;    move     y:EncoderBufHeadPtrTemp,r3 
+                              650 ;; End - Save in descriptor used by DAC    
+                              651  
+                              652  
+P:0136 5EF000 rrrrrr  3  616  653     move    y:Fg_wEncNumberOfChannels,A
+P:0138 4C8000r        2  618  654     move    y:<Const_000001,x0
+P:0139 200045         2  620  655     cmp     x0,A
+P:013A 0AF0AA rrrrrr  6  626  656     jeq     _MonoProcessing
+                              658     
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              659     
+P:013C 61F000 rrrrrr  3  629  660     move    x:AdcFlt2StatePtrCh1,r1            ; Use R4 and R5 for the second filter    
+P:013E 62F000 rrrrrr  3  632  661     move    x:AdcFlt3StatePtrCh1,r2            ; Use R2 and R6 for the third filter    
+P:0140 4FF000 rrrrrr  3  635  663     move y:EncAdcRChOffset,y1   ; stmp6964 Remove DC Offset
+                              664       
+P:0142 0BF080 rrrrrr  6  641  665     jsr     ProcessSingleChannel
+P:0144 617000 rrrrrr  3  644  667     move    r1,x:AdcFlt2StatePtrCh1
+P:0146 627000 rrrrrr  3  647  668     move    r2,x:AdcFlt3StatePtrCh1
+                              670 _MonoProcessing
+P:0148 058061r        2  649  671     movec   y:<Const_ffffff,m1
+P:0149 058062r        2  651  672     movec   y:<Const_ffffff,m2
+P:014A 058065r        2  653  673     movec   y:<Const_ffffff,m5
+P:014B 058066r        2  655  674     movec   y:<Const_ffffff,m6
+                              677 ;///////////////////////////////////////////////////////////////////////////////
+                              678 ;  keep track of total samples
+                              679 ;
+                              680 ;   dwAdccIsrSampleCount += ADCProcessSampleCount
+                              681 ;
+                              682 ;///////////////////////////////////////////////////////////////////////////////
+P:014C 200013         2  657  684     clr     a
+P:014D 50F000 rrrrrr  3  660  685     move    x:ADCProcessSampleCount,a0
+P:014F 4DF000 rrrrrr  3  663  686     move    y:AdcIsrSampleCountHigh,x1
+P:0151 4CF000 rrrrrr  3  666  687     move    y:AdcIsrSampleCountLow,x0
+P:0153 200020         2  668  688     add     x,a
+P:0154 5C7000 rrrrrr  3  671  689     move    a1,y:AdcIsrSampleCountHigh
+P:0156 587000 rrrrrr  3  674  690     move    a0,y:AdcIsrSampleCountLow
+                              695 ;///////////////////////////////////////////////////////////////////////////////
+                              696 ;
+                              697 ;  reset_word_count
+                              698 ;
+                              699 ;  Determine the space available in the ADC Src buffer.
+                              700 ;  First, update the Head pointer (the Current Position may have changed while 
+                              701 ;  we were busy).
+                              702 ;  Then determine the number of samples to take.
+                              703 ;
+                              704 ;   AdcSrcHeadPtr = AdcSrcBaseAssr + HW_ADCCPR  // Update Head Ptr
+                              705 ;
+                              706 ;       AdcEmptySpace = GetEmptySpace(AdcBuf)
+                              707 ;
+                              708 ;   if (AdcEmptySpace >= 2*AdcBlockSize)
+                              709 ;       newWordCount = AdcBlockSize
+                              710 ;   else if (AdcEmptySpace > AdcBlockSize)
+                              711 ;       newWordCount = AdcEmptySpace - AdcBlockSize
+                              712 ;   else
+                              713 ;        Software Overrun     // This will jump back to reset_word_count
+                              714 ;
+                              715 ;   HW_ADCWCR = newWordCount
+                              716 ;
+                              717 ;///////////////////////////////////////////////////////////////////////////////
+                              719 reset_word_count
+P:0158 5EF000 rrrrrr  3  677  722     move    y:AdcBufAddrPtr,a       ; AdcSourceHeadPtr = AdcSourceBaseAddr + 
+P:015A 45F000 00FB03  3  680  723     move    x:HW_ADCCPR,x1          ;                    HW_ADCCPR      // Update Head Ptr
+P:015C 200060         2  682  724     add     x1,a
+P:015D 5C7000 rrrrrr  3  685  725     move    a1,y:AdcBufHeadPtr
+P:015F 6CF000 rrrrrr  3  688  727     move    y:AdcSourceBufDesc,r4   ; AdcEmptySpace = GetEmptySpace(AdcBuf)
+P:0161 05F424 00FFFF  4  692  728     movec   #$ffff,m4
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0163 0BF080 rrrrrr  6  698  729     jsr     GetEmptySpace
+P:0165 57F400 000040  3  701  733     move    #>AdcBlockSize,b        ;   if (AdcEmptySpace >= 2*AdcBlockSize)
+P:0167 20003A         2  703  734     asl     b
+P:0168 20000D         2  705  735     cmp     a,b
+P:0169 0AF0A7 rrrrrr  6  711  736     jgt     less_than_2_blocks_available
+P:016B 56F400 000040  3  714  737         move    #>AdcBlockSize,a    ;       newWordCount = AdcBlockSize
+P:016D 0AF080 rrrrrr  6  720  738         jmp     new_word_count_ready
+                              740 less_than_2_blocks_available    
+P:016F 20002A         2  722  741     asr     b                       ;   else if (AdcEmptySpace > AdcBlockSize)
+P:0170 20000D         2  724  742     cmp     a,b
+P:0171 0AF0A1 rrrrrr  6  730  743     jge     adc_software_overrun
+P:0173 200022         2  732  744     asr   a                         ;       newWordCount = AdcEmptySpace/2
+                              745                                     ;   else
+                              746                                     ;        Software Overrun  // This will jump back to reset_wor
+                                  d_count
+                              748 new_word_count_ready
+P:0174 44F000 00FB02  3  735  750     move    x:HW_ADCWCR,x0
+P:0176 200044         2  737  751     sub     x0,a
+P:0177 567000 00FB02  3  740  752     move    a,x:HW_ADCWCR
+                              761 ;///////////////////////////////////////////////////////////////////////////////
+                              762 ;  Common exit for ISR
+                              763 ;  Clear interrupt bits.
+                              764 ;  Restore regs.
+                              765 ;///////////////////////////////////////////////////////////////////////////////
+                              768 exitAdcIsr
+P:0179 44F000 00FB00  3  743  769     move    x:HW_ADCCSR,x0           ; Clear TXI and TXEXC bits
+P:017B 0AC443         4  747  770     bclr    #HW_ADCCSR_TXEXC_BITPOS,x0
+P:017C 0AC442         4  751  771     bclr    #HW_ADCCSR_TXI_BITPOS,x0
+P:017D 447000 00FB00  3  754  772     move    x0,x:HW_ADCCSR
+P:017F 67F000 rrrrrr  3  757  774     move    x:AdcIsrSaver7,r7
+P:0181 05F427 00FFFF  4  761  775     movec   #$ffff,m7
+                              776 restoreRegisters
+P:0183 65F400 rrrrrr  3  764  777     move    #L3Sp,r5                ; pointer to the SP local save
+P:0185 66F400 rrrrrr  3  767  778     move    #adcRestoreSysStackRtn,r6 ; setup the return address
+P:0187 0AF080 rrrrrr  6  773  779     jmp     RestoreSystemStack      ; restore the hardware stack
+                              780 adcRestoreSysStackRtn
+P:0189 66F400 rrrrrr  3  776  781     move    #adcRestoreRegReturn,r6 ; setup the return address
+P:018B 0AF080 rrrrrr  6  782  782     jmp     RestoreRegs             ; restore registers
+                              783 adcRestoreRegReturn
+P:018D 6EF000 rrrrrr  3  785  784     move    y:IntL3_SaveR6,r6       ; restore minimal reg set
+P:018F 05F067 rrrrrr  4  789  785     movec   y:IntL3_SaveM7,m7
+P:0191 6FF000 rrrrrr  3  792  786     move    y:IntL3_SaveR7,r7
+P:0193 000004         4  796  787     rti
+                              793 ;///////////////////////////////////////////////////////////////////////////////
+                              794 ;  Handle softare-detected ADC source buffer overrun
+                              795 ;  (Note: Hardware-detected overrun (TXEXC) is ignored.)
+                              796 ;///////////////////////////////////////////////////////////////////////////////
+                              798 adc_software_overrun
+                              800     ; inc the software overflow counter
+P:0194 200013         2  798  801     clr     a
+P:0195 58F000 rrrrrr  3  801  802     move    y:AdcSoftOfCount,a0
+P:0197 000008         2  803  803     inc     a
+P:0198 587000 rrrrrr  3  806  804     move    a0,y:AdcSoftOfCount
+                              805     
+                              806     ; set the buffer to empty
+P:019A 0BF080 rrrrrr  6  812  807     jsr     AdcFlushOneSrcBlk
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:019C 0AF080 rrrrrr  6  818  808     jmp     reset_word_count
+                              810     
+                              815 ;///////////////////////////////////////////////////////////////////////////////
+                              816 ;   AdcFilledSpace = GetFilledSpace(AdcBuf)
+                              817 ;   if (AdcFilledSpace < AdcBlockSize)      // This shouldn't normally be true if we need to flush
+                                  
+                              818 ;       AdcTailPtr = AdcHeadPtr
+                              819 ;   else {
+                              820 ;       AdcTailPtr += AdcBlockSize
+                              821 ;       if (AdcTailPtr >= (AdcBufBaseAddr + AdcBufSize))
+                              822 ;           AdcTailPtr -= AdcBufSize
+                              823 ;   }
+                              824 ;
+                              825 ;///////////////////////////////////////////////////////////////////////////////
+                              827 AdcFlushOneSrcBlk
+P:019E 68F000 rrrrrr  3  821  829     move    y:AdcSourceBufDesc,r0       ; AdcCurrentFilledSpace = GetFilledSpace(AdcBuf)
+P:01A0 05F420 00FFFF  4  825  830     movec   #$ffff,m0
+P:01A2 0BF080 rrrrrr  6  831  831     jsr     GetFilledSpace
+P:01A4 44F400 000040  3  834  833     move    #>AdcBlockSize,x0           ;   if (AdcFilledSpace < AdcBlockSize)
+P:01A6 200045         2  836  834     cmp     x0,a
+P:01A7 0AF0A7 rrrrrr  6  842  835     jgt     more_than_a_block_filled
+P:01A9 5EF000 rrrrrr  3  845  836     move    y:AdcBufHeadPtr,a           ;       AdcTailPtr = AdcHeadPtr
+P:01AB 44F400 FFFFFE  3  848  837     move    #>$fffffe,x0                ; (Make sure it's even (channel zero))
+P:01AD 200046         2  850  838     and     x0,a
+P:01AE 5E7000 rrrrrr  3  853  839     move    a,y:AdcBufTailPtr
+P:01B0 00000C         4  857  840     rts
+                              842 more_than_a_block_filled                ;   else {
+P:01B1 5EF000 rrrrrr  3  860  843         move    y:AdcBufTailPtr,a       ;       AdcTailPtr += AdcBlockSize
+P:01B3 200040         2  862  844         add     x0,a
+P:01B4 5FF000 rrrrrr  3  865  846         move    y:AdcBufAddrPtr,b       ;       if (AdcTailPtr > (AdcBufBaseAddr + AdcBufSize))
+P:01B6 4DF000 rrrrrr  3  868  847         move    y:AdcBufSizePtr,x1
+P:01B8 200068         2  870  848         add     x1,b   
+P:01B9 200005         2  872  850         cmp     b,a
+P:01BA 0AF0A9 rrrrrr  6  878  851         jlt     _ok
+P:01BC 200064         2  880  852             sub     x1,a                ;           AdcTailPtr -= AdcBufSize
+                              853 _ok
+P:01BD 5E7000 rrrrrr  3  883  855     move    a,y:AdcBufTailPtr           ;   }
+P:01BF 00000C         4  887  856     rts
+                              859 ;///////////////////////////////////////////////////////////////////////////////
+                              860 ;  adc_tail_overrun
+                              861 ;
+                              862 ;   The DMA has made the Head Ptr has caught up with (and possibly passed) the 
+                              863 ;   Tail Ptr.
+                              864 ;
+                              865 ;   Add 
+                              866 ;   
+                              867 ;///////////////////////////////////////////////////////////////////////////////
+                              869 adc_tail_overrun
+P:01C0 5EF000 rrrrrr  3  890  871     move    y:AdcBufHeadPtr,a
+P:01C2 44F400 000040  3  893  872     move    #>AdcBlockSize,x0
+P:01C4 200040         2  895  873     add     x0,a
+P:01C5 5FF000 rrrrrr  3  898  875         move    y:AdcBufAddrPtr,b       ;       if (AdcTailPtr > (AdcBufBaseAddr + AdcBufSize))
+P:01C7 4DF000 rrrrrr  3  901  876         move    y:AdcBufSizePtr,x1
+P:01C9 200068         2  903  877         add     x1,b
+P:01CA 200005         2  905  879         cmp     b,a
+P:01CB 0AF0A9 rrrrrr  6  911  880         jlt     _ok
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01CD 200064         2  913  881             sub     x1,a                ;           AdcTailPtr -= AdcBufSize
+                              882                                     
+                              883 _ok                                     ;   }
+                              884                         
+P:01CE 44F400 FFFFFE  3  916  885     move    #>$fffffe,x0                ;   (make sure it's even)
+P:01D0 200046         2  918  886     and     x0,a 
+P:01D1 5E7000 rrrrrr  3  921  888     move    a,y:AdcBufTailPtr
+P:01D3 00000C         4  925  889     rts
+                              893 ;******************************************************************************
+                              894 ;       AdcDriverProcess
+                              895 ;
+                              896 ;******************************************************************************
+                              897 AdcDriverProcess
+P:01D4 00000C         4  929  898     rts
+                              903 ;******************************************************************************
+                              904 ;     ProcessSingleChannel
+                              906  
+                              907     ;    Passed:
+                              908     ;    x:ADCProcessSampleCount
+                              909     ;    r1 = x:AdcFlt2StatePtr
+                              910     ;    r2 = x:AdcFlt3StatePtr
+                              911     ;    y:AdcBufTailPtrTemp
+                              912     ;    EncoderBufHeadPtrTemp  
+                              913     ;    All modulo regs
+                              914     ;    Return Values : r0, r1,r2, y:AdcBufTailPtrTemp,EncoderBufHeadPtrTemp 
+                              916 ;******************************************************************************
+                              918 ProcessSingleChannel
+                              919     push   ssh
+P:01D5 055F7C         2  931  919     movec   ssh,y:(r7)+
+P:01D6 44F000 rrrrrr  3  934  920     move    x:ADCProcessSampleCount,x0
+P:01D8 68F000 rrrrrr  3  937  924     move    y:EncoderBufHeadPtrTemp,r0
+P:01DA 05F060 rrrrrr  4  941  925     movec   y:AdcEncoderBufModPtr,m0
+P:01DC 78F000 rrrrrr  3  944  926     move    y:Fg_wEncNumberOfChannels,n0
+P:01DE 6CF000 rrrrrr  3  947  928     move    y:AdcBufTailPtrTemp,r4
+P:01E0 05F064 rrrrrr  4  951  929     movec   y:AdcBufModPtr,m4
+P:01E2 3C0200         2  953  930     move    #2,n4                       ; Work on alternate Channels
+P:01E3 65F400 rrrrrr  3  956  932             move    #>AdcFlt2Coeffs,r5
+P:01E5 66F400 rrrrrr  3  959  933         move    #>AdcFlt3Coeffs,r6
+P:01E7 06C400 rrrrrr  6  965  935     do      x0,end_filter_loop
+P:01E9 060280 rrrrrr  6  971  936         do #2,end_second_filter
+                              937             ; Get 4 samples
+P:01EB 56CC00         2  973  938             move    x:(r4)+n4,A
+P:01EC BAAC00         2  975  939             move    x:(r4)+n4,A     A,y:(r1)+
+P:01ED BAAC00         2  977  940             move    x:(r4)+n4,A     A,y:(r1)+
+P:01EE BAAC00         2  979  941             move    x:(r4)+n4,A     A,y:(r1)+
+P:01EF 5E5900         2  981  942             move    A,y:(r1)+       
+                              944             ; Now, filter scaled samples in state vars
+P:01F0 F0BD13         2  983  945             clr     a   x:(r5)+,x0  y:(r1)+,y0
+P:01F1 0613A0         4  987  946             rep     #AdcFlt2NTaps-1
+P:01F2 F0BDD2         2  989  947                 mac x0,y0,a     x:(r5)+,x0      y:(r1)+,y0  
+P:01F3 2000D3         2  991  948             macr    x0,y0,a     
+P:01F4 565A00         2  993  949             move    a,x:(r2)+
+                        (22)  950 end_second_filter
+P:01F5 F0DA13         2  995  951         clr     a   x:(r2)+,x0  y:(r6)+,y0
+P:01F6 0645A0         4  999  952         rep     #AdcFlt3NTaps-1
+P:01F7 F0DAD2         2 1001  953             mac x0,y0,a     x:(r2)+,x0  y:(r6)+,y0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:01F8 2000D3         2 1003  954         macr    x0,y0,a     
+                              955 ; This version scales at the end of the filtering
+P:01F9 21C400         2 1005  956         move    a,x0
+P:01FA 2000A0         2 1007  957         mpy     x0,x1,a
+P:01FB 210E00         2 1009  958         move    a0,a
+P:01FC 200074         2 1011  959         sub     y1,a                        ; stmp6964  Remove DC offset (scaled)
+P:01FD 5E4800         2 1013  960         move    a,y:(r0)+n0                 ; put one of eight into the sink buf
+                        (48)  961 end_filter_loop    
+P:01FE 687000 rrrrrr  3 1016  962     move    r0,y:EncoderBufHeadPtrTemp      ; Save off sink ptr
+P:0200 6C7000 rrrrrr  3 1019  963     move    r4,y:AdcBufTailPtrTemp          ; Save off source ptr
+                              964     
+P:0202 058060r        2 1021  965     movec y:<Const_ffffff,m0
+P:0203 058064r        2 1023  966     movec y:<Const_ffffff,m4
+                              968     pop  ssh
+P:0204 05FF7C         4 1027  968     movec   y:-(r7),ssh
+P:0205 000000         2 1029  969     nop
+P:0206 00000C         4 1033  970     rts
+                              973     endsec

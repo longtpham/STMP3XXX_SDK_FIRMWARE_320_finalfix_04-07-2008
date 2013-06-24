@@ -1,0 +1,326 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\sysirq.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : sysirq.asm
+                                5 ;  Description : STMP IRQ Handling Functions
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_SysIrq
+                                9     page    132,60,0,0,0
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;   Macros
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               17     list
+                               19 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;   Includes
+                               21 ;///////////////////////////////////////////////////////////////////////////////
+                               33     list
+                               35 ;///////////////////////////////////////////////////////////////////////////////
+                               36 ;   External Definitions
+                               37 ;///////////////////////////////////////////////////////////////////////////////
+                               39     ;Functions
+                               51 ;///////////////////////////////////////////////////////////////////////////////
+                               52 ;   External References
+                               53 ;///////////////////////////////////////////////////////////////////////////////
+                               63     list
+                               74 ;///////////////////////////////////////////////////////////////////////////////
+                               75 ;   Equates
+                               76 ;///////////////////////////////////////////////////////////////////////////////
+                               78 ;///////////////////////////////////////////////////////////////////////////////
+                               79 ;   X Memory
+                               80 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         82     org     x,"SYSFUN_SysIrq_X":
+                               84 ;///////////////////////////////////////////////////////////////////////////////
+                               85 ;   Y Memory
+                               86 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         88     org     y,"SYSFUN_SysIrq_Y":
+                               90 ; data for SysMaskAllInterrupts
+Y:0000 000000                  91 Si_SaveReg_Ipr  dc  0
+                               92 ; data for SysUnmaskAllInterrupts
+                               93 ; data for SysResetAllInterrupts
+                               94 ; data for SysEnableIrq
+                               96 ;///////////////////////////////////////////////////////////////////////////////
+                               97 ;   P Memory
+                               98 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        100     org     p,"SYSFUN_SysIrq_P":
+                              103 ;///////////////////////////////////////////////////////////////////////////////
+                              104 ;
+                              105 ;>  Name:           IcollClear
+                              106 ;
+                              107 ;   Type:           Function
+                              108 ;
+                              109 ;   Description:    Clears all ICOLL registers
+                              110 ;
+                              111 ;   Inputs:         none
+                              112 ;
+                              113 ;   Outputs:        none
+                              114 ;
+                              115 ;   Notes:          none
+                              116 ;<
+                              117 ;///////////////////////////////////////////////////////////////////////////////
+                              118 IcollClear
+                              119     ;
+                              120     ; First, clear all ICOLL registers
+                              121     ;
+P:0000 60F400 00F300  3    3  122     move    #HW_ICOLL_BASEADDR,r0
+P:0002 4C8000r        2    5  123     move    y:<Const_000000,x0
+P:0003 058060r        2    7  124     movec   y:<Const_ffffff,m0
+P:0004 061080 rrrrrr  6   13  125     do      #16,_reset_icoll                               
+P:0006 445800         2   15  126     move    x0,x:(r0)+
+P:0007 000000         2   17  127     nop
+                         (4)  128 _reset_icoll
+P:0008 00000C         4   21  129     rts
+                              132 ;///////////////////////////////////////////////////////////////////////////////
+                              133 ;
+                              134 ;>  Name:           SysResetAllInterrupts
+                              135 ;
+                              136 ;   Type:           Function
+                              137 ;
+                              138 ;   Description:    Resets all system interrupts.
+                              139 ;
+                              140 ;   Inputs:         none
+                              141 ;
+                              142 ;   Outputs:        none
+                              143 ;
+                              144 ;   Notes:          This function completely reconfigures the interrupt vectors
+                              145 ;                   and interrupt hardware as required for the audio player
+                              146 ;                   software architecture.
+                              147 ;<
+                              148 ;///////////////////////////////////////////////////////////////////////////////
+                              149 SysResetAllInterrupts
+                              153     ;If using funclet, function will be executed via funclet kernel
+                              154     CallFunclet RSRC_FUNCLET_SYSRESETALLINT
+P:0009 0D0080         4   25  154     jsr       $80
+P:000A 00015B                 154     DC       RSRC_FUNCLET_SYSRESETALLINT  ; 1 word
+P:0000                        156     org     p,"SYSFUNCLET_SysResetAllInt_P":
+P:0000 00015B                 158     dc      RSRC_FUNCLET_SYSRESETALLINT           ; Funclet Resource number
+                              163     ;
+                              164     ; Set the SR bits
+                              165     ;
+P:0001 0444B9         2    2  166     movec   sr,x0
+P:0002 0AC468         4    6  167     bset    #HW_SR_IM0_BITPOS,x0
+P:0003 0AC469         4   10  168     bset    #HW_SR_IM1_BITPOS,x0
+P:0004 04C4B9         2   12  169     movec   x0,sr
+                              171     ;
+                              172     ; Clear out the ICOLL
+                              173     ;
+P:0005 200013         2   14  174     clr     a
+P:0006 567000 00F300  3   17  175     move    a,x:HW_ICLENABLE0R
+P:0008 567000 00F301  3   20  176     move    a,x:HW_ICLENABLE1R
+P:000A 567000 00F308  3   23  177     move    a,x:HW_ICLSTEER0R
+P:000C 567000 00F309  3   26  178     move    a,x:HW_ICLSTEER1R
+P:000E 567000 00F30A  3   29  179     move    a,x:HW_ICLSTEER2R
+P:0010 4C8000r        2   31  180     move    y:<Const_ffffff,x0
+P:0011 447000 00F304  3   34  181     move    x0,x:HW_ICLPRIOR0R
+P:0013 447000 00F305  3   37  182     move    x0,x:HW_ICLPRIOR1R
+P:0015 447000 00F306  3   40  183     move    x0,x:HW_ICLPRIOR2R
+P:0017 447000 00F307  3   43  184     move    x0,x:HW_ICLPRIOR3R
+P:0019 447000 00F311  3   46  189         move    x0,x:HW_ICLPRIOR4R
+                              192     ; init the vector addresses
+P:001B 44F400 0BF080  3   49  193     move    #>$bf080,x0             ; opcode for JSR
+                              194     ; Sys Time Timer
+P:001D 312A00         2   51  195     move    #HW_IVECTIMER2,r1
+P:001E 71F400 rrrrrr  3   54  196     move    #>SysTimeIsr,n1
+P:0020 075984         6   60  197     movem   x0,p:(r1)+
+P:0021 076199         6   66  198     movem   n1,p:(r1)
+                              199     ; Button  Timer
+P:0022 312800         2   68  200     move    #HW_IVECTIMER1,r1
+P:0023 71F400 rrrrrr  3   71  201     move    #>ButtonIsr,n1
+P:0025 075984         6   77  202     movem   x0,p:(r1)+
+P:0026 076199         6   83  203     movem   n1,p:(r1)
+                              205     ;Init Brownout interrupt
+P:0027 310A00         2   85  206     move    #HW_IVECIRQB,r1
+P:0028 71F400 rrrrrr  3   88  207     move    #>SysBrownOutIsr,n1
+P:002A 075984         6   94  208     movem   x0,p:(r1)+
+P:002B 076199         6  100  209     movem   n1,p:(r1)
+                              211     ;Init Headphone short interrupt
+P:002C 310800         2  102  212     move    #HW_IVECIRQA,r1
+P:002D 71F400 rrrrrr  3  105  213     move    #>SysHeadPhoneShortIsr,n1
+P:002F 075984         6  111  214     movem   x0,p:(r1)+
+P:0030 076199         6  117  215     movem   n1,p:(r1)
+                              217     ; Init ECC interrupt
+P:0031 316200         2  119  218     move    #HW_IVECHWECC,r1
+P:0032 71F400 rrrrrr  3  122  219     move    #>FECCISR,n1
+P:0034 075984         6  128  220     movem   x0,p:(r1)+
+P:0035 076199         6  134  221     movem   n1,p:(r1)
+                              223     ; init the ICOLL registers
+P:0036 44F400 00E00F  3  137  224     move    #>ICOLL_EN0_INIT,x0
+P:0038 447000 00F300  3  140  225     move    x0,x:HW_ICLENABLE0R
+P:003A 44F400 0001A0  3  143  226     move    #>ICOLL_EN1_INIT,x0
+P:003C 447000 00F301  3  146  227     move    x0,x:HW_ICLENABLE1R
+P:003E 44F400 000000  3  149  228     move    #>ICOLL_STEER0_INIT,x0
+P:0040 447000 00F308  3  152  229     move    x0,x:HW_ICLSTEER0R
+P:0042 44F400 0000B4  3  155  230     move    #>ICOLL_STEER1_INIT,x0
+P:0044 447000 00F309  3  158  231     move    x0,x:HW_ICLSTEER1R
+P:0046 44F400 014400  3  161  232     move    #>ICOLL_STEER2_INIT,x0
+P:0048 447000 00F30A  3  164  233     move    x0,x:HW_ICLSTEER2R
+P:004A 44F400 000041  3  167  234     move    #>ICOLL_PR0_INIT,x0
+P:004C 447000 00F304  3  170  235     move    x0,x:HW_ICLPRIOR0R
+P:004E 44F400 910000  3  173  236     move    #>ICOLL_PR1_INIT,x0
+P:0050 447000 00F305  3  176  237     move    x0,x:HW_ICLPRIOR1R
+P:0052 44F400 000000  3  179  238     move    #>ICOLL_PR2_INIT,x0
+P:0054 447000 00F306  3  182  239     move    x0,x:HW_ICLPRIOR2R
+P:0056 44F400 408000  3  185  240     move    #>ICOLL_PR3_INIT,x0
+P:0058 447000 00F307  3  188  241     move    x0,x:HW_ICLPRIOR3R
+P:005A 44F400 000002  3  191  242     move    #>ICOLL_PR4_INIT,x0
+P:005C 447000 00F311  3  194  243     move    x0,x:HW_ICLPRIOR4R
+                              257         ; Initialize HW_IPR register depending on chip version
+P:005E 44F400 827038  3  197  258         move    #>IPR_INIT_IRQA_IRQB_ENABLE,x0
+                              262 _KeepDefaultValue
+P:0060 447000 00FFFF  3  200  263         move    x0,x:HW_IPR
+                              265     ; Init the SR bits
+P:0062 0444B9         2  202  266     movec   sr,x0
+P:0063 0AC448         4  206  267     bclr    #HW_SR_IM0_BITPOS,x0
+P:0064 0AC449         4  210  268     bclr    #HW_SR_IM1_BITPOS,x0
+P:0065 04C4B9         2  212  269     movec   x0,sr
+P:0066 00000C         4  216  271     rts
+                              275     ;If using funclet, switch counter back to original here
+P:000B                        276     org    p,"SYSFUN_SysIrq_P":
+                              280 ;///////////////////////////////////////////////////////////////////////////////
+                              281 ;
+                              282 ;>  Name:           SysSetupEncVectors
+                              283 ;
+                              284 ;   Type:           Function
+                              285 ;
+                              286 ;   Description:    Setup Interrupt Vectors for the ADC ISR
+                              287 ;
+                              288 ;   Inputs:         x0 = ADC Full vector routine address
+                              289 ;                   x1 = ADC Overflow vector routine address
+                              290 ;                   y0 = Encoder Module Timer vector routine address
+                              291 ;
+                              292 ;   Outputs:        none
+                              293 ;
+                              294 ;   Notes:          none
+                              295 ;<
+                              296 ;///////////////////////////////////////////////////////////////////////////////
+                              297 SysSetupEncVectors
+                              301     ;If using funclet, function will be executed via funclet kernel
+                              302     CallFunclet RSRC_FUNCLET_SYSSETUPENCVEC
+P:000B 0D0080         4   29  302     jsr       $80
+P:000C 00015D                 302     DC       RSRC_FUNCLET_SYSSETUPENCVEC  ; 1 word
+P:0000                        304     org     p,"SYSFUNCLET_SysSetupEncVec_P":
+P:0000 00015D                 306     dc      RSRC_FUNCLET_SYSSETUPENCVEC           ; Funclet Resource number
+P:0001 47F400 0BF080  3    3  310     move    #>$bf080,y1                 ; opcode for JSR
+                              311     ; ADC Full
+P:0003 314200         2    5  312     move    #HW_IVECADCF,r1
+P:0004 000000         2    7  313     nop
+P:0005 075987         6   13  314     movem   y1,p:(r1)+
+P:0006 076184         6   19  315     movem   x0,p:(r1)
+                              316     ; ADC Overflow
+P:0007 314400         2   21  317     move    #HW_IVECADCOF,r1
+P:0008 000000         2   23  318     nop
+P:0009 075987         6   29  319     movem   y1,p:(r1)+
+P:000A 076185         6   35  320     movem   x1,p:(r1)
+                              321     ; Hardware workaround
+                              322     ; Force the ADC isr to vector $46 also (hardware bug)
+P:000B 314600         2   37  323     move    #$46,r1
+P:000C 000000         2   39  324     nop
+P:000D 075987         6   45  325     movem   y1,p:(r1)+
+P:000E 076185         6   51  326     movem   x1,p:(r1)
+                              327     ; Encoder Module Timer
+P:000F 312600         2   53  328     move    #HW_IVECTIMER0,r1
+P:0010 000000         2   55  329     nop
+P:0011 075987         6   61  330     movem   y1,p:(r1)+
+P:0012 076186         6   67  331     movem   y0,p:(r1)
+P:0013 00000C         4   71  332     rts
+                              336     ;If using funclet, switch counter back to original here
+P:000D                        337     org    p,"SYSFUN_SysIrq_P":
+                              341 ;///////////////////////////////////////////////////////////////////////////////
+                              342 ;
+                              343 ;>  Name:           SysSetupDecVectors
+                              344 ;
+                              345 ;   Type:           Function
+                              346 ;
+                              347 ;   Description:    Setup Interrupt Vectors for the DAC ISR
+                              348 ;
+                              349 ;   Inputs:         x0 = DAC Refill vector routine address
+                              350 ;                   x1 = DAC Underflow vector routine address
+                              351 ;                   y0 = Decoder Module Timer vector routine address
+                              352 ;
+                              353 ;   Outputs:        none
+                              354 ;
+                              355 ;   Notes:          none
+                              356 ;<
+                              357 ;///////////////////////////////////////////////////////////////////////////////
+                              358 SysSetupDecVectors
+                              362     ;If using funclet, function will be executed via funclet kernel
+                              363     CallFunclet RSRC_FUNCLET_SYSSETUPDECVEC
+P:000D 0D0080         4   33  363     jsr       $80
+P:000E 00015C                 363     DC       RSRC_FUNCLET_SYSSETUPDECVEC  ; 1 word
+P:0000                        365     org     p,"SYSFUNCLET_SysSetupDecVec_P":
+P:0000 00015C                 367     dc      RSRC_FUNCLET_SYSSETUPDECVEC           ; Funclet Resource number
+P:0001 47F400 0BF080  3    3  371     move    #>$bf080,y1                 ; opcode for JSR
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              372     ; DAC Refill
+P:0003 313C00         2    5  373     move    #HW_IVECDACE,r1
+P:0004 000000         2    7  374     nop
+P:0005 075987         6   13  375     movem   y1,p:(r1)+
+P:0006 076184         6   19  376     movem   x0,p:(r1)
+                              377     ; DAC Underflow
+P:0007 313E00         2   21  378     move    #HW_IVECDACUF,r1
+P:0008 000000         2   23  379     nop
+P:0009 075987         6   29  380     movem   y1,p:(r1)+
+P:000A 076185         6   35  381     movem   x1,p:(r1)
+                              382     ; Decoder Module Timer
+P:000B 312600         2   37  383     move    #HW_IVECTIMER0,r1
+P:000C 000000         2   39  384     nop
+P:000D 075987         6   45  385     movem   y1,p:(r1)+
+P:000E 076186         6   51  386     movem   y0,p:(r1)
+P:000F 00000C         4   55  387     rts
+                              391     ;If using funclet, switch counter back to original here
+P:000F                        392     org    p,"SYSFUN_SysIrq_P":
+                              396 ;///////////////////////////////////////////////////////////////////////////////
+                              397 ;
+                              398 ;>  Name:           GetIrqL
+                              399 ;
+                              400 ;   Type:           Function
+                              401 ;
+                              402 ;   Description:    Get the SR IRQ Level
+                              403 ;
+                              404 ;   Inputs:         none
+                              405 ;
+                              406 ;   Outputs:        x0 = sr & IPL_MASK
+                              407 ;
+                              408 ;   Notes:          none
+                              409 ;<
+                              410 ;///////////////////////////////////////////////////////////////////////////////
+                              411 FGetIrqL
+                              412 FSysGetIrqLevel
+                              413 GetIrqL
+P:000F 0444B9         2   35  414     movec   sr,x0                       ;Reads Status Register
+P:0010 54F400 000300  3   38  415     move    #>HW_SR_IM_SETMASK,a1           ;
+P:0012 200046         2   40  416     and     x0,a                        ;Sets all bits to zero but Interrupt Mask Bits (I1,I0)
+P:0013 218400         2   42  417     move    a1,x0
+P:0014 00000C         4   46  418     rts
+                              424 ;///////////////////////////////////////////////////////////////////////////////
+                              425 ;
+                              426 ;>  Name:           SetIrqL
+                              427 ;
+                              428 ;   Type:           Function
+                              429 ;
+                              430 ;   Description:    Sets the SR IRQ Level
+                              431 ;
+                              432 ;   Inputs:         x0 = Desired IRQ Level
+                              433 ;
+                              434 ;   Outputs:        none
+                              435 ;
+                              436 ;   Notes:          none
+                              437 ;<
+                              438 ;///////////////////////////////////////////////////////////////////////////////
+                              439 FSetIrqL
+                              440 FSysSetIrqLevel
+P:0015 218400         2   48  441     move    a1,x0
+                              442 SetIrqL
+P:0016 0446B9         2   50  443     movec   sr,y0                       ;Reads Status Register
+P:0017 54F400 00FCFF  3   53  444     move    #>HW_SR_IM_CLRMASK,a1
+P:0019 200056         2   55  445     and     y0,a                        ;Clears Interrupt Masks (Bits I1 and I0)
+P:001A 200042         2   57  447     or      x0,a                        ;Updates Interrupt Masks with desired level
+P:001B 04CCB9         2   59  448     movec   a1,sr                       ;Updates Status Register
+P:001C 00000C         4   63  449     rts
+                              451     endsec

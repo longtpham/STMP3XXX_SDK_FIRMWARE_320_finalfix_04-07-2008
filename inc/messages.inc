@@ -1,0 +1,335 @@
+;///////////////////////////////////////////////////////////////////////////////
+; Copyright(C) SigmaTel, Inc. 2000
+;
+; Message defs
+;///////////////////////////////////////////////////////////////////////////////
+
+    IF (!@def(MESSAGES_INC))
+MESSAGES_INC equ 1
+
+MSG_TYPE_DECODER            equ     $000000
+MSG_TYPE_ENCODER            equ     $010000
+MSG_TYPE_PARSER             equ     $020000
+MSG_TYPE_LCD                equ     $030000
+MSG_TYPE_MIXER              equ     $040000
+MSG_TYPE_SYSTEM             equ     $050000
+MSG_TYPE_MENU               equ     $060000
+MSG_TYPE_LED                equ     $070000
+MSG_TYPE_TUNER              equ     $080000
+MSG_TYPE_CHARLCD            equ     $030000
+MSG_TYPE_SOFT_TIMER         equ     $090000
+MSG_TYPE_GEQ                equ     $0a0000             ; Equalizer and other effects   
+
+; Message Structure Offsets
+MSG_Length              equ     0
+MSG_ID                  equ     1
+MSG_Argument1           equ     2
+MSG_Argument2           equ     3
+MSG_Argument3           equ     4
+MSG_Argument4           equ     5
+MSG_Argument5           equ     6
+MSG_Argument6           equ     7
+
+
+
+; LCD Message IDs
+LCD_FIRST_MSG_ID         equ     MSG_TYPE_LCD+0
+LCD_CLEAR_RANGE          equ     MSG_TYPE_LCD+0
+LCD_PRINT_RANGE_RSRC     equ     MSG_TYPE_LCD+1
+LCD_PRINT_RANGE_ADDR     equ     MSG_TYPE_LCD+2
+LCD_PRINT_RANGE_INV_RSRC equ     MSG_TYPE_LCD+3
+LCD_PRINT_RANGE_INV_ADDR equ     MSG_TYPE_LCD+4
+LCD_PRINT_STRING_RSRC    equ     MSG_TYPE_LCD+5
+LCD_PRINT_STRING_ADDR    equ     MSG_TYPE_LCD+6
+LCD_PRINT_STRING_INV_RSRC equ    MSG_TYPE_LCD+7
+LCD_PRINT_STRING_INV_ADDR equ    MSG_TYPE_LCD+8
+LCD_SCROLL_DISPLAY       equ     MSG_TYPE_LCD+9
+LCD_READ_LCD_ADDR        equ     MSG_TYPE_LCD+10
+LCD_SET_CONTRAST         equ     MSG_TYPE_LCD+11
+LCD_INC_CONTRAST         equ     MSG_TYPE_LCD+12
+LCD_DEC_CONTRAST         equ     MSG_TYPE_LCD+13
+LCD_BACKLIGHT_ON		 equ     MSG_TYPE_LCD+14
+LCD_BACKLIGHT_OFF		 equ     MSG_TYPE_LCD+15
+LCD_SET_FONT             equ     MSG_TYPE_LCD+16
+LCD_PRINT_NUMBER         equ     MSG_TYPE_LCD+17
+LCD_PRINT_TIME           equ     MSG_TYPE_LCD+18
+LCD_PRINT_TIME_LONG      equ     MSG_TYPE_LCD+19
+LCD_PRINT_STRING_UNICODE_INV_ADDR equ MSG_TYPE_LCD+20
+LCD_PRINT_STRING_UNICODE_ADDR equ MSG_TYPE_LCD+21
+LCD_PRINT_STRING_UNICODE_INV_RSRC equ MSG_TYPE_LCD+22
+LCD_PRINT_STRING_UNICODE_RSRC equ MSG_TYPE_LCD+23
+LCD_BEGIN_FRAME          equ     MSG_TYPE_LCD+24
+LCD_END_FRAME            equ     MSG_TYPE_LCD+25
+LCD_PRINT_NUMBER_INV     equ     MSG_TYPE_LCD+26
+LCD_PRINT_TIME_INV       equ     MSG_TYPE_LCD+27
+LCD_PRINT_TIME_LONG_INV  equ     MSG_TYPE_LCD+28
+LCD_SET_FRAMEBUFFER      equ     MSG_TYPE_LCD+29
+;send a NULL as Param1 to return to root frame buffer
+LCD_PUSH_MASK             equ     MSG_TYPE_LCD+30
+;Param1 = left
+;Param2 = top
+;Param3 = right
+;Param4 = bottom
+LCD_POP_MASK             equ     MSG_TYPE_LCD+31
+LCD_PRINT_UNICODE_CHAR   equ     MSG_TYPE_LCD+32
+LCD_PRINT_UNICODE_CHAR_INV equ     MSG_TYPE_LCD+33
+LCD_DISPLAY_HISTOGRAM    equ     MSG_TYPE_LCD+34
+LCD_PRINT_TIME_L_1DIG_HR equ     MSG_TYPE_LCD+35
+
+LCD_CLEAR_RANGE_BUFFER						equ		MSG_TYPE_LCD+36
+LCD_PRINT_RANGE_RSRC_BUFFER					equ		MSG_TYPE_LCD+37
+LCD_PRINT_RANGE_INV_RSRC_BUFFER				equ		MSG_TYPE_LCD+38
+LCD_PRINT_RANGE_ADDR_BUFFER					equ		MSG_TYPE_LCD+39
+LCD_PRINT_RANGE_INV_ADDR_BUFFER				equ		MSG_TYPE_LCD+40
+LCD_PRINT_STRING_RSRC_BUFFER				equ		MSG_TYPE_LCD+41
+LCD_PRINT_STRING_INV_RSRC_BUFFER			equ		MSG_TYPE_LCD+42
+LCD_PRINT_STRING_ADDR_BUFFER				equ		MSG_TYPE_LCD+43
+LCD_PRINT_STRING_INV_ADDR_BUFFER			equ		MSG_TYPE_LCD+44
+LCD_PRINT_NUMBER_BUFFER						equ		MSG_TYPE_LCD+45
+LCD_PRINT_NUMBER_INV_BUFFER					equ		MSG_TYPE_LCD+46
+LCD_PRINT_TIME_BUFFER						equ		MSG_TYPE_LCD+47
+LCD_PRINT_TIME_INV_BUFFER					equ		MSG_TYPE_LCD+48
+LCD_PRINT_TIME_LONG_BUFFER					equ		MSG_TYPE_LCD+49
+LCD_PRINT_TIME_LONG_INV_BUFFER				equ		MSG_TYPE_LCD+50
+LCD_PRINT_STRING_UNICODE_ADDR_BUFFER		equ		MSG_TYPE_LCD+51
+LCD_PRINT_STRING_UNICODE_INV_ADDR_BUFFER	equ		MSG_TYPE_LCD+52
+LCD_PRINT_STRING_UNICODE_RSRC_BUFFER		equ		MSG_TYPE_LCD+53
+LCD_PRINT_STRING_UNICODE_INV_RSRC_BUFFER	equ		MSG_TYPE_LCD+54
+LCD_PRINT_UNICODE_CHAR_BUFFER				equ		MSG_TYPE_LCD+55
+LCD_PRINT_UNICODE_CHAR_INV_BUFFER			equ		MSG_TYPE_LCD+56
+LCD_PRINT_TIME_L_1DIG_HR_BUFFER				equ		MSG_TYPE_LCD+57
+LCD_SET_BUFFER_COLOR						equ		MSG_TYPE_LCD+58
+LCD_FORCE_BUFFER_UPDATE						equ		MSG_TYPE_LCD+59
+LCD_SET_BUFFER_WINDOW						equ		MSG_TYPE_LCD+60
+LCD_SET_COLOR								equ		MSG_TYPE_LCD+61
+LCD_SET_BUFFER_POSITION						equ     MSG_TYPE_LCD+62
+
+LCD_TEMP_CONTRAST        equ     MSG_TYPE_LCD+63
+
+    if @def('CLCD_16BIT')
+LCD_16BIT_ON             equ     MSG_TYPE_LCD+64
+LCD_16BIT_OFF            equ     MSG_TYPE_LCD+65
+
+LCD_LAST_MSG_ID          equ     MSG_TYPE_LCD+65
+    else
+LCD_LAST_MSG_ID          equ     MSG_TYPE_LCD+63
+    endif
+
+; If you change the LCD message ID's then you must
+; also change the jump table in lcdapi.asm
+
+; Character LCD Message IDs
+CHARLCD_FIRST_MSG_ID         equ     MSG_TYPE_CHARLCD+0
+CHARLCD_CLEAR_RANGE          equ     MSG_TYPE_CHARLCD+0
+CHARLCD_PRINT_RSRC           equ     MSG_TYPE_CHARLCD+1
+CHARLCD_PRINT_INV_RSRC       equ     MSG_TYPE_CHARLCD+2
+CHARLCD_PRINT_ASCII_CHAR     equ     MSG_TYPE_CHARLCD+3
+CHARLCD_PRINT_ASCII_INV_CHAR equ     MSG_TYPE_CHARLCD+4
+CHARLCD_PRINT_STRING_RSRC    equ     MSG_TYPE_CHARLCD+5
+CHARLCD_PRINT_STRING_INV_RSRC equ    MSG_TYPE_CHARLCD+6
+CHARLCD_PRINT_STRING_ADDR    equ     MSG_TYPE_CHARLCD+7
+CHARLCD_PRINT_STRING_INV_ADDR equ    MSG_TYPE_CHARLCD+8
+CHARLCD_SCROLL_DISPLAY       equ     MSG_TYPE_CHARLCD+9
+CHARLCD_READ_LCD_ADDR        equ     MSG_TYPE_CHARLCD+10
+CHARLCD_SET_CURSOR           equ     MSG_TYPE_CHARLCD+11
+CHARLCD_SET_FONT             equ     MSG_TYPE_CHARLCD+12
+CHARLCD_PRINT_NUMBER         equ     MSG_TYPE_CHARLCD+13
+CHARLCD_PRINT_TIME           equ     MSG_TYPE_CHARLCD+14
+CHARLCD_SET_BATTERY          equ     MSG_TYPE_CHARLCD+15
+CHARLCD_SET_EQ               equ     MSG_TYPE_CHARLCD+16
+CHARLCD_SET_ICON             equ     MSG_TYPE_CHARLCD+17
+CHARLCD_SET_PLAYMODE         equ     MSG_TYPE_CHARLCD+18
+CHARLCD_SET_PLAYSTATE        equ     MSG_TYPE_CHARLCD+19
+CHARLCD_SET_VOLUME           equ     MSG_TYPE_CHARLCD+20
+CHARLCD_CLEAR_DISPLAY        equ     MSG_TYPE_CHARLCD+21
+CHARLCD_LAST_MSG_ID          equ     MSG_TYPE_CHARLCD+21
+; If you change the cHARACTER LCD message ID's then you must
+; also change the jump table in lcdapi.asm
+
+; Decoder Message IDs
+DECODER_FIRST_MSG_ID     equ     MSG_TYPE_DECODER+0
+DECODER_RESET            equ     MSG_TYPE_DECODER+0
+DECODER_SET_DIR          equ     MSG_TYPE_DECODER+1
+DECODER_PLAY             equ     MSG_TYPE_DECODER+2
+DECODER_STOP             equ     MSG_TYPE_DECODER+3
+DECODER_FFWD             equ     MSG_TYPE_DECODER+4
+DECODER_RWND             equ     MSG_TYPE_DECODER+5
+DECODER_NEXT_SONG        equ     MSG_TYPE_DECODER+6
+DECODER_PREV_SONG        equ     MSG_TYPE_DECODER+7
+DECODER_TIME_MODE        equ     MSG_TYPE_DECODER+8
+DECODER_AB_MODE          equ     MSG_TYPE_DECODER+9
+DECODER_SET_EQ           equ     MSG_TYPE_DECODER+10
+DECODER_GET_SONG_INFO    equ     MSG_TYPE_DECODER+11
+DECODER_LAST_MSG_ID      equ     MSG_TYPE_DECODER+11
+; If you change the Decoder message ID's, then you must
+; also change the jump table in decoder_overlay.asm
+; and in dec_adpcm_overlay.asm.
+
+; Encoder Message IDs
+ENCODER_FIRST_MSG_ID     equ     MSG_TYPE_ENCODER+0
+ENCODER_RECORD           equ     MSG_TYPE_ENCODER+0
+ENCODER_STOP             equ     MSG_TYPE_ENCODER+1
+ENCODER_TIME_MODE        equ     MSG_TYPE_ENCODER+2
+ENCODER_LAST_MSG_ID      equ     MSG_TYPE_ENCODER+3
+; If you change the Encoder message ID's, then you must
+; also change the jump table in all encoder overlay modules.
+
+; Parser Message IDs
+PARSER_FIRST_MSG_ID     equ     MSG_TYPE_PARSER+0
+PARSER_NEXT_SONG        equ     MSG_TYPE_PARSER+0
+PARSER_PREV_SONG        equ     MSG_TYPE_PARSER+1
+PARSER_REPEAT           equ     MSG_TYPE_PARSER+2
+PARSER_RANDOM           equ     MSG_TYPE_PARSER+3
+PARSER_STOP             equ     MSG_TYPE_PARSER+4
+PARSER_DEVICE_ENUMERATE equ     MSG_TYPE_PARSER+5
+PARSER_SET_CURRENT_SONG equ     MSG_TYPE_PARSER+6
+PARSER_LAST_MSG_ID      equ     MSG_TYPE_PARSER+6
+; If you change the Parser message ID's, then you must
+; also change the jump table in parser.asm
+
+; Button Message IDs
+;BUTTON_FIRST_MSG_ID      equ     MSG_TYPE_BUTTON+0
+;BUTTON_BUTTONS_ON        equ     MSG_TYPE_BUTTON+0
+;BUTTON_BUTTONS_OFF       equ     MSG_TYPE_BUTTON+1
+;BUTTON_HOLD              equ     MSG_TYPE_BUTTON+2
+;BUTTON_HOLD_RELEASE      equ     MSG_TYPE_BUTTON+3
+;BUTTON_LAST_MSG_ID       equ     MSG_TYPE_BUTTON+3
+
+; Mixer Message IDs
+MIXER_FIRST_MSG_ID       equ     MSG_TYPE_MIXER+0
+MIXER_MASTER_INCR        equ     MSG_TYPE_MIXER+0
+MIXER_MASTER_DECR        equ     MSG_TYPE_MIXER+1
+MIXER_MASTER_SETLVL      equ     MSG_TYPE_MIXER+2
+MIXER_MASTER_MUTE        equ     MSG_TYPE_MIXER+3
+MIXER_MASTER_UNMUTE      equ     MSG_TYPE_MIXER+4
+MIXER_MASTER_FADE_OUT    equ     MSG_TYPE_MIXER+5
+MIXER_MASTER_FADE_IN     equ     MSG_TYPE_MIXER+6
+MIXER_MASTER_BAL_RIGHT   equ     MSG_TYPE_MIXER+7
+MIXER_MASTER_BAL_LEFT    equ     MSG_TYPE_MIXER+8
+MIXER_MIC_INCR           equ     MSG_TYPE_MIXER+9
+MIXER_MIC_DECR           equ     MSG_TYPE_MIXER+10
+MIXER_MIC_SETLVL         equ     MSG_TYPE_MIXER+11
+MIXER_MIC_MUTE           equ     MSG_TYPE_MIXER+12
+MIXER_MIC_UNMUTE         equ     MSG_TYPE_MIXER+13
+MIXER_MIC_BOOST          equ     MSG_TYPE_MIXER+14
+MIXER_MIC_UNBOOST        equ     MSG_TYPE_MIXER+15
+MIXER_LINE_INCR          equ     MSG_TYPE_MIXER+16
+MIXER_LINE_DECR          equ     MSG_TYPE_MIXER+17
+MIXER_LINE_SETLVL        equ     MSG_TYPE_MIXER+18
+MIXER_LINE_MUTE          equ     MSG_TYPE_MIXER+19
+MIXER_LINE_UNMUTE        equ     MSG_TYPE_MIXER+20
+MIXER_FM_INCR            equ     MSG_TYPE_MIXER+21
+MIXER_FM_DECR            equ     MSG_TYPE_MIXER+22
+MIXER_FM_SETLVL          equ     MSG_TYPE_MIXER+23
+MIXER_FM_MUTE            equ     MSG_TYPE_MIXER+24
+MIXER_FM_UNMUTE          equ     MSG_TYPE_MIXER+25
+MIXER_DAC_INCR           equ     MSG_TYPE_MIXER+26
+MIXER_DAC_DECR           equ     MSG_TYPE_MIXER+27
+MIXER_DAC_SETLVL         equ     MSG_TYPE_MIXER+28
+MIXER_DAC_MUTE           equ     MSG_TYPE_MIXER+29
+MIXER_DAC_UNMUTE         equ     MSG_TYPE_MIXER+30
+MIXER_ADC_SELECT         equ     MSG_TYPE_MIXER+31
+MIXER_ADC_INCR           equ     MSG_TYPE_MIXER+32
+MIXER_ADC_DECR           equ     MSG_TYPE_MIXER+33
+MIXER_ADC_SETLVL         equ     MSG_TYPE_MIXER+34
+MIXER_ADC_MUTE           equ     MSG_TYPE_MIXER+35
+MIXER_ADC_UNMUTE         equ     MSG_TYPE_MIXER+36
+MIXER_REC_SELECT         equ     MSG_TYPE_MIXER+37
+MIXER_POWER_DOWN         equ     MSG_TYPE_MIXER+38
+MIXER_LAST_MSG_ID        equ     MSG_TYPE_MIXER+38
+; If you change the mixer message ID's then you must
+; also change the jump table in mixer.asm
+MIXER_ON		 equ	 0
+MIXER_OFF		 equ     1
+
+
+; System Message IDs
+SYSTEM_FIRST_MSG_ID      equ     MSG_TYPE_SYSTEM+0
+SYSTEM_SHUTDOWN          equ     MSG_TYPE_SYSTEM+0
+SYSTEM_SHUTDOWN_FALSE    equ     MSG_TYPE_SYSTEM+1
+SYSTEM_SHUTDOWN_FINAL    equ     MSG_TYPE_SYSTEM+2
+SYSTEM_LAST_MSG_ID       equ     MSG_TYPE_SYSTEM+2
+; If you change the system message ID's then you must
+; also change the jump table in systemapi.asm
+
+; Menu IDs
+MENU_FIRST_MSG_ID           equ     MSG_TYPE_MENU+0
+MENU_BUTTON_EVENT           equ     MSG_TYPE_MENU+0
+MENU_DECODER_STATE_CHNG     equ     MSG_TYPE_MENU+1
+MENU_RECORDER_STATE_CHNG    equ     MSG_TYPE_MENU+2
+;sub parameters for this message:
+    RECORDER_START:             equ     0
+    RECORDER_STOP_NORMAL:       equ     $8000
+    RECORDER_STOP_FILE_ERROR:   equ     $8001
+    RECORDER_STOP_OUT_OF_SPACE: equ     $8002
+    RECORDER_STOP_LOW_BATTERY:  equ     $8003    
+MENU_SONG_TIME_CHNG         equ     MSG_TYPE_MENU+3
+MENU_AB_MODE_OFF            equ     MSG_TYPE_MENU+4
+MENU_BATTERY_CHNG           equ     MSG_TYPE_MENU+5
+MENU_SCROLL_TITLE           equ     MSG_TYPE_MENU+6
+MENU_AUTO_SHUTDOWN          equ     MSG_TYPE_MENU+7
+MENU_MSG_MEDIA_CHANGED      equ     MSG_TYPE_MENU+8
+ if (!@def('REMOVE_FM'))    
+MENU_TUNER_TUNED            equ     MSG_TYPE_MENU+9
+MENU_MSG_ENC_LOW_SPACE      equ     MSG_TYPE_MENU+10
+MENU_MSG_EQ_SETTINGS        equ     MSG_TYPE_MENU+11
+MENU_LAST_MSG_ID            equ     MSG_TYPE_MENU+11
+ else
+MENU_MSG_ENC_LOW_SPACE      equ     MSG_TYPE_MENU+9
+MENU_MSG_EQ_SETTINGS        equ     MSG_TYPE_MENU+10
+MENU_LAST_MSG_ID            equ     MSG_TYPE_MENU+10
+ endif
+
+; Note that other versions of this file have different msg equates.
+; If you change the system message ID's then you must
+; also change the jump table in all menu *.asm
+
+; LED Message IDs
+LED_FIRST_MSG_ID         equ     MSG_TYPE_LED+0
+LED_CONTROL              equ     MSG_TYPE_LED+0
+LED_RESET                equ     MSG_TYPE_LED+1
+LED_LAST_MSG_ID          equ     MSG_TYPE_LED+1
+; If you change the LeD message ID's then you must
+; also change the jump table in ledapi.asm
+
+ if (!@def('REMOVE_FM'))    
+; FM Tuner Message IDs
+TUNER_FIRST_MSG_ID          equ     MSG_TYPE_TUNER+0
+TUNER_TUNE_FREQUENCY        equ     MSG_TYPE_TUNER+0
+TUNER_TUNE_MANUAL_UP        equ     MSG_TYPE_TUNER+1
+TUNER_TUNE_MANUAL_DOWN      equ     MSG_TYPE_TUNER+2
+TUNER_TUNE_SEARCH_UP        equ     MSG_TYPE_TUNER+3
+TUNER_TUNE_SEARCH_DOWN      equ     MSG_TYPE_TUNER+4
+TUNER_FORCED_MONO           equ     MSG_TYPE_TUNER+5
+TUNER_RESET                 equ     MSG_TYPE_TUNER+6
+TUNER_POWER_ON              equ     MSG_TYPE_TUNER+7
+TUNER_POWER_OFF             equ     MSG_TYPE_TUNER+8
+TUNER_SET_SENSITIVITY       equ     MSG_TYPE_TUNER+9
+;one parameter--the sensitivity in uV
+TUNER_GET_STATES	equ	MSG_TYPE_TUNER+10
+TUNER_MUTE_OUTPUTS	equ	MSG_TYPE_TUNER+11
+TUNER_PRESET_STATION	equ	MSG_TYPE_TUNER+12
+TUNER_TUNE_TO_PRESET	equ	MSG_TYPE_TUNER+13
+TUNER_SET_PRESET	equ	MSG_TYPE_TUNER+14
+TUNER_ERASE_PRESET	equ	MSG_TYPE_TUNER+15
+TUNER_LAST_MSG_ID           equ     MSG_TYPE_TUNER+15
+ endif
+
+SOFT_TIMER_FIRST_MSG_ID equ     MSG_TYPE_SOFT_TIMER+0
+SOFT_TIMER_SET_TIMER    equ     MSG_TYPE_SOFT_TIMER+1
+SOFT_TIMER_KILL_TIMER   equ     MSG_TYPE_SOFT_TIMER+2
+SOFT_TIMER_LAST_MSG_ID  equ     MSG_TYPE_SOFT_TIMER+2
+
+
+GEQ_FIRST_MSG_ID        equ     MSG_TYPE_GEQ+0
+GEQ_SET_EQ              equ     MSG_TYPE_GEQ+0
+GEQ_SET_EQ_LEGACY       equ     MSG_TYPE_GEQ+1
+GEQ_SET_ALL_BAND_GAINS  equ     MSG_TYPE_GEQ+2
+GEQ_SET_GAIN            equ     MSG_TYPE_GEQ+3
+GEQ_SET_COEFFICIENTS    equ     MSG_TYPE_GEQ+4
+GEQ_SET_PARAM		equ	MSG_TYPE_GEQ+5
+GEQ_GET_SETTINGS        equ     MSG_TYPE_GEQ+6
+GEQ_LAST_MSG_ID         equ     MSG_TYPE_GEQ+6
+
+    ENDIF ; IF (!@def(MSGEQU_INC))
+

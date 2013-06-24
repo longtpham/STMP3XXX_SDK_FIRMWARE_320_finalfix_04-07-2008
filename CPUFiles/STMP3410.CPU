@@ -1,0 +1,145 @@
+/**************************************************************************
+**
+**	FILE        :  STMP3410.cpu	(Derived from STMP3400.cpu)
+**
+**	VERSION     :  00/12/20       (Base version. Not incremented)
+**
+**	DESCRIPTION :  CPU description for Sigmatel STMP3410.
+**
+**************************************************************************/
+
+cpu {
+////////////////////////////////////////////////////////////////////////
+//
+//	 A D R E S S I N G   M O D E S 
+//
+//
+	//
+	//	adressing modes in P-space 
+	//
+	amode P_far {
+		attribute Y1;
+		mau 24;
+		map src=0 size=64k dst=0 space=P;
+	}
+
+	amode P_sjmp {
+		attribute Y5;
+		mau 24;
+		map src=0 size=0x1000 dst=0 amode=P_far;
+	}
+
+	//
+	//	addressing modes in X-space
+	//
+	amode X_far {
+		attribute Y2;
+		mau 24;
+		map src=0 size=64k dst=0 space=X;
+	}
+
+	amode X_near {
+		attribute Y6;
+		mau 24;
+		map src=0 size=0x40 dst=0 amode=X_far;
+	}
+
+	amode X_io {
+		attribute Y9;
+		mau 24;
+		map src=0 size=0x4000 dst=0xc000 amode=X_far;
+	}
+
+	//
+	//	adressing modes in Y-space 
+	//
+	amode Y_far {
+		attribute Y3;
+		mau 24;
+		map src=0 size=64k dst=0 space=Y;
+	}
+
+	amode Y_near {
+		attribute Y7;
+		mau 24;
+		map src=0 size=0x40 dst=0 amode=Y_far;
+	}
+	
+	amode Y_io {
+		attribute Y10;
+		mau 24;
+		map src=0 size=0x40 dst=0xffc0 amode=Y_far;
+	}
+
+	//
+	//	addressing modes in L-space
+	//
+	amode L_far {
+		attribute Y4;
+		mau 48;
+		map src=0 size=64k dst=0 space=L;
+	}
+
+	amode L_near {
+		attribute Y8;
+		mau 48;
+		map src=0 size=0x40 dst=0 amode=L_far;
+	}
+
+////////////////////////////////////////////////////////////////////////
+//
+//	S P A C E S
+//
+//
+	space P {
+		mau 24;
+		map src=INT_P_VECTOR_ORG   size=INT_P_VECTOR_SZ  dst=INT_P_VECTOR_ORG  bus=PAB label=PVectorBlock;
+		map src=INT_P_APP_ORG      size=INT_P_APP_SZ     dst=INT_P_APP_ORG     bus=PAB label=PAppBlock;
+    	map src=INT_P_MDD_ORG      size=INT_P_MDD_SZ     dst=INT_P_MDD_ORG     bus=PAB label=PMediaDD;
+    	map src=INT_P_SYS_ORG      size=INT_P_SYS_SZ     dst=INT_P_SYS_ORG     bus=PAB label=PSysBlock;
+	    map src=INT_P_MODULE_ORG   size=INT_P_MODULE_SZ  dst=INT_P_MODULE_ORG  bus=PAB label=PModuleOverlayBlock;
+	    map src=EXT_P_ORG          size=EXT_P_RAM        dst=EXT_P_ORG         bus=PAB label=PExtBlock;
+	}
+    
+    space X {
+        mau 24;
+//        map src=INT_X_BTRM_ORG     size=INT_X_BTRM_SZ    dst=INT_X_BTRM_ORG  bus=XAB label=XBootBlock;
+        map src=INT_X_APP_ORG      size=INT_X_APP_SZ     dst=INT_X_APP_ORG     bus=XAB label=XAppBlock;
+        map src=INT_X_SYS_ORG      size=INT_X_SYS_SZ     dst=INT_X_SYS_ORG     bus=XAB label=XSysBlock;
+        map src=INT_LTABLES_ORG  size=INT_LTABLES_SZ     dst=INT_LTABLES_ORG   bus=XAB label=X_LBlock;
+        map src=INT_X_EXTRA_ORG    size=INT_X_EXTRA_SZ   dst=INT_X_EXTRA_ORG   bus=XAB label=X_ExtraBlock;
+        map src=EXT_X_ORG          size=EXT_X_RAM        dst=EXT_X_ORG         bus=XAB label=XExtBlock;
+    }
+    
+    space Y {
+        mau 24;
+//        map src=INT_Y_ORG      	   size=INT_Y_NEAR_SZ    dst=INT_Y_ORG     bus=YAB label=YNearBlock;
+        map src=INT_Y_SYS_ORG      size=INT_Y_SYS_SZ     dst=INT_Y_SYS_ORG     bus=YAB label=YSysBlock;
+        map src=INT_Y_APP_ORG      size=INT_Y_APP_SZ     dst=INT_Y_APP_ORG     bus=YAB label=YAppBlock;
+        map src=INT_LTABLES_ORG  size=INT_LTABLES_SZ     dst=INT_LTABLES_ORG   bus=YAB label=Y_LBlock;
+        map src=INT_Y_EXTRA_ORG    size=INT_Y_EXTRA_SZ   dst=INT_Y_EXTRA_ORG   bus=YAB label=Y_ExtraBlock;
+        map src=EXT_Y_ORG          size=EXT_Y_RAM        dst=EXT_Y_ORG         bus=YAB label=YExtBlock;
+    }
+    
+    space L {
+		mau 48;
+		map src=0 size=INT_X_RAM dst=0 bus=XAB|YAB label=L_Block;
+    //L ram space is set to X for convenience.  Set to the lowest of X or Y
+    }
+
+////////////////////////////////////////////////////////////////
+//
+//	B U S
+//
+//
+//  See the *.mem file for the bus definition.
+
+
+////////////////////////////////////////////////////////////////
+//
+//	C H I P
+//
+//
+//  See the *.mem file for the chip definition.
+
+}

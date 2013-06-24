@@ -1,0 +1,196 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\msgmodules\software\system\systemapi.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2003
+                                3 ;
+                                4 ; Filename:     systemapi.asm
+                                5 ; Description:  STMP3 System Module API
+                                6 ;               System module functions such as init, shutdown, and battery life.
+                                7 ;///////////////////////////////////////////////////////////////////////////////
+                                9     section SYSMOD_SystemApi
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;  Macros
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               18     list
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               21 ;   Includes
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               33     list
+                               35 ;///////////////////////////////////////////////////////////////////////////////
+                               36 ;   External Definitions
+                               37 ;///////////////////////////////////////////////////////////////////////////////
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;   External References
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               56     list
+                               58     ; milestone3msgs.asm
+                               63       
+                               65     
+                               73 ;    EXTERN  SysRTCShutdown
+                               83 ;///////////////////////////////////////////////////////////////////////////////
+                               84 ;   Equates
+                               85 ;///////////////////////////////////////////////////////////////////////////////
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+                               89 ;   X Memory
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                         92       org x,"SYSMOD_SystemApi_X":
+                               94 ;///////////////////////////////////////////////////////////////////////////////
+                               95 ;   Y Memory
+                               96 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         98       org y,"SYSMOD_SystemApi_Y":
+                              100 ; data for SystemShutdown
+Y:0000 000000                 101 Sys_ShuttingDownFlag    dc      0
+Y:0001 000000                 102 Sys_StartTimeHigh       dc      0
+Y:0002 000000                 103 Sys_StartTimeLow        dc      0
+                              105 ; data for SystemShutdownFinal
+Y:0003 000000                 106 Ssf_ThisIsReallyIt      dc      0
+                              108 ; location to store the IPR value
+Y:0004 000000                 109 SaveIPR                 dc      0
+Y:0000                        111       org y,"SYSMOD_SystemApi_mod_Y":
+                              114 ;///////////////////////////////////////////////////////////////////////////////
+                              115 ;   P Memory
+                              116 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                        118      org p,"SYSMOD_SystemApi_P":
+                              120 ;///////////////////////////////////////////////////////////////////////////////
+                              121 ;> Name:        SysGetVolume
+                              122 ;
+                              123 ;  Type:        Function
+                              124 ;
+                              125 ;  Description: This function returns the volume level in a1.
+                              126 ;               If muted due to FadeOut:
+                              127 ;                   Return SW register value (MixerMasterVol)
+                              128 ;               Else:
+                              129 ;                   Return HW register value (HW_MIXMASTERVR)
+                              130 ;
+                              131 ;  Inputs:      None.
+                              132 ;
+                              133 ;  Outputs:     a1 = Current Volume.
+                              134 ;
+                              135 ;  Notes: 
+                              136 ;<
+                              137 ;///////////////////////////////////////////////////////////////////////////////
+                              139 SysGetVolume
+                              142    
+                              143        CallFunclet RSRC_FUNCLET_SYSGETVOLUME
+P:0000 0D0080         4    4  143     jsr       $80
+P:0001 00016D                 143     DC       RSRC_FUNCLET_SYSGETVOLUME  ; 1 word
+                              144    
+P:0000                        145        org p,"SYSFUNCLET_SysGetVolume_P":
+                              146        
+P:0000 00016D                 147        dc      RSRC_FUNCLET_SYSGETVOLUME           ; Funclet Resource number
+                              148    
+P:0001 0B7020rrrrrrr  6    6  151     btst    #VOL_REG_BIT,x:MixerStatus
+P:0003 0AF0A8 rrrrrr  6   12  152     jcs     _UseMixerMasterVolume
+P:0005 56F000 00FA04  3   15  154     move    x:HW_MIXMASTERVR,a
+P:0007 57F000 00FA04  3   18  155     move    x:HW_MIXMASTERVR,b
+P:0009 0AF080 rrrrrr  6   24  156     jmp     _ProcessVolume
+                              158 _UseMixerMasterVolume
+P:000B 56F000 rrrrrr  3   27  159     move    x:MixerMasterVol,a
+P:000D 57F000 rrrrrr  3   30  160     move    x:MixerMasterVol,b
+                              162 _ProcessVolume
+P:000F 44F400 rrrrrr  3   33  163     move    #>MIX_LVOL_MASK,x0          ; Select the left volume field
+P:0011 200046         2   35  164     and     x0,a
+P:0012 218400         2   37  165     move    a1,x0                       ; Shift the field down 8 bits
+P:0013 0108D0         2   39  166     mpy     x0,#8,a
+P:0014 218400         2   41  167     move    a1,x0                       ; Normalize the value
+P:0015 56F400 rrrrrr  3   44  168     move    #>MIN_RVOL,a
+P:0017 200044         2   46  169     sub     x0,a
+                              171     ; Get the right volume value
+P:0018 44F400 rrrrrr  3   49  172     move    #>MIX_RVOL_MASK,x0          ; Select the right volume field
+P:001A 20004E         2   51  173     and     x0,b
+P:001B 21A400         2   53  174     move    b1,x0                       ; Normalize the value
+P:001C 57F400 rrrrrr  3   56  175     move    #>MIN_RVOL,b
+P:001E 20004C         2   58  176     sub     x0,b
+                              178     ; Let's use the largest volume value
+P:001F 20000D         2   60  179     cmp     a,b
+P:0020 0AF0A9 rrrrrr  6   66  180     jlt     _Done
+P:0022 21EE00         2   68  181     move    b,a
+                              183 _Done
+P:0023 00000C         4   72  184     rts
+                              187      
+                              188          ;If using funclet, switch counter back to original here
+P:0002                        189          org    p,"SYSMOD_SystemApi_P":                             
+                              190      
+P:0000                        193     org p,"SystemApi_P_overlay":
+                              194 ;///////////////////////////////////////////////////////////////////////////////
+                              195 ;> Name:        SystemShutdownFinal 
+                              196 ;
+                              197 ;  Type:        Function
+                              198 ;  Description: Wait for song to stop (if playing) then perform the final shutdown.
+                              199 ;
+                              200 ;  Inputs:      None.
+                              201 ;  Outputs:     None.
+                              202 ;  Notes:       May increase DCLK frequency to shorten shutdown time. 
+                              203 ;               ssf used below abbreviates function name.
+                              204 ;<
+                              205 ;///////////////////////////////////////////////////////////////////////////////
+                              206 SystemShutdownFinal
+                              208     ; Increase DCLK speed for faster shutdown. SysSpeed.asm
+P:0000 0BF080 rrrrrr  6    6  209     jsr     SysSpeedSysShutDown
+P:0002 5EF000 rrrrrr  3    9  211     move    y:Ssf_ThisIsReallyIt,a
+P:0004 200003         2   11  212     tst     a
+P:0005 0AF0AA rrrrrr  6   17  213     jeq     _make_sure_everything_is_done       ; Jumps on the first execution.
+                              214     ;---------------------------------------------------------------------------
+                              215     ; Shut off the PLL
+P:0007 0A7008 00FA00  6   23  216     bclr    #HW_CCR_CKSRC_BITPOS,x:HW_CCR
+                              218     ; give the LCD time to clear
+P:0009 20001B         2   25  219     clr     b                               
+P:000A 598000r        2   27  220     move    y:<Const_7fffff,b0                     
+                              221 _wait
+P:000B 00000B         2   29  222     dec     b
+P:000C 0AF0A2 rrrrrr  6   35  223     jne     _wait
+                              225     ; RTC shutdown !!!! required (for 3410 only) to prevent RTC register corruption during dc/dc shutdown !!!!
+                              226     ;jsr     SysRTCShutdown ; not needed for STMP35xx so commented out. 
+                              227     ; End of time, baby!
+P:000E 0A7009 00FA03  6   41  228     bclr    #HW_MIXTBR_PSRN_BITPOS,x:HW_MIXTBR  ;Must Clear PSRN bit first
+P:0010 0A7031 00FA00  6   47  229     bset    #HW_CCR_PWDN_BITPOS,x:HW_CCR    ; turn off the DCDC converter
+                              230     ;   If using the DCDC converter then the part will turn off.  If not
+                              231     ;   using the DCDC converter then the part will just kinda stop working :)
+                              232     error                ; shouldn't get here. error macro halts or resets
+P:0012 000200         4   51  232     debug
+                              233     ;---------------------------------------------------------------------------
+                              235 _make_sure_everything_is_done
+                              236     ;
+                              237     ; Check if we're waiting for a song to stop
+                              238     ;
+P:0013 0BF080 rrrrrr  6   57  239     jsr     DecoderGetStatus
+P:0015 0AC406 rrrrrr  6   63  240     jclr    #Stop,x0,_ssf_exit
+P:0017 4C8000r        2   65  242     move    y:<Const_000001,x0
+P:0018 4C7000 rrrrrr  3   68  243     move    x0,y:Ssf_ThisIsReallyIt
+                              244     
+                              245     ; Power down the headphones to reduce pop.
+P:001A 0BF080 rrrrrr  6   74  246     jsr     FPowerDownHeadPhones
+                              248     ; Zero out the decoder memory area's before loading shutdown code
+P:001C 0BF080 rrrrrr  6   80  249     jsr     SysFlushCoderMemory
+P:001E 44F000 00FFFF  3   83  251     move         x:HW_IPR,x0        ;Save IPR temporarily
+P:0020 4C7000 rrrrrr  3   86  252     move     x0,y:SaveIPR
+P:0022 44F400 000000  3   89  254     move    #>0,x0
+P:0024 447000 00FFFF  3   92  255     move    x0,x:HW_IPR         ;Disable all interrupts while saving settings
+                              256                                 ;This will avoid a shutdown of the system
+                              257                                 ;in case a brownout is detected
+P:0026 000000         2   94  259     nop                         ;Make sure any pending interrupt will be serviced
+P:0027 000000         2   96  260     nop                         ;before jumping in SysSaveSettings
+P:0028 000000         2   98  261     nop
+                              264     ; Call the shutdown module
+P:0029 0BF080 rrrrrr  6  104  265     jsr     SysSaveSettings
+                              266     
+                              267     ; We're powering down gracefully, so set the SkipCheckdisk bit.
+P:002B 60F400 00F508  3  107  268     move    #HW_RTC_PERSIST1,R0
+P:002D 5E8000r        2  109  269     move    y:<Const_000001,a
+P:002E 0BF080 rrrrrr  6  115  270     jsr     FSetStickyBit
+P:0030 4CF000 rrrrrr  3  118  272    move     y:SaveIPR,x0
+P:0032 447000 00FFFF  3  121  273    move     x0,x:HW_IPR
+                              275             
+                              276 _ssf_exit
+                              277     ; post the final shutdown message so we'll get back here.
+P:0034 4C8000r        2  123  278     move    y:<Const_000002,x0
+P:0035 4C7000 rrrrrr  3  126  279     move    x0,y:UserScratchY
+P:0037 44F400 050002  3  129  280     move    #>SYSTEM_SHUTDOWN_FINAL,x0
+P:0039 4C7000 rrrrrr  3  132  281     move    x0,y:UserScratchY+1
+P:003B 60F400 rrrrrr  3  135  282     move    #UserScratchY,r0
+P:003D 058060r        2  137  283     movec   y:<Const_ffffff,m0
+P:003E 0BF080 rrrrrr  6  143  284     jsr     SysPostMessage
+P:0040 00000C         4  147  286     rts
+                              288     endsec

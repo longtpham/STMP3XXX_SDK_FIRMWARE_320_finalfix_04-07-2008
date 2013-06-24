@@ -1,0 +1,284 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\data_management\stack\stack.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : stack.asm
+                                5 ;  Description : Stack routines
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_Stack
+                               10 ;///////////////////////////////////////////////////////////////////////////////
+                               11 ;   Macros
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               15 ;   Includes
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               20     list
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               23 ;   External Definitions
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               26     ;Functions 
+                               31     
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35 ;   External References
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               40     list
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;   Equates
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               46 NUMBER_REG_SAVED    equ EndSaveRegs-SaveRegs
+                               47         
+                               48 ;///////////////////////////////////////////////////////////////////////////////
+                               49 ;   X Memory
+                               50 ;///////////////////////////////////////////////////////////////////////////////
+                               51         
+                               52 ;///////////////////////////////////////////////////////////////////////////////
+                               53 ;   Y Memory
+                               54 ;///////////////////////////////////////////////////////////////////////////////
+                               55         
+                               56 ;///////////////////////////////////////////////////////////////////////////////
+                               57 ;   P Memory
+                               58 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         60     org     p,"SYSFUN_Stack_P":
+                               62 ;///////////////////////////////////////////////////////////////////////////////
+                               63 ;
+                               64 ;>  Name:           SaveRegs
+                               65 ;
+                               66 ;   Type:           Function
+                               67 ;
+                               68 ;   Description:    Saves all ALU and address registers to the data stack,
+                               69 ;                   except for r6, r7, and m7.
+                               70 ;
+                               71 ;   Inputs:         r6 = Return address
+                               72 ;                   The address at r6 is used as the destination to jmp back
+                               73 ;                   to after saving registers is complete.
+                               74 ;
+                               75 ;   Outputs:        none
+                               76 ;                   
+                               77 ;   Notes:          Does not save r6, r7, or m7
+                               78 ;<
+                               79 ;///////////////////////////////////////////////////////////////////////////////
+                               80 SaveRegs
+                               81     push    a2
+P:0000 5A5F00         2    2   81     move    a2,y:(r7)+
+                               82     push    a1
+P:0001 5C5F00         2    4   82     move    a1,y:(r7)+
+                               83     push    a0
+P:0002 585F00         2    6   83     move    a0,y:(r7)+
+                               84     push    b2
+P:0003 5B5F00         2    8   84     move    b2,y:(r7)+
+                               85     push    b1
+P:0004 5D5F00         2   10   85     move    b1,y:(r7)+
+                               86     push    b0
+P:0005 595F00         2   12   86     move    b0,y:(r7)+
+                               87     push    x1
+P:0006 4D5F00         2   14   87     move    x1,y:(r7)+
+                               88     push    x0
+P:0007 4C5F00         2   16   88     move    x0,y:(r7)+
+                               89     push    y1
+P:0008 4F5F00         2   18   89     move    y1,y:(r7)+
+                               90     push    y0
+P:0009 4E5F00         2   20   90     move    y0,y:(r7)+
+                               91     push    r0
+P:000A 685F00         2   22   91     move    r0,y:(r7)+
+                               92     push    r1
+P:000B 695F00         2   24   92     move    r1,y:(r7)+
+                               93     push    r2
+P:000C 6A5F00         2   26   93     move    r2,y:(r7)+
+                               94     push    r3
+P:000D 6B5F00         2   28   94     move    r3,y:(r7)+
+                               95     push    r4
+P:000E 6C5F00         2   30   95     move    r4,y:(r7)+
+                               96     push    r5
+P:000F 6D5F00         2   32   96     move    r5,y:(r7)+
+                               97     push    m0
+P:0010 055F60         2   34   97     movec   m0,y:(r7)+
+                               98     push    m1
+P:0011 055F61         2   36   98     movec   m1,y:(r7)+
+                               99     push    m2
+P:0012 055F62         2   38   99     movec   m2,y:(r7)+
+                              100     push    m3
+P:0013 055F63         2   40  100     movec   m3,y:(r7)+
+                              101     push    m4
+P:0014 055F64         2   42  101     movec   m4,y:(r7)+
+                              102     push    m5
+P:0015 055F65         2   44  102     movec   m5,y:(r7)+
+                              103     push    m6
+P:0016 055F66         2   46  103     movec   m6,y:(r7)+
+                              104     push    n0
+P:0017 785F00         2   48  104     move    n0,y:(r7)+
+                              105     push    n1
+P:0018 795F00         2   50  105     move    n1,y:(r7)+
+                              106     push    n2
+P:0019 7A5F00         2   52  106     move    n2,y:(r7)+
+                              107     push    n3
+P:001A 7B5F00         2   54  107     move    n3,y:(r7)+
+                              108     push    n4
+P:001B 7C5F00         2   56  108     move    n4,y:(r7)+
+                              109     push    n5
+P:001C 7D5F00         2   58  109     move    n5,y:(r7)+
+                              110     push    n6
+P:001D 7E5F00         2   60  110     move    n6,y:(r7)+
+                              111     push    n7
+P:001E 7F5F00         2   62  111     move    n7,y:(r7)+
+                              112 EndSaveRegs    
+P:001F 0AE680         4   66  113     jmp     (r6)
+                              115 ;///////////////////////////////////////////////////////////////////////////////
+                              116 ;
+                              117 ;>  Name:           RestoreRegs
+                              118 ;
+                              119 ;   Type:           Function
+                              120 ;
+                              121 ;   Description:    Restores all ALU and address registers from the data stack,
+                              122 ;                   except for r6, r7, and m7.
+                              123 ;
+                              124 ;   Inputs:         r6 = Return address
+                              125 ;                   The address at r6 is used as the destination to jmp back
+                              126 ;                   to after restoring registers is complete.
+                              127 ;
+                              128 ;   Outputs:        none
+                              129 ;                   
+                              130 ;   Notes:          Does not restore r6, r7, or m7
+                              131 ;<
+                              132 ;///////////////////////////////////////////////////////////////////////////////
+                              133 RestoreRegs
+                              134     pop     n7
+P:0020 7FFF00         4   70  134     move    y:-(r7),n7
+                              135     pop     n6
+P:0021 7EFF00         4   74  135     move    y:-(r7),n6
+                              136     pop     n5
+P:0022 7DFF00         4   78  136     move    y:-(r7),n5
+                              137     pop     n4
+P:0023 7CFF00         4   82  137     move    y:-(r7),n4
+                              138     pop     n3
+P:0024 7BFF00         4   86  138     move    y:-(r7),n3
+                              139     pop     n2
+P:0025 7AFF00         4   90  139     move    y:-(r7),n2
+                              140     pop     n1
+P:0026 79FF00         4   94  140     move    y:-(r7),n1
+                              141     pop     n0
+P:0027 78FF00         4   98  141     move    y:-(r7),n0
+                              142     pop     m6
+P:0028 05FF66         4  102  142     movec   y:-(r7),m6
+                              143     pop     m5
+P:0029 05FF65         4  106  143     movec   y:-(r7),m5
+                              144     pop     m4
+P:002A 05FF64         4  110  144     movec   y:-(r7),m4
+                              145     pop     m3
+P:002B 05FF63         4  114  145     movec   y:-(r7),m3
+                              146     pop     m2
+P:002C 05FF62         4  118  146     movec   y:-(r7),m2
+                              147     pop     m1
+P:002D 05FF61         4  122  147     movec   y:-(r7),m1
+                              148     pop     m0
+P:002E 05FF60         4  126  148     movec   y:-(r7),m0
+                              149     pop     r5
+P:002F 6DFF00         4  130  149     move    y:-(r7),r5
+                              150     pop     r4
+P:0030 6CFF00         4  134  150     move    y:-(r7),r4
+                              151     pop     r3
+P:0031 6BFF00         4  138  151     move    y:-(r7),r3
+                              152     pop     r2
+P:0032 6AFF00         4  142  152     move    y:-(r7),r2
+                              153     pop     r1
+P:0033 69FF00         4  146  153     move    y:-(r7),r1
+                              154     pop     r0
+P:0034 68FF00         4  150  154     move    y:-(r7),r0
+                              155     pop     y0
+P:0035 4EFF00         4  154  155     move    y:-(r7),y0
+                              156     pop     y1
+P:0036 4FFF00         4  158  156     move    y:-(r7),y1
+                              157     pop     x0
+P:0037 4CFF00         4  162  157     move    y:-(r7),x0
+                              158     pop     x1
+P:0038 4DFF00         4  166  158     move    y:-(r7),x1
+                              159     pop     b0
+P:0039 59FF00         4  170  159     move    y:-(r7),b0
+                              160     pop     b1
+P:003A 5DFF00         4  174  160     move    y:-(r7),b1
+                              161     pop     b2
+P:003B 5BFF00         4  178  161     move    y:-(r7),b2
+                              162     pop     a0
+P:003C 58FF00         4  182  162     move    y:-(r7),a0
+                              163     pop     a1
+P:003D 5CFF00         4  186  163     move    y:-(r7),a1
+                              164     pop     a2
+P:003E 5AFF00         4  190  164     move    y:-(r7),a2
+P:003F 0AE680         4  194  165     jmp     (r6)
+                              167 ;///////////////////////////////////////////////////////////////////////////////
+                              168 ;
+                              169 ;>  Name:           SaveSystemStack
+                              170 ;
+                              171 ;   Type:           Function
+                              172 ;
+                              173 ;   Description:    Saves the system hardware stack to the data stack
+                              174 ;
+                              175 ;   Inputs:         
+                              176 ;                   r6 = Pointer to return address
+                              177 ;                   
+                              178 ;
+                              179 ;   Outputs:        none
+                              180 ;                   
+                              181 ;   Notes:          none
+                              182 ;<
+                              183 ;///////////////////////////////////////////////////////////////////////////////
+                              184 SaveSystemStack
+P:0040 044EBB         2  196  186     movec   sp,a
+P:0041 21DF00         2  198  187     move    a,n7
+P:0042 4C8003r        2  200  188     tst     a    y:<Const_000001,x0
+P:0043 0AF0AA rrrrrr  6  206  189     jeq     _sp_is_cleared
+                              191 _save_system_stack
+P:0045 055F7D         2  208  192     movec   ssl,y:(r7)+
+P:0046 055F7C         2  210  193     movec   ssh,y:(r7)+
+P:0047 200044         2  212  194     sub     x0,a                        ; decrement stack count
+P:0048 0AF0A2 rrrrrr  6  218  195     jne     _save_system_stack
+                              196 _sp_is_cleared
+                              197     push    n7
+P:004A 7F5F00         2  220  197     move    n7,y:(r7)+
+                              199     push    r7
+P:004B 6F5F00         2  222  199     move    r7,y:(r7)+
+P:004C 0AE680         4  226  201     jmp     (r6)
+                              203 ;///////////////////////////////////////////////////////////////////////////////
+                              204 ;
+                              205 ;>  Name:           RestoreSystemStack
+                              206 ;
+                              207 ;   Type:           Function
+                              208 ;
+                              209 ;   Description:    Restores the system hardware stack from the data stack.
+                              210 ;
+                              211 ;   Inputs:         
+                              212 ;                   r6 = Pointer to return address
+                              213 ;                   
+                              214 ;
+                              215 ;   Outputs:        none
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              216 ;                   
+                              217 ;   Notes:          none
+                              218 ;<
+                              219 ;///////////////////////////////////////////////////////////////////////////////
+                              220 RestoreSystemStack
+                              222     pop     x0
+P:004D 4CFF00         4  230  222     move    y:-(r7),x0
+P:004E 22EE00         2  232  223     move    r7,a
+P:004F 200045         2  234  224     cmp     x0,a
+                              225     ccerror ne
+P:0050 000302         4  238  225     debugne
+                              227     pop     a; original, saved sp
+P:0051 5EFF00         4  242  227     move    y:-(r7),a
+P:0052 4C8003r        2  244  228     tst     a    y:<Const_000001,x0                 ; use for counter
+P:0053 0AF0AA rrrrrr  6  250  229     jeq     _sp_is_restored             ; if sp==0, done
+                              230 _restore_system_stack
+                              231     pop     ssh
+P:0055 05FF7C         4  254  231     movec   y:-(r7),ssh
+                              232     pop     ssl
+P:0056 05FF7D         4  258  232     movec   y:-(r7),ssl
+P:0057 200044         2  260  233     sub     x0,a                        ; decrement stack count
+P:0058 0AF0A2 rrrrrr  6  266  234     jne     _restore_system_stack
+                              235 _sp_is_restored
+P:005A 0AE680         4  270  236     jmp     (r6)
+                              238     endsec

@@ -1,0 +1,33 @@
+;///////////////////////////////////////////////////////////////////////////////
+; Copyright(C) SigmaTel, Inc. 2000-2003
+;
+; Filename: mp3mem.xref
+; Description: Global references from mp3mem.asm
+;///////////////////////////////////////////////////////////////////////////////
+
+ IF (!@DEF(MP3MEM_XREF))
+MP3MEM_XREF equ 1
+
+       EXTERN    g_Mp3DataSrc_mbuf
+       EXTERN    g_Mp3DataSrcBufDescriptor
+       EXTERN    g_pMp3DecSinkBufHead   
+       EXTERN    g_pMp3DecSinkBufTail   
+       EXTERN    g_Mp3DecSink_mbuf
+       EXTERN    g_Mp3DecSinkBufDescriptor
+       EXTERN    g_pMp3DataSrcBufHead
+       EXTERN    g_pMp3DataSrcBufTail
+       EXTERN    g_pMp3DataSrcBufMod
+       EXTERN    g_pMp3DataSrcBufSize
+       EXTERN    g_pMp3DecSinkBufSize
+       EXTERN    g_pMp3DecSinkBufMod
+       EXTERN    Fbitbuf_addr,Fbitbuf_mod,Fbitbuf_size,Fbitbuf_writeptr 
+       EXTERN    Fbitbuf_readptr  
+       EXTERN    FPCM_addr,FPCM_mod,FPCM_size,FPCM_writeptr,FPCM_readptr
+
+       EXTERN    Mp3SampFreqTable,DacSampFreqTable
+  if ("BLD"=="PCMDMP")
+          EXTERN   PCM_counter
+  endif
+
+ ENDIF   ; IF (!@DEF(MP3MEM_XREF))
+

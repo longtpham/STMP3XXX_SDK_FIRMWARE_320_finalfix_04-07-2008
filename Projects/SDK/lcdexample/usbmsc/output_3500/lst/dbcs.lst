@@ -1,0 +1,2258 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\usbmsc\Make\cc87225b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -w68 -w66 -I..\output_3500\include
+                                3 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\usbmsc -I -I..\..
+                                4 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                                5 ;          -I..\..\..\..\..\System\Common\symbols -I
+                                6 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                                7 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                                8 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                                9 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               10 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               11 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               12 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               13 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               14 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               15 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive\include
+                               16 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               17 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               18 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\DataDrive
+                               19 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               20 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive\include
+                               21 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               22 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               23 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\SystemDrive
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\Media
+                               29 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\include
+                               30 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\DDI\include
+                               31 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeRAM\HAL\include
+                               32 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               33 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               34 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               37 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include -I
+                               38 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               39 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               40 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               41 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               50 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               52 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               56 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               57 ;          -I..\..\..\..\..\devicedriver\media\include
+                               58 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               59 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               60 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               61 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               62 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               64 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               65 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               66 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               67 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               68 ;          -I..\..\..\..\..\DeviceDriver\Media\usb\Ch9
+                               69 ;          -I..\..\..\..\..\DeviceDriver\Media\scsi
+                               70 ;          -I..\..\..\..\..\DeviceDriver\Media\usbmsc
+                               71 ;          -I..\..\..\..\..\DeviceDriver\Media\mtp
+                               72 ;          -I..\..\..\..\..\System\Common\updater
+                               73 ;          -I..\..\..\..\..\libsource\sysserialnumber -DALL -DD3500 -DMMC
+                               74 ;          -DLIION -DTUNER_STFM1000 -DSTFM1000_LCD=TRUE -DDCDC_POWER_TRANSFER
+                               75 ;          -DBACKLIGHT -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DFAT16
+                               76 ;          -DDEVICE_3500 -DENGR_BD -DUSBMSC_BUILD -DBATTERY_TYPE_LI_ION
+                               77 ;          -DBATTERY_CHARGE -DUSE_PLAYLIST3_HOST -DASCII_ONLY -DRETAIL
+                               78 ;          -DDEVICE_3500 -DMMC -Dk_opt_performance_enhancement
+                               79 ;          -I..\..\..\..\..\devicedriver\display
+                               80 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -g -O2 -R -Cs
+                               81 ;          -MmyL
+                               82 
+                               90 
+                               91 ;         dbcs.c:
+                               92 ; 1    |///////////////////////////////////////////////////////////////////////////////
+                               93 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                               94 ; 3    |//
+                               95 ; 4    |// Filename: DBCS.c
+                               96 ; 5    |// Description: DBCS (Localized Fonts) routines.
+                               97 ; 6    |///////////////////////////////////////////////////////////////////////////////
+                               98 ; 7    |
+                               99 ; 8    |
+                              100 ; 9    |#include "types.h"
+                              101 
+                              103 
+                              104 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              105 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              106 ; 3    |//
+                              107 ; 4    |// Filename: types.h
+                              108 ; 5    |// Description: Standard data types
+                              109 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              110 ; 7    |
+                              111 ; 8    |#ifndef _TYPES_H
+                              112 ; 9    |#define _TYPES_H
+                              113 ; 10   |
+                              114 ; 11   |// TODO:  move this outta here!
+                              115 ; 12   |#if !defined(NOERROR)
+                              116 ; 13   |#define NOERROR 0
+                              117 ; 14   |#define SUCCESS 0
+                              118 ; 15   |#endif 
+                              119 ; 16   |#if !defined(SUCCESS)
+                              120 ; 17   |#define SUCCESS  0
+                              121 ; 18   |#endif
+                              122 ; 19   |#if !defined(ERROR)
+                              123 ; 20   |#define ERROR   -1
+                              124 ; 21   |#endif
+                              125 ; 22   |#if !defined(FALSE)
+                              126 ; 23   |#define FALSE 0
+                              127 ; 24   |#endif
+                              128 ; 25   |#if !defined(TRUE)
+                              129 ; 26   |#define TRUE  1
+                              130 ; 27   |#endif
+                              131 ; 28   |
+                              132 ; 29   |#if !defined(NULL)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              133 ; 30   |#define NULL 0
+                              134 ; 31   |#endif
+                              135 ; 32   |
+                              136 ; 33   |#define MAX_INT     0x7FFFFF
+                              137 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              138 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              139 ; 36   |#define MAX_ULONG   (-1) 
+                              140 ; 37   |
+                              141 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              142 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              143 ; 40   |
+                              144 ; 41   |
+                              145 ; 42   |#define BYTE    unsigned char       // btVarName
+                              146 ; 43   |#define CHAR    signed char         // cVarName
+                              147 ; 44   |#define USHORT  unsigned short      // usVarName
+                              148 ; 45   |#define SHORT   unsigned short      // sVarName
+                              149 ; 46   |#define WORD    unsigned int        // wVarName
+                              150 ; 47   |#define INT     signed int          // iVarName
+                              151 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              152 ; 49   |#define LONG    signed long         // lVarName
+                              153 ; 50   |#define BOOL    unsigned int        // bVarName
+                              154 ; 51   |#define FRACT   _fract              // frVarName
+                              155 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              156 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              157 ; 54   |#define FLOAT   float               // fVarName
+                              158 ; 55   |#define DBL     double              // dVarName
+                              159 ; 56   |#define ENUM    enum                // eVarName
+                              160 ; 57   |#define CMX     _complex            // cmxVarName
+                              161 ; 58   |typedef WORD UCS3;                   // 
+                              162 ; 59   |
+                              163 ; 60   |#define UINT16  unsigned short
+                              164 ; 61   |#define UINT8   unsigned char   
+                              165 ; 62   |#define UINT32  unsigned long
+                              166 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              167 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              168 ; 65   |#define WCHAR   UINT16
+                              169 ; 66   |
+                              170 ; 67   |//UINT128 is 16 bytes or 6 words
+                              171 ; 68   |typedef struct UINT128_3500 {   
+                              172 ; 69   |    int val[6];     
+                              173 ; 70   |} UINT128_3500;
+                              174 ; 71   |
+                              175 ; 72   |#define UINT128   UINT128_3500
+                              176 ; 73   |
+                              177 ; 74   |// Little endian word packed byte strings:   
+                              178 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              179 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              180 ; 77   |// Little endian word packed byte strings:   
+                              181 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              182 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              183 ; 80   |
+                              184 ; 81   |// Declare Memory Spaces To Use When Coding
+                              185 ; 82   |// A. Sector Buffers
+                              186 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              187 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              188 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              189 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              190 
+                              192 
+                              193 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              194 ; 88   |// B. Media DDI Memory
+                              195 ; 89   |#define MEDIA_DDI_MEM _Y
+                              196 ; 90   |
+                              197 ; 91   |
+                              198 ; 92   |
+                              199 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              200 ; 94   |// Examples of circular pointers:
+                              201 ; 95   |//    INT CIRC cpiVarName
+                              202 ; 96   |//    DWORD CIRC cpdwVarName
+                              203 ; 97   |
+                              204 ; 98   |#define RETCODE INT                 // rcVarName
+                              205 ; 99   |
+                              206 ; 100  |// generic bitfield structure
+                              207 ; 101  |struct Bitfield {
+                              208 ; 102  |    unsigned int B0  :1;
+                              209 ; 103  |    unsigned int B1  :1;
+                              210 ; 104  |    unsigned int B2  :1;
+                              211 ; 105  |    unsigned int B3  :1;
+                              212 ; 106  |    unsigned int B4  :1;
+                              213 ; 107  |    unsigned int B5  :1;
+                              214 ; 108  |    unsigned int B6  :1;
+                              215 ; 109  |    unsigned int B7  :1;
+                              216 ; 110  |    unsigned int B8  :1;
+                              217 ; 111  |    unsigned int B9  :1;
+                              218 ; 112  |    unsigned int B10 :1;
+                              219 ; 113  |    unsigned int B11 :1;
+                              220 ; 114  |    unsigned int B12 :1;
+                              221 ; 115  |    unsigned int B13 :1;
+                              222 ; 116  |    unsigned int B14 :1;
+                              223 ; 117  |    unsigned int B15 :1;
+                              224 ; 118  |    unsigned int B16 :1;
+                              225 ; 119  |    unsigned int B17 :1;
+                              226 ; 120  |    unsigned int B18 :1;
+                              227 ; 121  |    unsigned int B19 :1;
+                              228 ; 122  |    unsigned int B20 :1;
+                              229 ; 123  |    unsigned int B21 :1;
+                              230 ; 124  |    unsigned int B22 :1;
+                              231 ; 125  |    unsigned int B23 :1;
+                              232 ; 126  |};
+                              233 ; 127  |
+                              234 ; 128  |union BitInt {
+                              235 ; 129  |        struct Bitfield B;
+                              236 ; 130  |        int        I;
+                              237 ; 131  |};
+                              238 ; 132  |
+                              239 ; 133  |#define MAX_MSG_LENGTH 10
+                              240 ; 134  |struct CMessage
+                              241 ; 135  |{
+                              242 ; 136  |        unsigned int m_uLength;
+                              243 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              244 ; 138  |};
+                              245 ; 139  |
+                              246 ; 140  |typedef struct {
+                              247 ; 141  |    WORD m_wLength;
+                              248 ; 142  |    WORD m_wMessage;
+                              249 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              250 ; 144  |} Message;
+                              251 ; 145  |
+                              252 ; 146  |struct MessageQueueDescriptor
+                              253 ; 147  |{
+                              254 ; 148  |        int *m_pBase;
+                              255 ; 149  |        int m_iModulo;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              256 ; 150  |        int m_iSize;
+                              257 ; 151  |        int *m_pHead;
+                              258 ; 152  |        int *m_pTail;
+                              259 ; 153  |};
+                              260 ; 154  |
+                              261 ; 155  |struct ModuleEntry
+                              262 ; 156  |{
+                              263 ; 157  |    int m_iSignaledEventMask;
+                              264 ; 158  |    int m_iWaitEventMask;
+                              265 ; 159  |    int m_iResourceOfCode;
+                              266 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              267 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              268 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              269 ; 163  |    int m_uTimeOutHigh;
+                              270 ; 164  |    int m_uTimeOutLow;
+                              271 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              272 ; 166  |};
+                              273 ; 167  |
+                              274 ; 168  |union WaitMask{
+                              275 ; 169  |    struct B{
+                              276 ; 170  |        unsigned int m_bNone     :1;
+                              277 ; 171  |        unsigned int m_bMessage  :1;
+                              278 ; 172  |        unsigned int m_bTimer    :1;
+                              279 ; 173  |        unsigned int m_bButton   :1;
+                              280 ; 174  |    } B;
+                              281 ; 175  |    int I;
+                              282 ; 176  |} ;
+                              283 ; 177  |
+                              284 ; 178  |
+                              285 ; 179  |struct Button {
+                              286 ; 180  |        WORD wButtonEvent;
+                              287 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              288 ; 182  |};
+                              289 ; 183  |
+                              290 ; 184  |struct Message {
+                              291 ; 185  |        WORD wMsgLength;
+                              292 ; 186  |        WORD wMsgCommand;
+                              293 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              294 ; 188  |};
+                              295 ; 189  |
+                              296 ; 190  |union EventTypes {
+                              297 ; 191  |        struct CMessage msg;
+                              298 ; 192  |        struct Button Button ;
+                              299 ; 193  |        struct Message Message;
+                              300 ; 194  |};
+                              301 ; 195  |
+                              302 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              303 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              304 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              305 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              306 ; 200  |
+                              307 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              308 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              309 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              310 ; 204  |
+                              311 ; 205  |#if DEBUG
+                              312 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              313 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              314 ; 208  |#else 
+                              315 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              316 ; 210  |#define DebugBuildAssert(x)    
+                              317 ; 211  |#endif
+                              318 ; 212  |
+                              319 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              320 ; 214  |//  #pragma asm
+                              321 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              322 ; 216  |//  #pragma endasm
+                              323 ; 217  |
+                              324 ; 218  |
+                              325 ; 219  |#ifdef COLOR_262K
+                              326 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              327 ; 221  |#elif defined(COLOR_65K)
+                              328 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              329 ; 223  |#else
+                              330 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              331 ; 225  |#endif
+                              332 ; 226  |    
+                              333 ; 227  |#endif // #ifndef _TYPES_H
+                              334 
+                              336 
+                              337 ; 10   |#include "resource.h"
+                              338 
+                              340 
+                              341 ; 1    |//  NOTE: This file was generated automatically by rscrenum.pl
+                              342 ; 2    |//  Do not edit it directly.
+                              343 ; 3    |//  Created on Mon Jun 30 17:30:17 2008 using ..\output_3500\include\resource.inc as input
+                                  .
+                              344 ; 4    |
+                              345 ; 5    |
+                              346 ; 6    |
+                              347 ; 7    |//  NOTE: This file was generated automatically by rscrenum.pl
+                              348 ; 8    |//  Do not edit it directly.
+                              349 ; 9    |//  Created on Sat Jun 14 11:51:41 2008 using resource.inc as input.
+                              350 ; 10   |
+                              351 ; 11   |
+                              352 ; 12   |
+                              353 ; 13   |/////////////////////////////////////////////////////////////////////////////////
+                              354 ; 14   |//  Copyright(C) SigmaTel, Inc. 2000-2006
+                              355 ; 15   |//  File        :  resource.inc
+                              356 ; 16   |//  Description :  Resource stuff
+                              357 ; 17   |/////////////////////////////////////////////////////////////////////////////////
+                              358 ; 18   |
+                              359 ; 19   |/////////////////////////////////////////////////////////////////////////////////
+                              360 ; 20   |//  usbmsc version number            no leading zeros here!
+                              361 ; 21   |/////////////////////////////////////////////////////////////////////////////////
+                              362 ; 22   |
+                              363 ; 23   |#define VERSION_MAJOR 3
+                              364 ; 24   |#define VERSION_MIDDLE 200
+                              365 ; 25   |#define VERSION_MINOR 910
+                              366 ; 26   |
+                              367 ; 27   |//Set to 34 if right side up
+                              368 ; 28   |#define LCD_SEG_OFFSET 0       
+                              369 ; 29   |
+                              370 ; 30   |/////////////////////////////////////////////////////////////////////////////////
+                              371 ; 31   |//  Common system resources
+                              372 ; 32   |/////////////////////////////////////////////////////////////////////////////////
+                              373 ; 33   |
+                              374 ; 34   |//$FILENAME connectleft.src
+                              375 ; 35   |#define ConnectImageLeft 1    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              376 ; 36   |//$FILENAME connectright.src
+                              377 ; 37   |#define ConnectImageRight 2    
+                              378 ; 38   |//$FILENAME ready.src
+                              379 ; 39   |#define ReadyImage 3    
+                              380 ; 40   |//$FILENAME reading.src
+                              381 ; 41   |#define ReadingImage 4    
+                              382 ; 42   |//$FILENAME writing.src
+                              383 ; 43   |#define WritingImage 5    
+                              384 ; 44   |//$FILENAME notes.src
+                              385 ; 45   |#define NotesImage 6    
+                              386 ; 46   |//$FILENAME lowbat.src
+                              387 ; 47   |#define LowBatImage 7    
+                              388 ; 48   |//$FILENAME fullspeed.src
+                              389 ; 49   |#define RSRC_FULL_SPEED 8    
+                              390 ; 50   |//$FILENAME highspeed.src
+                              391 ; 51   |#define RSRC_HIGH_SPEED 9    
+                              392 ; 52   |//$FILENAME lcd_controller_init.src
+                              393 ; 53   |#define RSRC_LCD_INIT_SEQ 10    
+                              394 ; 54   |//$FILENAME version.src
+                              395 ; 55   |#define RSRC_VERSION 11    
+                              396 ; 56   |//$FILENAME period.src
+                              397 ; 57   |#define RSRC_PERIOD 12    
+                              398 ; 58   |//$FILENAME charging.src
+                              399 ; 59   |#define RSRC_CHARGING 13    
+                              400 ; 60   |//$FILENAME charge_complete.src
+                              401 ; 61   |#define RSRC_CHARGE_COMPLETE 14    
+                              402 ; 62   |//$FILENAME font_table.src
+                              403 ; 63   |#define RSRC_FONT_TABLE 15    
+                              404 ; 64   |
+                              405 ; 65   |/////////////////////////////////////////////////////////////////////////////////
+                              406 ; 66   |//  Battery Status
+                              407 ; 67   |/////////////////////////////////////////////////////////////////////////////////
+                              408 ; 68   |//$FILENAME battery_00.src
+                              409 ; 69   |#define RSRC_BATTERY_00 16    
+                              410 ; 70   |//$FILENAME battery_01.src
+                              411 ; 71   |#define RSRC_BATTERY_01 17    
+                              412 ; 72   |//$FILENAME battery_02.src
+                              413 ; 73   |#define RSRC_BATTERY_02 18    
+                              414 ; 74   |//$FILENAME battery_03.src
+                              415 ; 75   |#define RSRC_BATTERY_03 19    
+                              416 ; 76   |//$FILENAME battery_04.src
+                              417 ; 77   |#define RSRC_BATTERY_04 20    
+                              418 ; 78   |//$FILENAME battery_05.src
+                              419 ; 79   |#define RSRC_BATTERY_05 21    
+                              420 ; 80   |//$FILENAME battery_06.src
+                              421 ; 81   |#define RSRC_BATTERY_06 22    
+                              422 ; 82   |//$FILENAME battery_07.src
+                              423 ; 83   |#define RSRC_BATTERY_07 23    
+                              424 ; 84   |//$FILENAME battery_08.src
+                              425 ; 85   |#define RSRC_BATTERY_08 24    
+                              426 ; 86   |//$FILENAME battery_09.src
+                              427 ; 87   |#define RSRC_BATTERY_09 25    
+                              428 ; 88   |//$FILENAME battery_10.src
+                              429 ; 89   |#define RSRC_BATTERY_10 26    
+                              430 ; 90   |
+                              431 ; 91   |/////////////////////////////////////////////////////////////////////////////////
+                              432 ; 92   |//  Font
+                              433 ; 93   |/////////////////////////////////////////////////////////////////////////////////
+                              434 ; 94   |//$FILENAME font_PGM.src
+                              435 ; 95   |#define RSRC_PGM_8 27    
+                              436 ; 96   |//$FILENAME font_SGMs.src
+                              437 ; 97   |#define RSRC_SGMS_8 28    
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              438 ; 98   |//$FILENAME font_script_00.src
+                              439 ; 99   |#define RSRC_SCRIPT_00_8 29    
+                              440 ; 100  |//$FILENAME font_scripts.src
+                              441 ; 101  |#define RSRC_SCRIPTS_8 30    
+                              442 ; 102  |//$FILENAME font_PDM.src
+                              443 ; 103  |#define RSRC_PDM 31    
+                              444 ; 104  |//$FILENAME font_SDMs.src
+                              445 ; 105  |#define RSRC_SDMS 32    
+                              446 ; 106  |
+                              447 ; 107  |
+                              448 ; 108  |
+                              449 ; 109  |
+                              450 ; 110  |#define RSRC_MMCMEDIAINIT 0
+                              451 ; 111  |#define RSRC_MMCMEDIAALLOCATE 0
+                              452 ; 112  |#define RSRC_MMCMEDIADISCOVERALLOCATION 0
+                              453 ; 113  |#define RSRC_MMCMEDIAGETMEDIATABLE 0
+                              454 ; 114  |#define RSRC_MMCMEDIAGETINFO 0
+                              455 ; 115  |#define RSRC_MMCMEDIAERASE 0
+                              456 ; 116  |
+                              457 ; 117  |#define RSRC_MMCDATADRIVEINIT 0
+                              458 ; 118  |#define RSRC_MMCDATADRIVEGETINFO 0
+                              459 ; 119  |#define RSRC_MMCDATADRIVESETINFO 0
+                              460 ; 120  |#define RSRC_MMCDATADRIVEREADSECTOR 0
+                              461 ; 121  |#define RSRC_MMCDATADRIVEWRITESECTOR 0 
+                              462 ; 122  |#define RSRC_MMCDATADRIVEMULTIWRITESETUP 0 
+                              463 ; 123  |#define RSRC_MMCDATADRIVEMULTIWRITESECTOR 0 
+                              464 ; 124  |#define RSRC_MMCDATADRIVEERASE 0 
+                              465 ; 125  |#define RSRC_MMCDATADRIVEFLUSH 0 
+                              466 ; 126  |
+                              467 ; 127  |
+                              468 ; 128  |#define RSRC_RAMMEDIAINIT 0
+                              469 ; 129  |#define RSRC_RAMMEDIAALLOCATE 0
+                              470 ; 130  |#define RSRC_RAMMEDIADISCOVERALLOCATION 0
+                              471 ; 131  |#define RSRC_RAMMEDIAGETMEDIATABLE 0
+                              472 ; 132  |#define RSRC_RAMMEDIAGETINFO 0
+                              473 ; 133  |#define RSRC_RAMMEDIAERASE 0
+                              474 ; 134  |
+                              475 ; 135  |#define RSRC_RAMDATADRIVEINIT 0
+                              476 ; 136  |#define RSRC_RAMDATADRIVEGETINFO 0
+                              477 ; 137  |#define RSRC_RAMDATADRIVESETINFO 0
+                              478 ; 138  |#define RSRC_RAMDATADRIVEREADSECTOR 0
+                              479 ; 139  |#define RSRC_RAMDATADRIVEWRITESECTOR 0
+                              480 ; 140  |#define RSRC_RAMDATADRIVEMULTIWRITESETUP 0
+                              481 ; 141  |#define RSRC_RAMDATADRIVEMULTIWRITESECTOR 0
+                              482 ; 142  |#define RSRC_RAMDATADRIVEERASE 0
+                              483 ; 143  |#define RSRC_RAMDATADRIVEFLUSH 0
+                              484 ; 144  |
+                              485 ; 145  |#define RSRC_RAMSYSTEMDRIVEINIT 0
+                              486 ; 146  |#define RSRC_RAMSYSTEMDRIVEGETINFO 0
+                              487 ; 147  |#define RSRC_RAMSYSTEMDRIVESETINFO 0
+                              488 ; 148  |#define RSRC_RAMSYSTEMDRIVEREADSECTOR 0
+                              489 ; 149  |#define RSRC_RAMSYSTEMDRIVEWRITESECTOR 0
+                              490 ; 150  |#define RSRC_RAMSYSTEMDRIVEMULTIWRITESETUP 0
+                              491 ; 151  |#define RSRC_RAMSYSTEMDRIVEMULTIWRITESECTOR 0
+                              492 ; 152  |#define RSRC_RAMSYSTEMDRIVEERASE 0
+                              493 ; 153  |#define RSRC_RAMSYSTEMDRIVEFLUSH 0
+                              494 ; 154  |
+                              495 ; 155  |#define RSRC_NANDMEDIAINIT 0
+                              496 ; 156  |#define RSRC_NANDMEDIAALLOCATE 0
+                              497 ; 157  |#define RSRC_NANDMEDIADISCOVERALLOCATION 0
+                              498 ; 158  |#define RSRC_NANDMEDIAGETMEDIATABLE 0
+                              499 ; 159  |#define RSRC_NANDMEDIAGETINFO 0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              500 ; 160  |#define RSRC_NANDMEDIAERASE 0
+                              501 ; 161  |
+                              502 ; 162  |#define RSRC_NANDDATADRIVEINIT 0
+                              503 ; 163  |#define RSRC_NANDDATADRIVEGETINFO 0
+                              504 ; 164  |#define RSRC_NANDDATADRIVESETINFO 0
+                              505 ; 165  |#define RSRC_NANDDATADRIVEREADSECTOR 0
+                              506 ; 166  |#define RSRC_NANDDATADRIVEWRITESECTOR 0 
+                              507 ; 167  |#define RSRC_NANDDATADRIVEDUMBMULTIWRITESETUP 0 
+                              508 ; 168  |#define RSRC_NANDDATADRIVEDUMBMULTIWRITESECTOR 0 
+                              509 ; 169  |#define RSRC_NANDDATADRIVECACHEMULTIWRITESETUP 0 
+                              510 ; 170  |#define RSRC_NANDDATADRIVECACHEMULTIWRITESECTOR 0 
+                              511 ; 171  |#define RSRC_NANDDATADRIVEERASE 0 
+                              512 ; 172  |#define RSRC_NANDDATADRIVEFLUSH 0 
+                              513 ; 173  |
+                              514 ; 174  |#define RSRC_NANDSYSTEMDRIVEINIT 0 
+                              515 ; 175  |#define RSRC_NANDSYSTEMDRIVEGETINFO 0  
+                              516 ; 176  |#define RSRC_NANDSYSTEMDRIVESETINFO 0  
+                              517 ; 177  |#define RSRC_NANDSYSTEMDRIVEREADSECTOR 0 
+                              518 ; 178  |#define RSRC_NANDSYSTEMDRIVEWRITESECTOR 0 
+                              519 ; 179  |#define RSRC_NANDSYSTEMDRIVEMULTIWRITESETUP 0 
+                              520 ; 180  |#define RSRC_NANDSYSTEMDRIVEMULTIWRITESECTOR 0 
+                              521 ; 181  |#define RSRC_NANDSYSTEMDRIVEERASE 0 
+                              522 ; 182  |#define RSRC_NANDSYSTEMDRIVEFLUSH 0 
+                              523 ; 183  |
+                              524 ; 184  |
+                              525 
+                              527 
+                              528 ; 11   |#include "stringlib.h"
+                              529 
+                              531 
+                              532 ; 1    |#ifndef STRINGLIB_H
+                              533 ; 2    |#define STRINGLIB_H
+                              534 
+                              536 
+                              537 ; 3    |_asmfunc int pack_string(UCS3 _Y * _Y pUnpacked, _packed BYTE _Y * _Y pPacked);
+                              538 ; 4    |_asmfunc int unpack_string( _packed BYTE _Y * _Y pPacked,  UCS3 _Y * _Y pUnpacked);
+                              539 ; 5    |_asmfunc int unpack_data( _packed BYTE _Y * _Y pPacked,  BYTE _Y * _Y pUnpacked, INT iCoun
+                                  t);
+                              540 ; 6    |
+                              541 ; 7    |_asmfunc BYTE GetByteFromArrayInX( void _X * p,int n);
+                              542 ; 8    |_asmfunc void PutByteInArrayInX( void _X * p,int n, int newchar);
+                              543 ; 9    |_asmfunc BYTE GetByteFromArrayInY( void _Y * p,int n);
+                              544 ; 10   |_asmfunc void PutByteInArrayInY( void _Y * p,int n, int newchar);
+                              545 ; 11   |
+                              546 ; 12   |_asmfunc BYTE packed_get( _packed BYTE _Y * p,int n);
+                              547 ; 13   |_asmfunc void packed_set( _packed BYTE _Y * p,int n, int newchar);
+                              548 ; 14   |
+                              549 ; 15   |_asmfunc int packed_strlen( _packed BYTE _Y * _Y p);
+                              550 ; 16   |
+                              551 ; 17   |_asmfunc _packed BYTE _Y * packed_strncpy( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y
+                                   pSrc, int iCount);
+                              552 ; 18   |_asmfunc _packed BYTE _Y * packed_strcpy ( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y
+                                   pSrc);
+                              553 ; 19   |
+                              554 ; 20   |
+                              555 ; 21   |_asmfunc int packed_strncmp( _packed BYTE _Y * _Y pLeft,_packed BYTE _Y * _Y pRight, int i
+                                  Count);
+                              556 ; 22   |_asmfunc int packed_strcmp ( _packed BYTE _Y * _Y pLeft,_packed BYTE _Y * _Y pRight);
+                              557 ; 23   |
+                              558 ; 24   |_asmfunc int packed_strncat( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y pSource, int 
+                                  iCount);
+                              559 ; 25   |_asmfunc int packed_strcat ( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y pSource);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              560 ; 26   |
+                              561 ; 27   |
+                              562 ; 28   |_asmfunc int strlen(UCS3 _Y * _Y p);
+                              563 ; 29   |
+                              564 ; 30   |_asmfunc UCS3 *strchr(UCS3 _Y * _Y pUnpacked, UCS3 CharToFind);
+                              565 ; 31   |_asmfunc UCS3 *strrchr(UCS3 _Y * _Y pUnpacked, UCS3 CharToFind);
+                              566 ; 32   |
+                              567 ; 33   |_asmfunc void strncpy(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource, BYTE iCount);
+                              568 ; 34   |_asmfunc void strcpy(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource);
+                              569 ; 35   |
+                              570 ; 36   |_asmfunc char *strncat(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource, int iCount);
+                              571 ; 37   |_asmfunc char *strcat(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource);
+                              572 ; 38   |
+                              573 ; 39   |_asmfunc int strncmp(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource, int iCount);
+                              574 ; 40   |_asmfunc int strcmp(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource);
+                              575 ; 41   |
+                              576 ; 42   |#endif
+                              577 
+                              579 
+                              580 ; 12   |#include "sysresourceapi.h"
+                              581 
+                              583 
+                              584 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              585 ; 2    |// Copyright(C) SigmaTel, Inc. 2002 - 2003
+                              586 ; 3    |//
+                              587 ; 4    |// File : SysResourceApi.h
+                              588 ; 5    |// Description : Structures and Functions Definitions for System Resource API
+                              589 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              590 ; 7    |
+                              591 ; 8    |#ifndef __SysResourceApi_h__
+                              592 ; 9    |#define __SysResourceApi_h__ 1
+                              593 ; 10   |
+                              594 ; 11   |#include "types.h"
+                              595 
+                              597 
+                              598 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              599 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              600 ; 3    |//
+                              601 ; 4    |// Filename: types.h
+                              602 ; 5    |// Description: Standard data types
+                              603 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              604 ; 7    |
+                              605 ; 8    |#ifndef _TYPES_H
+                              606 ; 9    |#define _TYPES_H
+                              607 ; 10   |
+                              608 ; 11   |// TODO:  move this outta here!
+                              609 ; 12   |#if !defined(NOERROR)
+                              610 ; 13   |#define NOERROR 0
+                              611 ; 14   |#define SUCCESS 0
+                              612 ; 15   |#endif 
+                              613 ; 16   |#if !defined(SUCCESS)
+                              614 ; 17   |#define SUCCESS  0
+                              615 ; 18   |#endif
+                              616 ; 19   |#if !defined(ERROR)
+                              617 ; 20   |#define ERROR   -1
+                              618 ; 21   |#endif
+                              619 ; 22   |#if !defined(FALSE)
+                              620 ; 23   |#define FALSE 0
+                              621 ; 24   |#endif
+                              622 ; 25   |#if !defined(TRUE)
+                              623 ; 26   |#define TRUE  1
+                              624 ; 27   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              625 ; 28   |
+                              626 ; 29   |#if !defined(NULL)
+                              627 ; 30   |#define NULL 0
+                              628 ; 31   |#endif
+                              629 ; 32   |
+                              630 ; 33   |#define MAX_INT     0x7FFFFF
+                              631 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              632 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              633 ; 36   |#define MAX_ULONG   (-1) 
+                              634 ; 37   |
+                              635 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              636 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              637 ; 40   |
+                              638 ; 41   |
+                              639 ; 42   |#define BYTE    unsigned char       // btVarName
+                              640 ; 43   |#define CHAR    signed char         // cVarName
+                              641 ; 44   |#define USHORT  unsigned short      // usVarName
+                              642 ; 45   |#define SHORT   unsigned short      // sVarName
+                              643 ; 46   |#define WORD    unsigned int        // wVarName
+                              644 ; 47   |#define INT     signed int          // iVarName
+                              645 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              646 ; 49   |#define LONG    signed long         // lVarName
+                              647 ; 50   |#define BOOL    unsigned int        // bVarName
+                              648 ; 51   |#define FRACT   _fract              // frVarName
+                              649 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              650 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              651 ; 54   |#define FLOAT   float               // fVarName
+                              652 ; 55   |#define DBL     double              // dVarName
+                              653 ; 56   |#define ENUM    enum                // eVarName
+                              654 ; 57   |#define CMX     _complex            // cmxVarName
+                              655 ; 58   |typedef WORD UCS3;                   // 
+                              656 ; 59   |
+                              657 ; 60   |#define UINT16  unsigned short
+                              658 ; 61   |#define UINT8   unsigned char   
+                              659 ; 62   |#define UINT32  unsigned long
+                              660 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              661 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              662 ; 65   |#define WCHAR   UINT16
+                              663 ; 66   |
+                              664 ; 67   |//UINT128 is 16 bytes or 6 words
+                              665 ; 68   |typedef struct UINT128_3500 {   
+                              666 ; 69   |    int val[6];     
+                              667 ; 70   |} UINT128_3500;
+                              668 ; 71   |
+                              669 ; 72   |#define UINT128   UINT128_3500
+                              670 ; 73   |
+                              671 ; 74   |// Little endian word packed byte strings:   
+                              672 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              673 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              674 ; 77   |// Little endian word packed byte strings:   
+                              675 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              676 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              677 ; 80   |
+                              678 ; 81   |// Declare Memory Spaces To Use When Coding
+                              679 ; 82   |// A. Sector Buffers
+                              680 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              681 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              682 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              683 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              684 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              685 ; 88   |// B. Media DDI Memory
+                              686 ; 89   |#define MEDIA_DDI_MEM _Y
+                              687 ; 90   |
+                              688 ; 91   |
+                              689 ; 92   |
+                              690 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              691 ; 94   |// Examples of circular pointers:
+                              692 ; 95   |//    INT CIRC cpiVarName
+                              693 ; 96   |//    DWORD CIRC cpdwVarName
+                              694 ; 97   |
+                              695 ; 98   |#define RETCODE INT                 // rcVarName
+                              696 ; 99   |
+                              697 ; 100  |// generic bitfield structure
+                              698 ; 101  |struct Bitfield {
+                              699 ; 102  |    unsigned int B0  :1;
+                              700 ; 103  |    unsigned int B1  :1;
+                              701 ; 104  |    unsigned int B2  :1;
+                              702 ; 105  |    unsigned int B3  :1;
+                              703 ; 106  |    unsigned int B4  :1;
+                              704 ; 107  |    unsigned int B5  :1;
+                              705 ; 108  |    unsigned int B6  :1;
+                              706 ; 109  |    unsigned int B7  :1;
+                              707 ; 110  |    unsigned int B8  :1;
+                              708 ; 111  |    unsigned int B9  :1;
+                              709 ; 112  |    unsigned int B10 :1;
+                              710 ; 113  |    unsigned int B11 :1;
+                              711 ; 114  |    unsigned int B12 :1;
+                              712 ; 115  |    unsigned int B13 :1;
+                              713 ; 116  |    unsigned int B14 :1;
+                              714 ; 117  |    unsigned int B15 :1;
+                              715 ; 118  |    unsigned int B16 :1;
+                              716 ; 119  |    unsigned int B17 :1;
+                              717 ; 120  |    unsigned int B18 :1;
+                              718 ; 121  |    unsigned int B19 :1;
+                              719 ; 122  |    unsigned int B20 :1;
+                              720 ; 123  |    unsigned int B21 :1;
+                              721 ; 124  |    unsigned int B22 :1;
+                              722 ; 125  |    unsigned int B23 :1;
+                              723 ; 126  |};
+                              724 ; 127  |
+                              725 ; 128  |union BitInt {
+                              726 ; 129  |        struct Bitfield B;
+                              727 ; 130  |        int        I;
+                              728 ; 131  |};
+                              729 ; 132  |
+                              730 ; 133  |#define MAX_MSG_LENGTH 10
+                              731 ; 134  |struct CMessage
+                              732 ; 135  |{
+                              733 ; 136  |        unsigned int m_uLength;
+                              734 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              735 ; 138  |};
+                              736 ; 139  |
+                              737 ; 140  |typedef struct {
+                              738 ; 141  |    WORD m_wLength;
+                              739 ; 142  |    WORD m_wMessage;
+                              740 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              741 ; 144  |} Message;
+                              742 ; 145  |
+                              743 ; 146  |struct MessageQueueDescriptor
+                              744 ; 147  |{
+                              745 ; 148  |        int *m_pBase;
+                              746 ; 149  |        int m_iModulo;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              747 ; 150  |        int m_iSize;
+                              748 ; 151  |        int *m_pHead;
+                              749 ; 152  |        int *m_pTail;
+                              750 ; 153  |};
+                              751 ; 154  |
+                              752 ; 155  |struct ModuleEntry
+                              753 ; 156  |{
+                              754 ; 157  |    int m_iSignaledEventMask;
+                              755 ; 158  |    int m_iWaitEventMask;
+                              756 ; 159  |    int m_iResourceOfCode;
+                              757 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              758 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              759 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              760 ; 163  |    int m_uTimeOutHigh;
+                              761 ; 164  |    int m_uTimeOutLow;
+                              762 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              763 ; 166  |};
+                              764 ; 167  |
+                              765 ; 168  |union WaitMask{
+                              766 ; 169  |    struct B{
+                              767 ; 170  |        unsigned int m_bNone     :1;
+                              768 ; 171  |        unsigned int m_bMessage  :1;
+                              769 ; 172  |        unsigned int m_bTimer    :1;
+                              770 ; 173  |        unsigned int m_bButton   :1;
+                              771 ; 174  |    } B;
+                              772 ; 175  |    int I;
+                              773 ; 176  |} ;
+                              774 ; 177  |
+                              775 ; 178  |
+                              776 ; 179  |struct Button {
+                              777 ; 180  |        WORD wButtonEvent;
+                              778 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              779 ; 182  |};
+                              780 ; 183  |
+                              781 ; 184  |struct Message {
+                              782 ; 185  |        WORD wMsgLength;
+                              783 ; 186  |        WORD wMsgCommand;
+                              784 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              785 ; 188  |};
+                              786 ; 189  |
+                              787 ; 190  |union EventTypes {
+                              788 ; 191  |        struct CMessage msg;
+                              789 ; 192  |        struct Button Button ;
+                              790 ; 193  |        struct Message Message;
+                              791 ; 194  |};
+                              792 ; 195  |
+                              793 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              794 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              795 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              796 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              797 ; 200  |
+                              798 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              799 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              800 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              801 ; 204  |
+                              802 ; 205  |#if DEBUG
+                              803 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              804 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              805 ; 208  |#else 
+                              806 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              807 ; 210  |#define DebugBuildAssert(x)    
+                              808 ; 211  |#endif
+                              809 ; 212  |
+                              810 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              811 ; 214  |//  #pragma asm
+                              812 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              813 ; 216  |//  #pragma endasm
+                              814 ; 217  |
+                              815 ; 218  |
+                              816 ; 219  |#ifdef COLOR_262K
+                              817 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              818 ; 221  |#elif defined(COLOR_65K)
+                              819 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              820 ; 223  |#else
+                              821 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              822 ; 225  |#endif
+                              823 ; 226  |    
+                              824 ; 227  |#endif // #ifndef _TYPES_H
+                              825 
+                              827 
+                              828 ; 12   |
+                              829 ; 13   |#define RSRC_TYPE_STRING                1
+                              830 ; 14   |#define RSRC_TYPE_DATA                  2
+                              831 ; 15   |#define RSRC_TYPE_BITMAP                3
+                              832 ; 16   |#define RSRC_TYPE_NESTED_RESOURCE       9
+                              833 ; 17   |
+                              834 ; 18   |#define MAX_NESTED_RSC      10           // Included Root Resource
+                              835 ; 19   |#define FREE_RSC_HANDLE     0xffffff    // Code for free handle
+                              836 ; 20   |
+                              837 ; 21   |#define RS_ROOT_HANDLE                      0           // Pass this handle to open
+                              838 ; 22   |                                                        // from the root.
+                              839 ; 23   |
+                              840 ; 24   |#define RSC_MAX_HANDLE_REACHED              0x800001    // No more Nested Handles free
+                              841 ; 25   |                                                        // Maximum allocated nested resour
+                                  ce handle reached
+                              842 ; 26   |                                                        // To correct error increase the n
+                                  umber of MAX_NESTED_RSC
+                              843 ; 27   |#define RSC_INVALID_NESTED_HANDLE           0x800002    // The Nested Resource Handle is I
+                                  nvalid
+                              844 ; 28   |                                                        // Handle >= MAX_NESTED_RSC 
+                              845 ; 29   |#define RSC_INVALID_NESTED_NOT_ITIALIZED    0x800003    // The Nested Resource Handle is n
+                                  ot initialized
+                              846 ; 30   |                                                        // element RscNumber of Struct_Han
+                                  dle_Nested_Rsc 
+                              847 ; 31   |                                                        // is FREE_RSC_HANDLE in 
+                              848 ; 32   |#define RSC_INVALID_RSC                     0x800004    // Resource is invalid. Resource H
+                                  eader does not
+                              849 ; 33   |#define RSC_INVALID_MEM_SPACE               0x800005    // Memory Space for resource is in
+                                  valid. Valid spaces are X, Y or P.
+                              850 ; 34   |#define RSC_ERROR_READING_RSC               0x800006
+                              851 ; 35   |
+                              852 ; 36   |#define TARGET_MEM_X                        0x800000
+                              853 ; 37   |#define TARGET_MEM_Y                        0x400000
+                              854 ; 38   |#define TARGET_MEM_L                        0x200000
+                              855 ; 39   |#define TARGET_MEM_P                        0x100000
+                              856 ; 40   |
+                              857 ; 41   |typedef struct {
+                              858 ; 42   |    WORD    wRscNumber;             // Nested resource number
+                              859 ; 43   |                                    // 0x00 = Root Resource
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              860 ; 44   |                                    // 0xffff = Free Handle
+                              861 ; 45   |    WORD    wStartPosition;         // Start position data section (in bytes)
+                              862 ; 46   |    WORD    wCurrentPosition;       // Current position (in bytes)
+                              863 ; 47   |} Struct_Handle_Nested_Rsc, * pStruct_Handle_Nested_Rsc;
+                              864 ; 48   |
+                              865 ; 49   |RETCODE _reentrant SysOpenResource(WORD wRscNum, BYTE btHandleNestedParentRsc);
+                              866 ; 50   |RETCODE _reentrant SysCloseResource(BYTE btHandleNestedRsc);
+                              867 ; 51   |RETCODE _reentrant SysLoadResource(WORD wRscNum, BYTE btHandleNestedRsc, WORD wRscType,
+                              868 ; 52   |                        WORD *pwTargetBuffer, WORD wTargetSpace, WORD wMaxSize);
+                              869 ; 53   |RETCODE _reentrant SysResourceFileRead(BYTE btHandleNestedRsc, WORD wNumBytes, 
+                              870 ; 54   |                            WORD wTargetSpace, WORD *pwTargetBuffer);
+                              871 ; 55   |RETCODE _reentrant SysResourceFileSeek(BYTE btHandleNestedRsc, WORD wNumWords);           
+                                               
+                              872 ; 56   |WORD _reentrant SysResourceFileTell(BYTE btHandleNestedRsc);
+                              873 ; 57   |void _reentrant SysSetResourceTag(WORD wTag);
+                              874 ; 58   |                   
+                              875 ; 59   |extern WORD wResourceTag;
+                              876 ; 60   |#define SysGetResourceTag(void) (wResourceTag)
+                              877 ; 61   |
+                              878 ; 62   |extern void EnterNonReentrantSection(void);
+                              879 ; 63   |extern void LeaveNonReentrantSection(void);
+                              880 ; 64   |
+                              881 ; 65   |#endif
+                              882 
+                              884 
+                              885 ; 13   |
+                              886 ; 14   |///////////////////////////////////////////////////////////////////////////////
+                              887 ; 15   |//      External function prototypes
+                              888 ; 16   |
+                              889 ; 17   |#ifdef FUNCLET
+                              890 ; 18   |#pragma asm
+                              891 ; 19   |    extern SysCallFunclet
+                              892 ; 20   |#pragma endasm    
+                              893 ; 21   |#endif    
+                              894 ; 22   |
+                              895 ; 23   |
+                              896 ; 24   |WORD _reentrant LookupPrimaryDBCSMapEntry(WORD c);
+                              897 ; 25   |WORD _reentrant LookupSecondaryDBCSMapEntry(WORD SecondaryMapNumber, WORD c);
+                              898 ; 26   |//3200Merge+
+                              899 ; 27   |#if !defined(USBMSC_BUILD) &&  defined(FUNCLET)
+                              900 ; 28   |// Following functions are just duplication of the above, including function body
+                              901 ; 29   |WORD _reentrant LookupPrimaryDBCSMapEntry_Private1(WORD c);
+                              902 ; 30   |WORD _reentrant LookupSecondaryDBCSMapEntry_Private1(WORD SecondaryMapNumber, WORD c);
+                              903 ; 31   |WORD _reentrant LookupPrimaryDBCSMapEntry_Private2(WORD c);
+                              904 ; 32   |WORD _reentrant LookupSecondaryDBCSMapEntry_Private2(WORD SecondaryMapNumber, WORD c);
+                              905 ; 33   |#endif
+                              906 ; 34   |//3200Merge-
+                              907 ; 35   |
+                              908 ; 36   |#define MBC_FLAG 0x010000
+                              909 ; 37   |
+                              910 ; 38   |                                            // Note: Once set, these don't go bad, unless
+                              911 ; 39   |                                            // we change to allow multiple Code Pages
+                              912 ; 40   |INT g_iPDM = RSRC_PDM;
+                              913 
+                              914 
+Y:0000                        915         org     y,".ydatadbcs",init:
+                              916 Fg_iPDM:
+Y:0000 00001F                 917         dc      $00001f
+                              920 
+                              921 ; 41   |INT g_iSDMS = RSRC_SDMS;
+                              922 
+                              923 Fg_iSDMS:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0001 000020                 924         dc      $000020
+                              927 
+                              928 ; 42   |
+                              929 ; 43   |BYTE s_btHandle_PDM = 0;
+                              930 
+                              931 Fs_btHandle_PDM:
+Y:0002 000000                 932         dc      $00
+                              935 
+                              936 ; 44   |BYTE s_bthandle_SDM = 0;
+                              937 
+                              938 Fs_bthandle_SDM:
+Y:0003 000000                 939         dc      $00
+                              942 
+                              943 ; 45   |
+                              944 ; 46   |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                              945 ; 47   |#if defined(USBMSC_BUILD)
+                              946 ; 48   |extern _P WORD * _P _lc_u_p_usbmsc_lcd_battery_start;
+                              947 ; 49   |extern _Y WORD * _Y _lc_u_y_Usbmsc_lcd_OVLY_copy_start;
+                              948 ; 50   |extern _Y WORD * _Y _lc_u_y_Usbmsc_lcd_OVLY_copy_end;
+                              949 ; 51   |extern _Y WORD * _Y _lc_u_y_dbcs_usbmsc_OVLY_copy_start;
+                              950 ; 52   |extern _Y WORD * _Y _lc_u_y_dbcs_usbmsc_OVLY_copy_end;
+                              951 ; 53   |
+                              952 ; 54   |extern _reentrant void CopyCodeIntoBootmanagerArea(_Y WORD * _Y pYCopyStart, 
+                              953 ; 55   |                _P WORD * _P pPCopyStart, WORD wYCopySize);
+                              954 ; 56   |
+                              955 ; 57   |_reentrant void DBCSToUnicode_wrapper(_packed unsigned char *pDBCS, WORD *pUnicode,INT iLe
+                                  ngth);
+                              956 ; 58   |_reentrant void DBCSToUnicodeDstXSrcY_wrapper(_packed BYTE *pDBCS, WORD _X * _X pUnicode, 
+                                  INT iLength);
+                              957 ; 59   |#endif
+                              958 ; 60   |
+                              959 ; 61   |void DBCSDummy (void)
+                              960 ; 62   |{
+                              961 
+P:0000                        962         org     p,".ptextdbcs":
+                              967 FDBCSDummy:
+                              968 
+                              969 ; 63   |}
+                              970 
+P:0000 00000C         4    4  972         rts
+                              974 
+                              975 ; 64   |
+                              976 ; 65   |
+                              977 ; 66   |#ifdef FUNCLET
+                              978 ; 67   |    #pragma asm
+                              979 ; 68   |        FDBCSToUnicode:
+                              980 ; 69   |
+                              981 ; 70   |        nolist
+                              982 ; 71   |        include "sysmacro.asm"
+                              983 ; 72   |        include "resource.inc"
+                              984 ; 73   |        list
+                              985 ; 74   |
+                              986 ; 75   |        ;If using funclet, function will be executed via funclet kernel
+                              987 ; 76   |        CallFunclet RSRC_FUNCLET_DBCS_TO_UNICODE
+                              988 ; 77   |
+                              989 ; 78   |        org p,"SYSFUNCLET_DBCS_TO_UNICODE_P":
+                              990 ; 79   |        dc      RSRC_FUNCLET_DBCS_TO_UNICODE
+                              991 ; 80   |    #pragma endasm
+                              992 ; 81   |    #define DBCSToUnicode DBCSToUnicodeFunclet
+                              993 ; 82   |#endif
+                              994 ; 83   |_reentrant void DBCSToUnicode(_packed unsigned char *pDBCS, WORD *pUnicode,INT iLength)
+                              995 ; 84   |{
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              996 
+                             1005 FDBCSToUnicode:
+P:0001 055F7C         2    6 1006         movec   ssh,y:(r7)+
+P:0002 3F0400         2    8 1009         move    #4,n7
+P:0003 000000         2   10 1010         nop
+P:0004 204F00         2   12 1011         move    (r7)+n7
+                             1021 
+                             1022 ; 85   |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                             1023 ; 86   |#if defined(USBMSC_BUILD)
+                             1024 ; 87   |    unsigned int CopySize = (unsigned int)(&_lc_u_y_dbcs_usbmsc_OVLY_copy_end-&_lc_u_y_dbc
+                                  s_usbmsc_OVLY_copy_start);
+                             1025 
+P:0005 77F400 FFFFFE  3   15 1027         move    #-2,n7
+P:0007 000000         2   17 1028         nop
+P:0008 5C6F00         4   21 1029         move    a1,y:(r7+n7)
+P:0009 77F400 FFFFFD  3   24 1032         move    #-3,n7
+P:000B 000000         2   26 1033         nop
+P:000C 6C6F00         4   30 1034         move    r4,y:(r7+n7)
+P:000D 77F400 FFFFFC  3   33 1037         move    #-4,n7
+P:000F 000000         2   35 1038         nop
+P:0010 686F00         4   39 1039         move    r0,y:(r7+n7)
+P:0011 57F400 rrrrrr  3   42 1042         move    #F_lc_u_y_dbcs_usbmsc_OVLY_copy_start,b
+P:0013 56F400 rrrrrr  3   45 1043         move    #F_lc_u_y_dbcs_usbmsc_OVLY_copy_end,a
+P:0015 200014         2   47 1044         sub     b,a
+                             1046 
+                             1047 ; 88   |    
+                             1048 ; 89   |    CopyCodeIntoBootmanagerArea((_Y WORD *)&_lc_u_y_dbcs_usbmsc_OVLY_copy_start, 
+                             1049 ; 90   |                                (_P WORD * _P)&_lc_u_p_usbmsc_lcd_battery_start, CopySize)
+                                  ;
+                             1050 
+P:0016 21F000         2   49 1052         move    b,r0
+P:0017 64F400 rrrrrr  3   52 1053         move    #F_lc_u_p_usbmsc_lcd_battery_start,r4
+P:0019 045FA0         2   54 1054         movec   m0,n7
+P:001A 000000         2   56 1055         nop
+P:001B 6C6F00         4   60 1056         move    r4,y:(r7+n7)
+P:001C 0BF080 rrrrrr  6   66 1057         jsr     FCopyCodeIntoBootmanagerArea
+                             1059 
+                             1060 ; 91   |  
+                             1061 ; 92   |    DBCSToUnicode_wrapper(pDBCS,pUnicode,iLength);
+                             1062 
+P:001E 77F400 FFFFFE  3   69 1064         move    #-2,n7
+P:0020 000000         2   71 1065         nop
+P:0021 5EEF00         4   75 1066         move    y:(r7+n7),a
+P:0022 77F400 FFFFFD  3   78 1067         move    #-3,n7
+P:0024 000000         2   80 1068         nop
+P:0025 6CEF00         4   84 1069         move    y:(r7+n7),r4
+P:0026 77F400 FFFFFC  3   87 1070         move    #-4,n7
+P:0028 000000         2   89 1071         nop
+P:0029 68EF00         4   93 1072         move    y:(r7+n7),r0
+P:002A 0BF080 rrrrrr  6   99 1073         jsr     FDBCSToUnicode_wrapper
+                             1083 
+                             1084 ; 93   |
+                             1085 ; 94   |    CopySize = (unsigned int)(&_lc_u_y_Usbmsc_lcd_OVLY_copy_end-&_lc_u_y_Usbmsc_lcd_OVLY_c
+                                  opy_start);
+                             1086 
+P:002C 57F400 rrrrrr  3  102 1088         move    #F_lc_u_y_Usbmsc_lcd_OVLY_copy_start,b
+P:002E 56F400 rrrrrr  3  105 1089         move    #F_lc_u_y_Usbmsc_lcd_OVLY_copy_end,a
+P:0030 200014         2  107 1090         sub     b,a
+                             1092 
+                             1093 ; 95   |        
+                             1094 ; 96   |    CopyCodeIntoBootmanagerArea((_Y WORD *)&_lc_u_y_Usbmsc_lcd_OVLY_copy_start, 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1095 ; 97   |                                (_P WORD * _P)&_lc_u_p_usbmsc_lcd_battery_start, CopySize)
+                                  ;
+                             1096 
+P:0031 21F000         2  109 1098         move    b,r0
+P:0032 045FA0         2  111 1099         movec   m0,n7
+P:0033 000000         2  113 1100         nop
+P:0034 6CEF00         4  117 1101         move    y:(r7+n7),r4
+P:0035 0BF080 rrrrrr  6  123 1102         jsr     FCopyCodeIntoBootmanagerArea
+                             1104 
+                             1105 ; 98   |    
+                             1106 ; 99   |#else
+                             1107 ; 100  |    int iDBCSIndex=0;
+                             1108 ; 101  |    int iUnicodeIndex=0;
+                             1109 ; 102  |    WORD c;
+                             1110 ; 103  |    WORD DBCSMapEntry;
+                             1111 ; 104  |    while (1) 
+                             1112 ; 105  |    {
+                             1113 ; 106  |        c = packed_get(pDBCS,iDBCSIndex++);
+                             1114 ; 107  |
+                             1115 ; 108  |        if (c == 0)
+                             1116 ; 109  |        {
+                             1117 ; 110  |            *pUnicode++ = 0;
+                             1118 ; 111  |            break;
+                             1119 ; 112  |        }
+                             1120 ; 113  |#if 1 //3200Merge
+                             1121 ; 114  |    #ifdef FUNCLET
+                             1122 ; 115  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry_Private1(c);
+                             1123 ; 116  |    #else
+                             1124 ; 117  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry(c);
+                             1125 ; 118  |    #endif
+                             1126 ; 119  |#else
+                             1127 ; 120  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry(c);
+                             1128 ; 121  |#endif
+                             1129 ; 122  |        if (DBCSMapEntry & MBC_FLAG) 
+                             1130 ; 123  |        {
+                             1131 ; 124  |
+                             1132 ; 125  |          c = packed_get(pDBCS, iDBCSIndex++);
+                             1133 ; 126  |#if 1 //3200Merge
+                             1134 ; 127  |    #ifdef FUNCLET
+                             1135 ; 128  |          c = LookupSecondaryDBCSMapEntry_Private1(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                                  
+                             1136 ; 129  |    #else          
+                             1137 ; 130  |          c = LookupSecondaryDBCSMapEntry(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                             1138 ; 131  |    #endif
+                             1139 ; 132  |#else
+                             1140 ; 133  |          c = LookupSecondaryDBCSMapEntry(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                             1141 ; 134  |#endif
+                             1142 ; 135  |        }
+                             1143 ; 136  |        else
+                             1144 ; 137  |        {
+                             1145 ; 138  |          c = DBCSMapEntry;
+                             1146 ; 139  |        }
+                             1147 ; 140  |
+                             1148 ; 141  |        *pUnicode++ = c;
+                             1149 ; 142  |        iUnicodeIndex++;
+                             1150 ; 143  |        if(iUnicodeIndex > iLength -2 )
+                             1151 ; 144  |        {
+                             1152 ; 145  |            *pUnicode=0;
+                             1153 ; 146  |            break;
+                             1154 ; 147  |        }
+                             1155 ; 148  |    }
+                             1156 ; 149  |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1157 ; 150  |}
+                             1158 
+P:0037 77F400 FFFFFB  3  126 1160         move    #-5,n7
+P:0039 000000         2  128 1161         nop
+P:003A 05EF7C         4  132 1162         movec   y:(r7+n7),ssh
+P:003B 204F00         2  134 1164         move    (r7)+n7
+P:003C 00000C         4  138 1166         rts
+                             1168 
+                             1169 ; 151  |
+                             1170 ; 152  |#if 1 //3200Merge
+                             1171 ; 153  |#if !defined(USBMSC_BUILD) &&  defined(FUNCLET)
+                             1172 ; 154  |/////////////////////////////////////////////////////////////////////////////////
+                             1173 ; 155  |//> Name: LookupPrimaryDBCSMapEntry
+                             1174 ; 156  |//
+                             1175 ; 157  |//  Type: Function
+                             1176 ; 158  |//  Description:
+                             1177 ; 159  |//  Prototype:          WORD _reentrant LookupPrimaryDBCSMapEntry(WORD c);
+                             1178 ; 160  |//  Inputs:
+                             1179 ; 161  |//  Outputs:
+                             1180 ; 162  |//  Notes:
+                             1181 ; 163  |//<
+                             1182 ; 164  |/////////////////////////////////////////////////////////////////////////////////
+                             1183 ; 165  |WORD _reentrant LookupPrimaryDBCSMapEntry_Private1(WORD c) {
+                             1184 ; 166  |  WORD highByte = c & 0x0000ff;
+                             1185 ; 167  |  WORD DBCSMapEntry;
+                             1186 ; 168  |  int offset;
+                             1187 ; 169  |                                    // The PDM file is stored as a single resource with
+                             1188 ; 170  |                                    // 256 entries, each one data word.  You don't LOAD
+                             1189 ; 171  |                                    // the whole resource;  just OPEN it and then SEEK
+                             1190 ; 172  |                                    // to the deisred entry.
+                             1191 ; 173  |
+                             1192 ; 174  |  offset =
+                             1193 ; 175  |    3 +                           // PDM Resource Header
+                             1194 ; 176  |    highByte;                     // 1 words per PDM entry
+                             1195 ; 177  |
+                             1196 ; 178  |    if(s_btHandle_PDM > 0)
+                             1197 ; 179  |    {
+                             1198 ; 180  |        // do nothing
+                             1199 ; 181  |    }
+                             1200 ; 182  |    else
+                             1201 ; 183  |    {
+                             1202 ; 184  |        s_btHandle_PDM = (BYTE) SysOpenResource(g_iPDM, RS_ROOT_HANDLE);
+                             1203 ; 185  |    }
+                             1204 ; 186  |
+                             1205 ; 187  |    SysResourceFileSeek(s_btHandle_PDM, 0);
+                             1206 ; 188  |    SysResourceFileSeek(s_btHandle_PDM, offset);
+                             1207 ; 189  |    SysResourceFileRead(s_btHandle_PDM, 3, TARGET_MEM_Y, &DBCSMapEntry);
+                             1208 ; 190  |
+                             1209 ; 191  |  return(DBCSMapEntry);
+                             1210 ; 192  |}
+                             1211 ; 193  |
+                             1212 ; 194  |/////////////////////////////////////////////////////////////////////////////////
+                             1213 ; 195  |//> Name: LookupSecondaryDBCSMapEntry
+                             1214 ; 196  |//
+                             1215 ; 197  |//  Type: Function
+                             1216 ; 198  |//  Description:
+                             1217 ; 199  |//  Prototype:          WORD _reentrant LookupSecondaryDBCSMapEntry(WORD SecondaryMapNumbe
+                                  r, WORD c);
+                             1218 ; 200  |//  Inputs:
+                             1219 ; 201  |//  Outputs:
+                             1220 ; 202  |//  Notes:
+                             1221 ; 203  |//<
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1222 ; 204  |/////////////////////////////////////////////////////////////////////////////////
+                             1223 ; 205  |WORD _reentrant LookupSecondaryDBCSMapEntry_Private1(WORD SecondaryMapIndex, WORD c) {
+                             1224 ; 206  |  WORD DBCSMapEntry;
+                             1225 ; 207  |  WORD charIdx = c & 0x0000ff;
+                             1226 ; 208  |  int SDM_header;
+                             1227 ; 209  |  int SDM_size;
+                             1228 ; 210  |  int offset;
+                             1229 ; 211  |  BYTE btHandle;
+                             1230 ; 212  |                                    // The SDMs file is stored as nested resources.  Each 
+                                  of
+                             1231 ; 213  |                                    // the N entries is a separate SDM resource.  Each SDM
+                                  
+                             1232 ; 214  |                                    // resource contains 256 map entries.  You don't LOAD 
+                                  the
+                             1233 ; 215  |                                    // whole SDM resource;  you just OPEN it and SEEK to t
+                                  he
+                             1234 ; 216  |                                    // desired entry.
+                             1235 ; 217  |
+                             1236 ; 218  |
+                             1237 ; 219  |  SDM_size =                        // size of one SDM resource, in bytes = 3 byte per wor
+                                  d *
+                             1238 ; 220  |                3 +                 // header +
+                             1239 ; 221  |                256;                // 256 SDM entries
+                             1240 ; 222  |
+                             1241 ; 223  |
+                             1242 ; 224  |  offset =
+                             1243 ; 225  |    SecondaryMapIndex*SDM_size +    // skip to desired SDM
+                             1244 ; 226  |    3 +                           // skip over its 3-word header
+                             1245 ; 227  |    charIdx;                      // skip to desired entry
+                             1246 ; 228  |
+                             1247 ; 229  |
+                             1248 ; 230  |  if (s_bthandle_SDM > 0) {
+                             1249 ; 231  |     // nothing to do
+                             1250 ; 232  |
+                             1251 ; 233  |  }
+                             1252 ; 234  |  else
+                             1253 ; 235  |  {
+                             1254 ; 236  |    btHandle = (BYTE)SysOpenResource(g_iSDMS, RS_ROOT_HANDLE);
+                             1255 ; 237  |    s_bthandle_SDM = (BYTE)SysOpenResource(1,btHandle);     // Seek past the RSRC table an
+                                  d 1st RSRC header
+                             1256 ; 238  |    SysCloseResource(btHandle);
+                             1257 ; 239  |
+                             1258 ; 240  |  }
+                             1259 ; 241  |
+                             1260 ; 242  |  SysResourceFileSeek(s_bthandle_SDM, 0);
+                             1261 ; 243  |  SysResourceFileSeek(s_bthandle_SDM, offset);
+                             1262 ; 244  |  SysResourceFileRead(s_bthandle_SDM, 3, TARGET_MEM_Y, &DBCSMapEntry); // Read the map ent
+                                  ry
+                             1263 ; 245  |  return(DBCSMapEntry);
+                             1264 ; 246  |}
+                             1265 ; 247  |#endif //#if defined(STMP_BUILD_PLAYER) &&  defined(FUNCLET)
+                             1266 ; 248  |#endif //3200Merge
+                             1267 ; 249  |
+                             1268 ; 250  |#ifdef STMP_BUILD_PLAYER
+                             1269 ; 251  |#ifdef FUNCLET
+                             1270 ; 252  |    #pragma asm
+                             1271 ; 253  |        ;The name of the following counter is the concatenation of the string ;".ptext" an
+                                  d the name of the C source file.
+                             1272 ; 254  |            org p,".ptextdbcs":
+                             1273 ; 255  |    #pragma endasm
+                             1274 ; 256  |#endif
+                             1275 ; 257  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1276 ; 258  |#ifdef FUNCLET
+                             1277 ; 259  |    #pragma asm
+                             1278 ; 260  |        FDBCSToUnicodeDstXSrcY:
+                             1279 ; 261  |
+                             1280 ; 262  |        nolist
+                             1281 ; 263  |        include "sysmacro.asm"
+                             1282 ; 264  |        include "resource.inc"
+                             1283 ; 265  |        list
+                             1284 ; 266  |
+                             1285 ; 267  |        ;If using funclet, function will be executed via funclet kernel
+                             1286 ; 268  |        CallFunclet RSRC_FUNCLET_DBCS_TO_UNICODE_DSTX_SRCY
+                             1287 ; 269  |
+                             1288 ; 270  |        org p,"SYSFUNCLET_DBCS_TO_UNICODE_DSTX_SRCY_P":
+                             1289 ; 271  |        dc      RSRC_FUNCLET_DBCS_TO_UNICODE_DSTX_SRCY
+                             1290 ; 272  |    #pragma endasm
+                             1291 ; 273  |    #define DBCSToUnicodeDstXSrcY DBCSToUnicodeDstXSrcYFunclet
+                             1292 ; 274  |#endif
+                             1293 ; 275  |_reentrant void DBCSToUnicodeDstXSrcY(_packed BYTE *pDBCS, WORD _X * _X pUnicode, INT iLen
+                                  gth)
+                             1294 ; 276  |{
+                             1295 ; 277  |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                             1296 ; 278  |#if defined(USBMSC_BUILD)
+                             1297 ; 279  |    unsigned int CopySize = (unsigned int)(&_lc_u_y_dbcs_usbmsc_OVLY_copy_end-&_lc_u_y_dbc
+                                  s_usbmsc_OVLY_copy_start);
+                             1298 ; 280  |    
+                             1299 ; 281  |    CopyCodeIntoBootmanagerArea((_Y WORD *)&_lc_u_y_dbcs_usbmsc_OVLY_copy_start, 
+                             1300 ; 282  |                                (_P WORD * _P)&_lc_u_p_usbmsc_lcd_battery_start, CopySize)
+                                  ;
+                             1301 ; 283  |  
+                             1302 ; 284  |    DBCSToUnicodeDstXSrcY_wrapper(pDBCS,pUnicode,iLength);
+                             1303 ; 285  |
+                             1304 ; 286  |    CopySize = (unsigned int)(&_lc_u_y_Usbmsc_lcd_OVLY_copy_end-&_lc_u_y_Usbmsc_lcd_OVLY_c
+                                  opy_start);
+                             1305 ; 287  |        
+                             1306 ; 288  |    CopyCodeIntoBootmanagerArea((_Y WORD *)&_lc_u_y_Usbmsc_lcd_OVLY_copy_start, 
+                             1307 ; 289  |                                (_P WORD * _P)&_lc_u_p_usbmsc_lcd_battery_start, CopySize)
+                                  ;
+                             1308 ; 290  |    
+                             1309 ; 291  |#else
+                             1310 ; 292  |        INT     iDBCSIndex = 0;
+                             1311 ; 293  |    INT iUnicodeIndex = 0;
+                             1312 ; 294  |    WORD        c;
+                             1313 ; 295  |    WORD        DBCSMapEntry;
+                             1314 ; 296  |
+                             1315 ; 297  |    while (1) {
+                             1316 ; 298  |                c = packed_get(pDBCS, iDBCSIndex++);
+                             1317 ; 299  |
+                             1318 ; 300  |        if (c == 0) {
+                             1319 ; 301  |            *pUnicode++ = 0;
+                             1320 ; 302  |            break;
+                             1321 ; 303  |        }
+                             1322 ; 304  |#if 1 //3200Merge
+                             1323 ; 305  |    #ifdef FUNCLET
+                             1324 ; 306  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry_Private2(c);
+                             1325 ; 307  |    #else
+                             1326 ; 308  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry(c);
+                             1327 ; 309  |    #endif
+                             1328 ; 310  |#else //3200Merge
+                             1329 ; 311  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry(c);
+                             1330 ; 312  |#endif //3200Merge
+                             1331 ; 313  |        if (DBCSMapEntry & MBC_FLAG) {
+                             1332 ; 314  |          c = packed_get(pDBCS, iDBCSIndex++);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1333 ; 315  |#if 1 //3200Merge
+                             1334 ; 316  |    #ifdef FUNCLET
+                             1335 ; 317  |          c = LookupSecondaryDBCSMapEntry_Private2(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                                  
+                             1336 ; 318  |    #else
+                             1337 ; 319  |          c = LookupSecondaryDBCSMapEntry(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                             1338 ; 320  |    #endif
+                             1339 ; 321  |#else //3200Merge
+                             1340 ; 322  |          c = LookupSecondaryDBCSMapEntry(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                             1341 ; 323  |#endif //3200Merge
+                             1342 ; 324  |        } else
+                             1343 ; 325  |          c = DBCSMapEntry;
+                             1344 ; 326  |
+                             1345 ; 327  |        *pUnicode++ = c;
+                             1346 ; 328  |        iUnicodeIndex++;
+                             1347 ; 329  |        if(iUnicodeIndex > iLength -2) {
+                             1348 ; 330  |            *pUnicode=0;
+                             1349 ; 331  |            break;
+                             1350 ; 332  |        }
+                             1351 ; 333  |    }
+                             1352 ; 334  |#endif
+                             1353 ; 335  |}
+                             1354 ; 336  |
+                             1355 ; 337  |#if 1 //3200Merge
+                             1356 ; 338  |#if !defined(USBMSC_BUILD) &&  defined(FUNCLET)
+                             1357 ; 339  |/////////////////////////////////////////////////////////////////////////////////
+                             1358 ; 340  |//> Name: LookupPrimaryDBCSMapEntry
+                             1359 ; 341  |//
+                             1360 ; 342  |//  Type: Function
+                             1361 ; 343  |//  Description:
+                             1362 ; 344  |//  Prototype:          WORD _reentrant LookupPrimaryDBCSMapEntry(WORD c);
+                             1363 ; 345  |//  Inputs:
+                             1364 ; 346  |//  Outputs:
+                             1365 ; 347  |//  Notes:
+                             1366 ; 348  |//<
+                             1367 ; 349  |/////////////////////////////////////////////////////////////////////////////////
+                             1368 ; 350  |WORD _reentrant LookupPrimaryDBCSMapEntry_Private2(WORD c) {
+                             1369 ; 351  |  WORD highByte = c & 0x0000ff;
+                             1370 ; 352  |  WORD DBCSMapEntry;
+                             1371 ; 353  |  int offset;
+                             1372 ; 354  |                                    // The PDM file is stored as a single resource with
+                             1373 ; 355  |                                    // 256 entries, each one data word.  You don't LOAD
+                             1374 ; 356  |                                    // the whole resource;  just OPEN it and then SEEK
+                             1375 ; 357  |                                    // to the deisred entry.
+                             1376 ; 358  |
+                             1377 ; 359  |  offset =
+                             1378 ; 360  |    3 +                           // PDM Resource Header
+                             1379 ; 361  |    highByte;                     // 1 words per PDM entry
+                             1380 ; 362  |
+                             1381 ; 363  |    if(s_btHandle_PDM > 0)
+                             1382 ; 364  |    {
+                             1383 ; 365  |        // do nothing
+                             1384 ; 366  |    }
+                             1385 ; 367  |    else
+                             1386 ; 368  |    {
+                             1387 ; 369  |        s_btHandle_PDM = (BYTE) SysOpenResource(g_iPDM, RS_ROOT_HANDLE);
+                             1388 ; 370  |    }
+                             1389 ; 371  |
+                             1390 ; 372  |    SysResourceFileSeek(s_btHandle_PDM, 0);
+                             1391 ; 373  |    SysResourceFileSeek(s_btHandle_PDM, offset);
+                             1392 ; 374  |    SysResourceFileRead(s_btHandle_PDM, 3, TARGET_MEM_Y, &DBCSMapEntry);
+                             1393 ; 375  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1394 ; 376  |  return(DBCSMapEntry);
+                             1395 ; 377  |}
+                             1396 ; 378  |
+                             1397 ; 379  |/////////////////////////////////////////////////////////////////////////////////
+                             1398 ; 380  |//> Name: LookupSecondaryDBCSMapEntry
+                             1399 ; 381  |//
+                             1400 ; 382  |//  Type: Function
+                             1401 ; 383  |//  Description:
+                             1402 ; 384  |//  Prototype:          WORD _reentrant LookupSecondaryDBCSMapEntry(WORD SecondaryMapNumbe
+                                  r, WORD c);
+                             1403 ; 385  |//  Inputs:
+                             1404 ; 386  |//  Outputs:
+                             1405 ; 387  |//  Notes:
+                             1406 ; 388  |//<
+                             1407 ; 389  |/////////////////////////////////////////////////////////////////////////////////
+                             1408 ; 390  |WORD _reentrant LookupSecondaryDBCSMapEntry_Private2(WORD SecondaryMapIndex, WORD c) {
+                             1409 ; 391  |  WORD DBCSMapEntry;
+                             1410 ; 392  |  WORD charIdx = c & 0x0000ff;
+                             1411 ; 393  |  int SDM_header;
+                             1412 ; 394  |  int SDM_size;
+                             1413 ; 395  |  int offset;
+                             1414 ; 396  |  BYTE btHandle;
+                             1415 ; 397  |                                    // The SDMs file is stored as nested resources.  Each 
+                                  of
+                             1416 ; 398  |                                    // the N entries is a separate SDM resource.  Each SDM
+                                  
+                             1417 ; 399  |                                    // resource contains 256 map entries.  You don't LOAD 
+                                  the
+                             1418 ; 400  |                                    // whole SDM resource;  you just OPEN it and SEEK to t
+                                  he
+                             1419 ; 401  |                                    // desired entry.
+                             1420 ; 402  |
+                             1421 ; 403  |
+                             1422 ; 404  |  SDM_size =                        // size of one SDM resource, in bytes = 3 byte per wor
+                                  d *
+                             1423 ; 405  |                3 +                 // header +
+                             1424 ; 406  |                256;                // 256 SDM entries
+                             1425 ; 407  |
+                             1426 ; 408  |
+                             1427 ; 409  |  offset =
+                             1428 ; 410  |    SecondaryMapIndex*SDM_size +    // skip to desired SDM
+                             1429 ; 411  |    3 +                           // skip over its 3-word header
+                             1430 ; 412  |    charIdx;                      // skip to desired entry
+                             1431 ; 413  |
+                             1432 ; 414  |
+                             1433 ; 415  |  if (s_bthandle_SDM > 0) {
+                             1434 ; 416  |     // nothing to do
+                             1435 ; 417  |
+                             1436 ; 418  |  }
+                             1437 ; 419  |  else
+                             1438 ; 420  |  {
+                             1439 ; 421  |    btHandle = (BYTE)SysOpenResource(g_iSDMS, RS_ROOT_HANDLE);
+                             1440 ; 422  |    s_bthandle_SDM = (BYTE)SysOpenResource(1,btHandle);     // Seek past the RSRC table an
+                                  d 1st RSRC header
+                             1441 ; 423  |    SysCloseResource(btHandle);
+                             1442 ; 424  |
+                             1443 ; 425  |  }
+                             1444 ; 426  |
+                             1445 ; 427  |  SysResourceFileSeek(s_bthandle_SDM, 0);
+                             1446 ; 428  |  SysResourceFileSeek(s_bthandle_SDM, offset);
+                             1447 ; 429  |  SysResourceFileRead(s_bthandle_SDM, 3, TARGET_MEM_Y, &DBCSMapEntry); // Read the map ent
+                                  ry
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1448 ; 430  |  return(DBCSMapEntry);
+                             1449 ; 431  |}
+                             1450 ; 432  |#endif //#if defined(STMP_BUILD_PLAYER) &&  defined(FUNCLET)
+                             1451 ; 433  |#endif //3200Merge
+                             1452 ; 434  |
+                             1453 ; 435  |#ifdef FUNCLET
+                             1454 ; 436  |    #pragma asm
+                             1455 ; 437  |        ;The name of the following counter is the concatenation of the string ;".ptext" an
+                                  d the name of the C source file.
+                             1456 ; 438  |            org p,".ptextdbcs":
+                             1457 ; 439  |    #pragma endasm
+                             1458 ; 440  |#endif
+                             1459 ; 441  |#endif
+                             1460 ; 442  |
+                             1461 ; 443  |//Following should not come out simultaneously with Funclet
+                             1462 ; 444  |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                             1463 ; 445  |#if defined(USBMSC_BUILD)
+                             1464 ; 446  |    #pragma asm
+                             1465         ;The name of the following counter is the concatenation of the string ;".ptext" and the na
+                                  me of the C source file.
+P:0000                       1466             org p,".ptextdbcs_usbmsc_overlay":
+                             1467 ; 449  |    #pragma endasm
+                             1468 ; 450  |#endif
+                             1469 ; 451  |
+                             1470 ; 452  |#if 1 //3200Merge
+                             1471 ; 453  |#ifndef FUNCLET
+                             1472 ; 454  |#endif //3200Merge
+                             1473 ; 455  |/////////////////////////////////////////////////////////////////////////////////
+                             1474 ; 456  |//> Name: LookupPrimaryDBCSMapEntry
+                             1475 ; 457  |//
+                             1476 ; 458  |//  Type: Function
+                             1477 ; 459  |//  Description:
+                             1478 ; 460  |//  Prototype:          WORD _reentrant LookupPrimaryDBCSMapEntry(WORD c); 
+                             1479 ; 461  |//  Inputs: 
+                             1480 ; 462  |//  Outputs: 
+                             1481 ; 463  |//  Notes: 
+                             1482 ; 464  |//<
+                             1483 ; 465  |/////////////////////////////////////////////////////////////////////////////////
+                             1484 ; 466  |WORD _reentrant LookupPrimaryDBCSMapEntry(WORD c) {
+                             1485 
+                             1490 FLookupPrimaryDBCSMapEntry:
+P:0000 055F7C         2    2 1491         movec   ssh,y:(r7)+
+P:0001 205F00         2    4 1494         move    (r7)+
+P:0002 205F00         2    6 1495         move    (r7)+
+                             1501 
+                             1502 ; 467  |  WORD highByte = c & 0x0000ff;
+                             1503 
+P:0003 45F400 0000FF  3    9 1505         move    #>$FF,x1
+P:0005 200066         2   11 1506         and     x1,a
+                             1512 
+                             1513 ; 468  |  WORD DBCSMapEntry;
+                             1514 ; 469  |  int offset;
+                             1515 ; 470  |                                    // The PDM file is stored as a single resource with
+                             1516 ; 471  |                                    // 256 entries, each one data word.  You don't LOAD
+                             1517 ; 472  |                                    // the whole resource;  just OPEN it and then SEEK
+                             1518 ; 473  |                                    // to the deisred entry.
+                             1519 ; 474  |
+                             1520 ; 475  |  offset = 
+                             1521 ; 476  |    3 +                           // PDM Resource Header 
+                             1522 ; 477  |    highByte;                     // 1 words per PDM entry
+                             1523 
+P:0006 44F400 000003  3   14 1525         move    #>3,x0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0008 200040         2   16 1526         add     x0,a
+P:0009 045FA0         2   18 1528         movec   m0,n7
+P:000A 000000         2   20 1529         nop
+P:000B 5C6F00         4   24 1530         move    a1,y:(r7+n7)
+                             1532 
+                             1533 ; 478  |
+                             1534 ; 479  |    if(s_btHandle_PDM > 0)
+                             1535 
+P:000C 5FF000 rrrrrr  3   27 1537         move    y:Fs_btHandle_PDM,b
+P:000E 20000B         2   29 1538         tst     b
+P:000F 0AF0A7 rrrrrr  6   35 1539         jgt     L3
+                             1540 
+                             1541 ; 480  |    {
+                             1542 ; 481  |        // do nothing
+                             1543 ; 482  |    }
+                             1544 ; 483  |    else
+                             1545 ; 484  |    {
+                             1546 ; 485  |        s_btHandle_PDM = (BYTE) SysOpenResource(g_iPDM, RS_ROOT_HANDLE);    
+                             1547 
+P:0011 5EF000 rrrrrr  3   38 1549         move    y:Fg_iPDM,a
+P:0013 20001B         2   40 1550         clr     b   
+P:0014 0BF080 rrrrrr  6   46 1551         jsr     FSysOpenResource
+P:0016 5E7000 rrrrrr  3   49 1552         move    a,y:Fs_btHandle_PDM
+                             1553 
+                             1554 ; 486  |    }
+                             1555 ; 487  |
+                             1556 ; 488  |    SysResourceFileSeek(s_btHandle_PDM, 0);
+                             1557 
+P:0018 5EF000 rrrrrr  3   52 1559 L3:     move    y:Fs_btHandle_PDM,a
+P:001A 20001B         2   54 1560         clr     b   
+P:001B 0BF080 rrrrrr  6   60 1561         jsr     FSysResourceFileSeek
+                             1562 
+                             1563 ; 489  |    SysResourceFileSeek(s_btHandle_PDM, offset);
+                             1564 
+P:001D 5EF000 rrrrrr  3   63 1566         move    y:Fs_btHandle_PDM,a
+P:001F 045FA0         2   65 1567         movec   m0,n7
+P:0020 000000         2   67 1568         nop
+P:0021 5FEF00         4   71 1569         move    y:(r7+n7),b
+P:0022 0BF080 rrrrrr  6   77 1573         jsr     FSysResourceFileSeek
+                             1574 
+                             1575 ; 490  |    SysResourceFileRead(s_btHandle_PDM, 3, TARGET_MEM_Y, &DBCSMapEntry);            
+                             1576 
+P:0024 5EF000 rrrrrr  3   80 1578         move    y:Fs_btHandle_PDM,a
+P:0026 77F400 FFFFFE  3   83 1579         move    #-2,n7
+P:0028 000000         2   85 1580         nop
+P:0029 044F10         4   89 1581         lua     (r7)+n7,r0
+P:002A 57F400 000003  3   92 1582         move    #>3,b
+P:002C 244000         2   94 1583         move    #<$40,x0
+P:002D 0BF080 rrrrrr  6  100 1584         jsr     FSysResourceFileRead
+                             1585 
+                             1586 ; 491  |
+                             1587 ; 492  |  return(DBCSMapEntry);
+                             1588 
+P:002F 77F400 FFFFFE  3  103 1590         move    #-2,n7
+P:0031 000000         2  105 1591         nop
+P:0032 5EEF00         4  109 1592         move    y:(r7+n7),a
+                             1593 
+                             1594 ; 493  |}
+                             1595 
+P:0033 204F00         2  111 1597         move    (r7)+n7
+P:0034 05FF7C         4  115 1599         movec   y:-(r7),ssh
+P:0035 000000         2  117 1602         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0036 00000C         4  121 1603         rts
+                             1605 
+                             1606 ; 494  |
+                             1607 ; 495  |/////////////////////////////////////////////////////////////////////////////////
+                             1608 ; 496  |//> Name: LookupSecondaryDBCSMapEntry
+                             1609 ; 497  |//
+                             1610 ; 498  |//  Type: Function
+                             1611 ; 499  |//  Description:
+                             1612 ; 500  |//  Prototype:          WORD _reentrant LookupSecondaryDBCSMapEntry(WORD SecondaryMapNumbe
+                                  r, WORD c); 
+                             1613 ; 501  |//  Inputs: 
+                             1614 ; 502  |//  Outputs: 
+                             1615 ; 503  |//  Notes: 
+                             1616 ; 504  |//<
+                             1617 ; 505  |/////////////////////////////////////////////////////////////////////////////////
+                             1618 ; 506  |WORD _reentrant LookupSecondaryDBCSMapEntry(WORD SecondaryMapIndex, WORD c) {
+                             1619 
+                             1624 FLookupSecondaryDBCSMapEntry:
+P:0037 055F7C         2  123 1625         movec   ssh,y:(r7)+
+P:0038 3F0300         2  125 1628         move    #3,n7
+P:0039 000000         2  127 1629         nop
+P:003A 204F00         2  129 1630         move    (r7)+n7
+                             1639 
+                             1640 ; 507  |  WORD DBCSMapEntry;
+                             1641 ; 508  |  WORD charIdx = c & 0x0000ff;
+                             1642 
+P:003B 45F400 0000FF  3  132 1644         move    #>$FF,x1
+P:003D 20006E         2  134 1645         and     x1,b
+                             1656 
+                             1657 ; 509  |  int SDM_header;
+                             1658 ; 510  |  int SDM_size;
+                             1659 ; 511  |  int offset;
+                             1660 ; 512  |  BYTE btHandle;
+                             1661 ; 513  |                                    // The SDMs file is stored as nested resources.  Each 
+                                  of
+                             1662 ; 514  |                                    // the N entries is a separate SDM resource.  Each SDM
+                                  
+                             1663 ; 515  |                                    // resource contains 256 map entries.  You don't LOAD 
+                                  the
+                             1664 ; 516  |                                    // whole SDM resource;  you just OPEN it and SEEK to t
+                                  he
+                             1665 ; 517  |                                    // desired entry.
+                             1666 ; 518  |
+                             1667 ; 519  |
+                             1668 ; 520  |  SDM_size =                        // size of one SDM resource, in bytes = 3 byte per wor
+                                  d *
+                             1669 ; 521  |                3 +                 // header +
+                             1670 ; 522  |                256;                // 256 SDM entries
+                             1671 ; 523  |
+                             1672 ; 524  |
+                             1673 ; 525  |  offset =
+                             1674 ; 526  |    SecondaryMapIndex*SDM_size +    // skip to desired SDM
+                             1675 ; 527  |    3 +                           // skip over its 3-word header
+                             1676 ; 528  |    charIdx;                      // skip to desired entry
+                             1677 
+P:003E 218600         2  136 1679         move    a1,y0
+P:003F 21A900         2  138 1680         move    b1,b0
+P:0040 44F400 000103  3  141 1681         move    #259,x0
+P:0042 20003A         2  143 1682         asl     b
+P:0043 2000DA         2  145 1683         mac     y0,x0,b
+P:0044 20002A         2  147 1684         asr     b
+P:0045 46F400 000003  3  150 1688         move    #>3,y0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0047 212E00         2  152 1689         move    b0,a
+P:0048 200050         2  154 1690         add     y0,a
+P:0049 77F400 FFFFFE  3  157 1691         move    #-2,n7
+P:004B 000000         2  159 1692         nop
+P:004C 5C6F00         4  163 1693         move    a1,y:(r7+n7)
+                             1695 
+                             1696 ; 529  |
+                             1697 ; 530  |    
+                             1698 ; 531  |  if (s_bthandle_SDM > 0) {
+                             1699 
+P:004D 5FF000 rrrrrr  3  166 1701         move    y:Fs_bthandle_SDM,b
+P:004F 20000B         2  168 1702         tst     b
+P:0050 0AF0A7 rrrrrr  6  174 1703         jgt     L5
+                             1704 
+                             1705 ; 532  |     // nothing to do
+                             1706 ; 533  | 
+                             1707 ; 534  |  }
+                             1708 ; 535  |  else 
+                             1709 ; 536  |  {
+                             1710 ; 537  |    btHandle = (BYTE)SysOpenResource(g_iSDMS, RS_ROOT_HANDLE);
+                             1711 
+P:0052 5EF000 rrrrrr  3  177 1713         move    y:Fg_iSDMS,a
+P:0054 20001B         2  179 1714         clr     b   
+P:0055 0BF080 rrrrrr  6  185 1715         jsr     FSysOpenResource
+P:0057 200009         2  187 1717         tfr     a,b
+                             1719 
+                             1720 ; 538  |    s_bthandle_SDM = (BYTE)SysOpenResource(1,btHandle);     // Seek past the RSRC table an
+                                  d 1st RSRC header
+                             1721 
+P:0058 045FA0         2  189 1723         movec   m0,n7
+P:0059 000000         2  191 1724         nop
+P:005A 5D6F00         4  195 1725         move    b1,y:(r7+n7)
+P:005B 56F400 000001  3  198 1730         move    #>1,a
+P:005D 0BF080 rrrrrr  6  204 1731         jsr     FSysOpenResource
+P:005F 5E7000 rrrrrr  3  207 1734         move    a,y:Fs_bthandle_SDM
+                             1735 
+                             1736 ; 539  |    SysCloseResource(btHandle);
+                             1737 
+P:0061 045FA0         2  209 1739         movec   m0,n7
+P:0062 000000         2  211 1740         nop
+P:0063 5EEF00         4  215 1741         move    y:(r7+n7),a
+P:0064 0BF080 rrrrrr  6  221 1742         jsr     FSysCloseResource
+                             1746 
+                             1747 ; 540  | 
+                             1748 ; 541  |  }
+                             1749 ; 542  | 
+                             1750 ; 543  |  SysResourceFileSeek(s_bthandle_SDM, 0);
+                             1751 
+P:0066 5EF000 rrrrrr  3  224 1753 L5:     move    y:Fs_bthandle_SDM,a
+P:0068 20001B         2  226 1754         clr     b   
+P:0069 0BF080 rrrrrr  6  232 1755         jsr     FSysResourceFileSeek
+                             1756 
+                             1757 ; 544  |  SysResourceFileSeek(s_bthandle_SDM, offset);
+                             1758 
+P:006B 5EF000 rrrrrr  3  235 1760         move    y:Fs_bthandle_SDM,a
+P:006D 77F400 FFFFFE  3  238 1761         move    #-2,n7
+P:006F 000000         2  240 1762         nop
+P:0070 5FEF00         4  244 1763         move    y:(r7+n7),b
+P:0071 0BF080 rrrrrr  6  250 1767         jsr     FSysResourceFileSeek
+                             1768 
+                             1769 ; 545  |  SysResourceFileRead(s_bthandle_SDM, 3, TARGET_MEM_Y, &DBCSMapEntry); // Read the map ent
+                                  ry
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1770 
+P:0073 5EF000 rrrrrr  3  253 1772         move    y:Fs_bthandle_SDM,a
+P:0075 77F400 FFFFFD  3  256 1773         move    #-3,n7
+P:0077 000000         2  258 1774         nop
+P:0078 044F10         4  262 1775         lua     (r7)+n7,r0
+P:0079 244000         2  264 1776         move    #<$40,x0
+P:007A 57F400 000003  3  267 1777         move    #>3,b
+P:007C 0BF080 rrrrrr  6  273 1778         jsr     FSysResourceFileRead
+                             1779 
+                             1780 ; 546  |  return(DBCSMapEntry);
+                             1781 
+P:007E 77F400 FFFFFD  3  276 1783         move    #-3,n7
+P:0080 000000         2  278 1784         nop
+P:0081 5EEF00         4  282 1785         move    y:(r7+n7),a
+                             1786 
+                             1787 ; 547  |}
+                             1788 
+P:0082 77F400 FFFFFC  3  285 1790         move    #-4,n7
+P:0084 000000         2  287 1791         nop
+P:0085 05EF7C         4  291 1792         movec   y:(r7+n7),ssh
+P:0086 204F00         2  293 1794         move    (r7)+n7
+P:0087 00000C         4  297 1796         rts
+                             1798 
+                             1799 ; 548  |#if 1 //3200Merge
+                             1800 ; 549  |#endif //#ifndef FUNCLET
+                             1801 ; 550  |#endif
+                             1802 ; 551  |
+                             1803 ; 552  |//Following should not come out simultaneously with Funclet
+                             1804 ; 553  |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                             1805 ; 554  |#if defined(USBMSC_BUILD)
+                             1806 ; 555  |    #pragma asm
+                             1807         ;The name of the following counter is the concatenation of the string ;".ptext" and the na
+                                  me of the C source file.
+P:003D                       1808             org p,".ptextdbcs":
+                             1809 ; 558  |    #pragma endasm
+                             1810 ; 559  |#endif
+                             1811 ; 560  |
+                             1812 ; 561  |#ifndef STMP_BUILD_PLAYER
+                             1813 ; 562  |#ifdef FUNCLET
+                             1814 ; 563  |    #pragma asm
+                             1815 ; 564  |        ;The name of the following counter is the concatenation of the string ;".ptext" an
+                                  d the name of the C source file.
+                             1816 ; 565  |            org p,".ptextdbcs":
+                             1817 ; 566  |    #pragma endasm
+                             1818 ; 567  |#endif
+                             1819 ; 568  |
+                             1820 ; 569  |//****************************************************************************************
+                                  ***********************************
+                             1821 ; 570  |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                             1822 ; 571  |#if defined(USBMSC_BUILD)
+                             1823 ; 572  |    #pragma asm
+                             1824         ;The name of the following counter is the concatenation of the string ;".ptext" and the na
+                                  me of the C source file.
+P:0088                       1825             org p,".ptextdbcs_usbmsc_overlay":
+                             1826 ; 575  |    #pragma endasm
+                             1827 ; 576  |
+                             1828 ; 577  |_reentrant void DBCSToUnicode_wrapper(_packed unsigned char *pDBCS, WORD *pUnicode,INT iLe
+                                  ngth)
+                             1829 ; 578  |{
+                             1830 
+                             1835 FDBCSToUnicode_wrapper:
+P:0088 055F7C         2  299 1836         movec   ssh,y:(r7)+
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0089 3F0600         2  301 1839         move    #6,n7
+P:008A 000000         2  303 1840         nop
+P:008B 204F00         2  305 1841         move    (r7)+n7
+                             1851 
+                             1852 ; 579  |    int iDBCSIndex=0;
+                             1853 
+P:008C 20001B         2  307 1855         clr     b   
+                             1859 
+                             1860 ; 580  |    int iUnicodeIndex=0;
+                             1861 
+P:008D 240000         2  309 1863         move    #0,x0
+                             1869 
+                             1870 ; 581  |    WORD c;
+                             1871 ; 582  |    WORD DBCSMapEntry;
+                             1872 ; 583  |    while (1) 
+                             1873 
+P:008E 46F400 000001  3  312 1875         move    #>1,y0
+P:0090 47F400 000002  3  315 1876         move    #>2,y1
+P:0092 200074         2  317 1877         sub     y1,a
+P:0093 77F400 FFFFFE  3  320 1878         move    #-2,n7
+P:0095 000000         2  322 1879         nop
+P:0096 5C6F00         4  326 1880         move    a1,y:(r7+n7)
+P:0097 77F400 FFFFFD  3  329 1881 L6:     move    #-3,n7
+P:0099 000000         2  331 1882         nop
+P:009A 4C6F00         4  335 1883         move    x0,y:(r7+n7)
+P:009B 77F400 FFFFFB  3  338 1886         move    #-5,n7
+P:009D 000000         2  340 1887         nop
+P:009E 6C6F00         4  344 1888         move    r4,y:(r7+n7)
+                             1891 
+                             1892 ; 584  |    {
+                             1893 ; 585  |        c = packed_get(pDBCS,iDBCSIndex++);
+                             1894 
+P:009F 21AE00         2  346 1896         move    b1,a
+P:00A0 200058         2  348 1900         add     y0,b
+P:00A1 77F400 FFFFFC  3  351 1903         move    #-4,n7
+P:00A3 000000         2  353 1904         nop
+P:00A4 5D6F00         4  357 1905         move    b1,y:(r7+n7)
+P:00A5 77F400 FFFFFA  3  360 1908         move    #-6,n7
+P:00A7 000000         2  362 1909         nop
+P:00A8 686F00         4  366 1910         move    r0,y:(r7+n7)
+P:00A9 0BF080 rrrrrr  6  372 1915         jsr     packed_get
+                             1919 
+                             1920 ; 586  |
+                             1921 ; 587  |        if (c == 0)
+                             1922 
+P:00AB 2A0000         2  374 1924         move    #0,a2
+P:00AC 200003         2  376 1925         tst     a
+P:00AD 77F400 FFFFFB  3  379 1926         move    #-5,n7
+P:00AF 000000         2  381 1927         nop
+P:00B0 6EEF00         4  385 1928         move    y:(r7+n7),r6
+P:00B1 0AF0AA rrrrrr  6  391 1931         jeq     L9
+                             1934 
+                             1935 ; 588  |        {
+                             1936 ; 589  |            *pUnicode++ = 0;
+                             1937 ; 590  |            break;
+                             1938 ; 591  |        }
+                             1939 ; 592  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry(c);
+                             1940 
+P:00B3 0BF080 rrrrrr  6  397 1942         jsr     FLookupPrimaryDBCSMapEntry
+                             1945 
+                             1946 ; 593  |        if (DBCSMapEntry & MBC_FLAG) 
+                             1947 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00B5 218F00         2  399 1949         move    a1,b
+P:00B6 260100         2  401 1950         move    #<1,y0
+P:00B7 20005E         2  403 1951         and     y0,b
+P:00B8 2B0000         2  405 1952         move    #0,b2
+P:00B9 20000B         2  407 1953         tst     b
+P:00BA 77F400 FFFFFA  3  410 1954         move    #-6,n7
+P:00BC 000000         2  412 1955         nop
+P:00BD 68EF00         4  416 1956         move    y:(r7+n7),r0
+P:00BE 77F400 FFFFFB  3  419 1959         move    #-5,n7
+P:00C0 000000         2  421 1960         nop
+P:00C1 6EEF00         4  425 1961         move    y:(r7+n7),r6
+P:00C2 77F400 FFFFFC  3  428 1964         move    #-4,n7
+P:00C4 000000         2  430 1965         nop
+P:00C5 5FEF00         4  434 1966         move    y:(r7+n7),b
+P:00C6 46F400 000001  3  437 1969         move    #>1,y0
+P:00C8 0AF0AA rrrrrr  6  443 1970         jeq     L7
+P:00CA 045FA0         2  445 1971         movec   m0,n7
+P:00CB 000000         2  447 1972         nop
+P:00CC 5C6F00         4  451 1973         move    a1,y:(r7+n7)
+                             1978 
+                             1979 ; 594  |        {
+                             1980 ; 595  |
+                             1981 ; 596  |          c = packed_get(pDBCS, iDBCSIndex++);
+                             1982 
+P:00CD 200001         2  453 1984         tfr     b,a
+P:00CE 200058         2  455 1987         add     y0,b
+P:00CF 77F400 FFFFFC  3  458 1990         move    #-4,n7
+P:00D1 000000         2  460 1991         nop
+P:00D2 5D6F00         4  464 1992         move    b1,y:(r7+n7)
+P:00D3 0BF080 rrrrrr  6  470 1999         jsr     packed_get
+P:00D5 045FA0         2  472 2002         movec   m0,n7
+P:00D6 000000         2  474 2003         nop
+P:00D7 4FEF00         4  478 2004         move    y:(r7+n7),y1
+P:00D8 218F00         2  480 2007         move    a1,b
+                             2009 
+                             2010 ; 597  |          c = LookupSecondaryDBCSMapEntry(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                             2011 
+P:00D9 0AC750         4  484 2013         bclr    #16,y1
+P:00DA 200071         2  486 2015         tfr     y1,a
+P:00DB 0BF080 rrrrrr  6  492 2016         jsr     FLookupSecondaryDBCSMapEntry
+P:00DD 77F400 FFFFFA  3  495 2019         move    #-6,n7
+P:00DF 000000         2  497 2020         nop
+P:00E0 68EF00         4  501 2021         move    y:(r7+n7),r0
+P:00E1 77F400 FFFFFB  3  504 2024         move    #-5,n7
+P:00E3 000000         2  506 2025         nop
+P:00E4 6EEF00         4  510 2026         move    y:(r7+n7),r6
+P:00E5 77F400 FFFFFC  3  513 2029         move    #-4,n7
+P:00E7 000000         2  515 2030         nop
+P:00E8 5FEF00         4  519 2031         move    y:(r7+n7),b
+P:00E9 46F400 000001  3  522 2034         move    #>1,y0
+                             2035 
+                             2036 ; 598  |        }
+                             2037 ; 599  |        else
+                             2038 ; 600  |        {
+                             2039 ; 601  |          c = DBCSMapEntry;
+                             2040 ; 602  |        }
+                             2041 ; 603  |
+                             2042 ; 604  |        *pUnicode++ = c;
+                             2043 
+P:00EB 5C5E00         2  524 2045 L7:     move    a1,y:(r6)+
+P:00EC 22D400         2  526 2046         move    r6,r4
+                             2049 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  31
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2050 ; 605  |        iUnicodeIndex++;
+                             2051 
+P:00ED 77F400 FFFFFD  3  529 2053         move    #-3,n7
+P:00EF 000000         2  531 2054         nop
+P:00F0 5EEF00         4  535 2055         move    y:(r7+n7),a
+P:00F1 200050         2  537 2056         add     y0,a
+P:00F2 218400         2  539 2062         move    a1,x0
+                             2065 
+                             2066 ; 606  |        if(iUnicodeIndex > iLength -2 )
+                             2067 
+P:00F3 200041         2  541 2069         tfr     x0,a
+P:00F4 77F400 FFFFFE  3  544 2070         move    #-2,n7
+P:00F6 000000         2  546 2071         nop
+P:00F7 4FEF00         4  550 2072         move    y:(r7+n7),y1
+P:00F8 200075         2  552 2073         cmp     y1,a
+P:00F9 0AF0AF rrrrrr  6  558 2074         jle     L6
+                             2075 
+                             2076 ; 607  |        {
+                             2077 ; 608  |            *pUnicode=0;
+                             2078 
+P:00FB 20001B         2  560 2080         clr     b   
+P:00FC 5F6400         2  562 2081         move    b,y:(r4)
+                             2083 
+                             2084 ; 609  |            break;
+                             2085 
+P:00FD 0AF080 rrrrrr  6  568 2087         jmp     L10
+                             2089 L9:
+P:00FF 20001B         2  570 2092         clr     b   
+P:0100 5F6600         2  572 2093         move    b,y:(r6)
+                             2094 
+                             2095 ; 610  |        }
+                             2096 ; 611  |    }
+                             2097 
+                             2099 L10:
+                             2100 
+                             2101 ; 612  |}
+                             2102 
+P:0101 77F400 FFFFF9  3  575 2104         move    #-7,n7
+P:0103 000000         2  577 2105         nop
+P:0104 05EF7C         4  581 2106         movec   y:(r7+n7),ssh
+P:0105 204F00         2  583 2108         move    (r7)+n7
+P:0106 00000C         4  587 2110         rts
+                             2115 
+                             2116 ; 613  |
+                             2117 ; 614  |_reentrant void DBCSToUnicodeDstXSrcY_wrapper(_packed BYTE *pDBCS, WORD _X * _X pUnicode, 
+                                  INT iLength)
+                             2118 ; 615  |{
+                             2119 
+                             2126 FDBCSToUnicodeDstXSrcY_wrapper:
+P:0107 055F7C         2  589 2127         movec   ssh,y:(r7)+
+P:0108 3F0600         2  591 2130         move    #6,n7
+P:0109 000000         2  593 2131         nop
+P:010A 204F00         2  595 2132         move    (r7)+n7
+                             2142 
+                             2143 ; 616  |        int     iDBCSIndex = 0;
+                             2144 
+P:010B 20001B         2  597 2146         clr     b   
+                             2150 
+                             2151 ; 617  |    INT iUnicodeIndex = 0;
+                             2152 
+P:010C 240000         2  599 2154         move    #0,x0
+                             2160 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  32
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2161 ; 618  |    WORD        c;
+                             2162 ; 619  |    WORD        DBCSMapEntry;
+                             2163 ; 620  |
+                             2164 ; 621  |    while (1) {
+                             2165 
+P:010D 46F400 000001  3  602 2167         move    #>1,y0
+P:010F 47F400 000002  3  605 2168         move    #>2,y1
+P:0111 200074         2  607 2169         sub     y1,a
+P:0112 77F400 FFFFFE  3  610 2170         move    #-2,n7
+P:0114 000000         2  612 2171         nop
+P:0115 5C6F00         4  616 2172         move    a1,y:(r7+n7)
+P:0116 77F400 FFFFFD  3  619 2173 L11:    move    #-3,n7
+P:0118 000000         2  621 2174         nop
+P:0119 4C6F00         4  625 2175         move    x0,y:(r7+n7)
+P:011A 77F400 FFFFFB  3  628 2178         move    #-5,n7
+P:011C 000000         2  630 2179         nop
+P:011D 6C6F00         4  634 2180         move    r4,y:(r7+n7)
+                             2183 
+                             2184 ; 622  |                c = packed_get(pDBCS, iDBCSIndex++);
+                             2185 
+P:011E 21AE00         2  636 2187         move    b1,a
+P:011F 200058         2  638 2191         add     y0,b
+P:0120 77F400 FFFFFC  3  641 2194         move    #-4,n7
+P:0122 000000         2  643 2195         nop
+P:0123 5D6F00         4  647 2196         move    b1,y:(r7+n7)
+P:0124 77F400 FFFFFA  3  650 2199         move    #-6,n7
+P:0126 000000         2  652 2200         nop
+P:0127 686F00         4  656 2201         move    r0,y:(r7+n7)
+P:0128 0BF080 rrrrrr  6  662 2206         jsr     packed_get
+                             2210 
+                             2211 ; 623  |
+                             2212 ; 624  |        if (c == 0) {
+                             2213 
+P:012A 2A0000         2  664 2215         move    #0,a2
+P:012B 200003         2  666 2216         tst     a
+P:012C 77F400 FFFFFB  3  669 2217         move    #-5,n7
+P:012E 000000         2  671 2218         nop
+P:012F 6BEF00         4  675 2219         move    y:(r7+n7),r3
+P:0130 0AF0AA rrrrrr  6  681 2222         jeq     L14
+                             2225 
+                             2226 ; 625  |            *pUnicode++ = 0;
+                             2227 ; 626  |            break;
+                             2228 ; 627  |        }
+                             2229 ; 628  |        DBCSMapEntry = LookupPrimaryDBCSMapEntry(c);
+                             2230 
+P:0132 0BF080 rrrrrr  6  687 2232         jsr     FLookupPrimaryDBCSMapEntry
+                             2235 
+                             2236 ; 629  |        if (DBCSMapEntry & MBC_FLAG) {
+                             2237 
+P:0134 218F00         2  689 2239         move    a1,b
+P:0135 260100         2  691 2240         move    #<1,y0
+P:0136 20005E         2  693 2241         and     y0,b
+P:0137 2B0000         2  695 2242         move    #0,b2
+P:0138 20000B         2  697 2243         tst     b
+P:0139 77F400 FFFFFA  3  700 2244         move    #-6,n7
+P:013B 000000         2  702 2245         nop
+P:013C 68EF00         4  706 2246         move    y:(r7+n7),r0
+P:013D 77F400 FFFFFB  3  709 2249         move    #-5,n7
+P:013F 000000         2  711 2250         nop
+P:0140 6BEF00         4  715 2251         move    y:(r7+n7),r3
+P:0141 77F400 FFFFFC  3  718 2254         move    #-4,n7
+P:0143 000000         2  720 2255         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  33
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0144 5FEF00         4  724 2256         move    y:(r7+n7),b
+P:0145 46F400 000001  3  727 2259         move    #>1,y0
+P:0147 0AF0AA rrrrrr  6  733 2260         jeq     L12
+P:0149 045FA0         2  735 2261         movec   m0,n7
+P:014A 000000         2  737 2262         nop
+P:014B 5C6F00         4  741 2263         move    a1,y:(r7+n7)
+                             2268 
+                             2269 ; 630  |          c = packed_get(pDBCS, iDBCSIndex++);
+                             2270 
+P:014C 200001         2  743 2272         tfr     b,a
+P:014D 200058         2  745 2275         add     y0,b
+P:014E 77F400 FFFFFC  3  748 2278         move    #-4,n7
+P:0150 000000         2  750 2279         nop
+P:0151 5D6F00         4  754 2280         move    b1,y:(r7+n7)
+P:0152 0BF080 rrrrrr  6  760 2287         jsr     packed_get
+P:0154 045FA0         2  762 2290         movec   m0,n7
+P:0155 000000         2  764 2291         nop
+P:0156 4FEF00         4  768 2292         move    y:(r7+n7),y1
+P:0157 218F00         2  770 2295         move    a1,b
+                             2297 
+                             2298 ; 631  |          c = LookupSecondaryDBCSMapEntry(DBCSMapEntry & (unsigned)~MBC_FLAG, c);
+                             2299 
+P:0158 0AC750         4  774 2301         bclr    #16,y1
+P:0159 200071         2  776 2303         tfr     y1,a
+P:015A 0BF080 rrrrrr  6  782 2304         jsr     FLookupSecondaryDBCSMapEntry
+P:015C 77F400 FFFFFA  3  785 2307         move    #-6,n7
+P:015E 000000         2  787 2308         nop
+P:015F 68EF00         4  791 2309         move    y:(r7+n7),r0
+P:0160 77F400 FFFFFB  3  794 2312         move    #-5,n7
+P:0162 000000         2  796 2313         nop
+P:0163 6BEF00         4  800 2314         move    y:(r7+n7),r3
+P:0164 77F400 FFFFFC  3  803 2317         move    #-4,n7
+P:0166 000000         2  805 2318         nop
+P:0167 5FEF00         4  809 2319         move    y:(r7+n7),b
+P:0168 46F400 000001  3  812 2322         move    #>1,y0
+                             2323 
+                             2324 ; 632  |        } else
+                             2325 ; 633  |          c = DBCSMapEntry;
+                             2326 ; 634  |
+                             2327 ; 635  |        *pUnicode++ = c;
+                             2328 
+P:016A 545B00         2  814 2330 L12:    move    a1,x:(r3)+
+P:016B 227400         2  816 2331         move    r3,r4
+                             2334 
+                             2335 ; 636  |        iUnicodeIndex++;
+                             2336 
+P:016C 77F400 FFFFFD  3  819 2338         move    #-3,n7
+P:016E 000000         2  821 2339         nop
+P:016F 5EEF00         4  825 2340         move    y:(r7+n7),a
+P:0170 200050         2  827 2341         add     y0,a
+P:0171 218400         2  829 2347         move    a1,x0
+                             2350 
+                             2351 ; 637  |        if(iUnicodeIndex > iLength -2) {
+                             2352 
+P:0172 200041         2  831 2354         tfr     x0,a
+P:0173 77F400 FFFFFE  3  834 2355         move    #-2,n7
+P:0175 000000         2  836 2356         nop
+P:0176 4FEF00         4  840 2357         move    y:(r7+n7),y1
+P:0177 200075         2  842 2358         cmp     y1,a
+P:0178 0AF0AF rrrrrr  6  848 2359         jle     L11
+                             2360 
+                             2361 ; 638  |            *pUnicode=0;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  34
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2362 
+P:017A 20001B         2  850 2364         clr     b   
+P:017B 576400         2  852 2365         move    b,x:(r4)
+                             2367 
+                             2368 ; 639  |            break;
+                             2369 
+P:017C 0AF080 rrrrrr  6  858 2371         jmp     L15
+                             2373 L14:
+P:017E 20001B         2  860 2376         clr     b   
+P:017F 576300         2  862 2377         move    b,x:(r3)
+                             2378 
+                             2379 ; 640  |        }
+                             2380 ; 641  |    }
+                             2381 
+                             2383 L15:
+                             2384 
+                             2385 ; 642  |}
+                             2386 
+P:0180 77F400 FFFFF9  3  865 2388         move    #-7,n7
+P:0182 000000         2  867 2389         nop
+P:0183 05EF7C         4  871 2390         movec   y:(r7+n7),ssh
+P:0184 204F00         2  873 2392         move    (r7)+n7
+P:0185 00000C         4  877 2394         rts
+                             2399 
+                             2400 ; 643  |//#if defined(USBMSC_BUILD) && defined(LIION) && defined(MMC)
+                             2401 ; 644  |    #pragma asm
+                             2402         ;The name of the following counter is the concatenation of the string ;".ptext" and the na
+                                  me of the C source file.
+P:003D                       2403             org p,".ptextdbcs":
+                             2404 ; 647  |    #pragma endasm
+                             2405 ; 648  |#endif
+                             2406 ; 649  |
+                             2407 ; 650  |#endif //STMP_BUILD_PLAYER
+                             2408 ; 651  |
+                             2409 ; 652  |//****************************************************************************************
+                                  ***********************************
+                             2410 ; 653  |
+                             2411 ; 654  |/////////////////////////////////////////////////////////////////////////////////
+                             2412 ; 655  |/////////////////////////////////////////////////////////////////////////////////
+                             2413 ; 656  |/////////////////////////////////////////////////////////////////////////////////
+                             2414 
+                             2433 
+                             2434         extern  packed_get, FCopyCodeIntoBootmanagerArea, FSysCloseResource
+                             2435         extern  FSysOpenResource, FSysResourceFileRead
+                             2436         extern  FSysResourceFileSeek, p:F_lc_u_p_usbmsc_lcd_battery_start
+                             2437         extern  y:F_lc_u_y_Usbmsc_lcd_OVLY_copy_end
+                             2438         extern  y:F_lc_u_y_Usbmsc_lcd_OVLY_copy_start
+                             2439         extern  y:F_lc_u_y_dbcs_usbmsc_OVLY_copy_end
+                             2440         extern  y:F_lc_u_y_dbcs_usbmsc_OVLY_copy_start
+                             2441 
+                             2442         global  FDBCSDummy, FDBCSToUnicode, FDBCSToUnicodeDstXSrcY_wrapper
+                             2443         global  FDBCSToUnicode_wrapper, FLookupPrimaryDBCSMapEntry
+                             2444         global  FLookupSecondaryDBCSMapEntry, Fg_iPDM, Fg_iSDMS
+                             2445         global  Fs_btHandle_PDM, Fs_bthandle_SDM
+                             2446 
+                             2447         local   L3, L5, L6, L7, L9, L10, L11, L12, L14, L15
+                             2448 
+                             2449         calls   "DBCSToUnicode", "CopyCodeIntoBootmanagerArea"
+                             2450         calls   "DBCSToUnicode", "DBCSToUnicode_wrapper"
+                             2451         calls   "DBCSToUnicodeDstXSrcY_wrapper", "LookupPrimaryDBCSMapEntry"
+                             2452         calls   "DBCSToUnicodeDstXSrcY_wrapper", "LookupSecondaryDBCSMapEntry"
+                             2453         calls   "DBCSToUnicodeDstXSrcY_wrapper", "packed_get"
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  35
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2454         calls   "DBCSToUnicode_wrapper", "LookupPrimaryDBCSMapEntry"
+                             2455         calls   "DBCSToUnicode_wrapper", "LookupSecondaryDBCSMapEntry"
+                             2456         calls   "DBCSToUnicode_wrapper", "packed_get"
+                             2457         calls   "LookupPrimaryDBCSMapEntry", "SysOpenResource"
+                             2458         calls   "LookupPrimaryDBCSMapEntry", "SysResourceFileRead"
+                             2459         calls   "LookupPrimaryDBCSMapEntry", "SysResourceFileSeek"
+                             2460         calls   "LookupSecondaryDBCSMapEntry", "SysCloseResource"
+                             2461         calls   "LookupSecondaryDBCSMapEntry", "SysOpenResource"
+                             2462         calls   "LookupSecondaryDBCSMapEntry", "SysResourceFileRead"
+                             2463         calls   "LookupSecondaryDBCSMapEntry", "SysResourceFileSeek"
+                             2464 

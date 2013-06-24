@@ -1,0 +1,1543 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\stdlib\gettime.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                3     include "regsrtc.inc"
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; Copyright(C) SigmaTel, Inc. 2000-2004
+                                3 ;
+                                4 ; Filename: regsrtc.inc
+                                5 ; Description: Register definitions for RTC interface
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7 ; The following naming conventions are followed in this file.
+                                8 ; All registers are named using the format...
+                                9 ;     HW_<module>_<regname>
+                               10 ; where <module> is the module name which can be any of the following...
+                               11 ;     USB20
+                               12 ; (Note that when there is more than one copy of a particular module, the
+                               13 ; module name includes a number starting from 0 for the first instance of
+                               14 ; that module)
+                               15 ;
+                               16 ; <regname> is the specific register within that module
+                               17 ;
+                               18 ; We also define the following...
+                               19 ;
+                               20 ;     HW_<module>_<regname>_BITPOS
+                               21 ; which defines the starting bit (i.e. LSB) of a multi bit field
+                               22 ;
+                               23 ;     HW_<module>_<regname>_SETMASK
+                               24 ; which does something else, and
+                               25 ;
+                               26 ;     HW_<module>_<regname>_CLRMASK
+                               27 ; which does something else.
+                               28 ;
+                               29 ; Other rules
+                               30 ;     All caps
+                               31 ;     Numeric identifiers start at 0
+                               33 regsrtcinc            equ         1
+                               35 ;C insert
+                               36 ;#include "types.h"
+                               37 ;endc
+                               39 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                               41 ;   RTC STMP Registers 
+                               42 ;   Edited 2/26/2002 J. Ferrara
+                               43 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                               45 HW_RTC_BASEADDR             equ     ($F500)
+                               47  
+                               49 ;ASM Only
+                               51  
+                               52 HW_RTC_CSR                   equ     (HW_RTC_BASEADDR+0)
+                               53 HW_RTC_MSECONDS0             equ     (HW_RTC_BASEADDR+1)
+                               54 HW_RTC_MSECONDS1             equ     (HW_RTC_BASEADDR+2)
+                               55 HW_RTC_WATCHDOG              equ     (HW_RTC_BASEADDR+3)
+                               56 HW_RTC_ALARM0                equ     (HW_RTC_BASEADDR+4)
+                               57 HW_RTC_ALARM1                equ     (HW_RTC_BASEADDR+5)
+                               58 HW_RTC_DIVIDE                equ     (HW_RTC_BASEADDR+6)
+                               59 HW_RTC_PERSIST0              equ     (HW_RTC_BASEADDR+7)
+                               60 HW_RTC_PERSIST1              equ     (HW_RTC_BASEADDR+8)
+                               62 ;endasm
+                               63  
+                               65 ;///////////////////////////////////////////////////////////////////////////////
+                               67 ;//  RTC Control Status Register (HW_RTC_CSR) Bit Definitions
+                               69 HW_RTC_CSR_ALARMINTEN_BITPOS            equ     (0)
+                               70 HW_RTC_CSR_ALARMINT_BITPOS              equ     (1)
+                               71 HW_RTC_CSR_WATCHDOGEN_BITPOS            equ     (2)
+                               72 HW_RTC_CSR_RSVD0_BITPOS                 equ     (3)
+                               73 HW_RTC_CSR_STALEREGS_BITPOS             equ     (4)
+                               74 HW_RTC_CSR_RSVD1_BITPOS                 equ     (9)
+                               75 HW_RTC_CSR_NEWREGS_BITPOS                               equ             (12)
+                               76 HW_RTC_CSR_NEWREGS_XTALDIV_BITPOS       equ     (12)
+                               77 HW_RTC_CSR_NEWREGS_MSCOUNT_BITPOS               equ             (13)
+                               78 HW_RTC_CSR_NEWREGS_ALRMCOUNT_BITPOS             equ             (14)
+                               79 HW_RTC_CSR_NEWREGS_PERSIST0_BITPOS              equ             (15)
+                               80 HW_RTC_CSR_NEWREGS_PERSIST1_BITPOS              equ     (16)
+                               81 HW_RTC_CSR_RSVD2_BITPOS                 equ     (17)
+                               82 HW_RTC_CSR_FORCE_BITPOS                 equ     (20)
+                               83 HW_RTC_CSR_RSVD3_BITPOS                 equ     (21)
+                               84 HW_RTC_CSR_SFTRST_BITPOS                equ     (23)                                                                            
+                               85 HW_RTC_CSR_ALARMINTEN_WIDTH             equ     (1)
+                               86 HW_RTC_CSR_ALARMINT_WIDTH               equ     (1)
+                               87 HW_RTC_CSR_WATCHDOGEN_WIDTH             equ     (1)
+                               88 HW_RTC_CSR_RSVD0_WIDTH                  equ     (1)
+                               89 HW_RTC_CSR_STALEREGS_WIDTH              equ     (5)
+                               90 HW_RTC_CSR_RSVD1_WIDTH                  equ     (3)
+                               91 HW_RTC_CSR_NEWREGS_WIDTH                                equ             (5)
+                               92 HW_RTC_CSR_NEWREGS_XTALDIV_WIDTH        equ     (1)
+                               93 HW_RTC_CSR_NEWREGS_MSCOUNT_WIDTH                equ             (1)
+                               94 HW_RTC_CSR_NEWREGS_ALRMCOUNT_WIDTH              equ             (1)
+                               95 HW_RTC_CSR_NEWREGS_PERSIST0_WIDTH               equ             (1)
+                               96 HW_RTC_CSR_NEWREGS_PERSIST1_WIDTH               equ     (1)
+                               97 HW_RTC_CSR_RSVD2_WIDTH                  equ     (3)
+                               98 HW_RTC_CSR_FORCE_WIDTH                  equ     (1)
+                               99 HW_RTC_CSR_RSVD3_WIDTH                  equ     (2)
+                              100 HW_RTC_CSR_SFTRST_WIDTH                 equ     (1)
+                              102 HW_RTC_CSR_ALARMINT_SETMASK             equ     (((1<<HW_RTC_CSR_ALARMINT_WIDTH)-1)<<HW_RTC_CSR_ALARMINT_BITPOS) 
+                              103 HW_RTC_CSR_ALARMINTEN_SETMASK           equ     (((1<<HW_RTC_CSR_ALARMINTEN_WIDTH)-1)<<HW_RTC_CSR_ALARMINTEN_BITPOS) 
+                              104 HW_RTC_CSR_WATCHDOGEN_SETMASK           equ     (((1<<HW_RTC_CSR_WATCHDOGEN_WIDTH)-1)<<HW_RTC_CSR_WATCHDOGEN_BITPOS) 
+                              105 HW_RTC_CSR_RSVD0_SETMASK                equ     (((1<<HW_RTC_CSR_RSVD0_WIDTH)-1)<<HW_RTC_CSR_RSVD0_BITPOS) 
+                              106 HW_RTC_CSR_STALEREGS_SETMASK            equ     (((1<<HW_RTC_CSR_STALEREGS_WIDTH)-1)<<HW_RTC_CSR_STALEREGS_BITPOS) 
+                              107 HW_RTC_CSR_RSVD1_SETMASK                equ     (((1<<HW_RTC_CSR_RSVD1_WIDTH)-1)<<HW_RTC_CSR_RSVD1_BITPOS) 
+                              108 HW_RTC_CSR_NEWREGS_SETMASK              equ     (((1<<HW_RTC_CSR_NEWREGS_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_BITPOS) 
+                              109 HW_RTC_CSR_NEWREGS_XTALDIV_SETMASK      equ             (((1<<HW_RTC_CSR_NEWREGS_XTALDIV_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_XTALDIV_BITPOS)   
+                              110 HW_RTC_CSR_NEWREGS_MSCOUNT_SETMASK              equ             (((1<<HW_RTC_CSR_NEWREGS_MSCOUNT_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_MSCOUNT_BITPOS)
+                              111 HW_RTC_CSR_NEWREGS_ALRMCOUNT_SETMASK    equ             (((1<<HW_RTC_CSR_NEWREGS_ALRMCOUNT_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_ALRMCOUNT_BITPOS)
+                              112 HW_RTC_CSR_NEWREGS_PERSIST0_SETMASK             equ             (((1<<HW_RTC_CSR_NEWREGS_PERSIST0_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_PERSIST0_BITPOS)
+                              113 HW_RTC_CSR_NEWREGS_PERSIST1_SETMASK             equ     (((1<<HW_RTC_CSR_NEWREGS_PERSIST1_WIDTH)-1)<<HW_RTC_CSR_NEWREGS_PERSIST1_BITPOS)
+                              114 HW_RTC_CSR_RSVD2_SETMASK                equ     (((1<<HW_RTC_CSR_RSVD2_WIDTH)-1)<<HW_RTC_CSR_RSVD2_BITPOS) 
+                              115 HW_RTC_CSR_FORCE_SETMASK                equ     (((1<<HW_RTC_CSR_FORCE_WIDTH)-1)<<HW_RTC_CSR_FORCE_BITPOS) 
+                              116 HW_RTC_CSR_RSVD3_SETMASK                equ     (((1<<HW_RTC_CSR_RSVD3_WIDTH)-1)<<HW_RTC_CSR_RSVD3_BITPOS) 
+                              117 HW_RTC_CSR_SFTRST_SETMASK               equ     (((1<<HW_RTC_CSR_SFTRST_WIDTH)-1)<<HW_RTC_CSR_SFTRST_BITPOS) 
+                              119 HW_RTC_CSR_ALARMINTEN_CLRMASK            equ    (~HW_RTC_CSR_ALARMINTEN_SETMASK)
+                              120 HW_RTC_CSR_ALARMINT_CLRMASK              equ    (~HW_RTC_CSR_ALARMINT_SETMASK)
+                              121 HW_RTC_CSR_WATCHDOGEN_CLRMASK            equ    (~HW_RTC_CSR_WATCHDOGEN_SETMASK)
+                              122 HW_RTC_CSR_RSVD0_CLRMASK                 equ    (~HW_RTC_CSR_RSVD0_SETMASK)
+                              123 HW_RTC_CSR_STALEREGS_CLRMASK             equ    (~HW_RTC_CSR_STALEREGS_SETMASK)
+                              124 HW_RTC_CSR_RSVD1_CLRMASK                 equ    (~HW_RTC_CSR_RSVD1_SETMASK)
+                              125 HW_RTC_CSR_NEWREGS_CLRMASK               equ    (~HW_RTC_CSR_NEWREGS_SETMASK)
+                              126 HW_RTC_CSR_NEWREGS_XTALDIV_CLRMASK       equ    (~HW_RTC_CSR_NEWREGS_XTALDIV_SETMASK)   
+                              127 HW_RTC_CSR_NEWREGS_MSCOUNT_CLRMASK               equ    (~HW_RTC_CSR_NEWREGS_MSCOUNT_SETMASK)
+                              128 HW_RTC_CSR_NEWREGS_ALRMCOUNT_CLRMASK     equ    (~HW_RTC_CSR_NEWREGS_ALRMCOUNT_SETMASK)
+                              129 HW_RTC_CSR_NEWREGS_PERSIST0_CLRMASK              equ    (~HW_RTC_CSR_NEWREGS_PERSIST0_SETMASK)
+                              130 HW_RTC_CSR_NEWREGS_PERSIST1_CLRMASK              equ    (~HW_RTC_CSR_NEWREGS_PERSIST1_SETMASK)
+                              132 HW_RTC_CSR_RSVD2_CLRMASK                 equ     (~HW_RTC_CSR_RSVD2_SETMASK)
+                              133 HW_RTC_CSR_FORCE_CLRMASK                 equ     (~HW_RTC_CSR_FORCE_SETMASK)
+                              134 HW_RTC_CSR_RSVD3_CLRMASK                 equ     (~HW_RTC_CSR_RSVD3_SETMASK)
+                              135 HW_RTC_CSR_SFTRST_CLRMASK                equ     (~HW_RTC_CSR_SFTRST_SETMASK)
+                              138 ;C insert
+                              140 ;typedef union               
+                              142 ;{
+                              144 ;    struct {
+                              145 ;        int ALARMINTEN         : HW_RTC_CSR_ALARMINTEN_WIDTH;
+                              146 ;        int ALARMINT           : HW_RTC_CSR_ALARMINT_WIDTH;
+                              147 ;        int WATCHDOGEN         : HW_RTC_CSR_WATCHDOGEN_WIDTH;
+                              148 ;        int RSVD0              : HW_RTC_CSR_RSVD0_WIDTH;
+                              149 ;        unsigned int STALEREGS : HW_RTC_CSR_STALEREGS_WIDTH;
+                              150 ;        int RSVD1              : HW_RTC_CSR_RSVD1_WIDTH;
+                              151 ;        unsigned int NEWREGS   : HW_RTC_CSR_NEWREGS_WIDTH;
+                              152 ;        int RSVD2              : HW_RTC_CSR_RSVD2_WIDTH;
+                              153 ;        int FORCE             : HW_RTC_CSR_FORCE_WIDTH;
+                              154 ;        int RSVD3              : HW_RTC_CSR_RSVD3_WIDTH;
+                              155 ;        unsigned int SFTRST    : HW_RTC_CSR_SFTRST_WIDTH;
+                              156 ;    } B;
+                              158 ;    int I;
+                              159 ;    unsigned int U;
+                              161 ;} rtc_csr_type;
+                              163  
+                              165 ;#define HW_RTC_CSR      (*(volatile rtc_csr_type _X*) (HW_RTC_BASEADDR+0))    /* RTC Control / Status Register */
+                              167 ;endc
+                              169 ;///////////////////////////////////////////////////////////////////////////////
+                              171 ;  RTC Milliseconds Register0 (HW_RTC_MSECONDS0) Bit Definitions
+                              173 HW_RTC_MSECONDS0_MSECONDSLOW_BITPOS      equ     (0)
+                              175 HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH       equ     (24)
+                              177 HW_RTC_MSECONDS0_MSECONDSLOW_SETMASK     equ     (((1<<HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH)-1)<<HW_RTC_MSECONDS0_MSECONDSLOW_BITPOS) 
+                              179 HW_RTC_MSECONDS0_MSECONDSLOW_CLRMASK     equ     (~HW_RTC_MSECONDS0_MSECONDSLOW_SETMASK)
+                              180  
+                              181 ;C insert
+                              183 ;typedef union               
+                              185 ;{
+                              187 ;    struct {
+                              188 ;        int MSECONDSLOW        : HW_RTC_MSECONDS0_MSECONDSLOW_WIDTH;
+                              189 ;    } B;
+                              191 ;    int I;
+                              192 ;    unsigned int U;
+                              194 ;} rtc_mseconds0_type;
+                              196  
+                              198 ;#define HW_RTC_MSECONDS0      (*(volatile rtc_mseconds0_type _X*) (HW_RTC_BASEADDR+1))    /* RTC MSECONDS Lower Word Register */
+                              199 ;#define HW_RTCLOWR            HW_RTC_MSECONDS0
+                              200 ;endc
+                              201 ;///////////////////////////////////////////////////////////////////////////////
+                              203 ;  RTC Milliseconds Register1 (HW_RTC_MSECONDS1) Bit Definitions
+                              205 HW_RTC_MSECONDS1_MSECONDSHIGH_BITPOS      equ     (0)
+                              207 HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH       equ     (24)
+                              209 HW_RTC_MSECONDS1_MSECONDSHIGH_SETMASK     equ     (((1<<HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH)-1)<<HW_RTC_MSECONDS1_MSECONDSHIGH_BITPOS) 
+                              211 HW_RTC_MSECONDS1_MSECONDSHIGH_CLRMASK     equ     (~HW_RTC_MSECONDS1_MSECONDSHIGH_SETMASK)
+                              212  
+                              213 ;C insert
+                              215 ;typedef union               
+                              217 ;{
+                              219 ;    struct {
+                              220 ;        int MSECONDSHIGH       : HW_RTC_MSECONDS1_MSECONDSHIGH_WIDTH;
+                              221 ;    } B;
+                              223 ;    int I;
+                              224 ;    unsigned int U;
+                              226 ;} rtc_mseconds1_type;
+                              227  
+                              229 ;#define HW_RTC_MSECONDS1      (*(volatile rtc_mseconds1_type _X*) (HW_RTC_BASEADDR+2))    /* RTC MSECONDS Upper Word Register */
+                              230 ;#define HW_RTCUPR             HW_RTC_MSECONDS1
+                              231 ;endc
+                              233 HW_RTC_LOWER_OFFSET                     equ     1
+                              234 HW_RTC_UP_OFFSET                        equ     2
+                              236 ;ASM only
+                              237 HW_RTCUPR                               equ     HW_RTC_BASEADDR+HW_RTC_UP_OFFSET
+                              238 HW_RTCLOWR                              equ     HW_RTC_BASEADDR+HW_RTC_LOWER_OFFSET
+                              239 HW_RTCUP                                equ     HW_RTCUPR
+                              240 HW_RTCLOW                               equ     HW_RTCLOWR
+                              242 HW_RTC_UPPER_SETMASK                    equ     $03ffff
+                              243 HW_RTC_UPPER_CLRMASK                    equ     ~HW_RTC_UPPER_SETMASK
+                              244 ;endasm
+                              246 ;///////////////////////////////////////////////////////////////////////////////
+                              248 ;  RTC Watchdog Count (HW_RTC_WATCHDOG) Bit Definitions
+                              250 HW_RTC_WATCHDOG_TIMEOUTCNT_BITPOS      equ     (0)
+                              252 HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH       equ     (24)
+                              254 HW_RTC_WATCHDOG_TIMEOUTCNT_SETMASK     equ     (((1<<HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH)-1)<<HW_RTC_WATCHDOG_TIMEOUTCNT_BITPOS) 
+                              256 HW_RTC_WATCHDOG_TIMEOUTCNT_CLRMASK     equ     (~HW_RTC_WATCHDOG_TIMEOUTCNT_SETMASK)
+                              257  
+                              258 ;C insert
+                              260 ;typedef union               
+                              262 ;{
+                              264 ;    struct {
+                              265 ;        int TIMEOUTCNT         : HW_RTC_WATCHDOG_TIMEOUTCNT_WIDTH;
+                              266 ;    } B;
+                              268 ;    int I;
+                              269 ;    unsigned int U;
+                              271 ;} rtc_watchdog_type;
+                              272  
+                              274 ;#define HW_RTC_WATCHDOG     (*(volatile rtc_watchdog_type _X*) (HW_RTC_BASEADDR+3))    /* RTC Watchdog Timeout Register */
+                              275 ;endc
+                              276 ;///////////////////////////////////////////////////////////////////////////////
+                              278 ;  RTC Alarm Register0 (HW_RTC_ALARM0) Bit Definitions
+                              280 HW_RTC_ALARM0_ALARMLOW_BITPOS      equ     (0)
+                              282 HW_RTC_ALARM0_ALARMLOW_WIDTH       equ     (24)
+                              284 HW_RTC_ALARM0_ALARMLOW_SETMASK     equ     (((1<<HW_RTC_ALARM0_ALARMLOW_WIDTH)-1)<<HW_RTC_ALARM0_ALARMLOW_BITPOS) 
+                              286 HW_RTC_ALARM0_ALARMLOW_CLRMASK     equ     (~HW_RTC_ALARM0_ALARMLOW_SETMASK)
+                              287  
+                              288 ;C insert
+                              290 ;typedef union               
+                              292 ;{
+                              294 ;    struct {
+                              295 ;        int ALARMLOW   : HW_RTC_ALARM0_ALARMLOW_WIDTH;
+                              296 ;    } B;
+                              298 ;    int I;
+                              299 ;    unsigned int U;
+                              301 ;} rtc_alarm0_type;
+                              303  
+                              305 ;#define HW_RTC_ALARM0      (*(volatile rtc_alarm0_type _X*) (HW_RTC_BASEADDR+4))    /* RTC ALARM Lower Word Register */
+                              306 ;endc
+                              307 ;///////////////////////////////////////////////////////////////////////////////
+                              309 ;  RTC Alarm Register1 (HW_RTC_ALARM1) Bit Definitions
+                              311 HW_RTC_ALARM1_ALARMHIGH_BITPOS      equ     (0)
+                              313 HW_RTC_ALARM1_ALARMHIGH_WIDTH       equ     (24)
+                              315 HW_RTC_ALARM1_ALARMHIGH_SETMASK     equ     (((1<<HW_RTC_ALARM1_ALARMHIGH_WIDTH)-1)<<HW_RTC_ALARM1_ALARMHIGH_BITPOS) 
+                              317 HW_RTC_ALARM1_ALARMHIGH_CLRMASK     equ     (~HW_RTC_ALARM1_ALARMHIGH_SETMASK)
+                              318  
+                              319 ;C insert
+                              321 ;typedef union               
+                              323 ;{
+                              325 ;    struct {
+                              326 ;        int ALARMHIGH  : HW_RTC_ALARM1_ALARMHIGH_WIDTH;
+                              327 ;    } B;
+                              329 ;    int I;
+                              330 ;    unsigned int U;
+                              332 ;} rtc_alarm1_type;
+                              333  
+                              335 ;#define HW_RTC_ALARM1      (*(volatile rtc_alarm1_type _X*) (HW_RTC_BASEADDR+5))    /* RTC ALARM Upper Word Register */
+                              337 ;endc
+                              338 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              340 ;  RTC Xtal-Clock Divide Register (HW_RTC_XTALDIVIDE) Bit Definitions
+                              342 HW_RTC_XTALDIVIDE_DIVCOUNT_BITPOS      equ     (0)
+                              343 HW_RTC_XTALDIVIDE_RSVD0_BITPOS         equ     (16)
+                              345 HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH       equ     (16)
+                              346 HW_RTC_XTALDIVIDE_RSVD0_WIDTH          equ     (8)
+                              348 HW_RTC_XTALDIVIDE_DIVCOUNT_SETMASK     equ     (((1<<HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH)-1)<<HW_RTC_XTALDIVIDE_DIVCOUNT_BITPOS) 
+                              349 HW_RTC_XTALDIVIDE_RSVD0_SETMASK        equ     (((1<<HW_RTC_XTALDIVIDE_RSVD0_BITPOS)-1)<<HW_RTC_XTALDIVIDE_RSVD0_BITPOS) 
+                              351 HW_RTC_XTALDIVIDE_DIVCOUNT_CLRMASK     equ     (~HW_RTC_XTALDIVIDE_DIVCOUNT_SETMASK)
+                              352 HW_RTC_XTALDIVIDE_RSVD0_CLRMASK        equ     (~HW_RTC_XTALDIVIDE_RSVD0_SETMASK)
+                              353  
+                              354 ;C insert
+                              356 ;typedef union               
+                              358 ;{
+                              360 ;    struct {
+                              361 ;        int DIVCOUNT   : HW_RTC_XTALDIVIDE_DIVCOUNT_WIDTH;
+                              362 ;        int RSVD0      : HW_RTC_XTALDIVIDE_RSVD0_WIDTH;
+                              363 ;    } B;
+                              365 ;    int I;
+                              366 ;    unsigned int U;
+                              368 ;} rtc_xtaldivide_type;
+                              369  
+                              371 ;#define HW_RTC_XTALDIVIDE   (*(volatile rtc_xtaldivide_type _X*) (HW_RTC_BASEADDR+6))  /* RTC Xtal-clock Pre-Divider Word Register */
+                              372 ;endc
+                              373 ;///////////////////////////////////////////////////////////////////////////////
+                              375 ;  RTC PERSISTENT Register0 (HW_RTC_PERSISTENT0) Bit Definitions
+                              377 HW_RTC_PERSISTENT0_ALARMEN_BITPOS        equ     (0)
+                              378 HW_RTC_PERSISTENT0_ALARMWAKE_EN_BITPOS   equ     (1)
+                              379 HW_RTC_PERSISTENT0_ALARMWAKE_BITPOS      equ     (2)
+                              380 HW_RTC_PERSISTENT0_XTALPDOWN_BITPOS      equ     (3)
+                              381 HW_RTC_PERSISTENT0_RSVD0_BITPOS          equ     (4)
+                              383 HW_RTC_PERSISTENT0_ALARMEN_WIDTH         equ     (1)
+                              384 HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH    equ     (1)
+                              385 HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH       equ     (1)
+                              386 HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH       equ     (1)
+                              387 HW_RTC_PERSISTENT0_RSVD0_WIDTH           equ     (21)
+                              389 HW_RTC_PERSISTENT0_ALARMEN_SETMASK       equ     (((1<<HW_RTC_PERSISTENT0_ALARMEN_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMEN_BITPOS) 
+                              390 HW_RTC_PERSISTENT0_ALARMWAKE_EN_SETMASK  equ     (((1<<HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMWAKE_EN_BITPOS)
+                              391 HW_RTC_PERSISTENT0_ALARMWAKE_SETMASK     equ     (((1<<HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH)-1)<<HW_RTC_PERSISTENT0_ALARMWAKE_BITPOS) 
+                              392 HW_RTC_PERSISTENT0_XTALPDOWN_SETMASK     equ     (((1<<HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH)-1)<<HW_RTC_PERSISTENT0_XTALPDOWN_BITPOS) 
+                              393 HW_RTC_PERSISTENT0_RSVD0_SETMASK         equ     (((1<<HW_RTC_PERSISTENT0_RSVD0_WIDTH)-1)<<HW_RTC_PERSISTENT0_RSVD0_BITPOS) 
+                              395 HW_RTC_PERSISTENT0_ALARMEN_CLRMASK       equ     (~HW_RTC_PERSISTENT0_ALARMEN_SETMASK)
+                              396 HW_RTC_PERSISTENT0_ALARMWAKE_EN_CLRMASK  equ     (~HW_RTC_PERSISTENT0_ALARMWAKE_EN_SETMASK)
+                              397 HW_RTC_PERSISTENT0_ALARMWAKE_CLRMASK     equ     (~HW_RTC_PERSISTENT0_ALARMWAKE_SETMASK)
+                              398 HW_RTC_PERSISTENT0_XTALPDOWN_CLRMASK     equ     (~HW_RTC_PERSISTENT0_XTALPDOWN_SETMASK)
+                              399 HW_RTC_PERSISTENT0_RSVD0_CLRMASK         equ     (~HW_RTC_PERSISTENT0_RSVD0_SETMASK)
+                              400  
+                              401 ;C insert
+                              403 ;typedef union               
+                              405 ;{
+                              407 ;   struct {
+                              408 ;      int ALARMEN   : HW_RTC_PERSISTENT0_ALARMEN_WIDTH;
+                              409 ;          int ALARMWAKE_EN  :  HW_RTC_PERSISTENT0_ALARMWAKE_EN_WIDTH;
+                              410 ;      int ALARMWAKE : HW_RTC_PERSISTENT0_ALARMWAKE_WIDTH;
+                              411 ;      int XTALPDOWN : HW_RTC_PERSISTENT0_XTALPDOWN_WIDTH;
+                              412 ;      int RSVD0     : HW_RTC_PERSISTENT0_RSVD0_WIDTH;
+                              413 ;   } B;
+                              415 ;    int I;
+                              416 ;    unsigned int U;
+                              418 ;} rtc_PERSISTENT0_type;
+                              419  
+                              421 ;#define HW_RTC_PERSISTENT0   (*(volatile rtc_PERSISTENT0_type _X*) (HW_RTC_BASEADDR+7))  /* RTC PERSISTENT Register0 */
+                              422 ;endc
+                              424 ;///////////////////////////////////////////////////////////////////////////////
+                              426 ;  RTC PERSISTENT Register1 (HW_RTC_PERSISTENT1) Bit Definitions
+                              428 HW_RTC_PERSISTENT1_RSVD0_BITPOS          equ     (0)
+                              430 HW_RTC_PERSISTENT1_RSVD0_WIDTH           equ     (24)
+                              432 HW_RTC_PERSISTENT1_RSVD0_SETMASK         equ     (((1<<HW_RTC_PERSISTENT1_RSVD0_WIDTH)-1)<<HW_RTC_PERSISTENT1_RSVD0_BITPOS) 
+                              434 HW_RTC_PERSISTENT1_RSVD0_CLRMASK         equ     (~HW_RTC_PERSISTENT1_RSVD0_SETMASK)
+                              437 ;C insert
+                              439 ;typedef union               
+                              441 ;{
+                              443 ;    struct {
+                              444 ;        int RSVD0      : HW_RTC_PERSISTENT1_RSVD0_WIDTH;
+                              445 ;    } B;
+                              447 ;    int I;
+                              448 ;    unsigned int U;
+                              450 ;} rtc_PERSISTENT1_type;
+                              451  
+                              452 ;#define HW_RTC_PERSISTENT1   (*(volatile rtc_PERSISTENT1_type _X*) (HW_RTC_BASEADDR+8))  /* RTC PERSISTENT Register1 */
+                              453 ;endc
+                              454  
+                                4     include "regsclkctrl.inc"
+                                2 __REGS_CLK_CONTROL_INC equ 1
+                                4 ;ASM Only
+                                5 HW_CCR                                  equ     $FA00      ; Clock control register
+                                6 HW_RCR                                  equ     $FA01      ; Reset control register
+                                7 HW_DCLKCNTL                             equ     $FFEA      ; DCLK counter LOW
+                                8 HW_DCLKCNTU                             equ     $FFEB      ; DCLK counter HIGH
+                                9 ;endasm
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;  Clock Control Register (HW_CCR) Bit Positions
+                               13 HW_CCR_CKRST_BITPOS                     equ     0
+                               14 HW_CCR_LTC_BITPOS                       equ     1
+                               15 HW_CCR_PLLEN_BITPOS                     equ     2
+                               16 HW_CCR_XTLEN_BITPOS                     equ     3
+                               17 HW_CCR_PLL_SOURCE_SEL_BITPOS            equ     4
+                               18 HW_CCR_ADIV_B0_BITPOS                   equ     5
+                               19 HW_CCR_ADIV_B1_BITPOS                   equ     6
+                               20 HW_CCR_ADIV_B2_BITPOS                   equ     7
+                               21 HW_CCR_CKSRC_BITPOS                     equ     8
+                               22 HW_CCR_DDIV_BITPOS                      equ     9
+                               23 HW_CCR_DDIV_B0_BITPOS                   equ     9
+                               24 HW_CCR_DDIV_B1_BITPOS                   equ     10
+                               25 HW_CCR_DDIV_B2_BITPOS                   equ     11
+                               26 HW_CCR_PDIV_BITPOS                      equ     12
+                               27 HW_CCR_PDIV_B0_BITPOS                   equ     12
+                               28 HW_CCR_PDIV_B1_BITPOS                   equ     13
+                               29 HW_CCR_PDIV_B2_BITPOS                   equ     14
+                               30 HW_CCR_PDIV_B3_BITPOS                   equ     15
+                               31 HW_CCR_PDIV_B4_BITPOS                   equ     16
+                               32 HW_CCR_PWDN_BITPOS                      equ     17
+                               33 HW_CCR_ACKEN_BITPOS                     equ     18
+                               34 HW_CCR_LOCK_BITPOS                      equ     19
+                               35 HW_CCR_DACDIV_BITPOS                    equ     20
+                               36 HW_CCR_ADIV1_B0_BITPOS                  equ     20
+                               37 HW_CCR_ADIV1_B1_BITPOS                  equ     21
+                               38 HW_CCR_ADIV1_B2_BITPOS                  equ     22
+                               39 HW_CCR_DDIV_MSB_BITPOS                  equ     23
+                               41 HW_CCR_CKRST_SETMASK                    equ     1<<HW_CCR_CKRST_BITPOS
+                               42 HW_CCR_LTC_SETMASK                      equ     1<<HW_CCR_LTC_BITPOS
+                               43 HW_CCR_PLLEN_SETMASK                    equ     1<<HW_CCR_PLLEN_BITPOS
+                               44 HW_CCR_XTLEN_SETMASK                    equ     1<<HW_CCR_XTLEN_BITPOS
+                               45 HW_CCR_ADCDIV_SETMASK                   equ     $7<<HW_CCR_ADIV_B0_BITPOS
+                               46 HW_CCR_CKSRC_SETMASK                    equ     1<<HW_CCR_CKSRC_BITPOS
+                               47 HW_CCR_DDIV_SETMASK                     equ     $7<<HW_CCR_DDIV_BITPOS
+                               48 HW_CCR_PDIV_SETMASK                     equ     $1F<<HW_CCR_PDIV_BITPOS
+                               49 HW_CCR_PWDN_SETMASK                     equ     1<<HW_CCR_PWDN_BITPOS
+                               50 HW_CCR_ACKEN_SETMASK                    equ     1<<HW_CCR_ACKEN_BITPOS
+                               51 HW_CCR_LOCK_SETMASK                     equ     1<<HW_CCR_LOCK_BITPOS
+                               52 HW_CCR_DACDIV_SETMASK                   equ     $7<<HW_CCR_DACDIV_BITPOS
+                               54 HW_CCR_CKRST_CLRMASK                    equ     ~HW_CCR_CKRST_SETMASK
+                               55 HW_CCR_LTC_CLRMASK                      equ     ~HW_CCR_LTC_SETMASK
+                               56 HW_CCR_PLLEN_CLRMASK                    equ     ~HW_CCR_PLLEN_SETMASK
+                               57 HW_CCR_XTLEN_CLRMASK                    equ     ~HW_CCR_XTLEN_SETMASK
+                               58 HW_CCR_ADCDIV_CLRMASK                   equ     ~HW_CCR_ADCDIV_SETMASK
+                               59 HW_CCR_CKSRC_CLRMASK                    equ     ~HW_CCR_CKSRC_SETMASK
+                               60 HW_CCR_DDIV_CLRMASK                     equ     ~HW_CCR_DDIV_SETMASK
+                               61 HW_CCR_PDIV_CLRMASK                     equ     ~HW_CCR_PDIV_SETMASK
+                               62 HW_CCR_PWDN_CLRMASK                     equ     ~HW_CCR_PWDN_SETMASK
+                               63 HW_CCR_ACKEN_CLRMASK                    equ     ~HW_CCR_ACKEN_SETMASK
+                               64 HW_CCR_LOCK_CLRMASK                     equ     ~HW_CCR_LOCK_SETMASK
+                               65 HW_CCR_DACDIV_CLRMASK                   equ     ~HW_CCR_DACDIV_SETMASK
+                               67 ;C insert
+                               68 ;typedef union               
+                               69 ;{
+                               70 ;    struct
+                               71 ;    {
+                               72 ;        int CKRST       :1; // Clock Reset
+                               73 ;        int LTC         :1;
+                               74 ;        int PLLEN       :1;
+                               75 ;        int XTLEN       :1;
+                               76 ;        int FLB         :1;
+                               77 ;        unsigned ADIV   :3;
+                               78 ;        int CKSRC       :1;
+                               79 ;        unsigned DDIV   :3;
+                               80 ;        unsigned PDIV   :5;
+                               81 ;        int PWDN        :1;
+                               82 ;        int ACKEN       :1;
+                               83 ;        int LOCK        :1;
+                               84 ;        unsigned ADIV1  :3;
+                               85 ;        unsigned DDIV_MSB:1;
+                               86 ;    } B;
+                               87 ;
+                               88 ;    int I;
+                               89 ;    unsigned int U;
+                               90 ;
+                               91 ;} ccr_type;
+                               92 ;#define HW_CCR     (*(volatile ccr_type _X*) (0xFA00))
+                               93 ;endc
+                               95 ;///////////////////////////////////////////////////////////////////////////////
+                               96 ;  Reset Control Register (HW_RCR) Bit Positions
+                               97 HW_RCR_STKLVL_BITPOS                    equ     0
+                               98 HW_RCR_SRST_BITPOS                      equ     4
+                               99 HW_RCR_IRQA_BITPOS                      equ     8
+                              100 HW_RCR_IRQB_BITPOS                      equ     9
+                              101 HW_RCR_NMI_BITPOS                       equ     10
+                              102 HW_RCR_SUNFLLVL_BITPOS                  equ     11
+                              103 HW_RCR_SUNFLEN_BITPOS                   equ     15
+                              104 HW_RCR_SOVFLLVL_BITPOS                  equ     16
+                              105 HW_RCR_SOVFLEN_BITPOS                   equ     20
+                              106 HW_RCR_IRQB2NMI_BITPOS                  equ     21
+                              107 HW_RCR_SUNFL_BITPOS                     equ     22
+                              108 HW_RCR_SOVFL_BITPOS                     equ     23
+                              110 HW_RCR_STKLVL_WIDTH                     equ     (4)
+                              111 HW_RCR_SRST_WIDTH                       equ     (4)
+                              112 HW_RCR_IRQA_WIDTH                       equ     (1)
+                              113 HW_RCR_IRQB_WIDTH                       equ     (1)
+                              114 HW_RCR_NMI_WIDTH                        equ     (1)
+                              115 HW_RCR_SUNFLLVL_WIDTH                   equ     (4)
+                              116 HW_RCR_SUNFLEN_WIDTH                    equ     (1)
+                              117 HW_RCR_SOVFLLVL_WIDTH                   equ     (4)
+                              118 HW_RCR_SOVFLEN_WIDTH                    equ     (1)
+                              119 HW_RCR_IRQB2NMI_WIDTH                   equ     (1)
+                              120 HW_RCR_SUNFL_WIDTH                      equ     (1)
+                              121 HW_RCR_SOVFL_WIDTH                      equ     (1)
+                              123 HW_RCR_STKLVL_SETMASK                   equ     (((1<<HW_RCR_STKLVL_WIDTH)-1)<<HW_RCR_STKLVL_BITPOS)
+                              124 HW_RCR_SRST_SETMASK                     equ     (((1<<HW_RCR_SRST_WIDTH)-1)<<HW_RCR_SRST_BITPOS)
+                              125 HW_RCR_IRQA_SETMASK                     equ     (((1<<HW_RCR_IRQA_WIDTH)-1)<<HW_RCR_IRQA_BITPOS)
+                              126 HW_RCR_IRQB_SETMASK                     equ     (((1<<HW_RCR_IRQB_WIDTH)-1)<<HW_RCR_IRQB_BITPOS)
+                              127 HW_RCR_NMI_SETMASK                      equ     (((1<<HW_RCR_NMI_WIDTH)-1)<<HW_RCR_NMI_BITPOS)
+                              128 HW_RCR_SUNFLLVL_SETMASK                 equ     (((1<<HW_RCR_SUNFLLVL_WIDTH)-1)<<HW_RCR_SUNFLLVL_BITPOS)
+                              129 HW_RCR_SUNFLEN_SETMASK                  equ     (((1<<HW_RCR_SUNFLEN_WIDTH)-1)<<HW_RCR_SUNFLEN_BITPOS)
+                              130 HW_RCR_SOVFLLVL_SETMASK                 equ     (((1<<HW_RCR_SOVFLLVL_WIDTH)-1)<<HW_RCR_SOVFLLVL_BITPOS)
+                              131 HW_RCR_SOVFLEN_SETMASK                  equ     (((1<<HW_RCR_SOVFLEN_WIDTH)-1)<<HW_RCR_SOVFLEN_BITPOS)
+                              132 HW_RCR_IRQB2NMI_SETMASK                 equ     (((1<<HW_RCR_IRQB2NMI_WIDTH)-1)<<HW_RCR_IRQB2NMI_BITPOS)
+                              133 HW_RCR_SUNFL_SETMASK                    equ     (((1<<HW_RCR_SUNFL_WIDTH)-1)<<HW_RCR_SUNFL_BITPOS)
+                              134 HW_RCR_SOVFL_SETMASK                    equ     (((1<<HW_RCR_SOVFL_WIDTH)-1)<<HW_RCR_SOVFL_BITPOS)
+                              136 HW_RCR_STKLVL_CLRMASK                   equ     ~HW_RCR_STKLVL_SETMASK
+                              137 HW_RCR_SRST_CLRMASK                     equ     ~HW_RCR_SRST_SETMASK
+                              138 HW_RCR_IRQA_CLRMASK                     equ     ~HW_RCR_IRQA_SETMASK
+                              139 HW_RCR_IRQB_CLRMASK                     equ     ~HW_RCR_IRQB_SETMASK
+                              140 HW_RCR_NMI_CLRMASK                      equ     ~HW_RCR_NMI_SETMASK
+                              141 HW_RCR_SUNFLLVL_CLRMASK                 equ     ~HW_RCR_SUNFLLVL_SETMASK
+                              142 HW_RCR_SUNFLEN_CLRMASK                  equ     ~HW_RCR_SUNFLEN_SETMASK
+                              143 HW_RCR_SOVFLLVL_CLRMASK                 equ     ~HW_RCR_SOVFLLVL_SETMASK
+                              144 HW_RCR_SOVFLEN_CLRMASK                   equ    ~HW_RCR_SOVFLEN_SETMASK
+                              145 HW_RCR_IRQB2NMI_CLRMASK                 equ     ~HW_RCR_IRQB2NMI_SETMASK
+                              146 HW_RCR_SUNFL_CLRMASK                    equ     ~HW_RCR_SUNFL_SETMASK
+                              147 HW_RCR_SOVFL_CLRMASK                    equ     ~HW_RCR_SOVFL_SETMASK
+                              149 ;C insert
+                              150 ;typedef union               
+                              151 ;{
+                              152 ;    struct
+                              153 ;   {
+                              154 ;        int STKLVL   : HW_RCR_STKLVL_WIDTH;
+                              155 ;        int SRST     : HW_RCR_SRST_WIDTH;
+                              156 ;        int IRQA     : HW_RCR_IRQA_WIDTH;
+                              157 ;        int IRQB     : HW_RCR_IRQB_WIDTH;
+                              158 ;        int NMI      : HW_RCR_NMI_WIDTH;
+                              159 ;        int SUNFLLVL : HW_RCR_SUNFLLVL_WIDTH;
+                              160 ;        int SUNFLEN  : HW_RCR_SUNFLEN_WIDTH;
+                              161 ;        int SOVFLLVL : HW_RCR_SOVFLLVL_WIDTH;
+                              162 ;        int SOVFLEN  : HW_RCR_SOVFLEN_WIDTH;
+                              163 ;        int IRQB2NMI : HW_RCR_IRQB2NMI_WIDTH;
+                              164 ;        int SUNFL    : HW_RCR_SUNFL_WIDTH;
+                              165 ;        int SOVFL    : HW_RCR_SOVFL_WIDTH;
+                              166 ;    } B;
+                              167 ;
+                              168 ;    int I;
+                              169 ;    unsigned int U;
+                              170 ;
+                              171 ;} rcr_type;
+                              172 ;#define HW_RCR     (*(volatile rcr_type _X*) (0xFA01))
+                              173 ;endc
+                              176 ;///////////////////////////////////////////////////////////////////////////////
+                              177 ;  DCLK Count Lower register (HW_DCLKCNTL) Bit Positions
+                              178 HW_DCLKCNTL_LOW_BITPOS                    equ     0
+                              180 HW_DCLKCNTL_LOW_WIDTH                     equ     (24)        
+                              182 HW_DCLKCNTL_LOW_SETMASK              equ     (((1<<HW_DCLKCNTL_LOW_WIDTH)-1)<<HW_DCLKCNTL_LOW_BITPOS) 
+                              183 HW_DCLKCNTL_LOW_CLRMASK              equ     ~HW_DCLKCNTL_LOW_SETMASK
+                              184 ;C insert
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              185 ;typedef union               
+                              186 ;{
+                              187 ;    struct
+                              188 ;   {
+                              189 ;        int LOW;
+                              190 ;    } B;
+                              191 ;
+                              192 ;    int I;
+                              193 ;    unsigned int U;
+                              194 ;
+                              195 ;} dclkcntl_type;
+                              196 ;#define HW_DCLKCNTL (*(volatile dclkcntl_type _X*) (0xFFEA))
+                              197 ;endc
+                              199 ;///////////////////////////////////////////////////////////////////////////////
+                              200 ;  DCLK Count UPPER register (HW_DCLKCNTU) Bit Positions
+                              201 HW_DCLKCNTU_HIGH_BITPOS                    equ     0
+                              203 HW_DCLKCNTU_HIGH_WIDTH                     equ     (24)        
+                              205 HW_DCLKCNTU_HIGH_SETMASK              equ     (((1<<HW_DCLKCNTU_HIGH_WIDTH)-1)<<HW_DCLKCNTU_HIGH_BITPOS) 
+                              206 HW_DCLKCNTU_HIGH_CLRMASK              equ     ~HW_DCLKCNTU_HIGH_SETMASK
+                              207 ;C insert
+                              208 ;typedef union               
+                              209 ;{
+                              210 ;    struct
+                              211 ;   {
+                              212 ;        int HIGH;
+                              213 ;    } B;
+                              214 ;
+                              215 ;    int I;
+                              216 ;    unsigned int U;
+                              217 ;
+                              218 ;} dclkcntu_type;
+                              219 ;#define HW_DCLKCNTU (*(volatile dclkcntu_type _X*) (0xFFEB))
+                              220 ;endc
+                              222  ;*********************  REGISTER ALIAS DEFINES TO MATCH LEGACY CODE *******************************
+                              223  ;
+                              224  ; The following defines were added to match regs3410.inc definition to build SDK2XXX code without needing 
+                              225  ; to update the actual files. Only the defines needed to build SDK2.400 were added. 
+                              227 HW_CLK_CNT_L                            equ     $00FFEA         ; Clock count register (lower)
+                              228 HW_CLK_CNT_U                            equ     $00FFEB         ; Clock count register (upper)
+                              229 HW_CYC_STEAL                            equ     $00FFEC         ; Cycle steal count register
+                              232     
+                                5     include "sysmacro.asm"
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : sysmacro.asm
+                                5 ;  Description : Misc System Macros
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     define   SysMacro_asm    '1'
+                               10     page    255,255,0
+                               12 ;///////////////////////////////////////////////////////////////////////////////
+                               13 ;   Macros
+                               14 ;///////////////////////////////////////////////////////////////////////////////
+                               16 ;///////////////////////////////////////////////////////////////////////////////
+                               17 ;   Includes
+                               18 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;///////////////////////////////////////////////////////////////////////////////
+                               21 ;   External Definitions
+                               22 ;///////////////////////////////////////////////////////////////////////////////
+                               24 ;///////////////////////////////////////////////////////////////////////////////
+                               25 ;   External References
+                               26 ;///////////////////////////////////////////////////////////////////////////////
+                               28 ;///////////////////////////////////////////////////////////////////////////////
+                               29 ;   Equates
+                               30 ;///////////////////////////////////////////////////////////////////////////////
+                               31         
+                               32 ;///////////////////////////////////////////////////////////////////////////////
+                               33 ;   X Memory
+                               34 ;///////////////////////////////////////////////////////////////////////////////
+                               35         
+                               36 ;///////////////////////////////////////////////////////////////////////////////
+                               37 ;   Y Memory
+                               38 ;///////////////////////////////////////////////////////////////////////////////
+                               39         
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               41 ;   P Memory
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               44 ;///////////////////////////////////////////////////////////////////////////////
+                               45 ;
+                               46 ;>  Name:           push
+                               47 ;
+                               48 ;   Type:           Macro
+                               49 ;
+                               50 ;   Description:    Push a 24-bit value onto the data stack
+                               51 ;
+                               52 ;   Inputs:         Usage : push reg
+                               53 ;                   reg = any core register that is 24-bits or less
+                               54 ;
+                               55 ;   Outputs:        none
+                               56 ;                   
+                               57 ;   Notes:          For every push, there must be a corresponding pop to keep
+                               58 ;                   data stack balanced.
+                               59 ;
+                               60 ;   SeeAlso:        pop
+                               61 ;<
+                               62 ;///////////////////////////////////////////////////////////////////////////////
+                               63 push    macro   reg
+                               64     move    reg,y:(r7)+
+                               65     endm
+                               67 ;///////////////////////////////////////////////////////////////////////////////
+                               68 ;
+                               69 ;>  Name:           pop
+                               70 ;
+                               71 ;   Type:           Macro
+                               72 ;
+                               73 ;   Description:    Pop a 24-bit value from the data stack
+                               74 ;
+                               75 ;   Inputs:         Usage : pop reg
+                               76 ;                   reg = any core register that is 24-bits or less
+                               77 ;
+                               78 ;   Outputs:        none
+                               79 ;                   
+                               80 ;   Notes:          For every pop, there must be a corresponding push to keep
+                               81 ;                   data stack balanced.
+                               82 ;
+                               83 ;   SeeAlso:        push
+                               84 ;<
+                               85 ;///////////////////////////////////////////////////////////////////////////////
+                               86 pop     macro   reg
+                               87     move    y:-(r7),reg
+                               88     endm
+                               90 ;///////////////////////////////////////////////////////////////////////////////
+                               91 ;
+                               92 ;>  Name:           CallFunclet
+                               93 ;
+                               94 ;   Type:           Macro
+                               95 ;
+                               96 ;   Description:    Loads and Executes the funclet defined by the Resource argument
+                               97 ;
+                               98 ;   Inputs:         Resource = Resource number for the specific funclet.
+                               99 ;
+                              100 ;   Outputs:        none
+                              101 ;                   
+                              102 ;   Notes:          Jumps to SysCallFunclet.   TODO: change to a label instead of hard addresses like $80
+                              103 ;<
+                              104 ;///////////////////////////////////////////////////////////////////////////////
+                              105 ; if ((@DEF('STMP_BUILD_PLAYER'))||(@DEF('PLAYER'))) ; sdk3.110 and before did this. 3.120 add short jump for mtp.
+                              107 CallFunclet   macro Resource
+                              108     jsr       $80
+                              109     DC       Resource  ; 1 word
+                              110  endm    
+                              111 CallFunclet2   macro Resource
+                              112  if ((@DEF('STMP_BUILD_PLAYER'))||(@DEF('PLAYER')))
+                              113     jsr       $82
+                              114     DC       Resource  ; 1 word
+                              115  else ;;; MTP
+                              116     jsr       $80
+                              117     DC       Resource  ; 1 word
+                              118  endif
+                              119     endm    
+                              130 ;///////////////////////////////////////////////////////////////////////////////
+                              131 ;
+                              132 ;>  Name:           error
+                              133 ;
+                              134 ;   Type:           Macro
+                              135 ;
+                              136 ;   Description:    Fatal system error macro.  This macro works in conjunction
+                              137 ;                   with contents of syserror.asm.  Depending upon the build
+                              138 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              139 ;                   a "debug" statement or a JMP to an error handling reset routine.
+                              140 ;
+                              141 ;   Inputs:         none 
+                              142 ;   Outputs:        none                   
+                              143 ;   Notes:          Can use debugOrContinue or ccerror for conditional halts. 
+                              144 ;                   SystemHalt() C macro uses this asm macro.
+                              145 ;<
+                              146 ;///////////////////////////////////////////////////////////////////////////////
+                              147 error   macro
+                              148   if (@DEF('BETA')||@DEF('RETAIL')||@DEF('TRACEBUFFER'))
+                              149     jmp $000C ;Use vector at P:000C to shutdown & restart the STMP device. 
+                              150               ; Jmp to addr in low 12 bits is 1 word smaller than jsr. (changed apr 6 '05)
+                              151   else
+                              152     debug
+                              153   endif ; if ( @DEF('BETA')||@DEF('RETAIL') 
+                              154     endm
+                              156 ;///////////////////////////////////////////////////////////////////////////////
+                              157 ;
+                              158 ;   Name:           debugOrContinue
+                              159 ;   Type:           Macro
+                              160 ;   Description:    System error macro. Depending upon the build
+                              161 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              162 ;                   a "debug" statement or nothing to allow continued execution.
+                              163 ;   Inputs:         none 
+                              164 ;   Outputs:        none
+                              165 ;   Notes:          none
+                              166 ;
+                              167 ;///////////////////////////////////////////////////////////////////////////////
+                              168 debugOrContinue   macro
+                              169   if (@DEF('DEBUG'))
+                              170     debug
+                              171     nop
+                              172   endif 
+                              173     endm
+                              175 ;///////////////////////////////////////////////////////////////////////////////
+                              176 ;
+                              177 ;   Name:           debugOrShutdown
+                              178 ;   Type:           Macro
+                              179 ;   Description:    System error macro. Depending upon the build
+                              180 ;                   arguments DEBUG, BETA, or RETAIL, this will either produce
+                              181 ;                   a "debug" statement or Prevent RETAIL build from hanging on 
+                              182 ;                   debug line by attempting graceful shutdown.
+                              183 ;   Inputs:         none 
+                              184 ;   Outputs:        none
+                              185 ;   Notes:          See SystemShutdownFinal in SystemAPI.asm
+                              186 ;
+                              187 ;///////////////////////////////////////////////////////////////////////////////
+                              188 ;debugOrShutdown   macro
+                              189 ;  if (@DEF('DEBUG'))
+                              190 ;    debug
+                              191 ;    nop
+                              192 ;  else  ; ( @DEF('BETA')||@DEF('RETAIL')
+                              193 ;    jmp SystemShutdownFinal                ; reference not resolved
+                              194 ;  endif 
+                              195 ;    endm
+                              198 ;///////////////////////////////////////////////////////////////////////////////
+                              199 ;> Name:            ccerror
+                              200 ;
+                              201 ;  Type:            Macro
+                              202 ;  Description:     Conditional fatal system error macro.  If the indicated
+                              203 ;                   condition code ("CC") is met, signal the error.  (See "error",
+                              204 ;                   above for more info on error hanlding.)
+                              205 ;                   The allowed condition condition codes are
+                              206 ;
+                              207 ;                       cc, cs, ec, eq, es, ge, gt, lc, le, ls, lt, 
+                              208 ;                       mi, ne, nr, pl, nn 
+                              209 ;
+                              210 ;  Inputs:          condition
+                              211 ;
+                              212 ;  Outputs:         none
+                              213 ;
+                              214 ;  Notes:           The normal way of using these macros is shown below:
+                              215 ;
+                              216 ;                       <some operation which sets/clears a condition code>
+                              217 ;                       ccerror cs             ; Error if carry is set
+                              218 ;                       <normal continuation>
+                              219 ;
+                              220 ;                   This can replace old code of the form:
+                              221 ;
+                              222 ;                       <some operation which sets/clears a condition code>
+                              223 ;                       jcc     _OK
+                              224 ;                       error
+                              225 ;                   _OK
+                              226 ;                       <normal continuation>
+                              227 ;
+                              228 ;                   Depending on the BETA/RETAIL flags, the first operation can
+                              229 ;                   save one or two words of program memory over the second method.
+                              230 ;<
+                              231 ;///////////////////////////////////////////////////////////////////////////////
+                              232 ccerror macro   condition
+                              233   if (@DEF('BETA')||@DEF('RETAIL'))
+                              234     js\condition $000C
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              235   else
+                              236     debug\condition
+                              237   endif ; if ( @DEF('BETA')||@DEF('RETAIL') 
+                              238     endm
+                              240 ;///////////////////////////////////////////////////////////////////////////////
+                              241 ;> Name: GetLogicalDriveNumForResourceBin
+                              242 ;
+                              243 ; Description: Used for our RestoreDriveFromBackup routine.
+                              244 ; INPUT: 1 for primary resource.bin
+                              245 ;        2 for secondary resource.bin
+                              246 ;        3 for master redundant resource.bin that is used to restore 1 and 2 at power up if needed.
+                              247 ;
+                              248 ; NOTE: If the drive arrays is modified in ddiproject.c then the values below will
+                              249 ;       have to change. Inspect that file to verify these values are correct.
+                              250 ;
+                              251 ;<
+                              252 ;///////////////////////////////////////////////////////////////////////////////
+                              253 GetLogicalDriveNumForResourceBin macro drive
+                              254     if (drive==0)
+                              255     fail    "drive=0 invalid value used in GetLogicalDriveNumForresourceBin macro"
+                              256     endif
+                              258     if (drive>3)
+                              259     fail    "drive>3 invalid value used in GetLogicalDriveNumForresourceBin macro"
+                              260     endif
+                              262     if (@DEF('MMC'))
+                              264         if drive==1
+                              265              move   #>6,a
+                              266         endif
+                              267     
+                              268         if drive==2
+                              269              move   #>7,a
+                              270         endif
+                              272         if drive==3
+                              273              move   #>8,a
+                              274         endif
+                              275     else
+                              277         if drive==1
+                              278              move   #>5,a
+                              279         endif
+                              280     
+                              281         if drive==2
+                              282              move   #>6,a
+                              283         endif
+                              285         if drive==3
+                              286              move   #>7,a
+                              287         endif
+                              288     endif
+                              289  endm
+                              291 ;///////////////////////////////////////////////////////////////////////////////
+                              292 ;
+                              293 ;>  Name:           SaveRange
+                              294 ;
+                              295 ;   Type:           Macro
+                              296 ;
+                              297 ;   Description:    This is a supporting macro for saving memory locations to
+                              298 ;                   the settings.dat file at shutdown, for later restoration
+                              299 ;                   at system startup.
+                              300 ;
+                              301 ;   Inputs:         Usage : SaveRange Label,Length
+                              302 ;                        
+                              303 ;   Outputs:        
+                              304 ;                   
+                              305 ;   Notes:          This macro automatically determines the memory space of the
+                              306 ;                   label specified.  It then constructs a command that is 
+                              307 ;                   written to settings.dat by SysSaveSettings, and is
+                              308 ;                   understood by the SysLoadSettings function to restore the
+                              309 ;                   memory locations.  For the SaveRange macro to be recognized 
+                              310 ;                   by the SysSaveSettings function.  The section name where the
+                              311 ;                   SaveRange command is used, must be included in the 
+                              312 ;                   Settings_Y cluster in the stmp3400.dsc file.  The makefile
+                              313 ;                   will then extract these commands as a resource to be used
+                              314 ;                   by SysSaveSettings and SysLoadSettings.
+                              315 ;
+                              316 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRangeX, 
+                              317 ;                   SaveRangeY, SaveRangeP, SaveRangeL
+                              318 ;
+                              319 ;<
+                              320 ;///////////////////////////////////////////////////////////////////////////////
+                              321 SaveRange macro Label,Length
+                              322     if @MSP(Label)==0  ;None
+                              323     fail    "Invalid label used in SaveRange macro"
+                              324     dc      Label
+                              325     endif ; if @MSP(Label)==0
+                              327     if @MSP(Label)==1  ;X
+                              328     dc      $800000|Label
+                              329     endif ; if @MSP(Label)==1
+                              331     if @MSP(Label)==2  ;Y
+                              332     dc      $400000|Label
+                              333     endif ; if @MSP(Label)==2
+                              335     if @MSP(Label)==3  ;L
+                              336     dc      $200000|Label
+                              337     endif ; if @MSP(Label)==3
+                              339     if @MSP(Label)==4  ;P
+                              340     dc      $100000|Label
+                              341     endif ; if @MSP(Label)==4
+                              343     if @MSP(Label)==5  ;E
+                              344     fail    "Invalid label used in SaveRange macro"
+                              345     dc      Label
+                              346     endif ; if @MSP(Label)==5
+                              348     dc      Length*3
+                              349     endm
+                              351 ;///////////////////////////////////////////////////////////////////////////////
+                              352 ;
+                              353 ;>  Name:           SaveRangeY
+                              354 ;
+                              355 ;   Type:           Macro
+                              356 ;
+                              357 ;   Description:    This is a supporting macro for saving memory locations to
+                              358 ;                   the settings.dat file at shutdown, for later restoration
+                              359 ;                   at system startup.
+                              360 ;
+                              361 ;   Inputs:         Usage : SaveRangeY Label,Length
+                              362 ;                        
+                              363 ;   Outputs:        
+                              364 ;                   
+                              365 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              366 ;                   can take a numeric address, or a label, but will only
+                              367 ;                   create a save memory command that indicates Y memory
+                              368 ;                   to be saved.
+                              369 ;
+                              370 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              371 ;                   SaveRangeX, SaveRangeP, SaveRangeL
+                              372 ;
+                              373 ;<
+                              374 ;///////////////////////////////////////////////////////////////////////////////
+                              375 SaveRangeY macro Address,Length
+                              376     dc      $400000|Address
+                              377     dc      Length*3
+                              378     endm
+                              380 ;///////////////////////////////////////////////////////////////////////////////
+                              381 ;
+                              382 ;>  Name:           SaveRangeX
+                              383 ;
+                              384 ;   Type:           Macro
+                              385 ;
+                              386 ;   Description:    This is a supporting macro for saving memory locations to
+                              387 ;                   the settings.dat file at shutdown, for later restoration
+                              388 ;                   at system startup.
+                              389 ;
+                              390 ;   Inputs:         Usage : SaveRangeX Label,Length
+                              391 ;                        
+                              392 ;   Outputs:        
+                              393 ;                   
+                              394 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              395 ;                   can take a numeric address, or a label, but will only
+                              396 ;                   create a save memory command that indicates X memory
+                              397 ;                   to be saved.
+                              398 ;
+                              399 ;   See Also:       SysLoadSettings, SysSaveSettings, SaveRange, 
+                              400 ;                   SaveRangeY, SaveRangeP, SaveRangeL
+                              401 ;
+                              402 ;<
+                              403 ;///////////////////////////////////////////////////////////////////////////////
+                              404 SaveRangeX macro Address,Length
+                              405     dc      $800000|Address
+                              406     dc      Length*3
+                              407     endm
+                              409 ;///////////////////////////////////////////////////////////////////////////////
+                              410 ;
+                              411 ;>  Name:           SaveRangeL
+                              412 ;
+                              413 ;   Type:           Macro
+                              414 ;
+                              415 ;   Description:    This is a supporting macro for saving memory locations to
+                              416 ;                   the settings.dat file at shutdown, for later restoration
+                              417 ;                   at system startup.
+                              418 ;
+                              419 ;   Inputs:         Usage : SaveRangeL Label,Length
+                              420 ;                        
+                              421 ;   Outputs:        
+                              422 ;                   
+                              423 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              424 ;                   can take a numeric address, or a label, but will only
+                              425 ;                   create a save memory command that indicates L memory
+                              426 ;                   to be saved.
+                              427 ;
+                              428 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              429 ;                   SaveRangeX, SaveRangeY, SaveRangeP
+                              430 ;
+                              431 ;<
+                              432 ;///////////////////////////////////////////////////////////////////////////////
+                              433 SaveRangeL macro Address,Length
+                              434     dc      $200000|Address
+                              435     dc      Length*3
+                              436     endm
+                              438 ;///////////////////////////////////////////////////////////////////////////////
+                              439 ;
+                              440 ;>  Name:           SaveRangeP
+                              441 ;
+                              442 ;   Type:           Macro
+                              443 ;
+                              444 ;   Description:    This is a supporting macro for saving memory locations to
+                              445 ;                   the settings.dat file at shutdown, for later restoration
+                              446 ;                   at system startup.
+                              447 ;
+                              448 ;   Inputs:         Usage : SaveRangeP Label,Length
+                              449 ;                        
+                              450 ;   Outputs:        
+                              451 ;                   
+                              452 ;   Notes:          Refer to the SaveRange macro for more details.  This macro
+                              453 ;                   can take a numeric address, or a label, but will only
+                              454 ;                   create a save memory command that indicates P memory
+                              455 ;                   to be saved.
+                              456 ;
+                              457 ;   SeeAlso:        SysLoadSettings, SysSaveSettings, SaveRange, 
+                              458 ;                   SaveRangeX, SaveRangeY, SaveRangeL
+                              459 ;
+                              460 ;<
+                              461 ;///////////////////////////////////////////////////////////////////////////////
+                              462 SaveRangeP macro Address,Length
+                              463     dc      $100000|Address
+                              464     dc      Length*3
+                              465     endm
+                              468 ;///////////////////////////////////////////////////////////////////////////////
+                              469 ;       BUTTON MACROS
+                              470 ;///////////////////////////////////////////////////////////////////////////////
+                              472 ;///////////////////////////////////////////////////////////////////////////////
+                              473 ;
+                              474 ;>  Name:           DEFINE_ROW
+                              475 ;
+                              476 ;   Type:           Macro
+                              477 ;
+                              478 ;   Description:    This is a supporting macro for defining the GPIO setup for 
+                              479 ;                   the scan matrix.
+                              480 ;
+                              481 ;   Inputs:         Usage : DEFINE_ROW RowNumber,WhichGPIORegister,WhichBit
+                              482 ;                        
+                              483 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              484 ;                   
+                              485 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              486 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              487 ;                   completely define the players button scan matrix, non scan buttons, and
+                              488 ;                   how these buttons map to events as recieved by the menus.  There must be one of these
+                              489 ;                   macro definitions for each row in the scan matrix.
+                              490 ;
+                              491 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              492 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              493 ;
+                              494 ;<
+                              495 ;///////////////////////////////////////////////////////////////////////////////
+                              497 DEFINE_ROW macro RowNumber,WhichGPIO,WhichBit
+                              498     BUTTON_GPIO_ENABLE_ROW_\RowNumber:  equ HW_\WhichGPIO\ENR
+                              499     BUTTON_GPIO_SENSE_ROW_\RowNumber:   equ HW_\WhichGPIO\DIR
+                              500     BUTTON_BITPOS_ROW_\RowNumber:       equ 1<<\WhichBit
+                              501     endm
+                              503 ;///////////////////////////////////////////////////////////////////////////////
+                              504 ;
+                              505 ;>  Name:           DEFINE_COLUMN
+                              506 ;
+                              507 ;   Type:           Macro
+                              508 ;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              509 ;   Description:    This is a supporting macro for defining the GPIO setup for 
+                              510 ;                   the scan matrix.
+                              511 ;
+                              512 ;   Inputs:         Usage : DEFINE_COLUMN ColumnNumber,WhichGPIORegister,WhichBit
+                              513 ;                        
+                              514 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              515 ;                   
+                              516 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              517 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              518 ;                   completely define the players button scan matrix, non scan buttons, and
+                              519 ;                   how these buttons map to events as recieved by the menus.  There must be one
+                              520 ;                   of these macro definitions for each column in the scan matrix.
+                              521 ;
+                              522 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              523 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              524 ;
+                              525 ;<
+                              526 ;///////////////////////////////////////////////////////////////////////////////
+                              527 DEFINE_COLUMN macro ColumnNumber,WhichGPIO,WhichBit
+                              528     BUTTON_GPIO_ENABLE_COLUMN_\ColumnNumber:        equ HW_\WhichGPIO\ENR
+                              529     BUTTON_GPIO_DATA_OUT_COLUMN_\ColumnNumber:      equ HW_\WhichGPIO\DOR
+                              530     BUTTON_GPIO_OUTPUT_ENABLE_COLUMN_\ColumnNumber: equ HW_\WhichGPIO\DOER
+                              531     BUTTON_BITPOS_COLUMN_\ColumnNumber:             equ 1<<\WhichBit
+                              532     endm
+                              534 ;///////////////////////////////////////////////////////////////////////////////
+                              535 ;
+                              536 ;>  Name:           DEFINE_SCAN_BUTTON_EVENT
+                              537 ;
+                              538 ;   Type:           Macro
+                              539 ;
+                              540 ;   Description:    This is a supporting macro for defining the mapping between a scan
+                              541 ;                   matrix location and a button event.
+                              542 ;
+                              543 ;   Inputs:         Usage : DEFINE_SCAN_BUTTON_EVENT Column,Row,EventNumber,ButtonName.  
+                              544 ;                       Column is in the format COL0,COL1,COL2, etc.  
+                              545 ;                       Row is in the format ROW0,ROW1,etc. 
+                              546 ;                       The EventNumber is an integer with a single bit set that is unique to all button events
+                              547 ;                       ButtonName is a label by which this button event can be referenced in the event mapping.
+                              548 ;                        
+                              549 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              550 ;                   
+                              551 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              552 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              553 ;                   completely define the players button scan matrix, non scan buttons, and
+                              554 ;                   how these buttons map to events as recieved by the menus. This macro sets up buttons for each
+                              555 ;                   spot in the button scan matrix.  Each place in the matrix must be defined, even if no
+                              556 ;                   physical button exists in it.  Use $000000 for placeholders.
+                              557 ;
+                              558 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              559 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              560 ;
+                              561 ;<
+                              562 ;///////////////////////////////////////////////////////////////////////////////
+                              563 DEFINE_SCAN_BUTTON_EVENT macro Column,Row,EventNumber,ButtonName
+                              564     BUTTON_EVENT_\Column\Row:  equ \EventNumber
+                              565     ButtonName: equ \EventNumber
+                              566     endm 
+                              568 ;///////////////////////////////////////////////////////////////////////////////
+                              569 ;
+                              570 ;>  Name:           DEFINE_NON_SCAN_BUTTON
+                              571 ;
+                              572 ;   Type:           Macro
+                              573 ;
+                              574 ;   Description:    This is a supporting macro for defining a non scan button.
+                              575 ;
+                              576 ;   Inputs:         Usage : DEFINE_NON_SCAN_BUTTON NSNumber,WhichGPIO,WhichBit.  
+                              577 ;                       NSNumber is a unique number (starting at 0) and counting up to BUTTON_NON_SCAN_BUTTONS-1
+                              578 ;                       WhichGPIO is the GPIO register used
+                              579 ;                       WhichBit is the bit in this register.
+                              580 ;                        
+                              581 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              582 ;                   
+                              583 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              584 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              585 ;                   completely define the players button scan matrix, non scan buttons, and
+                              586 ;                   how these buttons map to events as recieved by the menus. This macro sets up non scan
+                              587 ;                   buttons.  Use DEFINE_NON_SCAN_BUTTON_EVENT to define the event generated by this non scan
+                              588 ;                   button.
+                              589 ;
+                              590 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              591 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              592 ;
+                              593 ;<
+                              594 ;///////////////////////////////////////////////////////////////////////////////
+                              595 DEFINE_NON_SCAN_BUTTON macro NSNumber,WhichGPIO,WhichBit
+                              596     BUTTON_GPIO_ENABLE_NON_SCAN_\NSNumber:  equ HW_\WhichGPIO\ENR
+                              597     BUTTON_GPIO_SENSE_NON_SCAN_\NSNumber:   equ HW_\WhichGPIO\DIR
+                              598     BUTTON_BITPOS_NON_SCAN_\NSNumber:       equ 1<<\WhichBit
+                              599     BUTTON_REAL_BITPOS_NON_SCAN_\NSNumber:  equ \WhichBit
+                              600     endm
+                              602 ;///////////////////////////////////////////////////////////////////////////////
+                              603 ;
+                              604 ;>  Name:           DEFINE_NON_SCAN_BUTTON_EVENT
+                              605 ;
+                              606 ;   Type:           Macro
+                              607 ;
+                              608 ;   Description:    This is a supporting macro for defining a non scan button.
+                              609 ;
+                              610 ;   Inputs:         Usage : DEFINE_NON_SCAN_BUTTON_EVENT Number,EventNumber,ButtonName  
+                              611 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_NON_SCAN_BUTTONS-1
+                              612 ;                       EventNumber is an integer with 1 bit set that is unique to all other buttons
+                              613 ;                       ButtonName is a label later referenced in the event mapping
+                              614 ;                        
+                              615 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              616 ;                   
+                              617 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              618 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              619 ;                   completely define the players button scan matrix, non scan buttons, and
+                              620 ;                   how these buttons map to events as recieved by the menus. This macro sets up non scan
+                              621 ;                   buttons.  
+                              622 ;
+                              623 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              624 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              625 ;
+                              626 ;<
+                              627 ;///////////////////////////////////////////////////////////////////////////////
+                              628 DEFINE_NON_SCAN_BUTTON_EVENT macro Number,EventNumber,ButtonName
+                              629     BUTTON_EVENT_NONSCAN\Number:  equ \EventNumber
+                              630     ButtonName: equ \EventNumber
+                              631     endm 
+                              635 ;///////////////////////////////////////////////////////////////////////////////
+                              636 ;> Name: DEFINE_LRADC_BUTTON
+                              637 ;
+                              638 ;  Type: Macro
+                              639 ;
+                              640 ;  Description: This is a supporting macro for defining an Low Resolution ADC (LRADC)-based button
+                              641 ;
+                              642 ;  Inputs:      Usage : DEFINE_LRADC_BUTTON LBNumber,UpperLimitVoltage
+                              643 ;
+                              644 ;  Outputs:     Sets up equates required for data structures in button.asm
+                              645 ;
+                              646 ;  Notes:       Must be used in conjuction with DEFINE_LRADC_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              647 ;                   completely define the player's LRADC buttons and how these buttons map to 
+                              648 ;                   events as recieved by the menus. This macro sets up LRADC buttons.  Use 
+                              649 ;                   DEFINE_LRADC_BUTTON_EVENT to define the event generated by this LRADC button.
+                              650 ;
+                              651 ;   SeeAlso:        DEFINE_LRADC_BUTTON_EVENT, DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              652 ;                   DEFINE_NON_SCAN_BUTTON, DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              653 ;<
+                              654 ;///////////////////////////////////////////////////////////////////////////////
+                              655 DEFINE_LRADC_BUTTON     macro   num,level
+                              656     BUTTON_LRADC_LEVEL_\num:    equ level
+                              657     endm
+                              661 ;///////////////////////////////////////////////////////////////////////////////
+                              662 ;> Name: DEFINE_LRADC_BUTTON_EVENT
+                              663 ;
+                              664 ;  Type: Macro
+                              665 ;
+                              666 ;  Description:     This is a supporting macro for defining a Low Resolution ADC (LRADC)-based button.
+                              667 ;
+                              668 ;  Inputs:          Usage : DEFINE_LRADC_BUTTON_EVENT Number,EventNumber,ButtonName  
+                              669 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_LRADC_BUTTONS-1
+                              670 ;                       EventNumber is an integer with 1 bit set that is unique to all other buttons
+                              671 ;                       ButtonName is a label later referenced in the event mapping
+                              672  
+                              673 ;
+                              674 ;  Outputs:         Sets up equates required for data structures in button.asm
+                              675 ;
+                              676 ;  Notes:           Must be used in conjuction with DEFINE_LRADC_BUTTON, and DEFINE_MAPPED_EVENT to
+                              677 ;                   completely define the player's LRADC buttons and how these buttons map to events 
+                              678 ;                   as recieved by the menus. This macro sets up LRADC buttons.
+                              679 ;
+                              680 ;
+                              681 ;   SeeAlso:        DEFINE_LRADC_BUTTON, DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              682 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              683 ;<
+                              684 ;///////////////////////////////////////////////////////////////////////////////
+                              685 DEFINE_LRADC_BUTTON_EVENT      macro   num,EventNumber,ButtonName
+                              686     BUTTON_EVENT_LRADC_BUTTON\num: equ \EventNumber
+                              687     ButtonName:     equ     \EventNumber   
+                              688     endm
+                              689   
+                              692 ;///////////////////////////////////////////////////////////////////////////////
+                              693 ;
+                              694 ;>  Name:           DEFINE_MAPPED_EVENT
+                              695 ;
+                              696 ;   Type:           Macro
+                              697 ;
+                              698 ;   Description:    This is a supporting macro for defining button events.
+                              699 ;
+                              700 ;   Inputs:         Usage : DEFINE_MAPPED_EVENT Number,Action,ButtonNames 
+                              701 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_MAPPED_EVENTS-1
+                              702 ;                       Action is either PRESS_RELEASE or PRESS_HOLD
+                              703 ;                       ButtonNames is a collection of labels defined for scan or non scan buttons that relate
+                              704 ;                           to this button event.
+                              705 ;                        
+                              706 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              707 ;                   
+                              708 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              709 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              710 ;                   completely define the players button scan matrix, non scan buttons, and
+                              711 ;                   how these buttons map to events as recieved by the menus. This macro sets up the mapping
+                              712 ;                   between scan and non scan buttons, and the eventual event number that is sent to the menus.
+                              713 ;
+                              714 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              715 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              716 ;
+                              717 ;<
+                              718 ;///////////////////////////////////////////////////////////////////////////////
+                              719 DEFINE_MAPPED_EVENT macro Number,Action,ButtonNames
+                              720     
+                              721   IF (@SCP("Action","PRESS_RELEASE"))
+                              722     BUTTON_EVENT_\Number:  equ ButtonNames
+                              723   else 
+                              724     if (@SCP("Action","PRESS_HOLD"))
+                              725         BUTTON_EVENT_\Number:  equ $800000|ButtonNames
+                              726     else
+                              727         ERROR "Unknown Action for DEFINE_MAPPED_EVENT" 
+                              728     endif
+                              729   endif 
+                              730     endm
+                              733 ;///////////////////////////////////////////////////////////////////////////////
+                              734 ;
+                              735 ;>  Name:           DEFINE_2BUTTON_MAPPED_EVENT
+                              736 ;
+                              737 ;   Type:           Macro
+                              738 ;
+                              739 ;   Description:    This is a supporting macro for defining button events.
+                              740 ;
+                              741 ;   Inputs:         Usage : DEFINE_2BUTTON_MAPPED_EVENT Number,Action,Event1,Event2 
+                              742 ;                       Number is a unique number (starting at 0) and counting up to BUTTON_MAPPED_EVENTS-1
+                              743 ;                       Action is either PRESS_RELEASE or PRESS_HOLD
+                              744 ;                       Event1 is 1 of 2 previously defined button events
+                              745 ;                       Event2 is 2 of 2 previously defined button events
+                              746 ;                        
+                              747 ;   Outputs:        Sets up equates required for data structures in button.asm
+                              748 ;                   
+                              749 ;   Notes:          Must be used in conjuction with DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,
+                              750 ;                   DEFINE_NON_SCAN_BUTTON,DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT to
+                              751 ;                   completely define the players button scan matrix, non scan buttons, and
+                              752 ;                   how these buttons map to events as recieved by the menus. This macro sets up the mapping
+                              753 ;                   between scan and non scan buttons, and the eventual event number that is sent to the menus.
+                              754 ;
+                              755 ;   SeeAlso:        DEFINE_COLUMN, DEFINE_SCAN_BUTTON_EVENT,DEFINE_NON_SCAN_BUTTON,
+                              756 ;                   DEFINE_NON_SCAN_BUTTON_EVENT, and DEFINE_MAPPED_EVENT
+                              757 ;
+                              758 ;<
+                              759 ;///////////////////////////////////////////////////////////////////////////////
+                              760 DEFINE_2BUTTON_MAPPED_EVENT macro Number,Action,Event1,Event2
+                              761     
+                              762   IF (@SCP("Action","PRESS_RELEASE"))
+                              763     BUTTON_EVENT_\Number:  equ BUTTON_EVENT_\Event1|BUTTON_EVENT_\Event2
+                              764   else 
+                              765     if (@SCP("Action","PRESS_HOLD"))
+                              766         BUTTON_EVENT_\Number:  equ BUTTON_EVENT_\Event1|BUTTON_EVENT_\Event2|$800000
+                              767     else
+                              768         ERROR "Unknown Action for DEFINE_MAPPED_EVENT" 
+                              769     endif
+                              770   endif 
+                              771   endm
+                              773 ;///////////////////////////////////////////////////////////////////////////////
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              774 ;
+                              775 ;>  Name:           StackCheckIn
+                              776 ;
+                              777 ;   Type:           Macro
+                              778 ;
+                              779 ;   Description:    Records the current stack pointer on the stack
+                              780 ;
+                              781 ;   Inputs:         none
+                              782 ;                        
+                              783 ;   Outputs:        places the current PC and the current software stack pointer on the stack
+                              784 ;   
+                              785 ;   Notes:          This does not modify any registers (except r7)                
+                              786 ;
+                              787 ;   SeeAlso:        FStackCheckIn
+                              788 ;
+                              789 ;<
+                              790 ;///////////////////////////////////////////////////////////////////////////////
+                              791 StackCheckIn macro
+                              792   if (@DEF('DEBUG'))
+                              793     extern FStackCheckIn
+                              794     jsr FStackCheckIn
+                              795   endif
+                              796   endm
+                              798 ;///////////////////////////////////////////////////////////////////////////////
+                              799 ;
+                              800 ;>  Name:           StackCheckOut
+                              801 ;
+                              802 ;   Type:           Macro
+                              803 ;
+                              804 ;   Description:    Verifies that the stack is still balanced
+                              805 ;
+                              806 ;   Inputs:         none
+                              807 ;                        
+                              808 ;   Outputs:        none (though hits a debug if the stack is unbalanced)
+                              809 ;   
+                              810 ;   Notes:          This does not modify any registers (except r7) 
+                              811 ;
+                              812 ;   SeeAlso:        FStackCheckOut
+                              813 ;
+                              814 ;<
+                              815 ;///////////////////////////////////////////////////////////////////////////////
+                              816 StackCheckOut macro
+                              817   if (@DEF('DEBUG'))
+                              818     extern FStackCheckOut
+                              819     jsr FStackCheckOut
+                              820   endif 
+                              821   endm
+                              824 ;///////////////////////////////////////////////////////////////////////////////
+                              825 ;
+                              826 ;>  Name:           InstrumentPushContext 
+                              827 ;
+                              828 ;   Type:           Macro
+                              829 ;
+                              830 ;   Description:    calls the instrument functions specified.
+                              831 ;
+                              832 ;   Inputs:         new context
+                              833 ;                   new value
+                              834 ;                        
+                              835 ;   Outputs:        
+                              836 ;   
+                              837 ;   Notes:          This does not modify any registers  
+                              838 ;
+                              839 ;   SeeAlso:        
+                              840 ;
+                              841 ;<
+                              842 ;///////////////////////////////////////////////////////////////////////////////
+                              843 InstrumentPushContext macro context,value
+                              844   if (@DEF('USE_INSTRUMENTATION'))
+                              845     extern FInstrumentPushContext
+                              846     extern PushAandB
+                              847     extern PopAandB
+                              848     jsr PushAandB
+                              849     move    #>context,a
+                              850     move    #>value,b
+                              851     jsr FInstrumentPushContext
+                              852     jsr PopAandB
+                              853   endif 
+                              854   endm
+                              856 ;///////////////////////////////////////////////////////////////////////////////
+                              857 ;
+                              858 ;>  Name:           InstrumentPopContext 
+                              859 ;
+                              860 ;   Type:           Macro
+                              861 ;
+                              862 ;   Description:    calls the instrument functions specified.
+                              863 ;
+                              864 ;   Inputs:         none
+                              865 ;                        
+                              866 ;   Outputs:        none
+                              867 ;   
+                              868 ;   Notes:          This does not modify any registers  
+                              869 ;
+                              870 ;   SeeAlso:        
+                              871 ;
+                              872 ;<
+                              873 ;///////////////////////////////////////////////////////////////////////////////
+                              874 InstrumentPopContext macro 
+                              875   if (@DEF('USE_INSTRUMENTATION'))
+                              876     extern FInstrumentPopContext
+                              877     jsr FInstrumentPopContext
+                              878   endif 
+                              879   endm
+                              881 ;///////////////////////////////////////////////////////////////////////////////
+                              882 ;
+                              883 ;>  Name:           InstrumentSetValue 
+                              884 ;
+                              885 ;   Type:           Macro
+                              886 ;
+                              887 ;   Description:    calls the instrument functions specified.
+                              888 ;
+                              889 ;   Inputs:         Value
+                              890 ;                        
+                              891 ;   Outputs:        none
+                              892 ;   
+                              893 ;   Notes:          This does not modify any registers  
+                              894 ;
+                              895 ;   SeeAlso:        
+                              896 ;
+                              897 ;<
+                              898 ;///////////////////////////////////////////////////////////////////////////////
+                              899 InstrumentSetValue macro value
+                              900   if (@DEF('USE_INSTRUMENTATION'))
+                              901     extern FInstrumentSetValue
+                              902     jsr PushA
+                              903     move #>value,a
+                              904     jsr FInstrumentSetValue
+                              905     jsr PopA
+                              906   endif 
+                              907   endm
+                              910 ;///////////////////////////////////////////////////////////////////////////////
+                              911 ;
+                              912 ;>  Name:           InstrumentSetEvent 
+                              913 ;
+                              914 ;   Type:           Macro
+                              915 ;
+                              916 ;   Description:    calls the instrument functions specified.
+                              917 ;
+                              918 ;   Inputs:         Value
+                              919 ;                        
+                              920 ;   Outputs:        none
+                              921 ;   
+                              922 ;   Notes:          This does not modify any registers  
+                              923 ;
+                              924 ;   SeeAlso:        
+                              925 ;
+                              926 ;<
+                              927 ;///////////////////////////////////////////////////////////////////////////////
+                              928 InstrumentSetEvent macro event
+                              929   if (@DEF('USE_INSTRUMENTATION'))
+                              930     extern FInstrumentSetEvent
+                              931     jsr PushA
+                              932     move #>event,a
+                              933     jsr FInstrumentSetEvent
+                              934     jsr PopA
+                              935   endif 
+                              936   endm
+                              938 ;///////////////////////////////////////////////////////////////////////////////
+                              939 ;
+                              940 ;>  Name:           InstrumentClearEvent 
+                              941 ;
+                              942 ;   Type:           Macro
+                              943 ;
+                              944 ;   Description:    calls the instrument functions specified.
+                              945 ;
+                              946 ;   Inputs:         event
+                              947 ;                        
+                              948 ;   Outputs:        none
+                              949 ;   
+                              950 ;   Notes:          This does not modify any registers  
+                              951 ;
+                              952 ;   SeeAlso:        
+                              953 ;
+                              954 ;<
+                              955 ;///////////////////////////////////////////////////////////////////////////////
+                              956 InstrumentClearEvent macro event
+                              957   if (@DEF('USE_INSTRUMENTATION'))
+                              958     extern FInstrumentClearEvent
+                              959     jsr PushA
+                              960     move #>event,a
+                              961     jsr FInstrumentClearEvent
+                              962     jsr PopA
+                              963   endif 
+                              964   endm
+                              966 ;///////////////////////////////////////////////////////////////////////////////
+                              967 ;
+                              968 ;>  Name:           InstrumentToggleEvent 
+                              969 ;
+                              970 ;   Type:           Macro
+                              971 ;
+                              972 ;   Description:    calls the instrument functions specified.
+                              973 ;
+                              974 ;   Inputs:         event
+                              975 ;                        
+                              976 ;   Outputs:        none
+                              977 ;   
+                              978 ;   Notes:          This does not modify any registers  
+                              979 ;
+                              980 ;   SeeAlso:        
+                              981 ;
+                              982 ;<
+                              983 ;///////////////////////////////////////////////////////////////////////////////
+                              984 InstrumentToggleEvent macro event
+                              985   if (@DEF('USE_INSTRUMENTATION'))
+                              986     extern FInstrumentToggleEvent
+                              987     jsr PushA
+                              988     move #>event,a
+                              989     jsr FInstrumentToggleEvent
+                              990     jsr PopA
+                              991   endif 
+                              992   endm
+                               13     ;org l,".ldataclockTick":
+                               14 ;Fstc_ClockTick
+                               15 ;    ds  1
+P:0000                         17     org p,".ptextgettime":
+                               19 FGetTime:
+                               20     push    sr
+P:0000 055F79         2    2   20     movec   sr,y:(r7)+
+P:0001 0AF969         4    6   21     bset    #9,sr
+P:0002 0AF968         4   10   22     bset    #8,sr
+P:0003 0A7020 00FA00  6   16   23     bset    #0,x:HW_CCR ;pipeline to make sure we don't get interrupted    
+P:0005 000000         2   18   24     nop                 ;pipeline to make sure we don't get interrupted    
+P:0006 56F000 00F502  3   21   25     move    x:HW_RTCUPR,a
+P:0008 50F000 00F501  3   24   26     move    x:HW_RTCLOWR,a0
+                               27     pop     sr
+P:000A 05FF79         4   28   27     movec   y:-(r7),sr
+                               28 ;    move    a10,l:Fstc_ClockTick
+P:000B 00000C         4   32   29     rts
+                               33 FTimeInit
+                               36         ; Needs to be set if not we never get the divider value loaded
+                               37         ; from shadows register to real register
+                               38         
+                               39         
+P:000C 0A7020 00FA00  6   38   40         bset    #HW_CCR_CKRST_BITPOS,x:HW_CCR
+P:000E 0A7032 00FA00  6   44   42         bset    #HW_CCR_ACKEN_BITPOS,x:HW_CCR
+P:0010 0A7023 00FA00  6   50   44         bset    #HW_CCR_XTLEN_BITPOS,x:HW_CCR
+P:0012 44F400 002000  3   53   46         move #>$2000,x0
+P:0014 06C420         4   57   47         rep x0
+P:0015 000000         2   59   48             nop
+                               50         ; Remove Soft Reset
+P:0016 0A7017 00F500  6   65   51         bclr    #HW_RTC_CSR_SFTRST_BITPOS,x:HW_RTC_CSR
+                               53         ; Wait a little ...
+P:0018 44F400 002000  3   68   54         move #>$2000,x0
+P:001A 06C420         4   72   55         rep x0
+P:001B 000000         2   74   56             nop
+                               58         ; The 3500 has a 64 pre-divider. To count 1 ms intervals
+                               59         ; with a 24Mhz Crystal, the divider must be set to 375
+                               60         ; Total Divider is 375*64 = 24000  
+P:001C 44F400 000177  3   77   61         move    #>375,x0
+P:001E 000000         2   79   63         nop
+P:001F 000000         2   81   64         nop
+P:0020 000000         2   83   65         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               66         
+                               67         ; Before writing to the RTC clock divider we must make sure that the 
+                               68         ; NEW_REGS crystal divide bit is clear
+                               69 _Loop
+P:0021 0B702C 00F500  6   89   70         btst    #12,x:HW_RTC_CSR    
+P:0023 0AF0A8 rrrrrr  6   95   71         jcs     _Loop
+                               72         
+P:0025 447000 00F506  3   98   73         move    x0,x:HW_RTC_DIVIDE
+P:0027 00000C         4  102   76     rts

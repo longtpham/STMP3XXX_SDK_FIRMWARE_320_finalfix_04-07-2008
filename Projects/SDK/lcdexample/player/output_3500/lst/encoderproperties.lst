@@ -1,0 +1,1467 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfcc97b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;encoderproperti:
+                               96 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                               97 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2001
+                               98 ; 3    |//
+                               99 ; 4    |// Filename: EncoderProperties.c
+                              100 ; 5    |// Description: Setup or retrieve encoder setup parameters.
+                              101 ; 6    |//              NOTE: Currently supports only IMA-ADPCM encoding method
+                              102 ; 7    |///////////////////////////////////////////////////////////////////////////////
+                              103 ; 8    |
+                              104 ; 9    |#include "types.h"
+                              105 
+                              107 
+                              108 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              109 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              110 ; 3    |//
+                              111 ; 4    |// Filename: types.h
+                              112 ; 5    |// Description: Standard data types
+                              113 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              114 ; 7    |
+                              115 ; 8    |#ifndef _TYPES_H
+                              116 ; 9    |#define _TYPES_H
+                              117 ; 10   |
+                              118 ; 11   |// TODO:  move this outta here!
+                              119 ; 12   |#if !defined(NOERROR)
+                              120 ; 13   |#define NOERROR 0
+                              121 ; 14   |#define SUCCESS 0
+                              122 ; 15   |#endif 
+                              123 ; 16   |#if !defined(SUCCESS)
+                              124 ; 17   |#define SUCCESS  0
+                              125 ; 18   |#endif
+                              126 ; 19   |#if !defined(ERROR)
+                              127 ; 20   |#define ERROR   -1
+                              128 ; 21   |#endif
+                              129 ; 22   |#if !defined(FALSE)
+                              130 ; 23   |#define FALSE 0
+                              131 ; 24   |#endif
+                              132 ; 25   |#if !defined(TRUE)
+                              133 ; 26   |#define TRUE  1
+                              134 ; 27   |#endif
+                              135 ; 28   |
+                              136 ; 29   |#if !defined(NULL)
+                              137 ; 30   |#define NULL 0
+                              138 ; 31   |#endif
+                              139 ; 32   |
+                              140 ; 33   |#define MAX_INT     0x7FFFFF
+                              141 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              142 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              143 ; 36   |#define MAX_ULONG   (-1) 
+                              144 ; 37   |
+                              145 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              146 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              147 ; 40   |
+                              148 ; 41   |
+                              149 ; 42   |#define BYTE    unsigned char       // btVarName
+                              150 ; 43   |#define CHAR    signed char         // cVarName
+                              151 ; 44   |#define USHORT  unsigned short      // usVarName
+                              152 ; 45   |#define SHORT   unsigned short      // sVarName
+                              153 ; 46   |#define WORD    unsigned int        // wVarName
+                              154 ; 47   |#define INT     signed int          // iVarName
+                              155 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              156 ; 49   |#define LONG    signed long         // lVarName
+                              157 ; 50   |#define BOOL    unsigned int        // bVarName
+                              158 ; 51   |#define FRACT   _fract              // frVarName
+                              159 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              160 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              161 ; 54   |#define FLOAT   float               // fVarName
+                              162 ; 55   |#define DBL     double              // dVarName
+                              163 ; 56   |#define ENUM    enum                // eVarName
+                              164 ; 57   |#define CMX     _complex            // cmxVarName
+                              165 ; 58   |typedef WORD UCS3;                   // 
+                              166 ; 59   |
+                              167 ; 60   |#define UINT16  unsigned short
+                              168 ; 61   |#define UINT8   unsigned char   
+                              169 ; 62   |#define UINT32  unsigned long
+                              170 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              171 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port exisiting code to only use 48 bit
+                              172 ; 65   |#define WCHAR   UINT16
+                              173 ; 66   |
+                              174 ; 67   |//UINT128 is 16 bytes or 6 words
+                              175 ; 68   |typedef struct UINT128_3500 {   
+                              176 ; 69   |    int val[6];     
+                              177 ; 70   |} UINT128_3500;
+                              178 ; 71   |
+                              179 ; 72   |#define UINT128   UINT128_3500
+                              180 ; 73   |
+                              181 ; 74   |// Little endian word packed byte strings:   
+                              182 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              183 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              184 ; 77   |// Little endian word packed byte strings:   
+                              185 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              186 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              187 ; 80   |
+                              188 ; 81   |// Declare Memory Spaces To Use When Coding
+                              189 ; 82   |// A. Sector Buffers
+                              190 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              191 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              192 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              193 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              194 
+                              196 
+                              197 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              198 ; 88   |// B. Media DDI Memory
+                              199 ; 89   |#define MEDIA_DDI_MEM _Y
+                              200 ; 90   |
+                              201 ; 91   |
+                              202 ; 92   |
+                              203 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              204 ; 94   |// Examples of circular pointers:
+                              205 ; 95   |//    INT CIRC cpiVarName
+                              206 ; 96   |//    DWORD CIRC cpdwVarName
+                              207 ; 97   |
+                              208 ; 98   |#define RETCODE INT                 // rcVarName
+                              209 ; 99   |
+                              210 ; 100  |// generic bitfield structure
+                              211 ; 101  |struct Bitfield {
+                              212 ; 102  |    unsigned int B0  :1;
+                              213 ; 103  |    unsigned int B1  :1;
+                              214 ; 104  |    unsigned int B2  :1;
+                              215 ; 105  |    unsigned int B3  :1;
+                              216 ; 106  |    unsigned int B4  :1;
+                              217 ; 107  |    unsigned int B5  :1;
+                              218 ; 108  |    unsigned int B6  :1;
+                              219 ; 109  |    unsigned int B7  :1;
+                              220 ; 110  |    unsigned int B8  :1;
+                              221 ; 111  |    unsigned int B9  :1;
+                              222 ; 112  |    unsigned int B10 :1;
+                              223 ; 113  |    unsigned int B11 :1;
+                              224 ; 114  |    unsigned int B12 :1;
+                              225 ; 115  |    unsigned int B13 :1;
+                              226 ; 116  |    unsigned int B14 :1;
+                              227 ; 117  |    unsigned int B15 :1;
+                              228 ; 118  |    unsigned int B16 :1;
+                              229 ; 119  |    unsigned int B17 :1;
+                              230 ; 120  |    unsigned int B18 :1;
+                              231 ; 121  |    unsigned int B19 :1;
+                              232 ; 122  |    unsigned int B20 :1;
+                              233 ; 123  |    unsigned int B21 :1;
+                              234 ; 124  |    unsigned int B22 :1;
+                              235 ; 125  |    unsigned int B23 :1;
+                              236 ; 126  |};
+                              237 ; 127  |
+                              238 ; 128  |union BitInt {
+                              239 ; 129  |        struct Bitfield B;
+                              240 ; 130  |        int        I;
+                              241 ; 131  |};
+                              242 ; 132  |
+                              243 ; 133  |#define MAX_MSG_LENGTH 10
+                              244 ; 134  |struct CMessage
+                              245 ; 135  |{
+                              246 ; 136  |        unsigned int m_uLength;
+                              247 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              248 ; 138  |};
+                              249 ; 139  |
+                              250 ; 140  |typedef struct {
+                              251 ; 141  |    WORD m_wLength;
+                              252 ; 142  |    WORD m_wMessage;
+                              253 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              254 ; 144  |} Message;
+                              255 ; 145  |
+                              256 ; 146  |struct MessageQueueDescriptor
+                              257 ; 147  |{
+                              258 ; 148  |        int *m_pBase;
+                              259 ; 149  |        int m_iModulo;
+                              260 ; 150  |        int m_iSize;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              261 ; 151  |        int *m_pHead;
+                              262 ; 152  |        int *m_pTail;
+                              263 ; 153  |};
+                              264 ; 154  |
+                              265 ; 155  |struct ModuleEntry
+                              266 ; 156  |{
+                              267 ; 157  |    int m_iSignaledEventMask;
+                              268 ; 158  |    int m_iWaitEventMask;
+                              269 ; 159  |    int m_iResourceOfCode;
+                              270 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              271 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescriptor *);
+                              272 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              273 ; 163  |    int m_uTimeOutHigh;
+                              274 ; 164  |    int m_uTimeOutLow;
+                              275 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              276 ; 166  |};
+                              277 ; 167  |
+                              278 ; 168  |union WaitMask{
+                              279 ; 169  |    struct B{
+                              280 ; 170  |        unsigned int m_bNone     :1;
+                              281 ; 171  |        unsigned int m_bMessage  :1;
+                              282 ; 172  |        unsigned int m_bTimer    :1;
+                              283 ; 173  |        unsigned int m_bButton   :1;
+                              284 ; 174  |    } B;
+                              285 ; 175  |    int I;
+                              286 ; 176  |} ;
+                              287 ; 177  |
+                              288 ; 178  |
+                              289 ; 179  |struct Button {
+                              290 ; 180  |        WORD wButtonEvent;
+                              291 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              292 ; 182  |};
+                              293 ; 183  |
+                              294 ; 184  |struct Message {
+                              295 ; 185  |        WORD wMsgLength;
+                              296 ; 186  |        WORD wMsgCommand;
+                              297 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              298 ; 188  |};
+                              299 ; 189  |
+                              300 ; 190  |union EventTypes {
+                              301 ; 191  |        struct CMessage msg;
+                              302 ; 192  |        struct Button Button ;
+                              303 ; 193  |        struct Message Message;
+                              304 ; 194  |};
+                              305 ; 195  |
+                              306 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              307 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              308 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              309 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              310 ; 200  |
+                              311 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              312 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              313 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              314 ; 204  |
+                              315 ; 205  |#if DEBUG
+                              316 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              317 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              318 ; 208  |#else 
+                              319 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rather than halt or reset. 
+                              320 ; 210  |#define DebugBuildAssert(x)    
+                              321 ; 211  |#endif
+                              322 ; 212  |
+                              323 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              324 ; 214  |//  #pragma asm
+                              325 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              326 ; 216  |//  #pragma endasm
+                              327 ; 217  |
+                              328 ; 218  |
+                              329 ; 219  |#ifdef COLOR_262K
+                              330 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b)) >> 2)    //262k
+                              331 ; 221  |#elif defined(COLOR_65K)
+                              332 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)) >> 3)  //65k
+                              333 ; 223  |#else
+                              334 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >> 4)
+                              335 ; 225  |#endif
+                              336 ; 226  |    
+                              337 ; 227  |#endif // #ifndef _TYPES_H
+                              338 
+                              340 
+                              341 ; 10   |#include "encadpcmequ.h"
+                              342 
+                              344 
+                              345 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              346 ; 2    |// Copyright(C) SigmaTel, Inc. 2000/2001
+                              347 ; 3    |// Encoder Module       
+                              348 ; 4    |/////////////////////////////////////////////////////////////////////////////////
+                              349 ; 5    |
+                              350 ; 6    |#if (!defined(encoderequ))
+                              351 ; 7    |#define encoderequ 1
+                              352 ; 8    |
+                              353 ; 9    |#define ADPCM_BLOCK_SIZE 512
+                              354 ; 10   |#define ADPCM_SOURCE_BUF_BLOCK_SIZE 2*ADPCM_BLOCK_SIZE
+                              355 ; 11   |#define ADPCM_SOURCE_BUF_SIZE 2048
+                              356 ; 12   |#define ADPCM_SOURCE_BUF_MODULO ADPCM_SOURCE_BUF_SIZE-1
+                              357 ; 13   |
+                              358 ; 14   |#define ADPCM_SINK_BUF_BLOCK_SIZE 512
+                              359 ; 15   |#define ADPCM_SINK_BUF_SIZE 512
+                              360 ; 16   |#define ADPCM_SINK_BUF_MODULO ADPCM_SINK_BUF_SIZE-1
+                              361 ; 17   |
+                              362 ; 18   |#define ENC_ISR_STATE_STOPPED 0
+                              363 ; 19   |#define ENC_ISR_STATE_RECORDING 1
+                              364 ; 20   |#define ENC_ISR_STATE_PAUSED 2
+                              365 ; 21   |
+                              366 ; 22   |
+                              367 ; 23   |#if !defined(ENC_MIN_CLUSTERS)
+                              368 ; 24   |#define ENC_MIN_CLUSTERS 8
+                              369 ; 25   |#endif
+                              370 ; 26   |
+                              371 ; 27   |// Made this for the value 2 that was already in use. 
+                              372 ; 28   |// NOTE: Total rec time remaining needs to exclude these reserved clusters in its calculation.
+                              373 ; 29   |// As of Apr 11, 2002, ver tot time left does not seem to factor in these reserved clusters.
+                              374 ; 30   |#if !defined(ENC_MIN_FREE_CLUSTER_LIM)
+                              375 ; 31   |#define ENC_MIN_FREE_CLUSTER_LIM 2
+                              376 ; 32   |#endif
+                              377 ; 33   |
+                              378 ; 34   |
+                              379 ; 35   |// With bytes/cluster of 16,384. /4000 bytes/sec adpcm data =  4.096 sec/cluster
+                              380 ; 36   |// (at 32kbps)
+                              381 ; 37   |//  A 3 cluster threshhold warning above record free cluster limit gives ~12 sec warning.    
+                              382 ; 38   |//  Note: Alternate approach checks remaining record bytes to get seconds but is probably not worth the system performance  
+                              383 ; 39   |//        hit as 'warning needed' is checked in the high frequency periodic timer ISR. Just check the free clusters.
+                              384 ; 40   |
+                              385 ; 41   |#if !defined(ENC_FREE_CLUSTERS_BEFORE_WARNING)
+                              386 ; 42   |#define ENC_FREE_CLUSTERS_BEFORE_WARNING 3
+                              387 ; 43   |#endif
+                              388 ; 44   |
+                              389 ; 45   |#if !defined(ENC_FREE_CLUSTERS_WARN_THRESHOLD)
+                              390 ; 46   |#define ENC_FREE_CLUSTERS_WARN_THRESHOLD ENC_MIN_FREE_CLUSTER_LIM+ENC_FREE_CLUSTERS_BEFORE_WARNING
+                              391 ; 47   |#endif
+                              392 ; 48   |
+                              393 ; 49   |#if !defined(NUM_ADPCM_BUFS)
+                              394 ; 50   |#define NUM_ADPCM_BUFS 20 
+                              395 ; 51   |#define NUM_ADPCM_BUFS_M1 (NUM_ADPCM_BUFS-1)
+                              396 ; 52   |#endif
+                              397 ; 53   |
+                              398 ; 54   |#define ADPCM_NSAMPLESPERSEC_8000 8000
+                              399 ; 55   |#define ADPCM_NSAMPLESPERSEC_11025 11025
+                              400 ; 56   |#define ADPCM_NSAMPLESPERSEC_16000 16000
+                              401 ; 57   |#define ADPCM_NSAMPLESPERSEC_22050 22050
+                              402 ; 58   |#define ADPCM_NSAMPLESPERSEC_32000 32000
+                              403 ; 59   |#define ADPCM_NSAMPLESPERSEC_44100 44100
+                              404 ; 60   |#define ADPCM_NSAMPLESPERSEC_48000 48000
+                              405 ; 61   |
+                              406 ; 62   |
+                              407 ; 63   |// Calcuate the ADCSRR (A/D sample rate) setting like this:
+                              408 ; 64   |//   ADCSRR = $010000 * ((Fanalog/Fsamples) - 1)
+                              409 ; 65   |//            ($010000 is 2^16)
+                              410 ; 66   |// where Fanalog is the analog sampling rate (e.g. 1.024MHz or higher)
+                              411 ; 67   |// and Fsamples is the digital sampling rate WITHOUT DECIMATION
+                              412 ; 68   |// (Note: To properly reduce sigma-delta noise, the digital sampling rate
+                              413 ; 69   |// should be 8X the desired final sampling rate; the data from the A/D
+                              414 ; 70   |// should be fed through an 8X filter-decimator.  In the current implementation
+                              415 ; 71   |// of ADPCM, for voice record, the filter-decimator is absent, so Fsamples
+                              416 ; 72   |// is at the final rate, and there is significant noise in the signal.
+                              417 ; 73   |// **THIS WILL CHANGE** when we add a software decimation filter.)
+                              418 ; 74   |#if defined(DEVICE_3410)
+                              419 ; 75   |// For the 3410, Xtal=24.576MHz and CCR_ADIV=24 so Fanalog=1.024MHz
+                              420 ; 76   |//  CCR_ADIV is set in AdcDriverEnablePort
+                              421 ; 77   |// 8X oversampling
+                              422 ; 78   |#define ADPCM_ADCSRR_8000 0x0F0000         
+                              423 ; 79   |// 8X
+                              424 ; 80   |#define ADPCM_ADCSRR_11025 0x0A9C27         
+                              425 ; 81   |// 8X
+                              426 ; 82   |#define ADPCM_ADCSRR_16000 0x070000         
+                              427 ; 83   |// 8X
+                              428 ; 84   |#define ADPCM_ADCSRR_22050 0x04CE14         
+                              429 ; 85   |// 8X
+                              430 ; 86   |#define ADPCM_ADCSRR_32000 0x030000         
+                              431 ; 87   |// 8X
+                              432 ; 88   |#define ADPCM_ADCSRR_44100 0x01E70A         
+                              433 ; 89   |// 8X
+                              434 ; 90   |#define ADPCM_ADCSRR_48000 0x01AAAB         
+                              435 ; 91   |#endif
+                              436 ; 92   |#if defined(DEVICE_3500)
+                              437 ; 93   |// For the 3500, Xtal=24.0MHz and CCR_ADIV=4 so Fanalog=6.0MHz.
+                              438 ; 94   |//  CCR_ADIV is set in AdcDriverEnablePort
+                              439 ; 95   |
+                              440 ; 96   |// OSR Values corresponding to FAnalog = 1MHz
+                              441 ; 97   |// 8X oversampling
+                              442 ; 98   |#define ADPCM_ADCSRR_8000 0x0EA000         
+                              443 ; 99   |// 8X
+                              444 ; 100  |#define ADPCM_ADCSRR_11025 0x0A567E         
+                              445 ; 101  |// 8X
+                              446 ; 102  |#define ADPCM_ADCSRR_16000 0x06D000         
+                              447 ; 103  |
+                              448 ; 104  |// OSR Values corresponding to FAnalog = 6MHz
+                              449 ; 105  |// 8X
+                              450 ; 106  |#define ADPCM_ADCSRR_22050 0x21037c                     
+                              451 ; 107  |// 8X
+                              452 ; 108  |#define ADPCM_ADCSRR_32000 0x167000                     
+                              453 ; 109  |// 8X
+                              454 ; 110  |#define ADPCM_ADCSRR_44100 0x1001BD         
+                              455 ; 111  |// 8X
+                              456 ; 112  |#define ADPCM_ADCSRR_48000 0x0EA000         
+                              457 ; 113  |
+                              458 ; 114  |#endif
+                              459 ; 115  |
+                              460 ; 116  |// Scaling factors for ADC data.  These are mostly empirical values.
+                              461 ; 117  |// Full-scale from the ADC is supposed to be 160*(OSR)^2
+                              462 ; 118  |// NOTE: Low pass filter after Sigma Delta has a gain of 18dB. If LPF is enabled 
+                              463 ; 119  |//              following ADC gains need to be adjusted accordingly.
+                              464 ; 120  |
+                              465 ; 121  |// Scalefactors corresponding to FAnalog = 1MHz and with LPF 
+                              466 ; 122  |#define ADPCM_ADCGAIN_8000 13   
+                              467 ; 123  |#define ADPCM_ADCGAIN_11025 26
+                              468 ; 124  |#define ADPCM_ADCGAIN_16000 53
+                              469 ; 125  |
+                              470 ; 126  |// Scalefactors corresponding to FAnalog = 6MHz and with LPF
+                              471 ; 127  |#define ADPCM_ADCGAIN_22050 3           
+                              472 ; 128  |#define ADPCM_ADCGAIN_32000 7           
+                              473 ; 129  |#define ADPCM_ADCGAIN_44100 12  
+                              474 ; 130  |#define ADPCM_ADCGAIN_48000 16  
+                              475 ; 131  |
+                              476 ; 132  |// Calculate the InvSampleRateScale like this:
+                              477 ; 133  |//   InvSampleRateScale = 4096/nsamplespersec * 2^23
+                              478 ; 134  |#define ADPCM_INVSAMPLERATESCALE_8000 0x418937
+                              479 ; 135  |#define ADPCM_INVSAMPLERATESCALE_11025 0x2F8DF2
+                              480 ; 136  |#define ADPCM_INVSAMPLERATESCALE_16000 0x20C49B
+                              481 ; 137  |#define ADPCM_INVSAMPLERATESCALE_22050 0x17C6F9
+                              482 ; 138  |#define ADPCM_INVSAMPLERATESCALE_32000 0x10624D
+                              483 ; 139  |#define ADPCM_INVSAMPLERATESCALE_44100 0x0BE37C
+                              484 ; 140  |#define ADPCM_INVSAMPLERATESCALE_48000 0x0AEC34
+                              485 ; 141  |
+                              486 ; 142  |
+                              487 ; 143  |#define ADPCM_NAVGBYTESPERSEC_8000 4000
+                              488 ; 144  |#define ADPCM_NAVGBYTESPERSEC_11025 5513
+                              489 ; 145  |#define ADPCM_NAVGBYTESPERSEC_16000 8000
+                              490 ; 146  |#define ADPCM_NAVGBYTESPERSEC_22050 11025
+                              491 ; 147  |#define ADPCM_NAVGBYTESPERSEC_32000 16000
+                              492 ; 148  |#define ADPCM_NAVGBYTESPERSEC_44100 22050
+                              493 ; 149  |#define ADPCM_NAVGBYTESPERSEC_48000 24000
+                              494 ; 150  |
+                              495 ; 151  |
+                              496 ; 152  |// Calculate the ClusterTimeScale like this:
+                              497 ; 153  |//   ClusterTimeScale = (wsamplesperblock/nblockalign/nsamplespersec)*(2^32)
+                              498 ; 154  |// where
+                              499 ; 155  |//   wsamplesperblock = ADPCM_BLOCK_SIZE*2-8+1
+                              500 ; 156  |//   nblockalign = number of bytes per block (typically=512)
+                              501 ; 157  |#define ADPCM_CLUSTERTIMESCALE_8000 0x1045A2
+                              502 ; 158  |#define ADPCM_CLUSTERTIMESCALE_11025 0x0BCEAE
+                              503 ; 159  |#define ADPCM_CLUSTERTIMESCALE_16000 0x0822D1
+                              504 ; 160  |#define ADPCM_CLUSTERTIMESCALE_22050 0x05E757
+                              505 ; 161  |#define ADPCM_CLUSTERTIMESCALE_32000 0x041168
+                              506 ; 162  |#define ADPCM_CLUSTERTIMESCALE_44100 0x02F3AC
+                              507 ; 163  |#define ADPCM_CLUSTERTIMESCALE_48000 0x02B646
+                              508 ; 164  |
+                              509 ; 165  |
+                              510 ; 166  |
+                              511 ; 167  |#define DEFAULT_ADPCM_ADCSRR ADPCM_ADCSRR_8000
+                              512 ; 168  |#define DEFAULT_ADPCM_ADCGAIN ADPCM_ADCGAIN_8000
+                              513 ; 169  |#define DEFAULT_ADPCM_NSAMPLESPERSEC ADPCM_NSAMPLESPERSEC_8000
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              514 ; 170  |#define DEFAULT_ADPCM_INVSAMPLERATESCALE ADPCM_INVSAMPLERATESCALE_8000
+                              515 ; 171  |#define DEFAULT_ADPCM_NAVGBYTESPERSEC ADPCM_NAVGBYTESPERSEC_8000
+                              516 ; 172  |#define DEFAULT_ADPCM_CLUSTERTIMESCALE ADPCM_CLUSTERTIMESCALE_8000
+                              517 ; 173  |
+                              518 ; 174  |#endif // IF (!@def(encoderequ))
+                              519 ; 175  |
+                              520 
+                              522 
+                              523 ; 11   |#include "encoderProperties.h"
+                              524 
+                              526 
+                              527 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              528 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2006
+                              529 ; 3    |//
+                              530 ; 4    |// Filename: encoderproperties.h
+                              531 ; 5    |// Description: Definitions used in manipulating Encoder Properties
+                              532 ; 6    |/////////////////////////////////////////////////////////////////////////////////
+                              533 ; 7    |
+                              534 ; 8    |extern _Y WORD g_wEncSamplingRate;
+                              535 ; 9    |extern _Y WORD g_wEncBitRate;
+                              536 ; 10   |extern _Y WORD g_wEncADCGain;
+                              537 ; 11   |extern _Y WORD g_wEncADCSRR;
+                              538 ; 12   |extern _Y WORD g_wEncInvSampleRateScale;
+                              539 ; 13   |extern _Y WORD g_wEncNAvgBytesPerSec;
+                              540 ; 14   |extern _Y WORD g_wEncClusterTimeScale;
+                              541 ; 15   |extern _X WORD g_wEncoderSR;
+                              542 ; 16   |extern _Y WORD g_wEncCurrentDeviceNum;
+                              543 ; 17   |extern _Y WORD g_wEncFormatTag;
+                              544 ; 18   |extern _Y WORD g_wEncNumberOfChannels;
+                              545 ; 19   |extern _Y WORD g_wEncPCMBits;
+                              546 ; 20   |extern _Y _packed BYTE g_EncFileNameString[];
+                              547 ; 21   |extern _Y WORD g_wSamplingRateIndex;
+                              548 ; 22   |extern _Y WORD g_wEncSamplingRateIdx;
+                              549 ; 23   |extern _Y _fract g_wEncADCLChOffset;
+                              550 ; 24   |extern _Y _fract g_wEncADCRChOffset;
+                              551 ; 25   |extern _X _fract DCOffsetADC[2][7];
+                              552 ; 26   |
+                              553 ; 27   |                             // struct passed as argument to EncSetProperties
+                              554 ; 28   |typedef struct {
+                              555 ; 29   |  int    device;
+                              556 ; 30   |  _packed BYTE *pFilename;
+                              557 ; 31   |  int    samplingRateInHz;
+                              558 ; 32   |  int    bitRateInKbps;
+                              559 ; 33   |  int    FormatTag; // Algorithm. 1 = PCMWAVE, 2 = MS ADPCM, 0x11 = IMA ADPCM
+                              560 ; 34   |  int    EncNumberOfChannels;
+                              561 ; 35   |  int    EncPCMBits;    // Number of bits for PCMWAVE (8,16,24), else ignored
+                              562 ; 36   |  int    iSource;     // Note: Not implemeted, yet.
+                              563 ; 37   |} EncProperties;
+                              564 ; 38   |
+                              565 ; 39   |typedef struct {
+                              566 ; 40   |  WORD   wNSamplesPerSec;
+                              567 ; 41   |  WORD   wADCGain;
+                              568 ; 42   |  WORD   wADCSRR;
+                              569 ; 43   |  WORD   wInvSampleRateScale;
+                              570 ; 44   |  WORD   wNAvgBytesPerSec;
+                              571 ; 45   |  WORD   wClusterTimeScale;
+                              572 ; 46   |} EncoderSampleRateParms;
+                              573 
+                              586 
+                              587 ; 47   |
+                              588 ; 48   |RETCODE _reentrant EncSetProperties(EncProperties *pProps);
+                              589 ; 49   |
+                              590 ; 50   |// Access functions (macros)
+                              591 ; 51   |
+                              592 ; 52   |#define EncGetSampleRateInHz()  (g_wEncNSamplesPerSec)
+                              593 ; 53   |
+                              594 ; 54   |
+                              595 ; 55   |// These properties are not yet implemented
+                              596 ; 56   |
+                              597 ; 57   |#define EncGetDevice()          (0)
+                              598 ; 58   |#define EncGetFilename()        ("")
+                              599 ; 59   |#define EncGetEncodingMethod()  (0)
+                              600 ; 60   |
+                              601 ; 61   |
+                              602 ; 62   |#define ERROR_ENCODER_INVALID_SAMPLE_RATE ((RETCODE)(-1))
+                              603 ; 63   |#define ERROR_ENCODER_IS_ACTIVE           ((RETCODE)(-2))
+                              604 ; 64   |
+                              605 ; 65   |
+                              606 ; 66   |
+                              607 ; 67   |
+                              608 ; 68   |
+                              609 ; 69   |
+                              610 
+                              612 
+                              613 ; 12   |#include "sysequ.h"
+                              614 
+                              616 
+                              617 ; 1    |/////////////////////////////////////////////////////////////////////////////////
+                              618 ; 2    |// Copyright(C) SigmaTel, Inc. 2000
+                              619 ; 3    |// System defs
+                              620 ; 4    |/////////////////////////////////////////////////////////////////////////////////
+                              621 ; 5    |
+                              622 ; 6    |#if (!defined(SYSEQU_INC))
+                              623 ; 7    |#define SYSEQU_INC 1
+                              624 ; 8    |
+                              625 ; 9    |#define SOFTTIMER_CONTINUOUS_EVENT 0
+                              626 ; 10   |
+                              627 ; 11   |
+                              628 ; 12   |#define HOLD_BUTTON_REPORTED_BITMASK 4
+                              629 ; 13   |
+                              630 ; 14   |
+                              631 ; 15   |// Decoder types
+                              632 ; 16   |#define DECODER_TYPE_MP3 0
+                              633 ; 17   |#define DECODER_TYPE_WMA 1
+                              634 ; 18   |#define DECODER_TYPE_AAC 2
+                              635 ; 19   |#define DECODER_TYPE_ADPCM_IMA 3
+                              636 ; 20   |#define DECODER_TYPE_ADPCM_MS 4
+                              637 ; 21   |#define DECODER_TYPE_PCM 5
+                              638 ; 22   |#define DECODER_TYPE_STFM 6
+                              639 ; 23   |
+                              640 ; 24   |// Encoder types
+                              641 ; 25   |#define ENCODER_TYPE_ADPCM_IMA 0
+                              642 ; 26   |#define ENCODER_TYPE_PCM 1
+                              643 ; 27   |#define ENCODER_TYPE_MP3 2
+                              644 ; 28   |
+                              645 ; 29   |// EncoderSR/EncoderCSR bit equates.  Also uses Stop & Play below.
+                              646 ; 30   |#define EncNotEnoughSpace 0
+                              647 ; 31   |#define EncRanOutOfSpace 1
+                              648 ; 32   |#define EncRecordError 2
+                              649 ; 33   |#define EncToldToStop 3
+                              650 ; 34   |#define EncAlreadyRecording 4
+                              651 ; 35   |// ENCODER_STOPPED       equ     6   ; As RecorderStateMachine.h
+                              652 ; 36   |#define EncWarnLowSpace 7
+                              653 ; 37   |#define EncWarningSent 8
+                              654 ; 38   |// ENCODER_RECORDING     equ     12
+                              655 ; 39   |
+                              656 ; 40   |// DecoderSR/DecoderCSR bit equates
+                              657 ; 41   |//  This bit is set when the decoder sends a message to the parser and is 
+                              658 ; 42   |#define DecoderIgnoreMessages 0   
+                              659 ; 43   |//  waiting for a response.
+                              660 ; 44   |#define VBRFlag 1
+                              661 ; 45   |#define RepeatSong 2
+                              662 ; 46   |#define RepeatAll 3
+                              663 ; 47   |#define Random 4
+                              664 ; 48   |#define Pause 5
+                              665 ; 49   |#define Stop 6
+                              666 ; 50   |#define Rwnd 7
+                              667 ; 51   |#define Ffwd 8
+                              668 ; 52   |#define TimeMode 9
+                              669 ; 53   |// set when Fstatus_o = 1 for mp3 
+                              670 ; 54   |#define DecSync 10    
+                              671 ; 55   |#define Play 12
+                              672 ; 56   |// starting with sdk2.105: changed to set when decoder done instead of when file reads done 
+                              673 ; 57   |#define EndOfSong 13    
+                              674 ; 58   |#define EndOfList 14
+                              675 ; 59   |#define SongInfo 15
+                              676 ; 60   |// set when a song file is currently opened by the decoder
+                              677 ; 61   |#define FileIsOpen 16    
+                              678 ; 62   |// used by parser
+                              679 ; 63   |#define SkipBlockHeader 17    
+                              680 ; 64   |#define ABMode_A 18
+                              681 ; 65   |#define ABMode_B 19
+                              682 ; 66   |#define ABQuiet 20
+                              683 ; 67   |// set if bad file encountered
+                              684 ; 68   |#define BadFile 21    
+                              685 ; 69   |// mp3 decoder looking for sync
+                              686 ; 70   |#define SyncWait 22    
+                              687 ; 71   |// error reading file, duh
+                              688 ; 72   |#define FileReadError 23    
+                              689 ; 73   |
+                              690 ; 74   |// DecoderCSR2 bit equates
+                              691 ; 75   |//Set when EOF reached, prevent freads beyond EOF 
+                              692 ; 76   |#define EndOfFileReached 0  
+                              693 ; 77   |// Set when need to allow LCD to update time
+                              694 ; 78   |#define TimeNeedsUpdate 1  
+                              695 ; 79   |
+                              696 ; 80   |
+                              697 ; 81   |// ParserVoiceCSR bits (specific to voice files)
+                              698 ; 82   |// repeat playing current file
+                              699 ; 83   |#define RepeatOneFile 0     
+                              700 ; 84   |// continuously loop through files
+                              701 ; 85   |#define RepeatAllFiles 1     
+                              702 ; 86   |// start at current file, play all files, then stop
+                              703 ; 87   |#define LoopOnce 2     
+                              704 ; 88   |
+                              705 ; 89   |// DecAdpcmFlags bits (used by ADPCM decoders)
+                              706 ; 90   |// Set to '1' when header unpacked, cleared during StopCurrentSong
+                              707 ; 91   |#define WaveHeaderFound 0       
+                              708 ; 92   |
+                              709 ; 93   |#if (defined(TRACEBUF_EN))
+                              710 ; 94   |// Trace buffer words.  Not ENabled by default.
+                              711 ; 95   |#define TRACE_BUFF_SIZE 256
+                              712 ; 96   |#define TRACE_BUFF_MODULO TRACE_BUFF_SIZE-1 
+                              713 ; 97   |#endif
+                              714 ; 98   |
+                              715 ; 99   |// Scratch area stuff
+                              716 ; 100  |#if defined(STMP_BUILD_PLAYER)
+                              717 ; 101  |#define SCRATCH_USER_Y_SIZE 512
+                              718 ; 102  |#define SCRATCH_USER_X_SIZE 256
+                              719 ; 103  |#else 
+                              720 ; 104  |#if defined(FAT32TEST)
+                              721 ; 105  |#define SCRATCH_USER_Y_SIZE 683
+                              722 ; 106  |#define SCRATCH_USER_X_SIZE 128
+                              723 ; 107  |#else 
+                              724 ; 108  |#define SCRATCH_USER_Y_SIZE 128
+                              725 ; 109  |#define SCRATCH_USER_X_SIZE 128
+                              726 ; 110  |#endif
+                              727 ; 111  |#endif
+                              728 ; 112  |
+                              729 ; 113  |#define SCRATCH_USER_X_SIZE_BYTES SCRATCH_USER_X_SIZE*3
+                              730 ; 114  |#define SCRATCH_USER_X_MODULO SCRATCH_USER_X_SIZE-1
+                              731 ; 115  |#define SCRATCH_USER_Y_SIZE_BYTES SCRATCH_USER_Y_SIZE*3
+                              732 ; 116  |#define SCRATCH_USER_Y_MODULO SCRATCH_USER_Y_SIZE-1
+                              733 ; 117  |
+                              734 ; 118  |// Boot ROM execute location
+                              735 ; 119  |#define BootExecuteCommand 0x012B
+                              736 ; 120  |
+                              737 ; 121  |#define BOOT_USB 0x000002
+                              738 ; 122  |#define BOOT_SMARTMEDIA 0x000004
+                              739 ; 123  |#define BOOT_COMPACTFLASH 0x000005
+                              740 ; 124  |#define BOOT_I2C_SLAVE 0x000009
+                              741 ; 125  |#define BOOT_I2C_MASTER 0x00000A
+                              742 ; 126  |#define BOOT_SPI_SLAVE 0x00000B
+                              743 ; 127  |#define BOOT_SPI_MASTER 0x00000C
+                              744 ; 128  |#define BOOT_HOSTPORT 0x00000D
+                              745 ; 129  |#define BOOT_BURNIN 0x00000F
+                              746 ; 130  |
+                              747 ; 131  |// Numerical constants
+                              748 ; 132  |//PI              equ     3.141592654
+                              749 ; 133  |
+                              750 ; 134  |// Buffer Descriptor offsets
+                              751 ; 135  |#define BD_BufferBaseAddress 0
+                              752 ; 136  |#define BD_BufferModulo 1
+                              753 ; 137  |#define BD_BufferSize 2
+                              754 ; 138  |#define BD_HdPtr 3
+                              755 ; 139  |#define BD_TailPtr 4
+                              756 ; 140  |
+                              757 ; 141  |// Size of a buffer descriptor
+                              758 ; 142  |#define BUFF_DESC_SIZE 5
+                              759 ; 143  |
+                              760 ; 144  |// Mp3 Song Table Descriptor Offsets
+                              761 ; 145  |// number of elements for each song
+                              762 ; 146  |#define MST_ELEMENT_COUNT 7        
+                              763 ; 147  |#define MST_CARD_NUMBER 0
+                              764 ; 148  |#define MST_ADDR_LOW 1
+                              765 ; 149  |#define MST_ADDR_HIGH 2
+                              766 ; 150  |#define MST_BYTES_LOW 3
+                              767 ; 151  |#define MST_BYTES_HIGH 4
+                              768 ; 152  |#define MST_SAMPLE_RATE 5
+                              769 ; 153  |#define MST_SONG_TYPE 6
+                              770 ; 154  |
+                              771 ; 155  |// Data Format Descriptor offsets
+                              772 ; 156  |#define DF_NumChannels 0
+                              773 ; 157  |#define DF_SampleRate 1
+                              774 ; 158  |#define DF_BitsPerSample 2
+                              775 ; 159  |
+                              776 ; 160  |
+                              777 ; 161  |// Timer Descriptor Offset
+                              778 ; 162  |#define TD_TimerNumber 0
+                              779 ; 163  |#define TD_ControlValue 1
+                              780 ; 164  |#define TD_CountValue 2
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              781 ; 165  |#define TD_ControlRegister 3
+                              782 ; 166  |#define TD_CountRegister 4
+                              783 ; 167  |
+                              784 ; 168  |
+                              785 ; 169  |// File IO defines
+                              786 ; 170  |#define FileInPort 0x8000
+                              787 ; 171  |#define FileOutPort 0x8001
+                              788 ; 172  |#define OnceInPort 0x8000
+                              789 ; 173  |#define OnceOutPort 0x8001
+                              790 ; 174  |#define SmFakeInPort 0x8002
+                              791 ; 175  |#define SmFakeOutPort 0x8003
+                              792 ; 176  |#define UsbFakeInPort 0x8004
+                              793 ; 177  |#define UsbFakeOutPort 0x8005
+                              794 ; 178  |
+                              795 ; 179  |// Target memory stuff
+                              796 ; 180  |#define TARGET_MEM_MASK 0xF00000
+                              797 ; 181  |#define TARGET_MEM_X 0x800000
+                              798 ; 182  |#define TARGET_MEM_Y 0x400000
+                              799 ; 183  |#define TARGET_MEM_L 0x200000
+                              800 ; 184  |#define TARGET_MEM_P 0x100000
+                              801 ; 185  |
+                              802 ; 186  |#define TARGET_MEM_X_BITPOS 23
+                              803 ; 187  |#define TARGET_MEM_Y_BITPOS 22
+                              804 ; 188  |#define TARGET_MEM_L_BITPOS 21
+                              805 ; 189  |#define TARGET_MEM_P_BITPOS 20
+                              806 ; 190  |
+                              807 ; 191  |
+                              808 ; 192  |// File System Stuff
+                              809 ; 193  |// assume 3 deep max with 8.3 format (38 bytes inc. /'s)
+                              810 ; 194  |#define MaxDirCount 13         
+                              811 ; 195  |
+                              812 ; 196  |// Error Codes
+                              813 ; 197  |//      Value           Error
+                              814 ; 198  |//      --------------------------------------------
+                              815 ; 199  |//      $000000         Reserved - no error
+                              816 ; 200  |//      $000001         SmartMedia Bad Programming Error
+                              817 ; 201  |//      $000002         SmartMedia Read Timeout
+                              818 ; 202  |//      $000003         USB PLL Lock Timeout
+                              819 ; 203  |//       $000010         GetNumSongs returned an error
+                              820 ; 204  |//       $000011         fopen failed to open file number (in x:TrackNum)
+                              821 ; 205  |//       $000012         fread failed when attempting to read page
+                              822 ; 206  |//       $000013         fread failed to read correct number of bytes
+                              823 ; 207  |#define NO_ERROR 0x000000
+                              824 ; 208  |#define ERROR_PLL_LOCK_TIMEOUT 0x000001
+                              825 ; 209  |
+                              826 ; 210  |#define ERROR_SM_BADP 0x000100
+                              827 ; 211  |#define ERROR_SM_TIMEOUT 0x000101
+                              828 ; 212  |#define ERROR_SM_INVALID_BLOCK 0x000102
+                              829 ; 213  |#define ERROR_SM_INVALID_DATA 0x000103
+                              830 ; 214  |#define ERROR_SM_ECC 0x000104
+                              831 ; 215  |#define ERROR_SM_BLOCK_ERASE_FAILED 0x000105
+                              832 ; 216  |#define ERROR_SM_CARD_NOT_FOUND 0x000106
+                              833 ; 217  |#define ERROR_SM_BUSY_TIMEOUT 0x000107
+                              834 ; 218  |#define ERROR_SM_WRITE_FAILED 0x000108
+                              835 ; 219  |#define ERROR_SM_DEVICE_ID 0x000109
+                              836 ; 220  |
+                              837 ; 221  |#define ERROR_NUM_SONGS 0x000200
+                              838 ; 222  |#define ERROR_FOPEN_FILENUM 0x000201
+                              839 ; 223  |#define ERROR_FREAD_PAGE 0x000202
+                              840 ; 224  |#define ERROR_FREAD_BYTE_COUNT 0x000203
+                              841 ; 225  |#define ERROR_CREATING_VOICE_DIR 0x000204 
+                              842 ; 226  |
+                              843 ; 227  |#define ERROR_USB_DISCONNECTED 0x000300
+                              844 ; 228  |
+                              845 ; 229  |#define ERROR_DECODER_PLAYING 0x000400
+                              846 ; 230  |// Attempted to set position past the end of file
+                              847 ; 231  |#define ERROR_DECODER_SETPOS 0x000401             
+                              848 ; 232  |
+                              849 ; 233  |// PLL defs
+                              850 ; 234  |// According to Mike May, the PLL takes about 200us to stabalize, worst-case.
+                              851 ; 235  |//   PLL lock delay is $000000001388 = 5000. We're always using the xtal at
+                              852 ; 236  |//   24.576MHz, so this delay is 5000/(24.576MHz) = 203.5us.  We'll do this 5000
+                              853 ; 237  |//   times for a total of 1.017s.
+                              854 ; 238  |#define PLL_LOCK_DELAY_HIGH 0x000000
+                              855 ; 239  |#define PLL_LOCK_DELAY_LOW 0x001388
+                              856 ; 240  |#define PLL_TIMEOUT 0x001388
+                              857 ; 241  |
+                              858 ; 242  |// Generic wait defs
+                              859 ; 243  |#define WAIT_10_MS 245760/2
+                              860 ; 244  |
+                              861 ; 245  |//Those equates are used in the DCC/USBMSC
+                              862 ; 246  |//Low battery detection bit
+                              863 ; 247  |#define LOW_BATTERY_DETECTED_BITPOS 0
+                              864 ; 248  |
+                              865 ; 249  |#endif // IF (!@def(SYSEQU_INC))
+                              866 ; 250  |
+                              867 ; 251  |
+                              868 
+                              870 
+                              871 ; 13   |#include "stringlib.h"
+                              872 
+                              874 
+                              875 ; 1    |#ifndef STRINGLIB_H
+                              876 ; 2    |#define STRINGLIB_H
+                              877 
+                              879 
+                              880 ; 3    |_asmfunc int pack_string(UCS3 _Y * _Y pUnpacked, _packed BYTE _Y * _Y pPacked);
+                              881 ; 4    |_asmfunc int unpack_string( _packed BYTE _Y * _Y pPacked,  UCS3 _Y * _Y pUnpacked);
+                              882 ; 5    |_asmfunc int unpack_data( _packed BYTE _Y * _Y pPacked,  BYTE _Y * _Y pUnpacked, INT iCount);
+                              883 ; 6    |
+                              884 ; 7    |_asmfunc BYTE GetByteFromArrayInX( void _X * p,int n);
+                              885 ; 8    |_asmfunc void PutByteInArrayInX( void _X * p,int n, int newchar);
+                              886 ; 9    |_asmfunc BYTE GetByteFromArrayInY( void _Y * p,int n);
+                              887 ; 10   |_asmfunc void PutByteInArrayInY( void _Y * p,int n, int newchar);
+                              888 ; 11   |
+                              889 ; 12   |_asmfunc BYTE packed_get( _packed BYTE _Y * p,int n);
+                              890 ; 13   |_asmfunc void packed_set( _packed BYTE _Y * p,int n, int newchar);
+                              891 ; 14   |
+                              892 ; 15   |_asmfunc int packed_strlen( _packed BYTE _Y * _Y p);
+                              893 ; 16   |
+                              894 ; 17   |_asmfunc _packed BYTE _Y * packed_strncpy( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y pSrc, int iCount);
+                              895 ; 18   |_asmfunc _packed BYTE _Y * packed_strcpy ( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y pSrc);
+                              896 ; 19   |
+                              897 ; 20   |
+                              898 ; 21   |_asmfunc int packed_strncmp( _packed BYTE _Y * _Y pLeft,_packed BYTE _Y * _Y pRight, int iCount);
+                              899 ; 22   |_asmfunc int packed_strcmp ( _packed BYTE _Y * _Y pLeft,_packed BYTE _Y * _Y pRight);
+                              900 ; 23   |
+                              901 ; 24   |_asmfunc int packed_strncat( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y pSource, int iCount);
+                              902 ; 25   |_asmfunc int packed_strcat ( _packed BYTE _Y * _Y pDest,_packed BYTE _Y * _Y pSource);
+                              903 ; 26   |
+                              904 ; 27   |
+                              905 ; 28   |_asmfunc int strlen(UCS3 _Y * _Y p);
+                              906 ; 29   |
+                              907 ; 30   |_asmfunc UCS3 *strchr(UCS3 _Y * _Y pUnpacked, UCS3 CharToFind);
+                              908 ; 31   |_asmfunc UCS3 *strrchr(UCS3 _Y * _Y pUnpacked, UCS3 CharToFind);
+                              909 ; 32   |
+                              910 ; 33   |_asmfunc void strncpy(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource, BYTE iCount);
+                              911 ; 34   |_asmfunc void strcpy(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource);
+                              912 ; 35   |
+                              913 ; 36   |_asmfunc char *strncat(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource, int iCount);
+                              914 ; 37   |_asmfunc char *strcat(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource);
+                              915 ; 38   |
+                              916 ; 39   |_asmfunc int strncmp(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource, int iCount);
+                              917 ; 40   |_asmfunc int strcmp(UCS3 _Y * _Y pDest, UCS3 _Y * _Y pSource);
+                              918 ; 41   |
+                              919 ; 42   |#endif
+                              920 
+                              922 
+                              923 ; 14   |#include "recordsettingsmenu.h"
+                              924 
+                              926 
+                              927 ; 1    |#ifndef _RECORDSETTINGS_MENU_H
+                              928 ; 2    |#define _RECORDSETTINGS_MENU_H
+                              929 ; 3    |
+                              930 ; 4    |// menus in settings menu
+                              931 ; 5    |// defines order of selection
+                              932 ; 6    |#define RECORDSETTINGSMENU_FIRST        0
+                              933 ; 7    |#define RECORDSETTINGSMENU_SOURCE       0
+                              934 ; 8    |#define RECORDSETTINGSMENU_ENCODER      1
+                              935 ; 9    |#define RECORDSETTINGSMENU_CHANNELS     2
+                              936 ; 10   |#define RECORDSETTINGSMENU_DESTINATION  3
+                              937 ; 11   |#define RECORDSETTINGSMENU_SAMPLERATE   4
+                              938 ; 12   |#define RECORDSETTINGSMENU_BITRATE      5
+                              939 ; 13   |#define RECORDSETTINGSMENU_MODE         6
+                              940 ; 14   |#define RECORDSETTINGSMENU_EXIT         7
+                              941 ; 15   |#define RECORDSETTINGSMENU_LAST         7
+                              942 ; 16   |#define RECORDSETTINGSMENU_COUNT  (RECORDSETTINGSMENU_LAST+1)
+                              943 ; 17   |
+                              944 ; 18   |#define SOURCE_FIRST        0
+                              945 ; 19   |#define SOURCE_MIC          0
+                              946 ; 20   |#define SOURCE_FM               1          
+                              947 ; 21   |#define SOURCE_LINEIN       2      //Used as line-in 1 for 144 pin package
+                              948 ; 22   |#ifdef FMTUNER_ON_LINE2_IN         
+                              949 ; 23   |        #define SOURCE_LAST     SOURCE_LINEIN               
+                              950 ; 24   |#else
+                              951 ; 25   |        #define SOURCE_LAST     SOURCE_LINEIN //SOURCE_FM               //if using the 100 pin package, skip Line-In
+                              952 ; 26   |#endif
+                              953 ; 27   |  
+                              954 ; 28   |#define SOURCE_COUNT        (SOURCE_LAST+1)
+                              955 ; 29   |
+                              956 ; 30   |#define ENCODER_FIRST       0
+                              957 ; 31   |#define ENCODER_IMADPCM     0
+                              958 ; 32   |#define ENCODER_MSADPCM     1
+                              959 ; 33   |#define ENCODER_PCM         2
+                              960 ; 34   |#ifdef TEST
+                              961 ; 35   |    #ifdef MP3_ENCODE
+                              962 ; 36   |        #define ENCODER_MP3         3
+                              963 ; 37   |        #define ENCODER_ALL                     4
+                              964 ; 38   |        #define ENCODER_LAST        4
+                              965 ; 39   |    #else
+                              966 ; 40   |        #define ENCODER_MP3         (WORD)-1
+                              967 ; 41   |        #define ENCODER_LAST        3
+                              968 ; 42   |        #define ENCODER_ALL                     3
+                              969 ; 43   |    #endif
+                              970 ; 44   |#else
+                              971 ; 45   |        #ifdef MP3_ENCODE
+                              972 ; 46   |                #define ENCODER_MP3         3
+                              973 ; 47   |                #define ENCODER_LAST        3
+                              974 ; 48   |        #else
+                              975 ; 49   |                #define ENCODER_MP3         (WORD)-1
+                              976 ; 50   |                #define ENCODER_LAST        2
+                              977 ; 51   |        #endif
+                              978 ; 52   |#endif
+                              979 ; 53   |#define IMADPCM             0x11
+                              980 ; 54   |#define MSADPCM             2
+                              981 ; 55   |#define WPCM                1
+                              982 ; 56   |#define ENCODER_COUNT       (ENCODER_LAST+1)
+                              983 ; 57   |
+                              984 ; 58   |#define MODE_FIRST       0  // this number represents the # channels too
+                              985 ; 59   |#define MODE_ALBUM       0
+                              986 ; 60   |#define MODE_SONG        1
+                              987 ; 61   |#define MODE_LAST        1
+                              988 ; 62   |#define MODE_COUNT      (MODE_LAST+1)
+                              989 ; 63   |
+                              990 ; 64   |
+                              991 ; 65   |#define CHANNELS_FIRST      1  // this number represents the # channels too
+                              992 ; 66   |#define CHANNELS_MONO       1
+                              993 ; 67   |#define CHANNELS_STEREO     2
+                              994 ; 68   |#define CHANNELS_LAST       2
+                              995 ; 69   |#define CHANNELS_COUNT      (CHANNELS_LAST)
+                              996 ; 70   |
+                              997 ; 71   |#define DESTINATION_FIRST       0
+                              998 ; 72   |#define DESTINATION_INTERNAL    0
+                              999 ; 73   |#define DESTINATION_EXTERNAL    1    
+                             1000 ; 74   |#ifdef TEST
+                             1001 ; 75   |        #define DESTINATION_ALL         2 
+                             1002 ; 76   |        #define DESTINATION_LAST        2
+                             1003 ; 77   |        #define DESTINATION_COUNT       (DESTINATION_COUNT+1)
+                             1004 ; 78   |#else
+                             1005 ; 79   |        #define DESTINATION_LAST        1
+                             1006 ; 80   |        #define DESTINATION_COUNT       (DESTINATION_COUNT+1)
+                             1007 ; 81   |#endif
+                             1008 ; 82   |
+                             1009 ; 83   |#define SAMPLE_RATE_FIRST     0
+                             1010 ; 84   |#define SAMPLE_RATE_8000HZ    0
+                             1011 ; 85   |#define SAMPLE_RATE_11025HZ   1
+                             1012 ; 86   |#define SAMPLE_RATE_16000HZ   2
+                             1013 ; 87   |#define SAMPLE_RATE_22050HZ   3
+                             1014 ; 88   |#define SAMPLE_RATE_32000HZ   4
+                             1015 ; 89   |#define SAMPLE_RATE_44100HZ   5
+                             1016 ; 90   |#define SAMPLE_RATE_48000HZ   6
+                             1017 ; 91   |#define SAMPLE_RATE_LAST      6
+                             1018 ; 92   |#define SAMPLE_RATE_COUNT     (SAMPLE_RATE_ADPCM_LAST+1)
+                             1019 ; 93   |
+                             1020 ; 94   |#define BITRATE_FIRST     1
+                             1021 ; 95   |#define BITRATE_32000HZ   1
+                             1022 ; 96   |#define BITRATE_40000HZ   2
+                             1023 ; 97   |#define BITRATE_48000HZ   3
+                             1024 ; 98   |#define BITRATE_56000HZ   4
+                             1025 ; 99   |#define BITRATE_64000HZ   5
+                             1026 ; 100  |#define BITRATE_80000HZ   6
+                             1027 ; 101  |#define BITRATE_96000HZ   7
+                             1028 ; 102  |#define BITRATE_112000HZ   8
+                             1029 ; 103  |#define BITRATE_128000HZ   9
+                             1030 ; 104  |#define BITRATE_160000HZ   10
+                             1031 ; 105  |#define BITRATE_192000HZ   11
+                             1032 ; 106  |#define BITRATE_224000HZ   12
+                             1033 ; 107  |#define BITRATE_256000HZ   13
+                             1034 ; 108  |#define BITRATE_320000HZ   14
+                             1035 ; 109  |#define BITRATE_LAST      14
+                             1036 ; 110  |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1037 ; 111  |#define  BITS_FIRST     0
+                             1038 ; 112  |#define  BITS_4         0    
+                             1039 ; 113  |#define  BITS_8         1
+                             1040 ; 114  |#define  BITS_16        2
+                             1041 ; 115  |#define  BITS_24        3
+                             1042 ; 116  |#define  BITS_LAST      3
+                             1043 ; 117  |#define  BITS_COUNT     (BITS_LAST +1)
+                             1044 ; 118  |
+                             1045 ; 119  |
+                             1046 ; 120  |extern int g_ADCsource;
+                             1047 ; 121  |
+                             1048 ; 122  |//if you change the size of this structure, you MUST change 
+                             1049 ; 123  |//the saverange macro in recordsettingsmenu.c (very bottom).
+                             1050 ; 124  |struct RecorderSettings
+                             1051 ; 125  |{
+                             1052 ; 126  |    WORD m_Encoder;
+                             1053 ; 127  |    WORD m_EncoderNo;
+                             1054 ; 128  |    WORD m_iChannels;
+                             1055 ; 129  |    WORD m_iDestinationDevice;
+                             1056 ; 130  |    WORD m_iSampleRateInHz;
+                             1057 ; 131  |    WORD m_iBitRateInKbps;
+                             1058 ; 132  |        WORD m_iMode;
+                             1059 ; 133  |    WORD m_ibits;
+                             1060 ; 134  |};
+                             1061 ; 135  |
+                             1062 ; 136  |extern struct RecorderSettings g_RecorderSettings[];
+                             1063 ; 137  |
+                             1064 ; 138  |#endif
+                             1065 
+                             1067 
+                             1068 ; 15   |
+                             1069 ; 16   |#ifdef FUNCLET
+                             1070 ; 17   |#pragma asm
+                             1071     extern SysCallFunclet
+                             1072 ; 19   |#pragma endasm
+                             1073 ; 20   |#endif
+                             1074 ; 21   |
+                             1075 ; 22   |_X _fract DCOffsetADC[2][7] = { {0,0,0,0,0,0,0}, {0,0,0,0,0,0,0} };       // DC Offsets for ADC  - stmp6964
+                             1076 
+                             1077 
+X:0000                       1078         org     x,".xdataencoderproperties",init:
+                             1079 FDCOffsetADC:
+X:0000 000000 000000         1080         dc      $000000,$000000,$000000,$000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000 000000              
+       000000 000000              
+X:0008 000000 000000         1081         dc      $000000,$000000,$000000,$000000,$000000,$000000
+       000000 000000              
+       000000 000000              
+                             1086 
+                             1087 ; 23   |
+                             1088 ; 24   |
+                             1089 ; 25   |// Have to update this if you add or remove a sampling rate
+                             1090 ; 26   |#define SAMPLE_RATE_PARMS_TABLE_CNT 7
+                             1091 ; 27   |
+                             1092 ; 28   |
+                             1093 ; 29   |
+                             1094 ; 30   |static void do_nothing(void) {      // This function is here to make the dang FUNCLET, below, work right.
+                             1095 
+P:0000                       1096         org     p,".ptextencoderproperties":
+                             1100 Fdo_nothing:
+                             1101 
+                             1102 ; 31   |                                    // Without this here, the compiler switches back to ".ptext..." as soon
+                             1103 ; 32   |                                    // as it hits some code.  With this here, the "org p,"SYSFUNCLET_..._P"
+                             1104 ; 33   |                                    // stays in effect.
+                             1105 ; 34   |                                    // The function is declared "static" so that it's invisible outside this file.
+                             1106 ; 35   |  return;
+                             1107 ; 36   |}
+                             1108 
+P:0000 00000C         4    4 1110         rts
+                             1112 
+                             1113 ; 37   |
+                             1114 ; 38   |
+                             1115 ; 39   |
+                             1116 ; 40   |/////////////////////////////////////////////////////////////////////////////////
+                             1117 ; 41   |//> Name: EncSetProperties
+                             1118 ; 42   |//
+                             1119 ; 43   |//  Type: Function
+                             1120 ; 44   |//  Description: Set the encoder properties
+                             1121 ; 45   |//  Inputs: Pointer to properties structure:
+                             1122 ; 46   |//          {
+                             1123 ; 47   |//              int  device;
+                             1124 ; 48   |//              char *pFilename;
+                             1125 ; 49   |//              int  samplingRateInHz;
+                             1126 ; 50   |//              int  encodingMethod;
+                             1127 ; 51   |//          }
+                             1128 ; 52   |//  Outputs: SUCCESS or error code
+                             1129 ; 53   |//  Notes: 
+                             1130 ; 54   |//<
+                             1131 ; 55   |/////////////////////////////////////////////////////////////////////////////////
+                             1132 ; 56   |
+                             1133 ; 57   |#ifdef FUNCLET
+                             1134 ; 58   |    #pragma asm
+                             1135 
+P:0001                       1136         org p,".ptextencoderproperties":
+                             1137 
+                             1138         FEncSetProperties:
+                             1139 
+                             1144 
+                             1145         CallFunclet RSRC_FUNCLET_ENCSETPROPERTIES
+P:0001 0D0080         4    8 1145     jsr       $80
+P:0002 000175                1145     DC       RSRC_FUNCLET_ENCSETPROPERTIES  ; 1 word
+                             1146 
+P:0000                       1147         org p,"SYSFUNCLET_EncSetProperties_P":
+P:0000 000175                1148         dc     RSRC_FUNCLET_ENCSETPROPERTIES
+                             1149 ; 73   |    #pragma endasm
+                             1150 ; 74   |
+                             1151 ; 75   |RETCODE _reentrant EncSetProperties_Funclet(EncProperties *pProps)
+                             1152 ; 76   |#else
+                             1153 ; 77   |RETCODE _reentrant EncSetProperties(EncProperties *pProps)
+                             1154 ; 78   |#endif
+                             1155 ; 79   |{
+                             1156 
+                             1171 FEncSetProperties_Funclet:
+P:0001 055F7C         2    2 1172         movec   ssh,y:(r7)+
+P:0002 205F00         2    4 1175         move    (r7)+
+P:0003 205F00         2    6 1176         move    (r7)+
+                             1182 
+                             1183 ; 80   |  int idx;
+                             1184 ; 81   |  extern _P EncoderSampleRateParms parmsTbl[];
+                             1185 ; 82   |
+                             1186 ; 83   |
+                             1187 ; 84   |  if (!(g_wEncoderSR & (1<<Stop))) {                        // If encoder is busy, don't change properties!
+                             1188 
+P:0004 55F000 rrrrrr  3    9 1190         move    x:Fg_wEncoderSR,b1
+P:0006 47F400 000040  3   12 1191         move    #>$40,y1
+P:0008 20007E         2   14 1192         and     y1,b
+P:0009 21AF00         2   16 1193         move    b1,b
+P:000A 2B0000         2   18 1194         move    #0,b2
+P:000B 20000B         2   20 1195         tst     b
+P:000C 0AF0A2 rrrrrr  6   26 1196         jne     L3
+                             1197 
+                             1198 ; 85   |    return(ERROR_ENCODER_IS_ACTIVE);
+                             1199 
+P:000E 56F400 FFFFFE  3   29 1201         move    #>-2,a
+P:0010 0AF080 rrrrrr  6   35 1202         jmp     L7
+                             1203 
+                             1204 ; 86   |  }
+                             1205 ; 87   |
+                             1206 ; 88   |
+                             1207 ; 89   |  for (idx=0; idx<SAMPLE_RATE_PARMS_TABLE_CNT; idx++) {
+                             1208 
+P:0012 270000         2   37 1210 L3:     move    #0,y1
+P:0013 62F400 rrrrrr  3   40 1212         move    #FDCOffsetADC,r2
+P:0015 63F400 rrrrrr  3   43 1213         move    #FDCOffsetADC+7,r3
+P:0017 227400         2   45 1214         move    r3,r4
+P:0018 46F400 000006  3   48 1215         move    #>6,y0
+P:001A 63F400 rrrrrr  3   51 1216         move    #FparmsTbl,r3
+P:001C 66F400 rrrrrr  3   54 1217         move    #FparmsTbl+1,r6
+P:001E 44F400 000001  3   57 1218         move    #>1,x0
+                             1219 
+                             1220 ; 90   |
+                             1221 ; 91   |    if (parmsTbl[idx].wNSamplesPerSec == pProps->samplingRateInHz) {
+                             1222 
+P:0020 2000B8         2   59 1224 L4:     mpy     y1,y0,b
+P:0021 20002A         2   61 1225         asr     b
+P:0022 213B00         2   63 1226         move    b0,n3
+P:0023 213C00         2   65 1227         move    b0,n4
+P:0024 044B15         4   69 1228         lua     (r3)+n3,r5
+P:0025 000000         2   71 1229         nop
+P:0026 07E58F         6   77 1230         movem   p:(r5),b
+P:0027 3D0200         2   79 1231         move    #2,n5
+P:0028 221500         2   81 1232         move    r0,r5
+P:0029 000000         2   83 1233         nop
+P:002A 204D00         2   85 1234         move    (r5)+n5
+P:002B 5EE500         2   87 1235         move    y:(r5),a
+P:002C 2A0000         2   89 1236         move    #0,a2
+P:002D 2B0000         2   91 1237         move    #0,b2
+P:002E 20000D         2   93 1238         cmp     a,b
+P:002F 0AF0A2 rrrrrr  6   99 1239         jne     L5
+P:0031 045FA0         2  101 1240         movec   m0,n7
+P:0032 000000         2  103 1241         nop
+P:0033 6A6F00         4  107 1242         move    r2,y:(r7+n7)
+P:0034 77F400 FFFFFE  3  110 1243         move    #-2,n7
+P:0036 000000         2  112 1244         nop
+P:0037 4F6F00         4  116 1245         move    y1,y:(r7+n7)
+                             1248 
+                             1249 ; 92   |
+                             1250 ; 93   |      g_wEncFormatTag = pProps->FormatTag; // Algorithm to be used. 1 = PCMWAVE, 2 = MS ADPCM, 0x11 = IMA ADPCM
+                             1251 
+P:0038 3D0400         2  118 1253         move    #4,n5
+P:0039 221500         2  120 1254         move    r0,r5
+P:003A 000000         2  122 1255         nop
+P:003B 204D00         2  124 1256         move    (r5)+n5
+P:003C 4FE500         2  126 1257         move    y:(r5),y1
+P:003D 4F7000 rrrrrr  3  129 1258         move    y1,y:Fg_wEncFormatTag
+                             1259 
+                             1260 ; 94   |      g_wEncNumberOfChannels = pProps->EncNumberOfChannels;
+                             1261 
+P:003F 3D0500         2  131 1263         move    #5,n5
+P:0040 221500         2  133 1264         move    r0,r5
+P:0041 000000         2  135 1265         nop
+P:0042 204D00         2  137 1266         move    (r5)+n5
+P:0043 4FE500         2  139 1267         move    y:(r5),y1
+P:0044 4F7000 rrrrrr  3  142 1268         move    y1,y:Fg_wEncNumberOfChannels
+                             1269 
+                             1270 ; 95   |      g_wEncPCMBits = pProps->EncPCMBits;    // Number of bits for PCMWAVE (8,16,24), else ignored
+                             1271 
+P:0046 3D0600         2  144 1273         move    #6,n5
+P:0047 221500         2  146 1274         move    r0,r5
+P:0048 000000         2  148 1275         nop
+P:0049 204D00         2  150 1276         move    (r5)+n5
+P:004A 4EE500         2  152 1277         move    y:(r5),y0
+P:004B 4E7000 rrrrrr  3  155 1278         move    y0,y:Fg_wEncPCMBits
+                             1279 
+                             1280 ; 96   |      g_wEncCurrentDeviceNum = pProps->device;
+                             1281 
+P:004D 4EE000         2  157 1283         move    y:(r0),y0
+P:004E 4E7000 rrrrrr  3  160 1284         move    y0,y:Fg_wEncCurrentDeviceNum
+                             1285 
+                             1286 ; 97   |      g_wEncSamplingRate = parmsTbl[idx].wNSamplesPerSec;
+                             1287 
+P:0050 5D7000 rrrrrr  3  163 1289         move    b1,y:Fg_wEncSamplingRate
+                             1290 
+                             1291 ; 98   |      g_wEncBitRate =  pProps->bitRateInKbps;
+                             1292 
+P:0052 3D0300         2  165 1294         move    #3,n5
+P:0053 221500         2  167 1295         move    r0,r5
+P:0054 000000         2  169 1296         nop
+P:0055 204D00         2  171 1297         move    (r5)+n5
+P:0056 4EE500         2  173 1298         move    y:(r5),y0
+P:0057 4E7000 rrrrrr  3  176 1299         move    y0,y:Fg_wEncBitRate
+                             1300 
+                             1301 ; 99   |      g_wEncADCGain = parmsTbl[idx].wADCGain;
+                             1302 
+P:0059 22D400         2  178 1304         move    r6,r4
+P:005A 000000         2  180 1305         nop
+P:005B 044C16         4  184 1306         lua     (r4)+n4,r6
+P:005C 000000         2  186 1307         nop
+P:005D 07E686         6  192 1308         movem   p:(r6),y0
+P:005E 4E7000 rrrrrr  3  195 1309         move    y0,y:Fg_wEncADCGain
+                             1310 
+                             1311 ; 100  |      g_wEncADCSRR = parmsTbl[idx].wADCSRR;
+                             1312 
+P:0060 64F400 rrrrrr  3  198 1314         move    #FparmsTbl+2,r4
+P:0062 000000         2  200 1315         nop
+P:0063 204C00         2  202 1316         move    (r4)+n4
+P:0064 07E485         6  208 1317         movem   p:(r4),x1
+P:0065 4D7000 rrrrrr  3  211 1318         move    x1,y:Fg_wEncADCSRR
+                             1319 
+                             1320 ; 101  |      packed_strcpy(g_EncFileNameString,pProps->pFilename);
+                             1321 
+P:0067 045814         4  215 1323         lua     (r0)+,r4
+P:0068 000000         2  217 1324         nop
+P:0069 6CE400         2  219 1325         move    y:(r4),r4
+P:006A 60F400 rrrrrr  3  222 1326         move    #Fg_EncFileNameString,r0
+P:006C 0BF080 rrrrrr  6  228 1327         jsr     packed_strcpy
+                             1329 
+                             1330 ; 102  |//      g_wSamplingRateIndex = DACSampleRate[idx];      // DAC Sample rate  
+                             1331 ; 103  |      g_wEncADCLChOffset = DCOffsetADC[0][idx];         // L-Chan DC Offset  stmp6964
+                             1332 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:006E 045FA0         2  230 1334         movec   m0,n7
+P:006F 000000         2  232 1335         nop
+P:0070 6BEF00         4  236 1336         move    y:(r7+n7),r3
+P:0071 000000         2  238 1337         nop
+P:0072 44E300         2  240 1338         move    x:(r3),x0
+P:0073 4C7000 rrrrrr  3  243 1339         move    x0,y:Fg_wEncADCLChOffset
+                             1340 
+                             1341 ; 104  |      g_wEncADCRChOffset = DCOffsetADC[1][idx];         // R-Chan DC Offset  stmp6964 
+                             1342 
+P:0075 3B0700         2  245 1344         move    #7,n3
+P:0076 000000         2  247 1345         nop
+P:0077 204B00         2  249 1346         move    (r3)+n3
+P:0078 44E300         2  251 1347         move    x:(r3),x0
+P:0079 4C7000 rrrrrr  3  254 1348         move    x0,y:Fg_wEncADCRChOffset
+                             1349 
+                             1350 ; 105  |      g_wEncSamplingRateIdx = idx;                      // used by ComputeDCOffset  stmp6964
+                             1351 
+P:007B 77F400 FFFFFE  3  257 1353         move    #-2,n7
+P:007D 000000         2  259 1354         nop
+P:007E 4FEF00         4  263 1355         move    y:(r7+n7),y1
+P:007F 4F7000 rrrrrr  3  266 1356         move    y1,y:Fg_wEncSamplingRateIdx
+                             1357 
+                             1358 ; 106  |
+                             1359 ; 107  |      return(NOERROR);
+                             1360 
+P:0081 200013         2  268 1362         clr     a   
+P:0082 0AF080 rrrrrr  6  274 1363         jmp     L7
+                             1364 
+                             1365 ; 108  |    }
+                             1366 
+                             1368 L5:
+P:0084 205A00         2  276 1373         move    (r2)+
+P:0085 200079         2  278 1374         tfr     y1,b
+P:0086 200048         2  280 1375         add     x0,b
+P:0087 21A700         2  282 1378         move    b1,y1
+P:0088 224E00         2  284 1381         move    r2,a
+P:0089 228F00         2  286 1382         move    r4,b
+P:008A 200005         2  288 1383         cmp     b,a
+P:008B 0AF0A9 rrrrrr  6  294 1384         jlt     L4
+                             1385 
+                             1386 ; 109  |  }
+                             1387 ; 110  |
+                             1388 ; 111  |  return(ERROR_ENCODER_INVALID_SAMPLE_RATE);
+                             1389 
+P:008D 56F400 FFFFFF  3  297 1391         move    #>-1,a
+                             1392 
+                             1393 ; 112  |}
+                             1394 
+P:008F 205700         2  299 1396 L7:     move    (r7)-
+P:0090 205700         2  301 1397         move    (r7)-
+P:0091 05FF7C         4  305 1399         movec   y:-(r7),ssh
+P:0092 000000         2  307 1402         nop
+P:0093 00000C         4  311 1403         rts
+                             1407 
+                             1408 ; 113  |
+                             1409 ; 114  |
+                             1410 ; 115  |
+                             1411 ; 116  |                                     // The table of Encoder Sample Rate parameters is created, below,
+                             1412 ; 117  |                                     // using assembly language.  If you try to use C (e.g. a "static"
+                             1413 ; 118  |                                     // array of structs, as it is treated in the code above), the compiler
+                             1414 ; 119  |                                     // will force it into a ".pdata..." section, instead of leaving it in
+                             1415 ; 120  |                                     // the funclet memory section.  This would keep it from being overlayed.
+                             1416 ; 121  |#pragma asm
+                             1418 
+                             1419 ; include "dacequ.inc"
+                             1420 
+                             1421 
+                             1422 ;; Source frq -> Target
+                             1423 ;; 48.000 kHz -> 48kHz = (((8*48/48    ) - 1) * $010000) =   =>  DACSRR = $070000
+                             1424 ;; 44.100 kHz -> 48kHz = (((8*48/44.1  ) - 1) * $010000) =   =>  DACSRR = $07b51e
+                             1425 ;; 32.000 kHz -> 48kHz = (((8*48/32    ) - 1) * $010000) =   =>  DACSRR = $0b0000
+                             1426 ;; 24.000 kHz -> 48kHz = (((8*48/24    ) - 1) * $010000) =   =>  DACSRR = $0f0000
+                             1427 ;; 22.050 kHz -> 48kHz = (((8*48/22.05 ) - 1) * $010000) =   =>  DACSRR = $106a3b
+                             1428 ;; 16.000 kHz -> 48kHz = (((8*48/16    ) - 1) * $010000) =   =>  DACSRR = $170000
+                             1429 ;; 12.000 kHz -> 48kHz = (((8*48/12    ) - 1) * $010000) =   =>  DACSRR = $1f0000
+                             1430 ;; 11.025 kHz -> 48kHz = (((8*48/11.025) - 1) * $010000) =   =>  DACSRR = $21d476
+                             1431 ;;  8.000 kHz -> 48kHz = (((8*48/8     ) - 1) * $010000) =   =>  DACSRR = $2f0000
+                             1432 
+                             1433     
+                             1434 ; Only includes sample rates correspoingint to ADC, and in same order
+                             1435 ; Does not include 12kHz or 24kHz
+                             1436 ; values a little different from above to match values in file: dacequ.inc
+                             1437 ;    dc  $2de000     ;;  8.000 kHz
+                             1438 ;    dc  $21037c     ;; 11.025 kHzz
+                             1439 ;    dc  $167000     ;; 16.000 kHz
+                             1440 ;    dc  $1001be     ;; 22.050 kHz
+                             1441 ;    dc  $0ab800     ;; 32.000 kHz
+                             1442 ;    dc  $0780df     ;; 44.100 kHz
+                             1443 ;    dc  $06d000     ;; 48.000 kHz
+                             1444 
+                             1445 
+                             1446 ;FDACSampleRate 
+                             1447 ;    dc  DAC8kHz            ;;  8.000 kHz    ??? value incorrect 
+                             1448 ;    dc  DAC11_025kHz       ;; 11.025 kHzz   ??? value incorrect  
+                             1449 ;    dc  DAC16kHz            ;; 16.000 kHz 
+                             1450 ;    dc  DAC22_05kHz       ;; 22.050 kHz   
+                             1451 ;    dc  DAC32kHz           ;; 32.000 kHz   
+                             1452 ;    dc  DAC44_1kHz         ;; 44.100 kHz   
+                             1453 ;    dc  DAC48kHz           ;; 48.000 kHz     
+                             1454 
+                             1455   ; Encoder sampling rate parameter tables, stored in P memory, in the loadable funclet section
+                             1456 
+                             1457 FparmsTbl    
+                             1458   ; 8000 Hz
+P:0094 001F40                1459   dc  ADPCM_NSAMPLESPERSEC_8000
+P:0095 00000D                1460   dc  ADPCM_ADCGAIN_8000
+P:0096 0EA000                1461   dc  ADPCM_ADCSRR_8000
+P:0097 418937                1462   dc  ADPCM_INVSAMPLERATESCALE_8000
+P:0098 000FA0                1463   dc  ADPCM_NAVGBYTESPERSEC_8000
+P:0099 1045A2                1464   dc  ADPCM_CLUSTERTIMESCALE_8000
+                             1465 
+                             1466   ; 11025 Hz
+P:009A 002B11                1467   dc  ADPCM_NSAMPLESPERSEC_11025
+P:009B 00001A                1468   dc  ADPCM_ADCGAIN_11025
+P:009C 0A567E                1469   dc  ADPCM_ADCSRR_11025
+P:009D 2F8DF2                1470   dc  ADPCM_INVSAMPLERATESCALE_11025
+P:009E 001589                1471   dc  ADPCM_NAVGBYTESPERSEC_11025
+P:009F 0BCEAE                1472   dc  ADPCM_CLUSTERTIMESCALE_11025
+                             1473 
+                             1474   ; 16000 Hz
+P:00A0 003E80                1475   dc  ADPCM_NSAMPLESPERSEC_16000
+P:00A1 000035                1476   dc  ADPCM_ADCGAIN_16000
+P:00A2 06D000                1477   dc  ADPCM_ADCSRR_16000
+P:00A3 20C49B                1478   dc  ADPCM_INVSAMPLERATESCALE_16000
+P:00A4 001F40                1479   dc  ADPCM_NAVGBYTESPERSEC_16000
+P:00A5 0822D1                1480   dc  ADPCM_CLUSTERTIMESCALE_16000
+                             1481 
+                             1482   ; 22050 Hz
+P:00A6 005622                1483   dc  ADPCM_NSAMPLESPERSEC_22050
+P:00A7 000003                1484   dc  ADPCM_ADCGAIN_22050
+P:00A8 21037C                1485   dc  ADPCM_ADCSRR_22050
+P:00A9 17C6F9                1486   dc  ADPCM_INVSAMPLERATESCALE_22050
+P:00AA 002B11                1487   dc  ADPCM_NAVGBYTESPERSEC_22050
+P:00AB 05E757                1488   dc  ADPCM_CLUSTERTIMESCALE_22050
+                             1489 
+                             1490   ; 32000 Hz
+P:00AC 007D00                1491   dc  ADPCM_NSAMPLESPERSEC_32000
+P:00AD 000007                1492   dc  ADPCM_ADCGAIN_32000
+P:00AE 167000                1493   dc  ADPCM_ADCSRR_32000
+P:00AF 10624D                1494   dc  ADPCM_INVSAMPLERATESCALE_32000
+P:00B0 003E80                1495   dc  ADPCM_NAVGBYTESPERSEC_32000
+P:00B1 041168                1496   dc  ADPCM_CLUSTERTIMESCALE_32000
+                             1497  
+                             1498    ; 44100 Hz
+P:00B2 00AC44                1499    dc  ADPCM_NSAMPLESPERSEC_44100
+P:00B3 00000C                1500   dc  ADPCM_ADCGAIN_44100
+P:00B4 1001BD                1501    dc  ADPCM_ADCSRR_44100
+P:00B5 0BE37C                1502    dc  ADPCM_INVSAMPLERATESCALE_44100
+P:00B6 005622                1503    dc  ADPCM_NAVGBYTESPERSEC_44100
+P:00B7 02F3AC                1504    dc  ADPCM_CLUSTERTIMESCALE_44100
+                             1505   
+                             1506    ; 48000 Hz
+P:00B8 00BB80                1507    dc  ADPCM_NSAMPLESPERSEC_48000
+P:00B9 000010                1508   dc  ADPCM_ADCGAIN_48000
+P:00BA 0EA000                1509    dc  ADPCM_ADCSRR_48000
+P:00BB 0AEC34                1510    dc  ADPCM_INVSAMPLERATESCALE_48000
+P:00BC 005DC0                1511    dc  ADPCM_NAVGBYTESPERSEC_48000
+P:00BD 02B646                1512    dc  ADPCM_CLUSTERTIMESCALE_48000
+                             1513 
+                             1514 ; 219  |#pragma endasm
+                             1515 ; 220  |  
+                             1516 ; 221  |
+                             1517 ; 222  |#ifdef FUNCLET
+                             1518 ; 223  |    #pragma asm
+P:0003                       1519         org p,".ptextencoderproperties":
+                             1520 ; 225  |    #pragma endasm
+                             1521 ; 226  |#endif
+                             1522 ; 227  |
+                             1523 ; 228  |
+                             1524 ; 229  |///////////////////////////////////////////////////////////////////////////////
+                             1525 ; 230  |///////////////////////////////////////////////////////////////////////////////
+                             1526 ; 231  |///////////////////////////////////////////////////////////////////////////////
+                             1527 
+                             1545 
+                             1546         extern  packed_strcpy, y:Fg_EncFileNameString, y:Fg_wEncADCGain
+                             1547         extern  y:Fg_wEncADCLChOffset, y:Fg_wEncADCRChOffset
+                             1548         extern  y:Fg_wEncADCSRR, y:Fg_wEncBitRate
+                             1549         extern  y:Fg_wEncCurrentDeviceNum, y:Fg_wEncFormatTag
+                             1550         extern  y:Fg_wEncNumberOfChannels, y:Fg_wEncPCMBits
+                             1551         extern  y:Fg_wEncSamplingRate, y:Fg_wEncSamplingRateIdx
+                             1552         extern  x:Fg_wEncoderSR, p:FparmsTbl
+                             1553 
+                             1554         global  FDCOffsetADC, FEncSetProperties_Funclet
+                             1555 
+                             1556         local   Fdo_nothing, L3, L4, L5, L7
+                             1557 
+                             1558         calls   "EncSetProperties_Funclet", "packed_strcpy"
+                             1559 

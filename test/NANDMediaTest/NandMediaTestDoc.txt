@@ -1,0 +1,27 @@
+NAND Media test Documentation
+---------------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the NAND API and physical hardware. This is done by using all the APIs provided by the NAND module. 
+The NANDMediaTest currently supports both small block (16MB) and large block (128MB) NANDs.
+
+Build Options
+-------------
+Usage : NANDMediaTest [ALL] DEVICE
+     	ALL    = rebuilds all files
+	DEVICE = D3410 (required parameter)
+	
+Test Execution
+--------------
+The test first runs and tests all the APIs provided by the NAND module.  This includes initializing the NAND, Erasing, Allocating and Discovering the NAND parameters.
+The complete test requires approximately 9 minutes with a 1Gb NAND, but will vary depending upon media size and other factors.
+This test executes within the debugger.  Hitting a breakpoint other than the one labeled SUCCESS at the end, indicates a failure.
+
+Test Architecture
+-----------------
+The test uses the following libraries.  Changes to the physical pins required for driving the NAND can be made in cfporthil_project.inc
+dd_nand_data_drive.a library
+dd_nand_ddi_common.a library
+dd_nand_media.a library
+dd_nand_system_drive.a library

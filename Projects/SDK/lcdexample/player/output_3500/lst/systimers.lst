@@ -1,0 +1,246 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\systimers.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2000-2001
+                                3 ;
+                                4 ;  File        : systimers.asm
+                                5 ;  Description : STMP System Timers
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                8     section SYSFUN_SysTimers
+                                9     page    132,60,0,0,0
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;   Macros
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               17     list
+                               19 ;///////////////////////////////////////////////////////////////////////////////
+                               20 ;   Includes
+                               21 ;///////////////////////////////////////////////////////////////////////////////
+                               27     list
+                               28     
+                               29 ;///////////////////////////////////////////////////////////////////////////////
+                               30 ;   External Definitions
+                               31 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;///////////////////////////////////////////////////////////////////////////////
+                               44 ;   External References
+                               45 ;///////////////////////////////////////////////////////////////////////////////
+                               49     list
+                               51 ;///////////////////////////////////////////////////////////////////////////////
+                               52 ;   Equates
+                               53 ;///////////////////////////////////////////////////////////////////////////////
+                               54         
+                               55 ; To ADD a new timer:
+                               56 ; 1. EQUate a timer number below with a name to be used by calling functions.
+                               57 ; 2. Set the TimerNControlInit to the value that it should be init'd to.
+                               58 ; 3. Set the TimerNCountInit to the count value to init to.
+                               59 ; 4. Call the functions below as needed, with the proper inputs.
+                               61 DecoderTimerNum   equ      0
+                               62 EncoderTimerNum   equ      0
+                               63 ButtonTimerNum    equ      1
+                               64 SysTimerNum       equ      2
+                               66 Timer0ControlInit equ      $000002
+                               67 Timer1ControlInit equ      $000002
+                               68 Timer2ControlInit equ      $000002
+                               70 Timer0CountInit   equ      DECODER_TIMER_SYNC_COUNT
+                               71 Timer1CountInit   equ      BUTTON_TIMER_COUNT
+                               72 Timer2CountInit   equ      $004E20
+                               74 ;///////////////////////////////////////////////////////////////////////////////
+                               75 ;   X Memory
+                               76 ;///////////////////////////////////////////////////////////////////////////////
+                               77         
+X:0000                         78     org     x,"SYSFUN_SysTimers_X":
+                               80 ;///////////////////////////////////////////////////////////////////////////////
+                               81 ;   Y Memory
+                               82 ;///////////////////////////////////////////////////////////////////////////////
+Y:0000                         84     org     y,"SYSFUN_SysTimers_Y":
+                               86 ;///////////////////////////////////////////////////////////////////////////////
+                               87 ;   P Memory
+                               88 ;///////////////////////////////////////////////////////////////////////////////
+P:0000                         90     org     p,"SYSFUN_SysTimers_P":
+                               92 ;///////////////////////////////////////////////////////////////////////////////
+                               93 ;
+                               94 ;>  Name:           SysResetAllTimers
+                               95 ;
+                               96 ;   Type:           Function
+                               97 ;
+                               98 ;   Description:    Configures all 3 timer control and count registers to
+                               99 ;                   default values.
+                              100 ;
+                              101 ;   Inputs:         none
+                              102 ;
+                              103 ;   Outputs:        none
+                              104 ;                   
+                              105 ;   Notes:          
+                              106 ;<
+                              107 ;///////////////////////////////////////////////////////////////////////////////
+                              108 SysResetAllTimers
+                              110     ; init the Timer Control Registers
+P:0000 44F400 000002  3    3  111     move    #>Timer0ControlInit,x0
+P:0002 447000 00F100  3    6  112     move    x0,x:HW_TMR0CR
+P:0004 44F400 000002  3    9  113     move    #>Timer1ControlInit,x0
+P:0006 447000 00F140  3   12  114     move    x0,x:HW_TMR1CR
+P:0008 44F400 000002  3   15  115     move    #>Timer2ControlInit,x0
+P:000A 447000 00F180  3   18  116     move    x0,x:HW_TMR2CR
+                              118     ; init the Timer Count Registers
+P:000C 44F400 001D4C  3   21  119     move    #>Timer0CountInit,x0
+P:000E 447000 00F101  3   24  120     move    x0,x:HW_TMR0CNTR
+P:0010 44F400 0C3500  3   27  121     move    #>Timer1CountInit,x0
+P:0012 447000 00F141  3   30  122     move    x0,x:HW_TMR1CNTR
+P:0014 44F400 004E20  3   33  123     move    #>Timer2CountInit,x0
+P:0016 447000 00F181  3   36  124     move    x0,x:HW_TMR2CNTR
+P:0018 00000C         4   40  125     rts
+                              127 ;///////////////////////////////////////////////////////////////////////////////
+                              128 ;
+                              129 ;>  Name:           SysEnableTimer
+                              130 ;
+                              131 ;   Type:           Function
+                              132 ;
+                              133 ;   Description:    Enables the timer number specified by setting the enable bit.
+                              134 ;
+                              135 ;   Inputs:         x0 = Timer Number
+                              136 ;                   r0 = Return Address
+                              137 ;
+                              138 ;   Outputs:        none
+                              139 ;                   
+                              140 ;   Notes:          
+                              141 ;<
+                              142 ;///////////////////////////////////////////////////////////////////////////////
+                              143 SysEnableTimer
+P:0019 208E00         2   42  144     move    x0,a
+P:001A 200003         2   44  145     tst     a
+P:001B 0AF0A2 rrrrrr  6   50  146     jne     _one
+                              147 _zero
+P:001D 0A7020 00F100  6   56  148     bset    #HW_TMRCR_TE_BITPOS,x:HW_TMR0CR
+P:001F 0AE080         4   60  149     jmp     (r0)
+                              150 _one
+P:0020 4C8000r        2   62  151     move    y:<Const_000001,x0
+P:0021 200045         2   64  152     cmp     x0,a
+P:0022 0AF0A2 rrrrrr  6   70  153     jne     _two
+P:0024 0A7020 00F140  6   76  154     bset    #HW_TMRCR_TE_BITPOS,x:HW_TMR1CR
+P:0026 0AE080         4   80  155     jmp     (r0)
+                              156 _two
+P:0027 4C8000r        2   82  157     move    y:<Const_000002,x0
+P:0028 200045         2   84  158     cmp     x0,a
+P:0029 0AF0A2 rrrrrr  6   90  159     jne     _error
+P:002B 0A7020 00F180  6   96  160     bset    #HW_TMRCR_TE_BITPOS,x:HW_TMR2CR
+P:002D 0AE080         4  100  161     jmp     (r0)
+                              162 _error
+                              163     error
+P:002E 000200         4  104  163     debug
+                              165 ;///////////////////////////////////////////////////////////////////////////////
+                              166 ;
+                              167 ;>  Name:           SysDisableTimer
+                              168 ;
+                              169 ;   Type:           Function
+                              170 ;
+                              171 ;   Description:    Disables the timer number specified by clearing the enable bit.
+                              172 ;
+                              173 ;   Inputs:         x0 = Timer Number
+                              174 ;                   r0 = Return Address
+                              175 ;
+                              176 ;   Outputs:        none
+                              177 ;                   
+                              178 ;   Notes:          
+                              179 ;<
+                              180 ;///////////////////////////////////////////////////////////////////////////////
+                              181 SysDisableTimer
+P:002F 208E00         2  106  182     move    x0,a
+P:0030 200003         2  108  183     tst     a
+P:0031 0AF0A2 rrrrrr  6  114  184     jne     _one
+                              185 _zero
+P:0033 0A7000 00F100  6  120  186     bclr    #HW_TMRCR_TE_BITPOS,x:HW_TMR0CR
+P:0035 0AE080         4  124  187     jmp     (r0)
+                              188 _one
+P:0036 4C8000r        2  126  189     move    y:<Const_000001,x0
+P:0037 200045         2  128  190     cmp     x0,a
+P:0038 0AF0A2 rrrrrr  6  134  191     jne     _two
+P:003A 0A7000 00F140  6  140  192     bclr    #HW_TMRCR_TE_BITPOS,x:HW_TMR1CR
+P:003C 0AE080         4  144  193     jmp     (r0)
+                              194 _two
+P:003D 4C8000r        2  146  195     move    y:<Const_000002,x0
+P:003E 200045         2  148  196     cmp     x0,a
+P:003F 0AF0A2 rrrrrr  6  154  197     jne     _error
+P:0041 0A7000 00F180  6  160  198     bclr    #HW_TMRCR_TE_BITPOS,x:HW_TMR2CR
+P:0043 0AE080         4  164  199     jmp     (r0)
+                              200 _error
+                              201     error
+P:0044 000200         4  168  201     debug
+                              203 ;///////////////////////////////////////////////////////////////////////////////
+                              204 ;
+                              205 ;>  Name:           SysClearTimerIrq
+                              206 ;
+                              207 ;   Type:           Function
+                              208 ;
+                              209 ;   Description:    Clears the interrupt by reading the control register for the timer number specified.
+                              210 ;
+                              211 ;   Inputs:         x0 = Timer Number
+                              212 ;                   r0 = Return Address
+                              213 ;
+                              214 ;   Outputs:        none
+                              215 ;                   
+                              216 ;   Notes:          
+                              217 ;<
+                              218 ;///////////////////////////////////////////////////////////////////////////////
+                              219 SysClearTimerIrq
+P:0045 208E00         2  170  220     move    x0,a
+P:0046 200003         2  172  221     tst     a
+P:0047 0AF0A2 rrrrrr  6  178  222     jne     _one
+                              223 _zero
+P:0049 44F000 00F100  3  181  224     move    x:HW_TMR0CR,x0
+P:004B 0AE080         4  185  225     jmp     (r0)
+                              226 _one
+P:004C 4C8000r        2  187  227     move    y:<Const_000001,x0
+P:004D 200045         2  189  228     cmp     x0,a
+P:004E 0AF0A2 rrrrrr  6  195  229     jne     _two
+P:0050 44F000 00F140  3  198  230     move    x:HW_TMR1CR,x0
+P:0052 0AE080         4  202  231     jmp     (r0)
+                              232 _two
+P:0053 4C8000r        2  204  233     move    y:<Const_000002,x0
+P:0054 200045         2  206  234     cmp     x0,a
+P:0055 0AF0A2 rrrrrr  6  212  235     jne     _error
+P:0057 44F000 00F180  3  215  236     move    x:HW_TMR2CR,x0
+P:0059 0AE080         4  219  237     jmp     (r0)
+                              238 _error
+                              239     error
+P:005A 000200         4  223  239     debug
+                              241 ;///////////////////////////////////////////////////////////////////////////////
+                              242 ;
+                              243 ;>  Name:           SysLoadTimerCount
+                              244 ;
+                              245 ;   Type:           Function
+                              246 ;
+                              247 ;   Description:    Loads the value in x1 into the timer count register for the timer specified in x0.
+                              248 ;
+                              249 ;   Inputs:         x0 = Timer Number
+                              250 ;                   x1 = Timer Count Value
+                              251 ;                   r0 = Return Address
+                              252 ;
+                              253 ;   Outputs:        none
+                              254 ;                   
+                              255 ;   Notes:          
+                              256 ;<
+                              257 ;///////////////////////////////////////////////////////////////////////////////
+                              258 SysLoadTimerCount
+P:005B 208E00         2  225  259     move    x0,a
+P:005C 200003         2  227  260     tst     a
+P:005D 0AF0A2 rrrrrr  6  233  261     jne     _one
+                              262 _zero
+P:005F 457000 00F101  3  236  263     move    x1,x:HW_TMR0CNTR
+P:0061 0AE080         4  240  264     jmp     (r0)
+                              265 _one
+P:0062 4C8000r        2  242  266     move    y:<Const_000001,x0
+P:0063 200045         2  244  267     cmp     x0,a
+P:0064 0AF0A2 rrrrrr  6  250  268     jne     _two
+P:0066 457000 00F141  3  253  269     move    x1,x:HW_TMR1CNTR
+P:0068 0AE080         4  257  270     jmp     (r0)
+                              271 _two
+P:0069 4C8000r        2  259  272     move    y:<Const_000002,x0
+P:006A 200045         2  261  273     cmp     x0,a
+P:006B 0AF0A2 rrrrrr  6  267  274     jne     _error
+P:006D 457000 00F181  3  270  275     move    x1,x:HW_TMR2CNTR
+P:006F 0AE080         4  274  276     jmp     (r0)
+                              277 _error
+                              278     error
+P:0070 000200         4  278  278     debug
+                              280     endsec

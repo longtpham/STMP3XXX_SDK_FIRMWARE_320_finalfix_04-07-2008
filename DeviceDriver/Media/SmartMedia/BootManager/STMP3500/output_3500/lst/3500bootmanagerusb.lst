@@ -1,0 +1,528 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\stmp3500\3500bootmanagerusb.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ;  Copyright(C) SigmaTel, Inc. 2002-2004
+                                3 ;
+                                4 ;  File        : 3500bootmanagerusb.asm     previous comment: 3500bootusb.asm
+                                5 ;  Description : USB Boot module
+                                6 ;///////////////////////////////////////////////////////////////////////////////
+                                7 
+                                9         
+                               10             
+                               11 ;///////////////////////////////////////////////////////////////////////////////
+                               12 ;   Includes
+                               13 ;///////////////////////////////////////////////////////////////////////////////
+                               14 
+                               26         
+                               27 
+                               28         section BOOTROM_USB
+                               29 
+                               30 ;///////////////////////////////////////////////////////////////////////////////
+                               31 ;   External Definitions
+                               32 ;///////////////////////////////////////////////////////////////////////////////
+                               33         global  UsbReceive,UsbInitPort,UsbExit
+                               34         global  ProcessUsbEp1Data
+                               35         global  UsbError
+                               36         global  DelayLongB
+                               37         global  USBBufPtr
+                               38         global  Usb20Buffer
+                               39      
+                               40 ;///////////////////////////////////////////////////////////////////////////////
+                               41 ;   External References
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               43 
+                               44         extern  ROM_SIZE
+                               45         extern  BootInfo
+                               46         extern  SetupTimeOut,CheckTimeOut
+                               47 
+                               48         extern  USB_SINKBUFPTR
+                               49         extern  USB_SINKHEADPTR,USB_SINKTAILPTR
+                               50         extern  UsbPageState,UsbLagniappe,UsbEp1IrqPending,UsbProgress
+                               51 
+                               52         extern  UsbInfo    
+                               53         extern  UsbSaveY1
+                               54         
+                               55         extern  BOOT_INFO_ATTEMPT         
+                               56         extern  BOOT_INFO_SUCCESS         
+                               57         extern  BOOT_INFO_TIMEOUT
+                               58     
+                               59         extern  USB_INFO_USB_DETECTED    
+                               60         extern  USB_INFO_USB_DISCONNECTED
+                               61         extern  USB_INFO_PLL_TIMEOUT      
+                               62         extern  USB_INFO_BOOT_TIMEOUT
+                               63 
+                               64         extern  TimeOutInitHigh
+                               65         extern  TimeOutInitLow     
+                               66         
+                               67 ;        WARN   '***Uncomment defines when ready to add 3500 USB Bootmanager***'        
+                               73         extern  DetectUsb
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               74         extern  DelayLongBReg
+                               75         
+                               76 
+                               77 
+                               78 
+                               79 ;///////////////////////////////////////////////////////////////////////////////
+                               80 ;   Equates
+                               81 ;///////////////////////////////////////////////////////////////////////////////
+                               82 
+                               83 USB20_BUFSIZE       equ     $0016
+                               84 USB20_BUFMODULO     equ     $FFFF
+                               85 USB_SINKBUFSIZE     equ     $0040
+                               86 USB_SINKMODULO      equ     $003F
+                               87 
+                               88 USB_PAGESTATE_A     equ     1
+                               89 USB_PAGESTATE_B     equ     2
+                               90 USB_PAGESTATE_C     equ     3
+                               91 
+                               92 USB_EP1IRQPEND      equ     0
+                               93 
+                               94 USB_PROG_ANALOG     equ     0
+                               95 USB_PROG_ICOLL      equ     1
+                               96 USB_PROG_USBENABLED equ     3
+                               97 USB_PROG_IRQENABLED equ     4
+                               98 
+                               99 TIMEOUT_USB_HIGH    equ     (4*3)+1 ; tweaked to 5 minutes
+                              100 TIMEOUT_USB_LOW     equ     0
+                              101 
+                              102 ;///////////////////////////////////////////////////////////////////////////////
+                              103 ;   X Memory
+                              104 ;///////////////////////////////////////////////////////////////////////////////
+X:0000                        105     org x,"USB20_Buffer":
+                              106 ; Add $140 as a filler if not EEPROM build because the ".USB20_Device_Driver"
+                              107 ;  section is not in that build.  Without the pad words we overwrite stack
+                              108 ;  because the NAND code assumes it can overwrite the USB memory at will.
+X:0000                        112 Usb20Buffer     ds  (USB20_BUFSIZE+$140)
+   |   RESERVED                   
+X:0155
+                              114 
+                              115 USB_EP1BUFPTR    
+                              116         
+                              117 ;///////////////////////////////////////////////////////////////////////////////
+                              118 ;   Y Memory
+                              119 ;///////////////////////////////////////////////////////////////////////////////   
+                              120         
+                              121 ;///////////////////////////////////////////////////////////////////////////////
+                              122 ;   Code
+                              123 ;///////////////////////////////////////////////////////////////////////////////
+                              124 
+P:0000                        125     org     p,"BOOTMANAGER_USB_P":
+                              126     
+                              127 ;///////////////////////////////////////////////////////////////////////////////
+                              128 ;   UsbInitPort
+                              129 ;///////////////////////////////////////////////////////////////////////////////
+                              130 UsbInitPort
+                              131 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              132     ; set the boot attempt flag
+P:0000 0A7020rrrrrrr  6    6  133     bset    #BOOT_INFO_ATTEMPT,x:BootInfo
+                              134     
+                              135     ; init the timeout
+P:0002 44F400 00000D  3    9  136     move    #>TIMEOUT_USB_HIGH,x0
+P:0004 447000 rrrrrr  3   12  137     move    x0,x:TimeOutInitHigh
+P:0006 44F400 000000  3   15  138     move    #>TIMEOUT_USB_LOW,x0
+P:0008 447000 rrrrrr  3   18  139     move    x0,x:TimeOutInitLow
+                              140 
+                              141     ; Detect USB
+P:000A 0BF080 rrrrrr  6   24  142     jsr     SetupTimeOut
+                              143 _wait_for_usb
+P:000C 0BF080 rrrrrr  6   30  144     jsr     DetectUsb
+P:000E 0AF0A8 rrrrrr  6   36  145     jcs     _usb_detected
+P:0010 0BF080 rrrrrr  6   42  146     jsr     CheckTimeOut
+P:0012 0AF0A0 rrrrrr  6   48  147     jcc     _wait_for_usb
+P:0014 000200         4   52  148     debug
+P:0015 0AF080 rrrrrr  6   58  149     jmp     UsbError
+                              150 
+                              151 _usb_detected
+P:0017 0A7020rrrrrrr  6   64  152     bset    #USB_INFO_USB_DETECTED,x:BootInfo
+                              153     
+                              154     ; delay to debounce the USB sense line.  The UsbReceive loop watches for
+                              155     ;   a disconnect on USB so if we were in the time out loop waiting and
+                              156     ;   then the cable was inserted we need to delay before checking again.
+                              161 
+                              162         WARN   '****** Do we really need this, at startup costs 40mSecs *****'
+as2410 W138: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\stmp3500\3500bootmanagerusb.asm: line 162 : warning: ****** Do we really need this, at startup costs 40mSecs *****
+                              163 
+P:0019 20001B         2   66  164         clr     b
+P:001A 51F400 01E000  3   69  165         move    #>WAIT_10_MS,b0
+P:001C 20003A         2   71  166         asl     b                       ; debounce for 20ms
+P:001D 0BF080 rrrrrr  6   77  167         jsr     DelayLongBReg
+                              168 
+                              170         
+                              171     ; clear progress
+P:001F 44F400 000000  3   80  172     move    #>$000000,x0
+P:0021 447000 rrrrrr  3   83  173     move    x0,x:UsbProgress
+                              174 
+                              175 ;    WARN '*************** Add code to setup power and clocks for the USB2.0 '
+                              176 ;   Code to setup clocks is taken care of in bootmanager.asm.
+                              177 
+                              186           
+                              187 
+                              188     ; set progress
+P:0023 0A7020 rrrrrr  6   89  189     bset    #USB_PROG_ANALOG,x:UsbProgress
+                              190     
+                              191     ; Steer USB interrupts onto IVL1.  Actually, steer everything by just
+                              192     ;   writing 0's to all the steering registers
+P:0025 44F400 000000  3   92  193     move    #>$000000,x0
+P:0027 447000 00F308  3   95  194     move    x0,x:HW_ICLSTEER0R
+P:0029 447000 00F309  3   98  195     move    x0,x:HW_ICLSTEER1R
+P:002B 447000 00F30A  3  101  196     move    x0,x:HW_ICLSTEER2R
+                              197     
+                              198     ; Set the USB interrupt priorities:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              199     ;  for now we'll go with equal priorities
+P:002D 44F400 000000  3  104  200     move    #>$000000,x0
+P:002F 447000 00F304  3  107  201     move    x0,x:HW_ICLPRIOR0R
+P:0031 447000 00F305  3  110  202     move    x0,x:HW_ICLPRIOR1R
+P:0033 447000 00F306  3  113  203     move    x0,x:HW_ICLPRIOR2R
+P:0035 447000 00F307  3  116  204     move    x0,x:HW_ICLPRIOR3R
+                              205     
+                              206     ; Enable ICOLL interrupts
+P:0037 0A7034 00F300  6  122  207     bset    #HW_ICLENABLE0R_SEN20_BITPOS,x:HW_ICLENABLE0R    
+P:0039 0A7035 00F300  6  128  208     bset    #HW_ICLENABLE0R_SEN21_BITPOS,x:HW_ICLENABLE0R    
+P:003B 0A7036 00F300  6  134  209     bset    #HW_ICLENABLE0R_SEN22_BITPOS,x:HW_ICLENABLE0R    
+                              210     
+                              211     ; set progress
+P:003D 0A7021 rrrrrr  6  140  212     bset    #USB_PROG_ICOLL,x:UsbProgress
+                              213 
+                              214 
+                              215     ;
+                              216     ; Init the sink head & tail ptrs
+                              217     ;
+P:003F 44F400 rrrrrr  3  143  218     move    #USB_SINKBUFPTR,x0
+P:0041 447000 rrrrrr  3  146  219     move    x0,x:USB_SINKHEADPTR
+P:0043 447000 rrrrrr  3  149  220     move    x0,x:USB_SINKTAILPTR
+                              221 
+                              222     ; Set initial page state
+P:0045 44F400 000001  3  152  223     move    #>USB_PAGESTATE_A,x0                    ; initial state is A
+P:0047 447000 rrrrrr  3  155  224     move    x0,x:UsbPageState
+                              225     
+                              226 
+                              227     WARN '***** Power Up and setup USB port here ... Check with hardware designers'
+as2410 W138: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\stmp3500\3500bootmanagerusb.asm: line 227 : warning: ***** Power Up and setup USB port here ... Check with hardware designers
+                              228 
+                              229     ;
+                              230     ; Enable the USB port
+                              231     ;
+                              232     ; What about USB detect interruption. I do not wish to enable it
+                              233     ; I just want to poll it. Is this OK ????
+P:0049 447000 00F201  3  158  237     move    x0,x:HW_USBDMAOFF
+                              238 
+P:004B 0A7000 00F200  6  164  239     bclr    #HW_USBCSR_USBEN_BITPOS,x:HW_USBCSR     ; Make sure the port is disabled
+P:004D 0A7027 00F200  6  170  243     bset    #HW_USBCSR_CLKOFF_BITPOS,x:HW_USBCSR    ; Turn OFF the USB port clock
+P:004F 0A7020 00F200  6  176  245     bset    #HW_USBCSR_USBEN_BITPOS,x:HW_USBCSR     ; Enable STMP USB state machines
+                              246     
+                              247     ; set progress
+P:0051 0A7023 rrrrrr  6  182  248     bset    #USB_PROG_USBENABLED,x:UsbProgress
+                              249 
+                              250     ;
+                              251     ; Enable interrupts
+                              252     ;    
+P:0053 0AF949         4  186  253     bclr    #9,sr
+P:0054 0AF948         4  190  254     bclr    #8,sr
+                              255 
+                              256     ; Enable USB arc and setup the services
+                              260 
+                              261     ;; Enable IV1 interrupt.
+P:0055 44F400 000000  3  193  262     move    #>$0,x0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0057 0AC46D         4  197  263     bset    #13,x0
+P:0058 0AC46C         4  201  264     bset    #12,x0
+P:0059 08C43F         4  205  265     movep   x0,x:HW_IPR    
+                              266 
+                              267     ; set progress
+P:005A 0A7024 rrrrrr  6  211  268     bset    #USB_PROG_IRQENABLED,x:UsbProgress
+                              269 
+P:005C 00000C         4  215  270     rts
+                              271 
+                              272 _uip_pll_failure
+                              273     ; timed out - flag error and stop
+P:005D 0A7020rrrrrrr  6  221  274     bset    #USB_INFO_PLL_TIMEOUT,x:BootInfo
+P:005F 0AF080 rrrrrr  6  227  275     jmp     UsbError
+                              276 
+                              277 
+                              278 
+                              279 ;///////////////////////////////////////////////////////////////////////////////
+                              280 ;   USB Receive
+                              281 ;
+                              282 ;   Must be preserved: y1
+                              283 ;///////////////////////////////////////////////////////////////////////////////
+                              284 UsbReceive
+                              285 
+                              286     ; Save some registers
+                              287     ;
+P:0061 477000 rrrrrr  3  230  288     move    y1,x:UsbSaveY1
+                              289     
+                              290     ;   Wait for the USB Device to be configured before starting reception
+                              294     
+                              295     ; setup the timeout counter
+P:0063 0BF080 rrrrrr  6  236  296     jsr     SetupTimeOut
+                              297     
+                              298     ;
+                              299     ; If there's enough space in the sink buf, enable Bulk In endpoint
+                              300     ;
+                              301 _FindData
+P:0065 44F000 rrrrrr  3  239  302     move    x:UsbEp1IrqPending,x0
+                              303     ; If we get interrupted here then the ISR will clear the semaphore, and when
+                              304     ;   we get back from the ISR the following jset will be testing an old
+                              305     ;   value.  The old value will be 1, so we'll take the branch.  This is
+                              306     ;   benign, though, because we'll fall through and return some data and
+                              307     ;   when we get back we'll fall through the jset because the move
+                              308     ;   instruction above will now get a 0 for the semaphore. We'll fall through
+                              309     ;   the jset and check to see if there's enough room.  If enough, we'll
+                              310     ;   set the semaphore and enable the EP.  If not, we'll leave the EP
+                              311     ;   disabled.
+P:0067 0AC420 rrrrrr  6  245  312     jset    #USB_EP1IRQPEND,x0,_LessThan64BytesInSinkBuf
+                              313     ; See if there's enough room in the sink buffer to transfer the 
+                              314     ;   entire Ep1Buf
+P:0069 46F400 000040  3  248  315     move    #>USB_SINKBUFSIZE,y0    ; y0=buffer size
+P:006B 44F000 rrrrrr  3  251  316     move    x:USB_SINKHEADPTR,x0    ; a=head ptr
+P:006D 56F000 rrrrrr  3  254  317     move    x:USB_SINKTAILPTR,a     ; x0=tail ptr
+P:006F 21D100         2  256  318     move    a,r1                    ; save tail ptr
+P:0070 200044         2  258  319     sub     x0,a                    ; a=tail-head
+P:0071 0AF0A7 rrrrrr  6  264  320     jgt     _NoModuloCorrect        
+P:0073 200050         2  266  321     add     y0,a                    ; perform modulo correction
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              322 _NoModuloCorrect    
+P:0074 218500         2  268  323     move    a1,x1                   ; save available space
+P:0075 44F400 000016  3  271  324     move    #>USB20_BUFSIZE,x0
+P:0077 200045         2  273  325     cmp     x0,a
+P:0078 0AF0AF rrrrrr  6  279  326     jle     _LessThan64BytesInSinkBuf
+                              327 
+                              328     ; There's enough space - enable EP1 so we can get more data from
+                              329     ;  the USB.
+                              330         
+                              331     ; set the irq pending semaphore
+P:007A 0A7020 rrrrrr  6  285  332     bset    #USB_EP1IRQPEND,x:UsbEp1IrqPending
+                              333     
+                              334     ; Prepare the reception on endpoint 1
+P:007C 54F400 000001  3  288  335     move    #>1,a1                  ; Endpoint 1
+P:007E 60F400 rrrrrr  3  291  336     move    #>Usb20Buffer,r0        ; Data buffer pointer
+P:0080 55F400 000000  3  294  337     move    #>0,b1                  ; Starting at byte offset 0
+P:0082 44F400 000040  3  297  338     move    #>64,x0                 ; We like to receive 64 bytes
+P:0084 46F400 000000  3  300  339     move    #>0,y0                  ; It is not a data phase on a setup transfer
+P:0086 240000         2  302  343     move    #0,x0
+P:0087 200045         2  304  344     cmp     x0,a
+P:0088 0AF0A2 rrrrrr  6  310  345     jne     UsbError
+                              346 
+                              347 
+                              348 
+                              349 _LessThan64BytesInSinkBuf    
+                              350     ; see if there's any data in the sink buffer
+P:008A 46F400 000040  3  313  351     move    #>USB_SINKBUFSIZE,y0    ; y0=buffer size
+P:008C 44F000 rrrrrr  3  316  352     move    x:USB_SINKHEADPTR,x0    ; a=head ptr
+P:008E 56F000 rrrrrr  3  319  353     move    x:USB_SINKTAILPTR,a     ; x0=tail ptr
+P:0090 21D100         2  321  354     move    a,r1                    ; save tail ptr
+P:0091 200044         2  323  355     sub     x0,a                    ; a=tail-head
+P:0092 0AF0A7 rrrrrr  6  329  356     jgt     _NoModuloCorrect2       
+P:0094 200050         2  331  357     add     y0,a                    ; perform modulo correction
+                              358 _NoModuloCorrect2    
+                              359     ; find out if we have any data
+P:0095 45F400 000040  3  334  360     move    #>USB_SINKBUFSIZE,x1
+P:0097 200065         2  336  361     cmp     x1,a
+P:0098 0AF0A2 rrrrrr  6  342  362     jne     _data_found
+P:009A 0BF080 rrrrrr  6  348  363     jsr     CheckTimeOut
+P:009C 0AF0A8 rrrrrr  6  354  364     jcs     _usb_timeout
+                              365  
+                              366     ; Check USB plugged-in detection
+P:009E 0A702C 00F200  6  360  367     bset    #HW_USBCSR_PLUGGEDIN_EN_BITPOS,x:HW_USBCSR
+P:00A0 44F000 00F200  3  363  368     move    x:HW_USBCSR,x0
+                              369    ; Reflect the USBCSR_PLUGGEDIN bit on the Carry bit
+P:00A2 0BC46D         4  367  370     btst    #HW_USBCSR_PLUGGEDIN_BITPOS,x0 
+                              371     
+                              372 ;    jsr     DetectUsb          ; ttchange. If taking too long - strip
+                              373                                ; down to register manipulations above.
+P:00A3 0AF0A0 rrrrrr  6  373  374     jcc     _usb_disconnected
+P:00A5 0AF080 rrrrrr  6  379  375     jmp     _FindData        
+                              376 _data_found
+                              377     ; we have data so get a word & update the tail ptr
+P:00A7 05F421 00003F  4  383  378     movec   #>USB_SINKMODULO,m1     ; get the modulo
+P:00A9 000000         2  385  379     nop
+P:00AA 44D900         2  387  380     move    x:(r1)+,x0              ; get data, return it in x0
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00AB 617000 rrrrrr  3  390  381     move    r1,x:USB_SINKTAILPTR    ; update the tail ptr
+                              382 
+P:00AD 05F421 FFFFFF  4  394  383     movec   #-1,m1                  ; Restore r1 register to linear mode
+                              384                                     ; C functions expect it to be this way.
+                              385     ; Restore some registers
+                              386     ;
+P:00AF 47F000 rrrrrr  3  397  387     move    x:UsbSaveY1,y1
+                              388     
+P:00B1 00000C         4  401  389     rts
+                              390 
+                              391 _usb_timeout
+P:00B2 0A7020rrrrrrr  6  407  392     bset    #BOOT_INFO_TIMEOUT,x:BootInfo
+P:00B4 0AF080 rrrrrr  6  413  393     jmp     UsbError
+                              394 _usb_disconnected
+P:00B6 0A7020rrrrrrr  6  419  395     bset    #USB_INFO_USB_DISCONNECTED,x:BootInfo
+P:00B8 0AF080 rrrrrr  6  425  396     jmp     UsbError
+                              397     
+                              398 
+                              399 
+                              400 ;///////////////////////////////////////////////////////////////////////////////
+                              401 ;   USBExit
+                              402 ;///////////////////////////////////////////////////////////////////////////////
+                              403 UsbExit
+P:00BA 44F000 rrrrrr  3  428  404     move    x:BootInfo,x0
+P:00BC 0AC460r        4  432  405     bset    #BOOT_INFO_SUCCESS,x0
+P:00BD 447000 rrrrrr  3  435  406     move    x0,x:UsbInfo
+P:00BF 00000C         4  439  407     rts
+                              408 
+                              409 
+                              410 
+                              411 
+                              412 ;///////////////////////////////////////////////////////////////////////////////
+                              413 ;   UsbError
+                              414 ;///////////////////////////////////////////////////////////////////////////////
+                              415 UsbError
+P:00C0 44F000 rrrrrr  3  442  416     move    x:BootInfo,x0
+P:00C2 447000 rrrrrr  3  445  417     move    x0,x:UsbInfo
+P:00C4 000000         2  447  421         nop
+                              423 
+                              424     WARN '**** See with Hardware folks for shutdown part sequence ********'
+as2410 W138: C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\devicedriver\media\smartmedia\bootmanager\stmp3500\3500bootmanagerusb.asm: line 424 : warning: **** See with Hardware folks for shutdown part sequence ********
+                              425     ; shut down the part
+P:00C5 000200         4  451  426     debug
+                              427     
+                              428 
+                              429 
+                              430 ;///////////////////////////////////////////////////////////////////////////////
+                              431 ;   USB EP1 ISR
+                              432 ;
+                              433 ;   a1 = Number of bytes received
+                              434 ;///////////////////////////////////////////////////////////////////////////////
+                              435 ProcessUsbEp1Data    
+                              436     
+                              437     ; clear the irq pending semaphore
+P:00C6 0A7000 rrrrrr  6  457  438     bclr    #USB_EP1IRQPEND,x:UsbEp1IrqPending
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              439 
+P:00C8 218400         2  459  440     move    a1,x0
+P:00C9 200013         2  461  441     clr     a
+P:00CA 208800         2  463  442     move    x0,a0
+                              443     
+                              444     ;
+                              445     ; Copy Usb20Buffer to UsbSinkBuf & return
+                              446     ;    
+                              447 
+                              448     ; setup the buffer pointers
+P:00CB 60F400 rrrrrr  3  466  449     move    #Usb20Buffer,r0
+P:00CD 05F420 00FFFF  4  470  450     movec   #USB20_BUFMODULO,m0
+P:00CF 61F000 rrrrrr  3  473  451     move    x:USB_SINKHEADPTR,r1
+P:00D1 053FA1         2  475  452     movec   #USB_SINKMODULO,m1
+                              453     
+                              454     ; go to the current page state
+P:00D2 56F000 rrrrrr  3  478  455     move    x:>UsbPageState,a
+P:00D4 44F400 000001  3  481  456     move    #>USB_PAGESTATE_A,x0
+P:00D6 200045         2  483  457     cmp     x0,a                    
+P:00D7 0AF0AA rrrrrr  6  489  458     jeq     pagestatea                
+P:00D9 44F400 000002  3  492  459     move    #>USB_PAGESTATE_B,x0
+P:00DB 200045         2  494  460     cmp     x0,a                    
+P:00DC 0AF0AA rrrrrr  6  500  461     jeq     pagestateb                
+P:00DE 44F400 000003  3  503  462     move    #>USB_PAGESTATE_C,x0
+P:00E0 200045         2  505  463     cmp     x0,a                    
+P:00E1 0AF0AA rrrrrr  6  511  464     jeq     pagestatec                
+                              465 
+                              466 pagestatea
+                              467     ; in Page State A, Ep byte 0 is aligned with EpBuf byte 0
+P:00E3 061580 rrrrrr  6  517  468     do      #21,_done_a
+P:00E5 44D800         2  519  469     move    x:(r0)+,x0                          ; get data    
+P:00E6 445900         2  521  470     move    x0,x:(r1)+                          ; write to sink buf
+                         (4)  471 _done_a
+P:00E7 44E000         2  523  472     move    x:(r0),x0                           ; get lagniappe
+P:00E8 208E00         2  525  473     move    x0,a
+P:00E9 45F400 0000FF  3  528  474     move    #>$0000FF,x1                        ; mask off upper bytes
+P:00EB 200066         2  530  475     and     x1,a
+P:00EC 547000 rrrrrr  3  533  476     move    a1,x:UsbLagniappe                   ; save lagniappe
+P:00EE 617000 rrrrrr  3  536  477     move    r1,x:USB_SINKHEADPTR                ; update the UsbSinkHeadPtr
+P:00F0 45F400 000002  3  539  478     move    #>USB_PAGESTATE_B,x1                ; next state
+P:00F2 457000 rrrrrr  3  542  479     move    x1,x:UsbPageState
+P:00F4 0AF080 rrrrrr  6  548  480     jmp     usb_rx_done                         ; done
+                              481     
+                              482 pagestateb
+                              483     ; in Page State B, Ep byte 1 is aligned with EpBuf byte 0
+P:00F6 45F400 000080  3  551  484     move    #>$000080,x1                        ; setup the shift up factor
+P:00F8 46F000 rrrrrr  3  554  485     move    x:UsbLagniappe,y0                   ; get lagniappe
+                              486                                                 ; y0=__1100
+P:00FA 061580 rrrrrr  6  560  487     do      #21,_done_b
+P:00FC 44D800         2  562  488     move    x:(r0)+,x0                          ; get next
+P:00FD 44F4A0 0000FF  3  565  489     mpy     x0,x1,a         #>$0000FF,x0        ; mask lower 2 bytes into upper lagniappe 2 bytes
+                              490                                                 ; a1=____00, a0=2211__
+P:00FF 200046         2  567  491     and     x0,a                                ; mask of artificats of signed multiply
+P:0100 218700         2  569  492     move    a1,y1                               ; temp save lagniappe
+P:0101 210C00         2  571  493     move    a0,a1
+P:0102 200052         2  573  494     or      y0,a                                ; perform the mask
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0103 545900         2  575  495     move    a1,x:(r1)+                          ; write to sink buf
+P:0104 20E600         2  577  496     move    y1,y0                               ; setup lagniappe
+                        (17)  497 _done_b
+P:0105 44E000         2  579  498     move    x:(r0),x0                           ; get last partial word
+P:0106 47F400 008000  3  582  499     move    #>$008000,y1                        ; setup the shift factor
+P:0108 44F4C0 00FF00  3  585  500     mpy     x0,y1,a         #>$00FF00,x0
+P:010A 210400         2  587  501     move    a0,x0
+P:010B 44F4C0 00FF00  3  590  502     mpy     x0,y1,a         #>$00FF00,x0
+P:010D 200046         2  592  503     and     x0,a            
+P:010E 200052         2  594  504     or      y0,a
+P:010F 547000 rrrrrr  3  597  505     move    a1,x:UsbLagniappe                   ; save lagniappe
+P:0111 617000 rrrrrr  3  600  506     move    r1,x:USB_SINKHEADPTR                ; update the UsbSinkBufPtr
+P:0113 45F400 000003  3  603  507     move    #>USB_PAGESTATE_C,x1                ; next state
+P:0115 457000 rrrrrr  3  606  508     move    x1,x:UsbPageState
+P:0117 0AF080 rrrrrr  6  612  509     jmp     usb_rx_done
+                              510     
+                              511 pagestatec
+                              512     ; in Page State B, Ep byte 2 is aligned with EpBuf byte 0
+P:0119 45F400 008000  3  615  513     move    #>$008000,x1                        ; setup the shift up factor
+P:011B 46F000 rrrrrr  3  618  514     move    x:UsbLagniappe,y0                   ; get lagniappe
+                              515                                                 ; y0=____00
+P:011D 061680 rrrrrr  6  624  516     do      #22,_done_c
+P:011F 44D800         2  626  517     move    x:(r0)+,x0                          ; get next
+P:0120 44F4A0 00FFFF  3  629  518     mpy     x0,x1,a         #>$00FFFF,x0        ; mask lower byte into upper lagniappe byte
+                              519                                                 ; a1=__1100, a0=22____
+P:0122 200046         2  631  520     and     x0,a                                ; mask of artificats of signed multiply
+P:0123 218700         2  633  521     move    a1,y1                               ; temp save lagniappe
+P:0124 210C00         2  635  522     move    a0,a1
+P:0125 200052         2  637  523     or      y0,a                                ; perform the mask
+P:0126 545900         2  639  524     move    a1,x:(r1)+                          ; write to sink buf
+P:0127 20E600         2  641  525     move    y1,y0                               ; setup lagniappe
+                        (17)  526 _done_c
+                              527                                                 ; no lagniappe to save!
+P:0128 617000 rrrrrr  3  644  528     move    r1,x:USB_SINKHEADPTR                ; update the UsbSinkBufPtr
+P:012A 45F400 000001  3  647  529     move    #>USB_PAGESTATE_A,x1                ; next state
+P:012C 457000 rrrrrr  3  650  530     move    x1,x:UsbPageState
+                              531     
+                              532     
+                              533 usb_rx_done
+P:012E 05F420 FFFFFF  4  654  534     movec   #-1,m0                  ; Restore r0 register to linear mode
+P:0130 05F422 FFFFFF  4  658  535     movec   #-1,m2                  ; Restore r2 register to linear mode
+                              536                                     ; C functions expect it to be this way.
+P:0132 00000C         4  662  537     rts
+                              538     
+                              539     
+                              614     
+                              615     endsec

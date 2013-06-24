@@ -1,0 +1,82 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                                                                                                                                                       Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\common\sysfatwrite.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ;///////////////////////////////////////////////////////////////////////////////
+                                2 ; CopyRight (c) SigmaTel, Inc. 2003
+                                3 ; Filename: sysfatwrite.asm
+                                4 ;///////////////////////////////////////////////////////////////////////////////
+                                5     section SYSFUN_SysFatWrite
+                                7     opt     op
+                               16     list
+                               17     
+P:0000                         40     org p,"SysFATWrite_p":
+                               42 ;///////////////////////////////////////////////////////////////////////////////
+                               43 ;
+                               44 ;>  Name:           SysLoadFATWrite
+                               45 ;
+                               46 ;   Type:           Function
+                               47 ;
+                               48 ;   Description:    Loads the FAT12 Write code & parameters
+                               49 ;
+                               50 ;   Inputs:         none
+                               51 ;
+                               52 ;   Outputs:        none
+                               53 ;                   
+                               54 ;   Notes:          Sets the File System Mode to WRITE
+                               55 ;<
+                               56 ;///////////////////////////////////////////////////////////////////////////////
+                               57 SysLoadFATWrite
+                               60    
+                               61        ;If using funclet, function will be executed via funclet kernel
+                               62        CallFunclet RSRC_FUNCLET_SYSLOADFATWRITE
+P:0000 0D0080         4    4   62     jsr       $80
+P:0001 000049                  62     DC       RSRC_FUNCLET_SYSLOADFATWRITE  ; 1 word
+                               63    
+P:0000                         64        org p,"SYSFUNCLET_SysLoadFATWrite_p":
+                               65        
+P:0000 000049                  66        dc      RSRC_FUNCLET_SYSLOADFATWRITE           ; Funclet Resource number
+                               67    
+                               70     ; Load the FAT Write P memory
+P:0001 54F400 100000  3    3   75     move    #TARGET_MEM_P,a1            ; Overlay area is in P memory
+P:0003 44F400 000047  3    6   71     move    #>RSRC_FATWRITE_P_CODE,x0   ; Resource number
+P:0005 45F400 000002  3    9   72     move    #>RSRC_TYPE_DATA,x1         ; Resource type is data
+P:0007 47F400 rrrrrr  3   12   73     move    #>(F_lc_u_eFATWrite_P-F_lc_u_bFATWrite_P)*3,y1
+P:0009 46F400 rrrrrr  3   15   74     move    #>F_lc_u_bFATWrite_P,y0    ; Address of the overlay area
+P:000B 0BF080 rrrrrr  6   21   76     jsr     SysLoadResource
+                               79     ; Set FileSystemMode to indicate that FAT Write code is loaded    
+P:000D 61F400 rrrrrr  3   24   80     move    #FileSystemMode,r1
+P:000F 000000         2   26   80         nop             ; (inserted)
+P:0010 0A6160         4   30   82     bset    #FILE_SYS_MODE_BIT,y:(r1)       
+P:0011 00000C         4   34   84     rts
+                               88     
+                               89        ;If using funclet, switch counter back to original here
+P:0002                         90        org    p,"SysFATWrite_p":                             
+                               91    
+                               95 ;///////////////////////////////////////////////////////////////////////////////
+                               96 ;> Name: SysUnLoadFATWrite
+                               97 ;
+                               98 ;  Type: Function
+                               99 ;  Description: 
+                              100 ;  Inputs: 
+                              101 ;  Outputs: 
+                              102 ;  Notes: 
+                              103 ;<
+                              104 ;///////////////////////////////////////////////////////////////////////////////
+                              105 SysUnLoadFATWrite
+P:0002 0BF080 rrrrrr  6   10  106         jsr             FUpdateFSInfo
+P:0004 0BF080 rrrrrr  6   16  108     jsr     FFlushCache
+                              109     push a1     ; save error code for MMC write protect
+P:0006 5C5F13         2   18  110     clr A	            a1,y:(r7)+
+                              111   ;DS Based on advice from Akshay, the call to DriveFlush is removed, to reduce the time delay between songs.
+                              112   ;None of the team members recollect why it was put in here to start with. 
+                              113   ;jsr FDriveFlush  ; TOVERIFY3    
+P:0007 5E8000r        2   20  115     move    y:<Const_000001,a
+P:0008 0BF080 rrrrrr  6   26  116     jsr FDriveFlush
+P:000A 61F400 rrrrrr  3   29  118     move    #FileSystemMode,r1
+P:000C 000000         2   31  118         nop             ; (inserted)
+P:000D 0A6140         4   35  120     bclr    #FILE_SYS_MODE_BIT,y:(r1)       ;Clears the file system write
+                              121     pop a1     ; restore error code for MMC write protect
+P:000E 5CFF00         4   39  121     move    y:-(r7),a1
+P:000F 00000C         4   43  122     rts
+                              125     endsec

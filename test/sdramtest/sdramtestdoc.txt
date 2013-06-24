@@ -1,0 +1,43 @@
+SDRAM test Documentation
+----------------------
+
+Functional Description
+----------------------
+The test verifies the data consistency of the SDRAM using the 8-bit bus. The test requires a 128Mbit SDRAM in order to run.  We write data to the SDRAM and read it back from the same location. Then we compare the 2 sets of data for consistency.
+
+The following are the modules present in the test structure:
+
+- sdram.c: This module holds access and control functions for the SDRAM memory interface peripheral. These functions set the hardware parameters and kick off the transaction of moving data between the SDRAM and X memory. The ‘sdraminittrans()’ function is the one that kicks of the transaction and polls until it is complete. 
+
+- support.c: This module holds support functions for the SDRAM tests. They are called in the main() function. These functions in turn call the functions in the ‘sdram.c’ file. (In the final test structure of SDK, the support module is to contain functionality that is common to test modules of different parts of the SDK.) The support functionality includes ‘initialization’ routines for source and returned data, SDRAM memory, ‘test’ routines which call functions in the ‘sdram.c’ file to initiate transaction of data between SDRAM and X memory and ‘verify’ routines which verify the result of the transaction.
+
+- sdramtest.c: This module holds the main program and a series of functions that test different features of the SDRAM.
+
+
+Build Options
+-------------
+Usage : sdramtest [ALL]
+     	ALL    = rebuilds all files
+
+Test Execution
+--------------
+The ‘test()’ function is called repeatedly by the main program. The function writes data to the SDRAM from X memory (source_data) and then uses another transaction to transfer data back to the X memory (returned_data). It then verifies if the sent data and received data are consistent. If the test fails, the external address value (address value in the SDRAM where the transaction started) is stored in the ‘test_result’ array. 
+To verify the result of the transaction, the ‘source_data’ and ‘returned_data’ sections are compared using the ‘verify_result()’ and the ‘verify_modulo()’ functions.
+Before starting another transaction, the address range used in the SDRAM is initialized using the ‘erase_used_sdram()’ function.
+
+The tests managed to confirm that there were errors with data consistency whilst writing data to SDRAM. The errors occur when we start writing data in a row and finish writing on the next row. However, this problem does not arise at all address locations.
+
+There is a provision for overcoming these failures by using the software workaround provided. Setting the ‘SOFT_WORKAROUND’ variable will enable the software workaround. To disable the software workaround, comment out the statement, 
+‘#define SOFT_WORKAROUND’ , present in the ‘sdram.c’ file. In the default state, the workaround is kept enabled.
+
+How software workaround works?
+The error is because the data that is transferred between the X memory and SDRAM ends up being inconsistent when we start writing in a particular row and finish writing on the next row, thereby traversing through an edge of a row of the SDRAM. Hence, the workaround calculates if, in a particular transaction, data will be written over to the next row, by subtracting the address of the end of the row from the current external address and comparing it to the number of bytes being transferred. If so, a single transaction is broken down into two different transactions. In the first transaction, the number of bytes transferred is exactly equal to the amount of data that can be fit in the same row. The second transaction writes the remaining data on the next row. If the number of bytes remaining is more than the amount of data that the complete second row can hold, another transaction is used to write on the next row and so on.
+Thus, the problem of writing through the edge of the row is avoided.
+
+
+Test Architecture
+-----------------
+Modules used in the test:
+No modules are used in the test. Since the main operation is to confirm that data written to the RAM and then read back is still consistent, we dont need any modules.
+Resource:
+There are no resources needed, hence there is no 'resource.inc' file needed.

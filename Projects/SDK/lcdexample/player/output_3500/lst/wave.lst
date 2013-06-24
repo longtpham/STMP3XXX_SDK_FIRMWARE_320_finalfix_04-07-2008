@@ -1,0 +1,488 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfcbcbb.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;         wave.c:
+                               96 ; 1    |/*;;***********************************************************************
+                               97 ; 2    |;SigmaTel, Inc
+                               98 ; 3    |;$Archive: $
+                               99 ; 4    |;$Revision:  $
+                              100 ; 5    |;$Date: $
+                              101 ; 6    |;Description: 
+                              102 ; 7    |;***********************************************************************/
+                              103 ; 8    |
+                              104 ; 9    |#ifdef ADPCMTEST
+                              105 ; 10   |#include <stdio.h>
+                              106 ; 11   |#endif
+                              107 ; 12   |#include "defs.h"
+                              108 
+                              110 
+                              111 ; 1    |typedef long DWORD;
+                              112 ; 2    |typedef int WORD;
+                              113 ; 3    |typedef int BYTE;
+                              114 ; 4    |
+                              115 
+                              117 
+                              118 ; 13   |#include "wavedefs.h"
+                              119 
+                              121 
+                              122 ; 1    |// Supported algorithms
+                              123 ; 2    |#define         WAVE_FORMAT_PCM             0x01
+                              124 ; 3    |#define         WAVE_FORMAT_ADPCM               0x02
+                              125 ; 4    |#define         WAVE_FORMAT_IMA_ADPCM   0x11
+                              126 ; 5    |#define         WAVE_FORMAT_G721_ADPCM  0x40
+                              127 ; 6    |
+                              128 ; 7    |// Supported chunk types
+                              129 ; 8    |#define         RIFF_CKID               0
+                              130 ; 9    |#define         WAVE_CKID               1
+                              131 ; 10   |#define         FMT_CKID                2
+                              132 ; 11   |#define         FACT_CKID               3
+                              133 ; 12   |#define         DATA_CKID               4
+                              134 ; 13   |// Add more Ckids here
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              135 ; 14   |
+                              136 ; 15   |#define         UNKNOWN_CKID    5
+                              137 ; 16   |#define         TOTAL_CKID              5
+                              138 ; 17   |
+                              139 ; 18   |
+                              140 ; 19   |#define     ADPCM_SOURCE_BUF_SIZE    2048
+                              141 
+                              143 
+                              144 ; 14   |#include "bitstreamwave.h"
+                              145 
+                              147 
+                              148 ; 1    |
+                              149 ; 2    |#ifndef ADPCMTEST
+                              150 ; 3    |
+                              151 ; 4    |extern _asmfunc char GetByte(void);
+                              152 ; 5    |extern _asmfunc int GetWord();
+                              153 ; 6    |extern _asmfunc int GetSWord();
+                              154 ; 7    |extern _asmfunc long GetDWord();
+                              155 ; 8    |extern _asmfunc void WriteByte(char byte);
+                              156 ; 9    |extern _asmfunc void WriteWord(int word);
+                              157 ; 10   |extern _asmfunc void WriteDWord(long int word);
+                              158 ; 11   |extern _asmfunc void Wave_Fill_Input_Bitstream_Buffer(int size);
+                              159 ; 12   |extern _asmfunc void Wave_Flush_Encoded_Bitstream_Buffer();
+                              160 ; 13   |extern _asmfunc long Get_file_offset();
+                              161 ; 14   |extern _asmfunc void Seek_data_offset(long offset);
+                              162 ; 15   |extern _asmfunc void Seek_to_zero();
+                              163 ; 16   |extern _asmfunc void SkipData(long amount);
+                              164 ; 17   |
+                              165 ; 18   |#else
+                              166 ; 19   |
+                              167 ; 20   |char GetByte();
+                              168 ; 21   |int GetWord();
+                              169 ; 22   |int GetSWord();
+                              170 ; 23   |long GetDWord();
+                              171 ; 24   |void WriteByte(char byte);
+                              172 ; 25   |void WriteWord(int word);
+                              173 ; 26   |void WriteDWord(long int word);
+                              174 ; 27   |void Wave_Fill_Input_Bitstream_Buffer(int size);
+                              175 ; 28   |void Wave_Flush_Encoded_Bitstream_Buffer();
+                              176 ; 29   |long int Get_file_offset();
+                              177 ; 30   |void Seek_data_offset(long int offset);
+                              178 ; 31   |void Seek_to_zero();
+                              179 ; 32   |void SkipData(long int amount);
+                              180 ; 33   |
+                              181 ; 34   |#endif
+                              182 
+                              185 
+                              186 ; 15   |
+                              187 ; 16   |
+                              188 ; 17   |DWORD g_Wave_dwWavDuration;
+                              189 
+                              191 
+                              192 ; 18   |WORD  g_Wave_wFormatTag;                
+                              193 ; 19   |WORD  g_Wave_wChannels;         
+                              194 ; 20   |DWORD g_Wave_dwSamplesPerSec;
+                              195 ; 21   |DWORD g_Wave_dwAvgBytesPerSec;
+                              196 ; 22   |WORD  g_Wave_wBlockAlign;       
+                              197 ; 23   |WORD  g_Wave_wnSamplesPerBlock;
+                              198 ; 24   |WORD  g_Wave_wBitsPerSample;
+                              199 ; 25   |DWORD g_Wave_wMegicWord;
+                              200 ; 26   |long int g_Wave_datachunksize;
+                              201 ; 27   |long int g_Wave_riffsize = 0;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              202 
+                              203 
+Y:0000                        204         org     y,".ydatawave",init:
+                              205 Fg_Wave_riffsize:
+Y:0000 000000 000000          206         dc      $000000,$000000
+                              209 
+                              210 ; 28   |long int g_Wave_wavesize = 0;
+                              211 
+                              212 Fg_Wave_wavesize:
+Y:0002 000000 000000          213         dc      $000000,$000000
+                              216 
+                              217 ; 29   |long int g_Wave_datasize = 0;
+                              218 
+                              219 Fg_Wave_datasize:
+Y:0004 000000 000000          220         dc      $000000,$000000
+                              223 
+                              224 ; 30   |long int g_Wave_data_offset = 0;
+                              225 
+                              226 Fg_Wave_data_offset:
+Y:0006 000000 000000          227         dc      $000000,$000000
+                              230 
+                              231 ; 31   |WORD TotalSamplesPerBlock;
+                              232 ; 32   |int riff_file_flag;
+                              233 ; 33   |#ifdef IMA_ADPCM
+                              234 ; 34   |extern int _Y IMA_pred0;
+                              235 ; 35   |extern int _Y IMA_index0;  
+                              236 ; 36   |extern int _Y IMA_pred1;
+                              237 ; 37   |extern int _Y IMA_index1;  
+                              238 ; 38   |#endif
+                              239 ; 39   |
+                              240 ; 40   |long int                DataSize[5];            // Stores Nested Chunk sizes. Upto 5 level
+                                  s allowed
+                              241 ; 41   |#if defined(MS_ADPCM)|defined(IMA_ADPCM)
+                              242 ; 42   |WORD  g_Wave_wcbSize;
+                              243 ; 43   |#endif
+                              244 ; 44   |#ifdef MS_ADPCM
+                              245 ; 45   |WORD  g_Wave_wnNumCoef;
+                              246 ; 46   |short  g_Wave_wCoef1[10];               // Provision for 10 coefficient sets. Signed data.
+                                  
+                              247 ; 47   |short  g_Wave_wCoef2[10];
+                              248 ; 48   |extern int _Y first_block_flag;
+                              249 ; 49   |// Keep these constants separate, from above buffer
+                              250 ; 50   |short int g_Wave_iCoef1Array[7] =
+                              251 
+                              252 Fg_Wave_iCoef1Array:
+Y:0008 000100 000200          253         dc      $000100,$000200,$000000,$0000c0,$0000f0,$0001cc,$000188
+       000000 0000C0              
+       0000F0 0001CC              
+       000188                     
+                              257 
+                              258 ; 51   |{
+                              259 ; 52   |        256,
+                              260 ; 53   |        512,
+                              261 ; 54   |        0,
+                              262 ; 55   |        192,
+                              263 ; 56   |        240,
+                              264 ; 57   |        460,
+                              265 ; 58   |        392
+                              266 ; 59   |};
+                              267 ; 60   |short int g_Wave_iCoef2Array[7] = 
+                              268 
+                              269 Fg_Wave_iCoef2Array:
+Y:000F 000000 FFFF00          270         dc      $000000,$ffff00,$000000,$000040,$000000,$ffff30,$ffff18
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+       000000 000040              
+       000000 FFFF30              
+       FFFF18                     
+                              273 
+                              274 ; 61   |{ 
+                              275 ; 62   |        0,
+                              276 ; 63   |        -256,
+                              277 ; 64   |        0,
+                              278 ; 65   |        64,
+                              279 ; 66   |        0,
+                              280 ; 67   |        -208,
+                              281 ; 68   |        -232
+                              282 ; 69   |};
+                              283 ; 70   |
+                              284 ; 71   |#endif
+                              285 ; 72   |
+                              286 ; 73   |long int        ckidlist[TOTAL_CKID] =
+                              287 
+                              288 Fckidlist:
+Y:0016 464952 000046          289         dc      $464952,$000046,$564157,$000045,$746d66,$000020,$636166,$000074
+       564157 000045              
+       746D66 000020              
+       636166 000074              
+Y:001E 746164 000061          290         dc      $746164,$000061
+                              294 
+                              295 ; 74   |{
+                              296 ; 75   |        0x46464952,    // RIFF_CKID
+                              297 ; 76   |        0x45564157,        // WAVE_CKID
+                              298 ; 77   |        0x20746d66,        // FMT_CKID
+                              299 ; 78   |        0x74636166,        // FACT_CKID
+                              300 ; 79   |        0x61746164         // DATA_CKID
+                              301 ; 80   |};
+                              302 ; 81   |
+                              303 ; 82   |long int list_ckid = 0x5453494c; // LIST
+                              304 
+                              305 Flist_ckid:
+Y:0020 53494C 000054          306         dc      $53494c,$000054
+                              309 
+                              310 ; 83   |long int info_ckid = 0x4f464e49; // INFO
+                              311 
+                              312 Finfo_ckid:
+Y:0022 464E49 00004F          313         dc      $464e49,$00004f
+                              316 
+                              317 ; 84   |long int isft_ckid = 0x54465349; // ISFT
+                              318 
+                              319 Fisft_ckid:
+Y:0024 465349 000054          320         dc      $465349,$000054
+                              323 
+                              324 ; 85   |short int sigmatel[5] =
+                              325 
+                              326 Fsigmatel:
+Y:0026 004953 004D47          327         dc      $004953,$004d47,$005441,$004c45,$000000
+       005441 004C45              
+       000000                     
+                              331 
+                              332 ; 86   |{
+                              333 ; 87   |    0x4953,
+                              334 ; 88   |    0x4d47,
+                              335 ; 89   |    0x5441,
+                              336 ; 90   |    0x4c45,
+                              337 ; 91   |    0x0
+                              338 ; 92   |};
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              339 ; 93   |
+                              340 ; 94   |
+                              341 ; 95   |#ifdef IMA_ADPCM
+                              342 ; 96   |WORD  g_Wave_wcbSize;
+                              343 ; 97   |#endif
+                              344 ; 98   |
+                              345 ; 99   |
+                              346 ; 100  |
+                              347 ; 101  |
+                              348 ; 102  |
+                              349 ; 103  |#ifdef IMA_ADPCM
+                              350 ; 104  |void Init_IMA_ADPCM_States(void);
+                              351 ; 105  |#endif
+                              352 ; 106  |
+                              353 ; 107  |#ifdef IMA_ADPCM
+                              354 ; 108  |void Init_IMA_ADPCM_States(void)
+                              355 ; 109  |{
+                              356 
+P:0000                        357         org     p,".ptextwave":
+                              362 FInit_IMA_ADPCM_States:
+                              363 
+                              364 ; 110  |    IMA_pred0 = 0;
+                              365 
+P:0000 20001B         2    2  367         clr     b   
+P:0001 5F7000 rrrrrr  3    5  368         move    b,y:FIMA_pred0
+                              369 
+                              370 ; 111  |    IMA_index0 = 0;
+                              371 
+P:0003 5F7000 rrrrrr  3    8  373         move    b,y:FIMA_index0
+                              374 
+                              375 ; 112  |    IMA_pred1 = 0;
+                              376 
+P:0005 5F7000 rrrrrr  3   11  378         move    b,y:FIMA_pred1
+                              379 
+                              380 ; 113  |    IMA_index1 = 0;
+                              381 
+P:0007 5F7000 rrrrrr  3   14  383         move    b,y:FIMA_index1
+                              384 
+                              385 ; 114  |}    
+                              386 
+P:0009 00000C         4   18  388         rts
+                              390 
+                              391 ; 115  |#endif
+                              392 ; 116  |
+                              393 ; 117  |#ifdef MS_ADPCM
+                              394 ; 118  |void Init_MS_ADPCM_States(void);
+                              395 ; 119  |#endif
+                              396 ; 120  |
+                              397 ; 121  |
+                              398 ; 122  |#ifdef MS_ADPCM
+                              399 ; 123  |void Init_MS_ADPCM_States(void)
+                              400 ; 124  |{
+                              401 
+                              406 FInit_MS_ADPCM_States:
+                              407 
+                              408 ; 125  |    first_block_flag=1;
+                              409 
+P:000A 2D0100         2   20  411         move    #1,b1
+P:000B 5D7000 rrrrrr  3   23  412         move    b1,y:Ffirst_block_flag
+                              413 
+                              414 ; 126  |}    
+                              415 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:000D 00000C         4   27  417         rts
+                              419 
+                              420 ; 127  |#endif
+                              421 
+                              423 
+                              427 
+Y:0000                        428         org     y,".ybsswave",bss:
+                              429 Fg_Wave_wCoef1:
+Y:0000                        430         ds      10
+   |   RESERVED                   
+Y:0009
+                              433 Fg_Wave_wCoef2:
+Y:000A                        434         ds      10
+   |   RESERVED                   
+Y:0013
+                              437 Fg_Wave_wBlockAlign:
+Y:0014 RESERVED               438         ds      1
+Y:0014
+                              441 Fg_Wave_dwWavDuration:
+Y:0015                        442         ds      2
+   |   RESERVED                   
+Y:0016
+                              445 Fg_Wave_wFormatTag:
+Y:0017 RESERVED               446         ds      1
+Y:0017
+                              449 Fg_Wave_wnSamplesPerBlock:
+Y:0018 RESERVED               450         ds      1
+Y:0018
+                              453 FDataSize:
+Y:0019                        454         ds      10
+   |   RESERVED                   
+Y:0022
+                              458 Fg_Wave_dwSamplesPerSec:
+Y:0023                        459         ds      2
+   |   RESERVED                   
+Y:0024
+                              462 Fg_Wave_wChannels:
+Y:0025 RESERVED               463         ds      1
+Y:0025
+                              466 FTotalSamplesPerBlock:
+Y:0026 RESERVED               467         ds      1
+Y:0026
+                              470 Fg_Wave_wMegicWord:
+Y:0027                        471         ds      2
+   |   RESERVED                   
+Y:0028
+                              474 Fg_Wave_dwAvgBytesPerSec:
+Y:0029                        475         ds      2
+   |   RESERVED                   
+Y:002A
+                              478 Fg_Wave_wBitsPerSample:
+Y:002B RESERVED               479         ds      1
+Y:002B
+                              483 Fg_Wave_datachunksize:
+Y:002C                        484         ds      2
+   |   RESERVED                   
+Y:002D
+                              490 Fg_Wave_wcbSize:
+Y:002E RESERVED               491         ds      1
+Y:002E
+                              494 Friff_file_flag:
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:002F RESERVED               495         ds      1
+Y:002F
+                              498 Fg_Wave_wnNumCoef:
+Y:0030 RESERVED               499         ds      1
+Y:0030
+                              500 
+                              501         extern  y:FIMA_index0, y:FIMA_index1, y:FIMA_pred0, y:FIMA_pred1
+                              502         extern  y:Ffirst_block_flag
+                              503 
+                              504         global  FDataSize, FInit_IMA_ADPCM_States, FInit_MS_ADPCM_States
+                              505         global  FTotalSamplesPerBlock, Fckidlist, Fg_Wave_data_offset
+                              506         global  Fg_Wave_datachunksize, Fg_Wave_datasize
+                              507         global  Fg_Wave_dwAvgBytesPerSec, Fg_Wave_dwSamplesPerSec
+                              508         global  Fg_Wave_dwWavDuration, Fg_Wave_iCoef1Array
+                              509         global  Fg_Wave_iCoef2Array, Fg_Wave_riffsize
+                              510         global  Fg_Wave_wBitsPerSample, Fg_Wave_wBlockAlign
+                              511         global  Fg_Wave_wChannels, Fg_Wave_wCoef1, Fg_Wave_wCoef2
+                              512         global  Fg_Wave_wFormatTag, Fg_Wave_wMegicWord, Fg_Wave_wavesize
+                              513         global  Fg_Wave_wcbSize, Fg_Wave_wnNumCoef
+                              514         global  Fg_Wave_wnSamplesPerBlock, Finfo_ckid, Fisft_ckid
+                              515         global  Flist_ckid, Friff_file_flag, Fsigmatel
+                              516 

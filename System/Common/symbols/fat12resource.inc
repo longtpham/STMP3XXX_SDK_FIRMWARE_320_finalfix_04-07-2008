@@ -1,0 +1,1 @@
+;add all the resources required by the fat12 library

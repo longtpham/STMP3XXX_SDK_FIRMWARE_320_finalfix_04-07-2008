@@ -1,0 +1,29 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\system\hardware\interrupt\icoll_resetvectortable.asm
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; Filename: icoll_resetvectortable.asm
+                                2 ; Copyright (C) Sigmatel 2005
+                                4     include 'const.xref'
+                                1 ;******************************************************************************
+                                2 ; Copyright(C) SigmaTel, Inc. 2000
+                                3 ;
+                                4 ; ST Mp3 const.EXTERN 
+                                5 ;******************************************************************************
+                                7    DEFINE   const_xref  '1'
+                               42     ; Parthus compatability
+P:0000                         10     org p,".ptexticoll_resetvectortable":
+                               12 ; Inputs:  No register params. Uses function start address IcollInvalidVector
+                               13 ; Outputs: void  writes the entire vector table. 
+                               14 ; Description: Default sets the entire 35xx vector table (64 2 word entries)  
+                               15 ; to 'jsr IcollInvalidVector' (DEBUG build halts) or 'jsr FatalError' (RETAIL build)
+                               16 ;
+                               17 IcollResetVectorTable
+P:0000 56F400 0BF080  3    3   18     move    #>$0BF080,a                 ; jsr opcode
+P:0002 57F400 rrrrrr  3    6   22     move    #>FIcollInvalidVector,b
+P:0004 688000r        2    8   24     move    y:<Const_000000,r0
+P:0005 064080 rrrrrr  6   14   25     do  #64,_enddo
+P:0007 07588C         6   20   26         movem   a1,p:(r0)+
+P:0008 07588D         6   26   27         movem   b1,p:(r0)+
+                        (12)   28 _enddo
+P:0009 00000C         4   30   29     rts

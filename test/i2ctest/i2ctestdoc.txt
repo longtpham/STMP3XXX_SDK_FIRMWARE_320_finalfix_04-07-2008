@@ -1,0 +1,32 @@
+I2C test Documentation
+----------------------
+
+Functional Description
+----------------------
+The test verifies the functionality of the I2C peripheral by testing it with a multiple byte write and read to/from an EEPROM connected via socket U7 on the Rev. B engineering board.  This socket must be used as it alrady contains pull-up resistors per the I2C specification.  The test also serves to expose a bug in the I2C peripheral and offers a workaround to prevent the bug from causing problems.
+
+Hardware Neede
+--------------
+EEPROM: Microchip 24LC128 or similair will work.  Has also been tested using ATMEL EEPROM of the same size.  The EEPROM should have a page size greater than or equal to the size of the data being written to it.  This will avoid read back of erroneous data to wrap around paging on a multi-byte write operation and a subsequent read.
+
+
+Build Options
+-------------
+Usage : i2ctest [ALL]
+     	ALL    = rebuilds all files
+	DEVICE = D3410 or D3500 (required parameter)
+        LIBS   = Forces libraries to be rebuilt.
+
+Test Execution
+--------------
+1.)Regular Execution - The test begins with a screen alerting the user that this is the I2C test.  Please ensure that the EEPROM is properly seated in its socket at this time.  After the EEPROM is socketed press any key to continue testing.  The test will then write the data in Data[16] to the EEPROM, and read it back storing it in DatBuff[56].  The data is then confirmed to be correct by comparing it to the original data.  Note that the manner in which the data is verified is not as one may think.  The data is actually verified using the algorithm that was used to create the data that was written.  It is not simply a comparison of the two data buffers.  If the data is verified then the LCD will print "Test Passed".  Otherwise "Test Failed" will be printed to the LCD.  At this time the test can be repeated by pressing any key.
+
+2.)Bug Exposure Execution - To expose the I2C bug it is necessary to alter i2ctest.c.  Firstly uncomment the last line in I2C_Read_Master_Sync().  The failure mechanism occurs if 0 is written to HW_I2CCSR to soon after a read has been done.  This occurs in the ROM so it is replicated here so we can know how to recover the part.  At this point the test should be recompiled and run.  The first time through the test will result in a passing test.  Pressing any button to run test again will result in a fail however.  Basically the failure mechanism casues the I2C clock line to go into a lost state.  Another alteration to the i2ctest.c file will allow this failure to be remedied.  By uncommenting the comment block at LABEL:, recompiling, and running the test will show that the code in the comment block recovers the I2C peripheral from its lost state.
+
+3.)Alternate Execution - If you would like to see the data being read from the EEPROM on a word read basis uncomment the code under "//Display the values in the buffer. This data is packed 3-bytes/WORD."  This will output the data, in deciaml, to the screen after each word is read.  This can be used to see what word is causing the test to fail in the event that no o-scope is probing the I2C_SCL and I2C_SDA lines. 
+
+Test Architecture
+-----------------
+Modules used in the test:
+LcdModule - to display information to the user.
+Button Module - to get response from the user.

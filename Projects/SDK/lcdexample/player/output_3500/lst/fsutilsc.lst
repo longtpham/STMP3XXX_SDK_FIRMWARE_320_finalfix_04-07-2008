@@ -1,0 +1,2229 @@
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   1
+C:\STMP3XXX_SDK_FIRMWARE_320_finalfix\Projects\SDK\lcdexample\player\make\ccfc668b.src
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                                1 ; TASKING DSP2410 C compiler v1.5r1 Build 208 SN 00100122
+                                2 ; options: -OG -si -DPLAYER -DALL -DD3500 -DMMC -DLIION -DPL3_FB
+                                3 ;          -DSTMP_BUILD_PLAYER -DPLAYER_BUILD -DPLAYER -DSTFM1000_LCD
+                                4 ;          -DFULL_PLAYER_KERNEL -DDCDC_POWER_TRANSFER -DBACKLIGHT
+                                5 ;          -DWMAAPI_NO_DRM -DREVB_ENGR_BD -DSED15XX_LCD -DSYNC_LYRICS
+                                6 ;          -DTUNER_STFM1000 -DFM_EUROPE_REGION -DSD_USE_100KHZ_TUNING_GRID
+                                7 ;          -DNEWSHINGYIH -DREAL_I2S_DATA -DFUNCLET
+                                8 ;          -DMEDIA_DDI_COUNT_HIDDEN_SYSTEM_BLOCKS -DFMTUNER -DMP3_ENCODE
+                                9 ;          -DCHKDSK -DFAT16 -DDEBUG -DDEVICE_3500 -DSDK2400 -DENGR_BD
+                               10 ;          -DUSE_PLAYLIST3 -DBATTERY_TYPE_LI_ION -DBATTERY_CHARGE -w68 -w66
+                               11 ;          -I..\output_3500\include
+                               12 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player
+                               13 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Menus -I..\..
+                               14 ;          -I..\..\..\..\..\inc -I..\..\..\..\..\System\Common
+                               15 ;          -I..\..\..\..\..\System\Common\symbols
+                               16 ;          -I..\..\..\..\..\Projects\sdk\lcdexample\Player\Display
+                               17 ;          -I..\..\..\..\..\Algorithms\DRM\janus\src\h
+                               18 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               19 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               20 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               21 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               22 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand -I -I
+                               23 ;          -I..\..\..\..\..\system\common\resourcemanager -I..\..\..\..\..\inc
+                               24 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               25 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive\include
+                               26 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               27 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               28 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\DataDrive
+                               29 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               30 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               31 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               32 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               33 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               34 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               35 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               36 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               37 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               38 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               39 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common
+                               40 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               41 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive\include
+                               42 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               43 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               44 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\SystemDrive
+                               45 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\include
+                               46 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media\include
+                               47 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               48 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\HAL\include
+                               49 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Media
+                               50 ;          -I..\..\..\..\..\devicedriver\media\include
+                               51 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               52 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               53 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\Common\include
+                               54 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeNAND\DDI\include
+                               55 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL
+                               56 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               57 ;          -I..\..\..\..\..\DeviceDriver\Media\include
+                               58 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash\include
+                               59 ;          -I..\..\..\..\..\DeviceDriver\Media\PortHIL\GPFlash
+                               60 ;          -I..\..\..\..\..\devicedriver\media\ddildl
+                               61 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               62 ;          -I..\..\..\..\..\libsource\sysserialnumber
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   2
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                               63 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               64 ;          -I..\..\..\..\..\devicedriver\media\ddildl\include
+                               65 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\include
+                               66 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\DDI\Media
+                               67 ;          -I..\..\..\..\..\devicedriver\media\MediaTypeMMC\HAL\include
+                               68 ;          -I..\..\..\..\..\FileSystem\Fat32\h
+                               69 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_stdtype
+                               70 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_debug
+                               71 ;          -I..\..\..\..\..\FileSystem\Fat32\cmp\cmp_file_system
+                               72 ;          -I..\..\..\..\..\DeviceDriver\Media\cmp\cmp_media_nand
+                               73 ;          -I..\..\..\..\..\DeviceDriver\Media\MediaTypeNAND\HAL\include
+                               74 ;          -I..\..\..\..\..\System\MsgModules\Software\Effects\srswow
+                               75 ;          -I..\..\..\..\..\System\Common\rtcaccess
+                               76 ;          -I..\..\..\..\..\System\Common\playlist3
+                               77 ;          -I..\..\..\..\..\System\Common\record
+                               78 ;          -I..\..\..\..\..\System\Common\mp3filename
+                               79 ;          -I..\..\..\..\..\FileSystem\chkdsk\include
+                               80 ;          -I..\..\..\..\..\FileSystem\Fat32\h -DFULL_PLAYER_KERNEL
+                               81 ;          -DSYNC_LYRICS -DMP3_ENCODE -DBATTERY_TYPE_LI_ION -Dk_opt_single_fat
+                               82 ;          -DPL3_FB -g -O2 -R -Cs -DMS_ADPCM -DIMA_ADPCM -DWINDOWS_PCM
+                               83 ;          -I..\..\..\..\..\System\MsgModules\Software\musiclib\ghdr
+                               84 ;          -I..\..\..\..\..\devicedriver\display
+                               85 ;          -I..\..\..\..\..\System\MsgModules\Hardware\Display -MmyL
+                               86 
+                               94 
+                               95 ;     fsutilsc.c:
+                               96 ; 1    |#include "fstypes.h"
+                               97 
+                               99 
+                              100 ; 1    |#ifndef _FS_TYPE_H_
+                              101 ; 2    |#define _FS_TYPE_H_
+                              102 ; 3    |
+                              103 ; 4    |#include   "types.h"
+                              104 
+                              106 
+                              107 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              108 ; 2    |// Copyright(C) SigmaTel, Inc. 2000-2004
+                              109 ; 3    |//
+                              110 ; 4    |// Filename: types.h
+                              111 ; 5    |// Description: Standard data types
+                              112 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              113 ; 7    |
+                              114 ; 8    |#ifndef _TYPES_H
+                              115 ; 9    |#define _TYPES_H
+                              116 ; 10   |
+                              117 ; 11   |// TODO:  move this outta here!
+                              118 ; 12   |#if !defined(NOERROR)
+                              119 ; 13   |#define NOERROR 0
+                              120 ; 14   |#define SUCCESS 0
+                              121 ; 15   |#endif 
+                              122 ; 16   |#if !defined(SUCCESS)
+                              123 ; 17   |#define SUCCESS  0
+                              124 ; 18   |#endif
+                              125 ; 19   |#if !defined(ERROR)
+                              126 ; 20   |#define ERROR   -1
+                              127 ; 21   |#endif
+                              128 ; 22   |#if !defined(FALSE)
+                              129 ; 23   |#define FALSE 0
+                              130 ; 24   |#endif
+                              131 ; 25   |#if !defined(TRUE)
+                              132 ; 26   |#define TRUE  1
+                              133 ; 27   |#endif
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   3
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              134 ; 28   |
+                              135 ; 29   |#if !defined(NULL)
+                              136 ; 30   |#define NULL 0
+                              137 ; 31   |#endif
+                              138 ; 32   |
+                              139 ; 33   |#define MAX_INT     0x7FFFFF
+                              140 ; 34   |#define MAX_LONG    0x7FFFFFffffff
+                              141 ; 35   |        // max positive unsigned long value: -1 == 0xFFFFFFffffff
+                              142 ; 36   |#define MAX_ULONG   (-1) 
+                              143 ; 37   |
+                              144 ; 38   |#define WORD_SIZE   24              // word size in bits
+                              145 ; 39   |#define BYTES_PER_WORD 3            // 8 bit bytes
+                              146 ; 40   |
+                              147 ; 41   |
+                              148 ; 42   |#define BYTE    unsigned char       // btVarName
+                              149 ; 43   |#define CHAR    signed char         // cVarName
+                              150 ; 44   |#define USHORT  unsigned short      // usVarName
+                              151 ; 45   |#define SHORT   unsigned short      // sVarName
+                              152 ; 46   |#define WORD    unsigned int        // wVarName
+                              153 ; 47   |#define INT     signed int          // iVarName
+                              154 ; 48   |#define DWORD   unsigned long       // dwVarName
+                              155 ; 49   |#define LONG    signed long         // lVarName
+                              156 ; 50   |#define BOOL    unsigned int        // bVarName
+                              157 ; 51   |#define FRACT   _fract              // frVarName
+                              158 ; 52   |#define LFRACT  long _fract         // lfrVarName
+                              159 ; 53   |#define CIRC    _circ               // cp<type prefix>VarName (see below)
+                              160 ; 54   |#define FLOAT   float               // fVarName
+                              161 ; 55   |#define DBL     double              // dVarName
+                              162 ; 56   |#define ENUM    enum                // eVarName
+                              163 ; 57   |#define CMX     _complex            // cmxVarName
+                              164 ; 58   |typedef WORD UCS3;                   // 
+                              165 ; 59   |
+                              166 ; 60   |#define UINT16  unsigned short
+                              167 ; 61   |#define UINT8   unsigned char   
+                              168 ; 62   |#define UINT32  unsigned long
+                              169 ; 63   |#define UINT64  unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              170 ; 64   |#define INT64   unsigned long   // need to figure out how to do 64 bit values.  Or port ex
+                                  isiting code to only use 48 bit
+                              171 ; 65   |#define WCHAR   UINT16
+                              172 ; 66   |
+                              173 ; 67   |//UINT128 is 16 bytes or 6 words
+                              174 ; 68   |typedef struct UINT128_3500 {   
+                              175 ; 69   |    int val[6];     
+                              176 ; 70   |} UINT128_3500;
+                              177 ; 71   |
+                              178 ; 72   |#define UINT128   UINT128_3500
+                              179 ; 73   |
+                              180 ; 74   |// Little endian word packed byte strings:   
+                              181 ; 75   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              182 ; 76   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              183 ; 77   |// Little endian word packed byte strings:   
+                              184 ; 78   |//      _packed BYTE bTextVarName[]="a string";  bText is a packed byte string prefix
+                              185 ; 79   |// Convert to big endian words by reordering bytes from high to low using swizzle.
+                              186 ; 80   |
+                              187 ; 81   |// Declare Memory Spaces To Use When Coding
+                              188 ; 82   |// A. Sector Buffers
+                              189 ; 83   |#define SECTOR_BUFFER_MEM_X _X
+                              190 ; 84   |#define SECTOR_BUFFER_MEM_Y _Y
+                              191 ; 85   |#define SECTOR_BUFFER_MEM SECTOR_BUFFER_MEM_X
+                              192 ; 86   |typedef WORD SECTOR_BUFFER_MEM SECTOR_BUFFER;
+                              193 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   4
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              195 
+                              196 ; 87   |typedef SECTOR_BUFFER * P_SECTOR_BUFFER;
+                              197 ; 88   |// B. Media DDI Memory
+                              198 ; 89   |#define MEDIA_DDI_MEM _Y
+                              199 ; 90   |
+                              200 ; 91   |
+                              201 ; 92   |
+                              202 ; 93   |// Pointers to linear structures are labeled as: p<type prefix>VarName
+                              203 ; 94   |// Examples of circular pointers:
+                              204 ; 95   |//    INT CIRC cpiVarName
+                              205 ; 96   |//    DWORD CIRC cpdwVarName
+                              206 ; 97   |
+                              207 ; 98   |#define RETCODE INT                 // rcVarName
+                              208 ; 99   |
+                              209 ; 100  |// generic bitfield structure
+                              210 ; 101  |struct Bitfield {
+                              211 ; 102  |    unsigned int B0  :1;
+                              212 ; 103  |    unsigned int B1  :1;
+                              213 ; 104  |    unsigned int B2  :1;
+                              214 ; 105  |    unsigned int B3  :1;
+                              215 ; 106  |    unsigned int B4  :1;
+                              216 ; 107  |    unsigned int B5  :1;
+                              217 ; 108  |    unsigned int B6  :1;
+                              218 ; 109  |    unsigned int B7  :1;
+                              219 ; 110  |    unsigned int B8  :1;
+                              220 ; 111  |    unsigned int B9  :1;
+                              221 ; 112  |    unsigned int B10 :1;
+                              222 ; 113  |    unsigned int B11 :1;
+                              223 ; 114  |    unsigned int B12 :1;
+                              224 ; 115  |    unsigned int B13 :1;
+                              225 ; 116  |    unsigned int B14 :1;
+                              226 ; 117  |    unsigned int B15 :1;
+                              227 ; 118  |    unsigned int B16 :1;
+                              228 ; 119  |    unsigned int B17 :1;
+                              229 ; 120  |    unsigned int B18 :1;
+                              230 ; 121  |    unsigned int B19 :1;
+                              231 ; 122  |    unsigned int B20 :1;
+                              232 ; 123  |    unsigned int B21 :1;
+                              233 ; 124  |    unsigned int B22 :1;
+                              234 ; 125  |    unsigned int B23 :1;
+                              235 ; 126  |};
+                              236 ; 127  |
+                              237 ; 128  |union BitInt {
+                              238 ; 129  |        struct Bitfield B;
+                              239 ; 130  |        int        I;
+                              240 ; 131  |};
+                              241 ; 132  |
+                              242 ; 133  |#define MAX_MSG_LENGTH 10
+                              243 ; 134  |struct CMessage
+                              244 ; 135  |{
+                              245 ; 136  |        unsigned int m_uLength;
+                              246 ; 137  |        unsigned int m_uMsg[MAX_MSG_LENGTH];
+                              247 ; 138  |};
+                              248 ; 139  |
+                              249 ; 140  |typedef struct {
+                              250 ; 141  |    WORD m_wLength;
+                              251 ; 142  |    WORD m_wMessage;
+                              252 ; 143  |    WORD m_wParams[MAX_MSG_LENGTH];
+                              253 ; 144  |} Message;
+                              254 ; 145  |
+                              255 ; 146  |struct MessageQueueDescriptor
+                              256 ; 147  |{
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   5
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              257 ; 148  |        int *m_pBase;
+                              258 ; 149  |        int m_iModulo;
+                              259 ; 150  |        int m_iSize;
+                              260 ; 151  |        int *m_pHead;
+                              261 ; 152  |        int *m_pTail;
+                              262 ; 153  |};
+                              263 ; 154  |
+                              264 ; 155  |struct ModuleEntry
+                              265 ; 156  |{
+                              266 ; 157  |    int m_iSignaledEventMask;
+                              267 ; 158  |    int m_iWaitEventMask;
+                              268 ; 159  |    int m_iResourceOfCode;
+                              269 ; 160  |    struct MessageQueueDescriptor *m_pMessageQueue;
+                              270 ; 161  |    int _asmfunc (*m_pProcessEntryPoint)(union WaitMask Signals,struct MessageQueueDescrip
+                                  tor *);
+                              271 ; 162  |    int _asmfunc (*m_pInitFunction)(struct MessageQueueDescriptor *);
+                              272 ; 163  |    int m_uTimeOutHigh;
+                              273 ; 164  |    int m_uTimeOutLow;
+                              274 ; 165  |    int _asmfunc (*m_pBackgroundFunction)(struct MessageQueueDescriptor *);
+                              275 ; 166  |};
+                              276 ; 167  |
+                              277 ; 168  |union WaitMask{
+                              278 ; 169  |    struct B{
+                              279 ; 170  |        unsigned int m_bNone     :1;
+                              280 ; 171  |        unsigned int m_bMessage  :1;
+                              281 ; 172  |        unsigned int m_bTimer    :1;
+                              282 ; 173  |        unsigned int m_bButton   :1;
+                              283 ; 174  |    } B;
+                              284 ; 175  |    int I;
+                              285 ; 176  |} ;
+                              286 ; 177  |
+                              287 ; 178  |
+                              288 ; 179  |struct Button {
+                              289 ; 180  |        WORD wButtonEvent;
+                              290 ; 181  |        WORD wUnused[MAX_MSG_LENGTH];   
+                              291 ; 182  |};
+                              292 ; 183  |
+                              293 ; 184  |struct Message {
+                              294 ; 185  |        WORD wMsgLength;
+                              295 ; 186  |        WORD wMsgCommand;
+                              296 ; 187  |        WORD wMsgParms[MAX_MSG_LENGTH-1];
+                              297 ; 188  |};
+                              298 ; 189  |
+                              299 ; 190  |union EventTypes {
+                              300 ; 191  |        struct CMessage msg;
+                              301 ; 192  |        struct Button Button ;
+                              302 ; 193  |        struct Message Message;
+                              303 ; 194  |};
+                              304 ; 195  |
+                              305 ; 196  |// next 2 used to get updater build to return correct protocol ver in scsi response.
+                              306 ; 197  |#define BUILD_TYPE_UPDATER  0x100
+                              307 ; 198  |#define BUILD_TYPE_HOSTLINK 0x101
+                              308 ; 199  |#define BUILD_TYPE_PLAYER   0x102
+                              309 ; 200  |
+                              310 ; 201  |// Resets part if RETAIL build. DEBUG build executes debug instruction to halt.
+                              311 ; 202  |#define SystemHalt() __asm(" include 'sysmacro.asm' \n error") 
+                              312 ; 203  |#define assert(x)    if(!(x)) __asm(" include 'sysmacro.asm' \n error")
+                              313 ; 204  |
+                              314 ; 205  |#if DEBUG
+                              315 ; 206  |// For DEBUG builds, DebugBuildAssert(condition) halts if condition evaluates to FALSE. 
+                              316 ; 207  |#define DebugBuildAssert(x)    if(!(x)) __asm(" debug ")
+                              317 ; 208  |#else 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   6
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              318 ; 209  |// For RETAIL builds, DebugBuildAssert(condition) does nothing & execution continues rathe
+                                  r than halt or reset. 
+                              319 ; 210  |#define DebugBuildAssert(x)    
+                              320 ; 211  |#endif
+                              321 ; 212  |
+                              322 ; 213  |// Do this in your C files to make a reminder that's displayed during the build.
+                              323 ; 214  |//  #pragma asm
+                              324 ; 215  |//  WARN 'Note to builder: reminder to do this after verifying that'
+                              325 ; 216  |//  #pragma endasm
+                              326 ; 217  |
+                              327 ; 218  |
+                              328 ; 219  |#ifdef COLOR_262K
+                              329 ; 220  |#define RGB(r,g,b)    ((0x0000FC & (r)) << 10) | ((0x0000FC & (g)) << 4) | ((0x0000FC & (b
+                                  )) >> 2)    //262k
+                              330 ; 221  |#elif defined(COLOR_65K)
+                              331 ; 222  |#define RGB(r,g,b)    ((0x0000F8 & (r)) << 8) | ((0x0000FC & (g)) << 3) | ((0x0000F8 & (b)
+                                  ) >> 3)  //65k
+                              332 ; 223  |#else
+                              333 ; 224  |#define RGB(r,g,b)       ((0x0000F0 & (r)) << 4) | (0x0000F0 & (g)) | ((0x0000F0 & (b)) >>
+                                   4)
+                              334 ; 225  |#endif
+                              335 ; 226  |    
+                              336 ; 227  |#endif // #ifndef _TYPES_H
+                              337 
+                              339 
+                              340 ; 5    |
+                              341 ; 6    |// move FSMEDIA_TABLE from devicetable.h  15Apr2005   First moved in SDK2.6.
+                              342 ; 7    |typedef struct
+                              343 ; 8    |{
+                              344 ; 9    |
+                              345 ; 10   |INT     _Y BytesPerSector;
+                              346 ; 11   |INT     _Y SectorsPerCluster;
+                              347 ; 12   |INT     _Y RsvdSectors;
+                              348 ; 13   |INT     _Y NoOfFATs;
+                              349 ; 14   |INT     _Y MaxRootDirEntries;
+                              350 ; 15   |LONG    _Y TotalSectors;
+                              351 ; 16   |LONG    _Y FATSize;
+                              352 ; 17   |LONG    _Y RootdirCluster;
+                              353 ; 18   |//INT   _Y FSInfoSector;
+                              354 ; 19   |//INT   _Y BkBootSector;
+                              355 ; 20   |LONG    _Y NextFreeCluster;
+                              356 ; 21   |LONG    _Y TotalFreeClusters;
+                              357 ; 22   |INT     _Y RootDirSectors;
+                              358 ; 23   |INT     _Y FIRSTDataSector;
+                              359 ; 24   |INT    _Y FATType;
+                              360 ; 25   |LONG   _Y TotalNoofclusters;
+                              361 ; 26   |INT    _Y ClusterMask;
+                              362 ; 27   |INT    _Y ClusterShift;
+                              363 ; 28   |INT    _Y SectorShift;
+                              364 ; 29   |INT    _Y SectorMask;
+                              365 ; 30   |INT    _Y DevicePresent;
+                              366 ; 31   |LONG   _Y FirRootdirsec;
+                              367 ; 32   |INT             _Y FSInfoSector;
+                              368 ; 33   |}FSMEDIA_TABLE;
+                              369 ; 34   |
+                              370 ; 35   |
+                              371 ; 36   |#define         MAXDEVICES              2
+                              372 ; 37   |//#define       NUMCACHES               8  // this is already in fsproj.h (2 for player 2 
+                                  for mtp as of 28jun2005) TOVERIFY 2 ok for player and mtp. 
+                              373 ; 38   |
+                              374 ; 39   |// NOTE:  This offset is the same no matter what the sector actual size!  
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   7
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              375 ; 40   |//        TOVERIFY 3.0 doesn't have this defined but uses it in filesystempresent.c. lbmlc
+                                   def'd it here so I insert it here.
+                              376 ; 41   |#define         FATFS_SIGNATURE_OFFSET  510
+                              377 ; 42   |#define         BOOTSECTOR              0
+                              378 ; 43   |#define     FSINFOSECTOR        1
+                              379 ; 44   |
+                              380 ; 45   |#define     READ_MODE           1
+                              381 ; 46   |#define     WRITE_MODE          2
+                              382 ; 47   |#define     APPEND_MODE         4
+                              383 ; 48   |#define     SEQ_WRITE_MODE      8
+                              384 ; 49   |#define     DIRECTORY_MODE         16
+                              385 ; 50   |#define     CREATE_MODE        32
+                              386 ; 51   |
+                              387 ; 52   |#define     RPLUS               5
+                              388 ; 53   |#define     WPLUS                   6
+                              389 ; 54   |#define     APLUS               7
+                              390 ; 55   |
+                              391 ; 56   |
+                              392 ; 57   |
+                              393 ; 58   |#define     X_MEMORY            0
+                              394 ; 59   |#define     Y_MEMORY            2
+                              395 ; 60   |#define     P_MEMORY            4
+                              396 ; 61   |
+                              397 ; 62   |#define     FAT12               0 
+                              398 ; 63   |#define     FAT16               1   
+                              399 ; 64   |#define     FAT32               2 
+                              400 ; 65   |
+                              401 ; 66   |
+                              402 ; 67   |#define FAT12EOF            0x0FFF
+                              403 ; 68   |#define FAT16EOF            0xFFFF
+                              404 ; 69   |#define FAT32EOF            0x0FFFFFFF
+                              405 ; 70   |
+                              406 ; 71   |
+                              407 ; 72   |
+                              408 ; 73   |#define FAT12FREECX         0x000
+                              409 ; 74   |#define FAT16FREECX         0x0000
+                              410 ; 75   |#define FAT32FREECX         0x00000000
+                              411 ; 76   |
+                              412 ; 77   |
+                              413 ; 78   |#define  DBCS               1
+                              414 ; 79   |#define  UNICODE            2
+                              415 ; 80   |
+                              416 ; 81   |
+                              417 ; 82   |#define     CREATION_DATE       1
+                              418 ; 83   |#define     CREATION_TIME       2
+                              419 ; 84   |#define     MODIFICATION_DATE   3
+                              420 ; 85   |#define     MODIFICATION_TIME   4
+                              421 ; 86   |
+                              422 ; 87   |
+                              423 ; 88   |#define     READ_ONLY      0X01
+                              424 ; 89   |#define     HIDDEN         0X02
+                              425 ; 90   |#define     SYSTEM         0X04
+                              426 ; 91   |#define     VOLUME_ID      0X08
+                              427 ; 92   |#define     DIRECTORY      0X10
+                              428 ; 93   |#define     ARCHIVE        0X20
+                              429 ; 94   |
+                              430 ; 95   |#define READCOUNTER         105
+                              431 ; 96   |#define WRITECOUNTER        100
+                              432 ; 97   |#define FLUSHCOUNTER        200
+                              433 ; 98   |
+                              434 ; 99   |
+                              435 ; 100  |#define DEFAULT_MEMORY      Y_MEMORY
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   8
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              436 ; 101  |
+                              437 ; 102  |#define  CWD_HANDLE           0
+                              438 ; 103  |#define  DIRECTORY_HANDLE     1
+                              439 ; 104  |#define  FIRST_VALID_HANDLE   2
+                              440 ; 105  |#define  END_OF_DIR_PATH      3
+                              441 ; 106  |
+                              442 ; 107  |//Constants for Sector read and write (Normal and FAT 
+                              443 ; 108  |#define         NORMALTYPE              0
+                              444 ; 109  |#define         FATTYPE                 1
+                              445 ; 110  |#define     RAWTYPE         2
+                              446 ; 111  |
+                              447 ; 112  |#define  SHORTNAMERES_CH      6
+                              448 ; 113  |#define  LONGNAMERES_CH       9
+                              449 ; 114  |#define  MAXFILENAME_CH       260
+                              450 ; 115  |
+                              451 ; 116  |#define VOLUME_TYPE          0
+                              452 ; 117  |#define DIR_TYPE             1
+                              453 ; 118  |#define FILE_TYPE            2
+                              454 ; 119  |                                           
+                              455 ; 120  |#define WRITE_TYPE_RANDOM               0
+                              456 ; 121  |#define WRITE_TYPE_SEQ_FIRST    1
+                              457 ; 122  |#define WRITE_TYPE_SEQ_NEXT             2
+                              458 ; 123  |#define WRITE_TYPE_NOREADBACK   3
+                              459 ; 124  |                  
+                              460 ; 125  |
+                              461 ; 126  |#define     HANDLEENTRYSIZE         19
+                              462 ; 127  |
+                              463 ; 128  |// DEVICERECORDSIZE is now only defined in cachedef.h so deleted from here in first 3.1 pr
+                                  elim 
+                              464 ; 129  |
+                              465 ; 130  |#define     CACHEDESCRSIZE          8
+                              466 ; 131  |#define     CACHEBUFSIZE            705
+                              467 ; 132  |
+                              468 ; 133  |#define     UCS2s                     0
+                              469 ; 134  |#define     UCS3s                     1
+                              470 ; 135  |
+                              471 ; 136  |#define     FAT32FSIFREECOUNTSIZE       4
+                              472 ; 137  |
+                              473 ; 138  |#endif // _FS_TYPE_H_
+                              474 ; 139  |
+                              475 
+                              477 
+                              478 ; 2    |#include "fsproj.h"
+                              479 
+                              481 
+                              482 ; 1    |//------------------------------------------------------------------------------
+                              483 ; 2    |// Copyright(C) SigmaTel, Inc. 2005
+                              484 ; 3    |// Filename: fsproj.h (player lcdexample project)
+                              485 ; 4    |//------------------------------------------------------------------------------
+                              486 ; 5    |#ifndef __fsproj_h__
+                              487 ; 6    |#define __fsproj_h__
+                              488 ; 7    |// NOTE:  cachedef.h with its defaults is included here. Any defines in 
+                              489 ; 8    |// this fsproj.h supercede and are used as actual NUMHANDLES, NUMDEVICES, NUMCACHES, DRIVE
+                                  LETTERS.  
+                              490 ; 9    |
+                              491 ; 10   |// TOVERIFY  large block sdk 2.6 had 16 handles while sdk3.0 had only 8.
+                              492 ; 11   |#define NUMHANDLES 8
+                              493 ; 12   |
+                              494 ; 13   |// To help non MMC/SD builds, made this 2 not 3. jun28 2005
+                              495 ; 14   |#ifdef MMC
+                              496 ; 15   |#define NUMDEVICES 3
+                              497 ; 16   |#else
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page   9
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              498 ; 17   |#define NUMDEVICES 2
+                              499 ; 18   |#endif
+                              500 ; 19   |
+                              501 ; 20   |// TOVERIFY: SDK3.0 had 4 caches here but the large block sdk had only 2 larger caches. 
+                              502 ; 21   |// Consider finding memory for 3 for performance.
+                              503 ; 22   |#define NUMCACHES  2
+                              504 ; 23   |#define DRIVELETTERS {'a','b','c'}
+                              505 ; 24   |
+                              506 ; 25   |#include "cachedef.h"
+                              507 
+                              509 
+                              510 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              511 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                              512 ; 3    |//
+                              513 ; 4    |// Filename:     cachedef.h
+                              514 ; 5    |// Description:  Constants and externs for the file system routines.
+                              515 ; 6    |////////////////////////////////////////////////////////////////////////////////
+                              516 ; 7    |
+                              517 ; 8    |// NOTE: this file is included by fsproj.h, which overrides DRIVELETTERS, NUMCACHES,
+                              518 ; 9    |// NUMDEVICES, NUMHANDLES.  the values here for these are defaults for building as
+                              519 ; 10   |// a library.
+                              520 ; 11   |
+                              521 ; 12   |#ifndef __cachedef_h__
+                              522 ; 13   |#define __cachedef_h__
+                              523 ; 14   |
+                              524 ; 15   |#ifndef NUMHANDLES
+                              525 ; 16   |#define NUMHANDLES 20  
+                              526 ; 17   |#endif
+                              527 ; 18   |
+                              528 ; 19   |#ifndef NUMDEVICES
+                              529 ; 20   |#define NUMDEVICES 1 
+                              530 ; 21   |#endif
+                              531 ; 22   |
+                              532 ; 23   |#ifndef NUMCACHES
+                              533 ; 24   |#define NUMCACHES 2 
+                              534 ; 25   |#endif
+                              535 ; 26   |
+                              536 ; 27   |#ifndef DRIVELETTERS
+                              537 ; 28   |#define DRIVELETTERS {'a','b','c'}
+                              538 ; 29   |#endif
+                              539 ; 30   |
+                              540 ; 31   |// sector size variants.
+                              541 ; 32   |#include "sectordef.h"
+                              542 
+                              544 
+                              545 ; 1    |////////////////////////////////////////////////////////////////////////////////
+                              546 ; 2    |// Copyright(C) SigmaTel, Inc. 2003-2005
+                              547 ; 3    |//
+                              548 ; 4    |// Filename:     sectordef.h
+                              549 ; 5    |// Description:  Contains structs, prototypes, equates for the NAND Hal & other 
+                              550 ; 6    |//               routines.
+                              551 ; 7    |////////////////////////////////////////////////////////////////////////////////
+                              552 ; 8    |
+                              553 ; 9    |#ifndef _SECTORDEF_H
+                              554 ; 10   |#define _SECTORDEF_H
+                              555 ; 11   |
+                              556 ; 12   |    #define RAM_SECTOR_TOTAL_SIZE                 (528)
+                              557 ; 13   |    #define RAM_SECTOR_DATA_SIZE                  (512)
+                              558 ; 14   |    #define RAM_SECTOR_REDUNDANT_SIZE             (16)
+                              559 ; 15   |
+                              560 ; 16   |
+                              561 ; 17   |    #define MMC_SECTOR_TOTAL_SIZE                 (528)
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  10
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              562 ; 18   |    #define MMC_SECTOR_DATA_SIZE                  (512)
+                              563 ; 19   |    #define MMC_SECTOR_REDUNDANT_SIZE             (16)
+                              564 ; 20   |
+                              565 ; 21   |
+                              566 ; 22   |    #define SSFDC_SECTOR_TOTAL_SIZE                 (528)
+                              567 ; 23   |    #define SSFDC_SECTOR_DATA_SIZE                  (512)
+                              568 ; 24   |    #define SSFDC_SECTOR_REDUNDANT_SIZE             (16)
+                              569 ; 25   |
+                              570 ; 26   | // Define large sector macros as small ones so sdk3.x fits in ram and mtp with small 
+                              571 ; 27   | // sector flash gets the performance boosts from optimized nand timings, etc. 
+                              572 ; 28   | // TOVERIFY: Comment out the next macro def when you want large sector support as 
+                              573 ; 29   | // in sdk2.6 and you can find the free data RAM. Or uncomment if you want to save data ra
+                                  m
+                              574 ; 30   | // and only support 512 byte sectors and their associated flash types. 
+                              575 ; 31   |//#define LARGE_SECTOR_DEFS_AS_SMALL_SECTOR
+                              576 ; 32   |#ifdef LARGE_SECTOR_DEFS_AS_SMALL_SECTOR 
+                              577 ; 33   |    #define LARGE_SECTOR_TOTAL_SIZE                 (528)
+                              578 ; 34   |    #define LARGE_SECTOR_DATA_SIZE                  (512)
+                              579 ; 35   |    #define LARGE_SECTOR_REDUNDANT_SIZE             (16)
+                              580 ; 36   |#else
+                              581 ; 37   |    // Real large sector defines to use when large sector flash support is desired.
+                              582 ; 38   |    #define LARGE_SECTOR_TOTAL_SIZE                 (2112)
+                              583 ; 39   |    #define LARGE_SECTOR_DATA_SIZE                  (2048)
+                              584 ; 40   |    #define LARGE_SECTOR_REDUNDANT_SIZE             (64)
+                              585 ; 41   |#endif
+                              586 ; 42   |    
+                              587 ; 43   |    // round up to the nearest WORD, then add one to pad for the ECC DMA bug
+                              588 ; 44   |    #define SECTOR_BUFFER_ALLOC_SIZE(a)             (((a+2)/3)+1)
+                              589 ; 45   |
+                              590 ; 46   |
+                              591 ; 47   |    // These are moved here from chkdsk.h     TOVERIFY. 
+                              592 ; 48   |    #define SEC_512_BYTES_PER_SECTOR                        SSFDC_SECTOR_DATA_SIZE
+                              593 ; 49   |        #define SEC_512_BYTES_TOTAL_SIZE                                                SS
+                                  FDC_SECTOR_TOTAL_SIZE
+                              594 ; 50   |        #define SEC_512_WORDS_TOTAL_SIZE                                                17
+                                  6
+                              595 ; 51   |    #define SEC_512_BYTES_CLUSTER_ENTRY_PER_SECTOR_SHIFT    12
+                              596 ; 52   |    #define SEC_512_BYTES_DIR_REC_PER_SECTOR                16
+                              597 ; 53   |    #define SEC_512_BYTES_WORDS_PER_SECTOR                  177
+                              598 ; 54   |    #define SEC_2K_BYTES_PER_SECTOR                         LARGE_SECTOR_DATA_SIZE
+                              599 ; 55   |        #define SEC_2K_BYTES_TOTAL_SIZE                                                 LA
+                                  RGE_SECTOR_TOTAL_SIZE
+                              600 ; 56   |    #define SEC_2K_BYTES_CLUSTER_ENTRY_PER_SECTOR_SHIFT     12
+                              601 ; 57   |    #define SEC_2K_BYTES_DIR_REC_PER_SECTOR                 64
+                              602 ; 58   |    #define SEC_2K_BYTES_WORDS_PER_SECTOR                   705
+                              603 ; 59   |    #define SEC_2K_BYTES_WORDS_PER_SECTOR_NO_RA             683
+                              604 ; 60   |
+                              605 ; 61   |    // Next 5 lines imported from nandsystemdrivewritesector.c
+                              606 ; 62   |    #define RA_ATTR_MEMORY_OFFSET           682
+                              607 ; 63   |    #define NUMBER_OF_WORDS_IN_512BYTES     171
+                              608 ; 64   |    #define NUM_ECC_DATA_IN_WORDS           3
+                              609 ; 65   |    #define SEC_512_WORD1_RA_SWAP           171
+                              610 ; 66   |    #define SEC_512_WORD2_RA_SWAP           173
+                              611 ; 67   |
+                              612 ; 68   |#endif  // _SECTORDEF_H
+                              613 ; 69   |
+                              614 
+                              616 
+                              617 ; 33   |
+                              618 ; 34   |// in bytes?                    
+                              619 ; 35   |#define HANDLEENTRYSIZE 19
+                              620 ; 36   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  11
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              621 ; 37   |// in bytes?                    
+                              622 ; 38   |#define DEVICERECORDSIZE 28 //stmp6956
+                              623 ; 39   |
+                              624 ; 40   |// in words.  todo: consider using a formula based on sizeof().
+                              625 ; 41   |#define CACHEDESCRSIZE 8 
+                              626 ; 42   |
+                              627 ; 43   |// in words, for large sectors.
+                              628 ; 44   |#define CACHEBUFSIZE 705
+                              629 ; 45   |
+                              630 ; 46   |// the number of small caches that fit into a large cache
+                              631 ; 47   |#define SSFDC_SECTORS_PER_LARGE_SECTOR 4
+                              632 ; 48   |
+                              633 ; 49   |// the amount of Y space required to cache sectors.  maximum space reserved
+                              634 ; 50   |// based on large (2k) sectors.
+                              635 ; 51   |#define XBUF_SIZE (NUMCACHES                                                   \ 
+                              636 ; 52   |                   * SSFDC_SECTORS_PER_LARGE_SECTOR                            \ 
+                              637 ; 53   |                   * SECTOR_BUFFER_ALLOC_SIZE(SSFDC_SECTOR_TOTAL_SIZE))
+                              638 ; 54   |
+                              639 ; 55   |// X space allocated for cached sector buffers.
+                              640 ; 56   |// it must be allocated outside of the file system, by the application, since
+                              641 ; 57   |// the application can override the number of entries in fsproj.h, but the file
+                              642 ; 58   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              643 ; 59   |extern INT _X bufx[];
+                              644 ; 60   |
+                              645 ; 61   |// the amount of Y space required to cache sectors. note that the maximim space
+                              646 ; 62   |// for the cache descriptor entries is the size of each entry multiplied by
+                              647 ; 63   |// the number of entries (specified for large sector entries) multiplied by
+                              648 ; 64   |// the number of small sectors that can overlay a large sector.  i.e., when the 
+                              649 ; 65   |// cache reconfigures from 2k sectors to 512 byte sectors there are 4 times as
+                              650 ; 66   |// many useable cache dscr entries available.  this declaration must accommodate
+                              651 ; 67   |// that many to ensure that sufficient space is reserved.
+                              652 ; 68   |#ifdef k_opt_dynamic_cache
+                              653 ; 69   |#define YBUF_SIZE ((NUMDEVICES * DEVICERECORDSIZE)                             \ 
+                              654 ; 70   |                   + (NUMHANDLES * HANDLEENTRYSIZE)                            \ 
+                              655 ; 71   |                   + (SSFDC_SECTORS_PER_LARGE_SECTOR * NUMCACHES * CACHEDESCRSIZE))
+                              656 ; 72   |#else
+                              657 ; 73   |#define YBUF_SIZE ((NUMDEVICES * DEVICERECORDSIZE)                             \ 
+                              658 ; 74   |                   + (NUMHANDLES * HANDLEENTRYSIZE)                            \ 
+                              659 ; 75   |                   + (NUMCACHES * CACHEDESCRSIZE))
+                              660 ; 76   |#endif
+                              661 ; 77   |
+                              662 ; 78   |
+                              663 ; 79   |// Y space allocated for file system handles and cache descriptors.
+                              664 ; 80   |// it must be allocated outside of the file system, by the application, since
+                              665 ; 81   |// the application can override the number of entries in fsproj.h, but the file
+                              666 ; 82   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              667 ; 83   |extern INT _Y bufy[];
+                              668 ; 84   |
+                              669 ; 85   |// thse must be allocated outside of the file system, by the application, since
+                              670 ; 86   |// the application can override these values in fsproj.h, but the file
+                              671 ; 87   |// system can be built as a library (in which case fsproj.h doesn't exist).
+                              672 ; 88   |extern INT DriveLetter[];
+                              673 ; 89   |extern INT maxhandles;
+                              674 ; 90   |extern INT maxdevices;
+                              675 ; 91   |extern INT maxcaches; 
+                              676 ; 92   |
+                              677 ; 93   |#endif // __cachedef_h__
+                              678 ; 94   |
+                              679 ; 95   |
+                              680 
+                              682 
+                              683 ; 26   |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  12
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              684 ; 27   |// TOVERIFY  Don't think we need fstypes.h. Was added by HK patch of 2.521. See stmp000069
+                                  65 description. 
+                              685 ; 28   |//           Macro desired to be included by HK patch was moved to cachedef.h during 2.6 d
+                                  evelopment.
+                              686 ; 29   |//#include "fstypes.h"
+                              687 ; 30   |
+                              688 ; 31   |// TOVERIFY:   TODO: DELETE LINES below until the #endif
+                              689 ; 32   |//extern INT DriveLetter[];
+                              690 ; 33   |//
+                              691 ; 34   |//extern INT maxhandles;
+                              692 ; 35   |//extern INT maxdevices;
+                              693 ; 36   |//extern INT maxcaches; 
+                              694 ; 37   |
+                              695 ; 38   |// The cache buffers are allocated in the X memory
+                              696 ; 39   |//extern int _X bufx[NUMCACHES*CACHEBUFSIZE];
+                              697 ; 40   |
+                              698 ; 41   |// All other global, custom configurable data is in Y memory.
+                              699 ; 42   |// Two handles are reserved by the file system, so the number of handles must be more than
+                                   2
+                              700 ; 43   |//extern int _Y bufy[NUMDEVICES*DEVICERECORDSIZE + NUMHANDLES*HANDLEENTRYSIZE + NUMCACHES*
+                                  CACHEDESCRSIZE];
+                              701 ; 44   |
+                              702 ; 45   |#endif // __fsproj_h__
+                              703 ; 46   |//---eof------------------------------------------------------------------------
+                              704 ; 47   |
+                              705 
+                              707 
+                              708 ; 3    |#include "fsapi.h"
+                              709 
+                              711 
+                              712 ; 1    |#ifndef _FSAPI_H_
+                              713 ; 2    |#define _FSAPI_H_
+                              714 ; 3    |#include "filespec.h"
+                              715 
+                              717 
+                              718 ; 1    |#ifndef _FILESPEC_H_
+                              719 ; 2    |#define _FILESPEC_H_
+                              720 ; 3    |#include  "fstypes.h"
+                              721 
+                              723 
+                              724 ; 1    |#ifndef _FS_TYPE_H_
+                              725 ; 2    |#define _FS_TYPE_H_
+                              726 ; 3    |
+                              727 ; 4    |#include   "types.h"
+                              728 ; 5    |
+                              729 ; 6    |// move FSMEDIA_TABLE from devicetable.h  15Apr2005   First moved in SDK2.6.
+                              730 ; 7    |typedef struct
+                              731 ; 8    |{
+                              732 ; 9    |
+                              733 ; 10   |INT     _Y BytesPerSector;
+                              734 ; 11   |INT     _Y SectorsPerCluster;
+                              735 ; 12   |INT     _Y RsvdSectors;
+                              736 ; 13   |INT     _Y NoOfFATs;
+                              737 ; 14   |INT     _Y MaxRootDirEntries;
+                              738 ; 15   |LONG    _Y TotalSectors;
+                              739 ; 16   |LONG    _Y FATSize;
+                              740 ; 17   |LONG    _Y RootdirCluster;
+                              741 ; 18   |//INT   _Y FSInfoSector;
+                              742 ; 19   |//INT   _Y BkBootSector;
+                              743 ; 20   |LONG    _Y NextFreeCluster;
+                              744 ; 21   |LONG    _Y TotalFreeClusters;
+                              745 ; 22   |INT     _Y RootDirSectors;
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  13
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              746 ; 23   |INT     _Y FIRSTDataSector;
+                              747 ; 24   |INT    _Y FATType;
+                              748 ; 25   |LONG   _Y TotalNoofclusters;
+                              749 ; 26   |INT    _Y ClusterMask;
+                              750 ; 27   |INT    _Y ClusterShift;
+                              751 ; 28   |INT    _Y SectorShift;
+                              752 ; 29   |INT    _Y SectorMask;
+                              753 ; 30   |INT    _Y DevicePresent;
+                              754 ; 31   |LONG   _Y FirRootdirsec;
+                              755 ; 32   |INT             _Y FSInfoSector;
+                              756 ; 33   |}FSMEDIA_TABLE;
+                              757 ; 34   |
+                              758 ; 35   |
+                              759 ; 36   |#define         MAXDEVICES              2
+                              760 ; 37   |//#define       NUMCACHES               8  // this is already in fsproj.h (2 for player 2 
+                                  for mtp as of 28jun2005) TOVERIFY 2 ok for player and mtp. 
+                              761 ; 38   |
+                              762 ; 39   |// NOTE:  This offset is the same no matter what the sector actual size!  
+                              763 ; 40   |//        TOVERIFY 3.0 doesn't have this defined but uses it in filesystempresent.c. lbmlc
+                                   def'd it here so I insert it here.
+                              764 ; 41   |#define         FATFS_SIGNATURE_OFFSET  510
+                              765 ; 42   |#define         BOOTSECTOR              0
+                              766 ; 43   |#define     FSINFOSECTOR        1
+                              767 ; 44   |
+                              768 ; 45   |#define     READ_MODE           1
+                              769 ; 46   |#define     WRITE_MODE          2
+                              770 ; 47   |#define     APPEND_MODE         4
+                              771 ; 48   |#define     SEQ_WRITE_MODE      8
+                              772 ; 49   |#define     DIRECTORY_MODE         16
+                              773 ; 50   |#define     CREATE_MODE        32
+                              774 ; 51   |
+                              775 ; 52   |#define     RPLUS               5
+                              776 ; 53   |#define     WPLUS                   6
+                              777 ; 54   |#define     APLUS               7
+                              778 ; 55   |
+                              779 ; 56   |
+                              780 ; 57   |
+                              781 ; 58   |#define     X_MEMORY            0
+                              782 ; 59   |#define     Y_MEMORY            2
+                              783 ; 60   |#define     P_MEMORY            4
+                              784 ; 61   |
+                              785 ; 62   |#define     FAT12               0 
+                              786 ; 63   |#define     FAT16               1   
+                              787 ; 64   |#define     FAT32               2 
+                              788 ; 65   |
+                              789 ; 66   |
+                              790 ; 67   |#define FAT12EOF            0x0FFF
+                              791 ; 68   |#define FAT16EOF            0xFFFF
+                              792 ; 69   |#define FAT32EOF            0x0FFFFFFF
+                              793 ; 70   |
+                              794 ; 71   |
+                              795 ; 72   |
+                              796 ; 73   |#define FAT12FREECX         0x000
+                              797 ; 74   |#define FAT16FREECX         0x0000
+                              798 ; 75   |#define FAT32FREECX         0x00000000
+                              799 ; 76   |
+                              800 ; 77   |
+                              801 ; 78   |#define  DBCS               1
+                              802 ; 79   |#define  UNICODE            2
+                              803 ; 80   |
+                              804 ; 81   |
+                              805 ; 82   |#define     CREATION_DATE       1
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  14
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              806 ; 83   |#define     CREATION_TIME       2
+                              807 ; 84   |#define     MODIFICATION_DATE   3
+                              808 ; 85   |#define     MODIFICATION_TIME   4
+                              809 ; 86   |
+                              810 ; 87   |
+                              811 ; 88   |#define     READ_ONLY      0X01
+                              812 ; 89   |#define     HIDDEN         0X02
+                              813 ; 90   |#define     SYSTEM         0X04
+                              814 ; 91   |#define     VOLUME_ID      0X08
+                              815 ; 92   |#define     DIRECTORY      0X10
+                              816 ; 93   |#define     ARCHIVE        0X20
+                              817 ; 94   |
+                              818 ; 95   |#define READCOUNTER         105
+                              819 ; 96   |#define WRITECOUNTER        100
+                              820 ; 97   |#define FLUSHCOUNTER        200
+                              821 ; 98   |
+                              822 ; 99   |
+                              823 ; 100  |#define DEFAULT_MEMORY      Y_MEMORY
+                              824 ; 101  |
+                              825 ; 102  |#define  CWD_HANDLE           0
+                              826 ; 103  |#define  DIRECTORY_HANDLE     1
+                              827 ; 104  |#define  FIRST_VALID_HANDLE   2
+                              828 ; 105  |#define  END_OF_DIR_PATH      3
+                              829 ; 106  |
+                              830 ; 107  |//Constants for Sector read and write (Normal and FAT 
+                              831 ; 108  |#define         NORMALTYPE              0
+                              832 ; 109  |#define         FATTYPE                 1
+                              833 ; 110  |#define     RAWTYPE         2
+                              834 ; 111  |
+                              835 ; 112  |#define  SHORTNAMERES_CH      6
+                              836 ; 113  |#define  LONGNAMERES_CH       9
+                              837 ; 114  |#define  MAXFILENAME_CH       260
+                              838 ; 115  |
+                              839 ; 116  |#define VOLUME_TYPE          0
+                              840 ; 117  |#define DIR_TYPE             1
+                              841 ; 118  |#define FILE_TYPE            2
+                              842 ; 119  |                                           
+                              843 ; 120  |#define WRITE_TYPE_RANDOM               0
+                              844 ; 121  |#define WRITE_TYPE_SEQ_FIRST    1
+                              845 ; 122  |#define WRITE_TYPE_SEQ_NEXT             2
+                              846 ; 123  |#define WRITE_TYPE_NOREADBACK   3
+                              847 ; 124  |                  
+                              848 ; 125  |
+                              849 ; 126  |#define     HANDLEENTRYSIZE         19
+                              850 ; 127  |
+                              851 ; 128  |// DEVICERECORDSIZE is now only defined in cachedef.h so deleted from here in first 3.1 pr
+                                  elim 
+                              852 ; 129  |
+                              853 ; 130  |#define     CACHEDESCRSIZE          8
+                              854 ; 131  |#define     CACHEBUFSIZE            705
+                              855 ; 132  |
+                              856 ; 133  |#define     UCS2s                     0
+                              857 ; 134  |#define     UCS3s                     1
+                              858 ; 135  |
+                              859 ; 136  |#define     FAT32FSIFREECOUNTSIZE       4
+                              860 ; 137  |
+                              861 ; 138  |#endif // _FS_TYPE_H_
+                              862 ; 139  |
+                              863 
+                              865 
+                              866 ; 4    |#define MAX_FILESNAME   13
+                              867 ; 5    |
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  15
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              868 ; 6    |typedef struct {
+                              869 ; 7    |    INT     gCurrentRecord;
+                              870 ; 8    |    INT     DirAttribute;
+                              871 ; 9    |    _packed char    FileName[9];
+                              872 ; 10   |    _packed char    FileExtension[4];
+                              873 ; 11   |}FILESPEC;
+                              874 ; 12   |
+                              875 ; 13   |typedef struct {
+                              876 ; 14   |    INT attrib;
+                              877 ; 15   |        LONG FileSize;
+                              878 ; 16   |    int  device;
+                              879 ; 17   |    INT startrecord;
+                              880 ; 18   |    _packed char name[MAX_FILESNAME];
+                              881 ; 19   |        LONG Key;
+                              882 ; 20   |}Finddata;
+                              883 ; 21   |#endif
+                              884 ; 22   |
+                              885 
+                              887 
+                              888 ; 4    |extern _reentrant LONG Ftell(INT HandleNumber);
+                              889 ; 5    |extern _reentrant LONG Feof(INT HandleNumber);
+                              890 ; 6    |extern _reentrant INT *Fputs(INT HandleNumber,INT *Buffer);
+                              891 ; 7    |extern _reentrant LONG Fread(INT HandleNumber,INT *Buffer,LONG NumBytesToRead,INT Source_M
+                                  emory,INT MOdulo);
+                              892 ; 8    |extern _reentrant INT Fgetc(INT HandleNumber);
+                              893 ; 9    |extern _reentrant INT Fputc(INT HandleNumber,INT ByteToWrite);
+                              894 ; 10   |extern _reentrant LONG ReadDirectoryRecord(INT HandleNumber,INT RecordNumber,INT *Buffer);
+                                  
+                              895 ; 11   |extern _reentrant INT Fseek(INT HandleNumber,LONG NumBytesToSeek,INT SeekPosition);
+                              896 ; 12   |extern _reentrant INT Fopen(_packed char *filepath,_packed char *mode);
+                              897 ; 13   |extern _reentrant LONG Fwrite(INT HandleNumber,INT  *Buffer,LONG NumBytesToWrite,INT Sourc
+                                  e_Memory,INT MOdulo);
+                              898 ; 14   |extern _reentrant LONG Totalfreecluster(INT DeviceNum);
+                              899 ; 15   |extern _reentrant INT Rmdir(_packed char *filepath);
+                              900 ; 16   |extern _reentrant INT Rmdirw(_packed char *filepath);
+                              901 ; 17   |extern _reentrant INT Mkdir(_packed char *filepath);
+                              902 
+                              904 
+                              905 ; 18   |
+                              906 ; 19   |        //      SGTL-HK 27-05-2005
+                              907 ; 20   |extern _reentrant INT Mkdirw(UCS3 *filepath);
+                              908 ; 21   |
+                              909 ; 22   |extern _reentrant INT Chdir(_packed char *filepath);
+                              910 ; 23   |extern _reentrant INT FastOpen(LONG Key,_packed char *mode);
+                              911 ; 24   |
+                              912 ; 25   |extern _reentrant INT Setcwd(_packed char *filepath, _packed char *gCworkingDir,INT index,
+                                  INT length);
+                              913 ; 26   |extern _reentrant _packed char *Getcwd(void);
+                              914 ; 27   |extern  _reentrant _packed char *Fgets(INT HandleNumber,INT NumBytesToRead, _packed char *
+                                  Buffer);
+                              915 ; 28   |extern INT  FSInit(INT _X *bufx, INT _Y *bufy, INT maxdevices, INT maxhandles, INT maxcach
+                                  es);
+                              916 ; 29   |extern INT  FlushCache(void);
+                              917 ; 30   |extern _reentrant INT FsShutDown(void);
+                              918 ; 31   |extern _reentrant LONG GetFileSize(INT HandleNumber);
+                              919 ; 32   |
+                              920 ; 33   |extern _reentrant INT filegetattrib(_packed char *FilePath);
+                              921 ; 34   |extern _reentrant INT Fopenw(INT *filepath,_packed char *mode);
+                              922 ; 35   |extern _reentrant INT Fremove(_packed char *filepath);
+                              923 ; 36   |extern _reentrant INT Fremovew(_packed char *filepath);
+                              924 ; 37   |extern _reentrant void DBCSToUnicode(_packed unsigned char *pDBCS, WORD *pUnicode,INT iLen
+                                  gth);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  16
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                              925 ; 38   |extern INT FlushCache(void);
+                              926 ; 39   |extern _reentrant INT DeleteTree(_packed char *Path);
+                              927 ; 40   |extern _reentrant INT Fclose(INT HandleNumber);
+                              928 ; 41   |extern INT FSMediaPresent(INT DeviceNum);
+                              929 ; 42   |extern INT FSFATType (INT DeviceNum);
+                              930 ; 43   |extern  INT _reentrant  GetVolumeLabel(_packed char *Buffer,INT DeviceNum);
+                              931 ; 44   |extern _reentrant INT SetVolumeLabel(_packed char *Buffer,INT DeviceNum);
+                              932 ; 45   |extern _reentrant LONG FgetFastHandle(INT HandleNumber);
+                              933 ; 46   |
+                              934 ; 47   |extern _reentrant INT ConstructLongFileName(INT HandleNumber, INT RecordNumber, INT *LFNBu
+                                  ffer);
+                              935 ; 48   |extern _reentrant void Uppercase(_packed char *file); 
+                              936 ; 49   |extern _reentrant INT FindNext(INT HandleNumber,Finddata *_finddata);
+                              937 
+                              947 
+                              948 ; 50   |extern _reentrant INT FindFirst(Finddata *_finddata,_packed char *FileName);
+                              949 ; 51   |extern _reentrant void ClearData(Finddata *_finddata);
+                              950 ; 52   |extern _reentrant INT GetShortfilename(LONG Key,INT *Buffer);
+                              951 ; 53   |
+                              952 ; 54   |
+                              953 ; 55   |
+                              954 ; 56   |
+                              955 ; 57   |typedef struct
+                              956 ; 58   |{
+                              957 ; 59   |
+                              958 ; 60   |INT             Day;
+                              959 ; 61   |INT             Month;
+                              960 ; 62   |INT             Year;
+                              961 ; 63   |}DIR_DATE;
+                              962 ; 64   |
+                              963 ; 65   |
+                              964 ; 66   |typedef struct
+                              965 ; 67   |{
+                              966 ; 68   |
+                              967 ; 69   |INT             Second;
+                              968 ; 70   |INT             Minute;
+                              969 ; 71   |INT             Hour;
+                              970 ; 72   |}DIR_TIME;
+                              971 ; 73   |
+                              972 ; 74   |
+                              973 ; 75   |typedef struct
+                              974 ; 76   |{
+                              975 ; 77   |LONG CurrentOffset;     
+                              976 ; 78   |LONG CurrentCluster;
+                              977 ; 79   |}HANDLECONTEXT;
+                              978 ; 80   |
+                              979 ; 81   |extern _reentrant INT filesetattrib(INT HandleNumber,INT dirattribute);
+                              980 ; 82   |extern _reentrant INT filesetdate(_packed char *FilePath,INT crt_mod_date_time_para,DIR_DA
+                                  TE *dirdate,DIR_TIME *dirtime);
+                              981 
+                              992 
+                              993 ; 83   |extern _reentrant INT filegetdate(INT HandleNumber,INT crt_mod_date_time_para,DIR_DATE *di
+                                  rdate,DIR_TIME *dirtime);
+                              994 ; 84   |#endif
+                              995 
+                              997 
+                              998 ; 4    |#include "platform.h"
+                              999 
+                             1001 
+                             1002 ; 1    |// Plafform API
+                             1003 ; 2    |
+                             1004 ; 3    |extern void EnterNonReentrantSection(void);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  17
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1005 ; 4    |extern void LeaveNonReentrantSection(void);
+                             1006 ; 5    |
+                             1007 ; 6    |extern INT FSGetByte(void *buffer, INT Offset,INT MemoryType);
+                             1008 ; 7    |extern INT FSGetWord(void *buffer, INT Offset,INT MemoryType);
+                             1009 ; 8    |extern LONG FSGetDWord(void *buffer, INT Offset,INT MemoryType);
+                             1010 ; 9    |extern void FsCopyBuffer(void *Dest_Buffer,INT Dest_Offset,void *Source_Buffer,INT Source_
+                                  Offset,INT Size,INT Source_MemoryType,INT Dest_MemoryType,INT Dest_modulo,INT SourceModule);
+                             1011 ; 10   |extern void PutByte(void *buffer, INT byte,INT Offset ,INT MemoryType);
+                             1012 ; 11   |extern void PutWord(void *buffer, INT word, INT Offset,INT MemoryType);
+                             1013 ; 12   |extern void PutDword(void *buffer,  LONG dword,INT Offset,INT MemoryType);
+                             1014 ; 13   |extern LONG GetDWordY(void *buffer, INT Offset,INT MemoryType);
+                             1015 
+                             1017 
+                             1018 ; 5    |
+                             1019 ; 6    |//Do not remove this Dummyvariable,as it is put here to  genrate data section 
+                             1020 ; 7    |//.ydatafsutilsc Which is used in Y_application.dsc for section arragment
+                             1021 ; 8    |Dummyvariable=0;
+                             1022 
+                             1023 
+Y:0000                       1024         org     y,".ydatafsutilsc",init:
+                             1025 FDummyvariable:
+Y:0000 000000                1026         dc      $000000
+                             1029 
+                             1030 ; 9    |_packed char namebuffer[256];
+                             1031 ; 10   |
+                             1032 ; 11   |void _asmfunc packed_strcpy(_packed char *dest, _packed char *src);
+                             1033 ; 12   |void _asmfunc packed_strcat(_packed char *dest, _packed char *src);
+                             1034 ; 13   |
+                             1035 ; 14   |void _reentrant ConvName(_packed BYTE *fname, int DeviceNumber)
+                             1036 ; 15   |{
+                             1037 
+P:0000                       1038         org     p,".ptextfsutilsc":
+                             1045 FConvName:
+P:0000 055F7C         2    2 1046         movec   ssh,y:(r7)+
+P:0001 3F0500         2    4 1049         move    #5,n7
+P:0002 000000         2    6 1050         nop
+P:0003 204F00         2    8 1051         move    (r7)+n7
+                             1063 
+                             1064 ; 16   |    INT i,byte;
+                             1065 ; 17   |    INT off0 = 0, off1 = 0;
+                             1066 
+P:0004 77F400 FFFFFB  3   11 1068         move    #-5,n7
+P:0006 000000         2   13 1069         nop
+P:0007 5C6F00         4   17 1070         move    a1,y:(r7+n7)
+P:0008 270000         2   19 1073         move    #0,y1
+P:0009 20001B         2   21 1074         clr     b   
+P:000A 77F400 FFFFFC  3   24 1076         move    #-4,n7
+P:000C 000000         2   26 1077         nop
+P:000D 5F6F00         4   30 1078         move    b,y:(r7+n7)
+P:000E 77F400 FFFFFD  3   33 1083         move    #-3,n7
+P:0010 000000         2   35 1084         nop
+P:0011 4F6F00         4   39 1085         move    y1,y:(r7+n7)
+                             1087 
+                             1088 ; 18   |    _memset(namebuffer,0, 86);  // 86*3 = 258
+                             1089 
+P:0012 65F400 rrrrrr  3   42 1091         move    #Fnamebuffer,r5
+P:0014 065680 rrrrrr  6   48 1092         do      #86,L5
+P:0016 4F5D00         2   50 1094         move    y1,y:(r5)+
+P:0017 000000         2   52 1095         nop
+                         (4) 1096 L5:
+                             1098 
+                             1099 ; 19   |    byte = FSGetByte(fname,0,Y_MEMORY);
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  18
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1100 
+P:0018 57F400 000002  3   55 1102         move    #>2,b
+P:001A 200013         2   57 1103         clr     a   
+P:001B 77F400 FFFFFE  3   60 1104         move    #-2,n7
+P:001D 000000         2   62 1105         nop
+P:001E 686F00         4   66 1106         move    r0,y:(r7+n7)
+P:001F 0BF080 rrrrrr  6   72 1108         jsr     FFSGetByte
+                             1110 
+                             1111 ; 20   |    if (byte == 0x2f)
+                             1112 
+P:0021 47F400 00002F  3   75 1114         move    #>47,y1
+P:0023 200075         2   77 1115         cmp     y1,a
+P:0024 0AF0A2 rrrrrr  6   83 1116         jne     L3
+                             1117 
+                             1118 ; 21   |    {
+                             1119 ; 22   |        namebuffer[0] = 0x2f3a00 | DriveLetter[DeviceNumber];
+                             1120 
+P:0026 77F400 FFFFFB  3   86 1122         move    #-5,n7
+P:0028 000000         2   88 1123         nop
+P:0029 4DEF00         4   92 1124         move    y:(r7+n7),x1
+P:002A 20B900         2   94 1125         move    x1,n1
+P:002B 61F400 rrrrrr  3   97 1128         move    #FDriveLetter,r1
+P:002D 000000         2   99 1129         nop
+P:002E 044916         4  103 1130         lua     (r1)+n1,r6
+P:002F 000000         2  105 1131         nop
+P:0030 5FE600         2  107 1132         move    y:(r6),b
+P:0031 45F400 2F3A00  3  110 1133         move    #$2F3A00,x1
+P:0033 20006A         2  112 1134         or      x1,b
+P:0034 5D7000 rrrrrr  3  115 1136         move    b1,y:Fnamebuffer
+                             1137 
+                             1138 ; 23   |        off0 = 1;
+                             1139 
+P:0036 2C0100         2  117 1141         move    #1,a1
+P:0037 77F400 FFFFFC  3  120 1144         move    #-4,n7
+P:0039 000000         2  122 1145         nop
+P:003A 5C6F00         4  126 1146         move    a1,y:(r7+n7)
+                             1149 
+                             1150 ; 24   |        off1 = 3;
+                             1151 
+P:003B 56F400 000003  3  129 1153         move    #>3,a
+P:003D 77F400 FFFFFD  3  132 1156         move    #-3,n7
+P:003F 000000         2  134 1157         nop
+P:0040 5E6F00         4  138 1158         move    a,y:(r7+n7)
+                             1161 
+                             1162 ; 25   |    }
+                             1163 ; 26   |    for (i = 0; i < 253; i++)
+                             1164 
+P:0041 200013         2  140 1166 L3:     clr     a   
+                             1168 
+                             1169 ; 27   |    {   
+                             1170 ; 28   |        byte = FSGetByte(fname,i+off0,Y_MEMORY);
+                             1171 
+P:0042 77F400 FFFFFC  3  143 1173 L4:     move    #-4,n7
+P:0044 000000         2  145 1174         nop
+P:0045 4EEF00         4  149 1175         move    y:(r7+n7),y0
+P:0046 045FA0         2  151 1176         movec   m0,n7
+P:0047 000000         2  153 1177         nop
+P:0048 5C6F00         4  157 1178         move    a1,y:(r7+n7)
+P:0049 200050         2  159 1179         add     y0,a
+P:004A 57F400 000002  3  162 1183         move    #>2,b
+P:004C 77F400 FFFFFE  3  165 1184         move    #-2,n7
+P:004E 000000         2  167 1185         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  19
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:004F 68EF00         4  171 1186         move    y:(r7+n7),r0
+P:0050 0BF080 rrrrrr  6  177 1187         jsr     FFSGetByte
+                             1189 
+                             1190 ; 29   |        PutByte(namebuffer,byte,i+off1,Y_MEMORY);
+                             1191 
+P:0052 045FA0         2  179 1193         movec   m0,n7
+P:0053 000000         2  181 1194         nop
+P:0054 5FEF00         4  185 1195         move    y:(r7+n7),b
+P:0055 77F400 FFFFFD  3  188 1196         move    #-3,n7
+P:0057 000000         2  190 1197         nop
+P:0058 4CEF00         4  194 1198         move    y:(r7+n7),x0
+P:0059 200048         2  196 1199         add     x0,b
+P:005A 44F400 000002  3  199 1200         move    #>2,x0
+P:005C 60F400 rrrrrr  3  202 1201         move    #Fnamebuffer,r0
+P:005E 0BF080 rrrrrr  6  208 1202         jsr     FPutByte
+P:0060 045FA0         2  210 1205         movec   m0,n7
+P:0061 000000         2  212 1206         nop
+P:0062 5EEF00         4  216 1207         move    y:(r7+n7),a
+P:0063 46F400 000001  3  219 1208         move    #>1,y0
+P:0065 200050         2  221 1209         add     y0,a
+P:0066 44F400 0000FD  3  224 1212         move    #>$FD,x0
+P:0068 200045         2  226 1213         cmp     x0,a
+P:0069 0AF0A9 rrrrrr  6  232 1214         jlt     L4
+                             1215 
+                             1216 ; 30   |    }
+                             1217 ; 31   |}
+                             1218 
+P:006B 77F400 FFFFFA  3  235 1220         move    #-6,n7
+P:006D 000000         2  237 1221         nop
+P:006E 05EF7C         4  241 1222         movec   y:(r7+n7),ssh
+P:006F 204F00         2  243 1224         move    (r7)+n7
+P:0070 00000C         4  247 1226         rts
+                             1231 
+                             1232 ; 32   |
+                             1233 ; 33   |
+                             1234 ; 34   |/*
+                             1235 ; 35   |//////////////////////////////////////////////////////////////////////////////
+                             1236 ; 36   |> Name:            FSFileOpen
+                             1237 ; 37   | Type:             Function
+                             1238 ; 38   | Description:      C wrapper for FILEOpen
+                             1239 ; 39   | Inputs:           
+                             1240 ; 40   |                   a = Attribute(s)
+                             1241 ; 41   |                   r0 = Pointer to file name string
+                             1242 ; 42   |                   b = Device number.
+                             1243 ; 43   | Outputs:          
+                             1244 ; 44   |                   a = Handle for the file created or -1 if function failed
+                             1245 ; 45   |
+                             1246 ; 46   | Notes:
+                             1247 ; 47   |                   see FILEOpen for further information.
+                             1248 ; 48   |                   File  name must be in Y memory
+                             1249 ; 49   |<         
+                             1250 ; 50   |//////////////////////////////////////////////////////////////////////////////
+                             1251 ; 51   |*/
+                             1252 ; 52   |
+                             1253 ; 53   |INT _reentrant FSFileOpen( _packed BYTE *fname,INT attribute, INT DeviceNumber)
+                             1254 ; 54   |{
+                             1255 
+                             1260 FFSFileOpen:
+P:0071 055F7C         2  249 1261         movec   ssh,y:(r7)+
+P:0072 205F00         2  251 1264         move    (r7)+
+P:0073 205F00         2  253 1265         move    (r7)+
+                             1275 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  20
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1276 ; 55   |    INT retval = 0;
+                             1277 
+P:0074 77F400 FFFFFE  3  256 1279         move    #-2,n7
+P:0076 000000         2  258 1280         nop
+P:0077 5C6F00         4  262 1281         move    a1,y:(r7+n7)
+P:0078 240000         2  264 1284         move    #0,x0
+P:0079 045FA0         2  266 1286         movec   m0,n7
+P:007A 000000         2  268 1287         nop
+P:007B 4C6F00         4  272 1288         move    x0,y:(r7+n7)
+                             1291 
+                             1292 ; 56   |        ConvName(fname, DeviceNumber);
+                             1293 
+P:007C 21AE00         2  274 1295         move    b1,a
+P:007D 0BF080 rrrrrr  6  280 1296         jsr     FConvName
+                             1301 
+                             1302 ; 57   |        if (attribute == 1)
+                             1303 
+P:007F 77F400 FFFFFE  3  283 1305         move    #-2,n7
+P:0081 000000         2  285 1306         nop
+P:0082 5EEF00         4  289 1307         move    y:(r7+n7),a
+P:0083 46F400 000001  3  292 1308         move    #>1,y0
+P:0085 200055         2  294 1309         cmp     y0,a
+P:0086 0AF0A2 rrrrrr  6  300 1312         jne     L8
+                             1313 
+                             1314 ; 58   |                retval = Fopen(namebuffer,(_packed char *)"r");
+                             1315 
+P:0088 64F400 rrrrrr  3  303 1317         move    #L6,r4
+P:008A 60F400 rrrrrr  3  306 1318         move    #Fnamebuffer,r0
+P:008C 0BF080 rrrrrr  6  312 1319         jsr     FFopen
+P:008E 045FA0         2  314 1321         movec   m0,n7
+P:008F 000000         2  316 1322         nop
+P:0090 5E6F00         4  320 1323         move    a,y:(r7+n7)
+P:0091 0AF080 rrrrrr  6  326 1324         jmp     L10
+                             1325 
+                             1326 ; 59   |        else if (attribute == 2)
+                             1327 
+                             1329 L8:
+P:0093 47F400 000002  3  329 1331         move    #>2,y1
+P:0095 200075         2  331 1332         cmp     y1,a
+P:0096 0AF0A2 rrrrrr  6  337 1333         jne     L10
+                             1334 
+                             1335 ; 60   |                retval = Fopen(namebuffer,(_packed char *)"r+");
+                             1336 
+P:0098 64F400 rrrrrr  3  340 1338         move    #L7,r4
+P:009A 60F400 rrrrrr  3  343 1339         move    #Fnamebuffer,r0
+P:009C 0BF080 rrrrrr  6  349 1340         jsr     FFopen
+P:009E 045FA0         2  351 1342         movec   m0,n7
+P:009F 000000         2  353 1343         nop
+P:00A0 5E6F00         4  357 1344         move    a,y:(r7+n7)
+                             1345 
+                             1346 ; 61   |#ifdef AUDIBLE
+                             1347 ; 62   |        else if (attribute == 3)
+                             1348 ; 63   |                retval = Fopen(namebuffer,(_packed char *)"w+");
+                             1349 ; 64   |#endif
+                             1350 ; 65   |        return retval;
+                             1351 
+P:00A1 045FA0         2  359 1353 L10:    movec   m0,n7
+P:00A2 000000         2  361 1354         nop
+P:00A3 5EEF00         4  365 1355         move    y:(r7+n7),a
+                             1358 
+                             1359 ; 66   |}
+                             1360 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  21
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00A4 205700         2  367 1362         move    (r7)-
+P:00A5 205700         2  369 1363         move    (r7)-
+P:00A6 05FF7C         4  373 1365         movec   y:-(r7),ssh
+P:00A7 000000         2  375 1368         nop
+P:00A8 00000C         4  379 1369         rts
+                             1372 
+                             1373 ; 67   |/*
+                             1374 ; 68   |//////////////////////////////////////////////////////////////////////////////
+                             1375 ; 69   |> Name:            FSFastOpen
+                             1376 ; 70   | Type:             Function
+                             1377 ; 71   | Description:      C wrapper for FILEOpen
+                             1378 ; 72   | Inputs:           
+                             1379 ; 73   |                   a = Fast key(s)
+                             1380 ; 74   |                   b = Attribute
+                             1381 ; 75   | Outputs:          
+                             1382 ; 76   |                   a = Handle for the file created or -1 if function failed
+                             1383 ; 77   |
+                             1384 ; 78   | Notes:
+                             1385 ; 79   |                           
+                             1386 ; 80   |//////////////////////////////////////////////////////////////////////////////
+                             1387 ; 81   |*/
+                             1388 ; 82   |
+                             1389 ; 83   |INT _reentrant FSFastOpen(DWORD Key, INT attribute)
+                             1390 ; 84   |{
+                             1391 
+                             1396 FFSFastOpen:
+P:00A9 055F7C         2  381 1397         movec   ssh,y:(r7)+
+                             1406 
+                             1407 ; 85   |    INT retval = 0;
+                             1408 
+P:00AA 210400         2  383 1410         move    a0,x0
+P:00AB 218500         2  385 1411         move    a1,x1
+P:00AC 200013         2  387 1414         clr     a   
+                             1416 
+                             1417 ; 86   |        //ConvName(fname, DeviceNumber);
+                             1418 ; 87   |        if (attribute == 1)
+                             1419 
+P:00AD 46F400 000001  3  390 1421         move    #>1,y0
+P:00AF 20005D         2  392 1422         cmp     y0,b
+P:00B0 0AF0A2 rrrrrr  6  398 1423         jne     L11
+                             1424 
+                             1425 ; 88   |                retval = FastOpen(Key,(_packed char *)"r");
+                             1426 
+P:00B2 200061         2  400 1428         tfr     x1,a
+P:00B3 208800         2  402 1429         move    x0,a0
+P:00B4 60F400 rrrrrr  3  405 1434         move    #L6,r0
+P:00B6 2A0000         2  407 1435         move    #0,a2
+P:00B7 0ACC17 rrrrrr  6  413 1436         jclr    #23,a1,L14
+P:00B9 044AA0         2  415 1437         movec   m0,a2
+P:00BA 0BF080 rrrrrr  6  421 1438 L14:    jsr     FFastOpen
+P:00BC 0AF080 rrrrrr  6  427 1441         jmp     L13
+                             1442 
+                             1443 ; 89   |        else if (attribute == 2)
+                             1444 
+                             1446 L11:
+P:00BE 47F400 000002  3  430 1449         move    #>2,y1
+P:00C0 20007D         2  432 1450         cmp     y1,b
+P:00C1 0AF0A2 rrrrrr  6  438 1451         jne     L13
+                             1452 
+                             1453 ; 90   |                retval = FastOpen(Key,(_packed char *)"r+");
+                             1454 
+P:00C3 200061         2  440 1456         tfr     x1,a
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  22
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:00C4 208800         2  442 1457         move    x0,a0
+P:00C5 60F400 rrrrrr  3  445 1462         move    #L7,r0
+P:00C7 2A0000         2  447 1463         move    #0,a2
+P:00C8 0ACC17 rrrrrr  6  453 1464         jclr    #23,a1,L15
+P:00CA 044AA0         2  455 1465         movec   m0,a2
+P:00CB 0BF080 rrrrrr  6  461 1466 L15:    jsr     FFastOpen
+                             1469 
+                             1470 ; 91   |        return retval;
+                             1471 
+                             1473 L13:
+                             1474 
+                             1475 ; 92   |}
+                             1476 
+P:00CD 05FF7C         4  465 1478         movec   y:-(r7),ssh
+P:00CE 000000         2  467 1481         nop
+P:00CF 00000C         4  471 1482         rts
+                             1485 
+                             1486 ; 93   |
+                             1487 ; 94   |
+                             1488 ; 95   |/*
+                             1489 ; 96   |;///////////////////////////////////////////////////////////////////////////////
+                             1490 ; 97   |;> Name:            FSFileCreate
+                             1491 ; 98   |; Type:             Function
+                             1492 ; 99   |; Description:      C wrapper for FILECreate
+                             1493 ; 100  |; Inputs:           
+                             1494 ; 101  |;                   a = Device Number
+                             1495 ; 102  |;                   r0 = Pointer to File Name String
+                             1496 ; 103  |; Outputs:          
+                             1497 ; 104  |;                   a = Handle for the file created or -1 if function failed
+                             1498 ; 105  |;
+                             1499 ; 106  |; Notes:
+                             1500 ; 107  |;                   see FILECreate for further information.
+                             1501 ; 108  |;                   File name must be in Y memory
+                             1502 ; 109  |;<         
+                             1503 ; 110  |;///////////////////////////////////////////////////////////////////////////////
+                             1504 ; 111  |*/
+                             1505 ; 112  |INT FSFileCreate( _packed BYTE *fname,INT DeviceNumber)
+                             1506 ; 113  |{
+                             1507 
+                             1512 FFSFileCreate:
+P:00D0 05707C rrrrrr  4  475 1513         movec   ssh,y:ss_FSFileCreate
+                             1519 
+                             1520 ; 114  |        ConvName(fname, DeviceNumber);
+                             1521 
+P:00D2 0BF080 rrrrrr  6  481 1523         jsr     FConvName
+                             1526 
+                             1527 ; 115  |    return Fopen(namebuffer,(_packed char *)"w");
+                             1528 
+P:00D4 64F400 rrrrrr  3  484 1530         move    #L16,r4
+P:00D6 60F400 rrrrrr  3  487 1531         move    #Fnamebuffer,r0
+P:00D8 0BF080 rrrrrr  6  493 1532         jsr     FFopen
+                             1533 
+                             1534 ; 116  |}
+                             1535 
+P:00DA 05F07C rrrrrr  4  497 1537         movec   y:ss_FSFileCreate,ssh
+P:00DC 000000         2  499 1539         nop
+P:00DD 00000C         4  503 1540         rts
+                             1541 
+Y:0000                       1542         org     y,".yovlfsutilsc@FSFileCreate",overlay:
+                             1543 ss_FSFileCreate:
+Y:0000 RESERVED              1544         ds      1
+Y:0000
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  23
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1545 
+P:00DE                       1546         org     p,".ptextfsutilsc":
+                             1548 
+                             1549 ; 117  |
+                             1550 ; 118  |
+                             1551 ; 119  |
+                             1552 ; 120  |/*
+                             1553 ; 121  |;///////////////////////////////////////////////////////////////////////////////
+                             1554 ; 122  |;> Name:            FSFileDelete
+                             1555 ; 123  |; Type:             Function
+                             1556 ; 124  |; Description:      C wrapper for FILEDelete
+                             1557 ; 125  |; Inputs:           
+                             1558 ; 126  |;                   a = Device Number
+                             1559 ; 127  |;                   r0 = Pointer to File Name String
+                             1560 ; 128  |; Outputs:          
+                             1561 ; 129  |;                   a = -1 if function failed
+                             1562 ; 130  |;
+                             1563 ; 131  |; Notes:
+                             1564 ; 132  |;                   File name must be in Y memory
+                             1565 ; 133  |;<         
+                             1566 ; 134  |;///////////////////////////////////////////////////////////////////////////////
+                             1567 ; 135  |*/
+                             1568 ; 136  |
+                             1569 ; 137  |INT FSFileDelete(_packed BYTE *fname,INT DeviceNumber)
+                             1570 ; 138  |{
+                             1571 
+                             1576 FFSFileDelete:
+P:00DE 05707C rrrrrr  4  507 1577         movec   ssh,y:ss_FSFileDelete
+                             1583 
+                             1584 ; 139  |        ConvName(fname, DeviceNumber);
+                             1585 
+P:00E0 0BF080 rrrrrr  6  513 1587         jsr     FConvName
+                             1590 
+                             1591 ; 140  |    return Fremove(namebuffer);
+                             1592 
+P:00E2 60F400 rrrrrr  3  516 1594         move    #Fnamebuffer,r0
+P:00E4 0BF080 rrrrrr  6  522 1595         jsr     FFremove
+                             1596 
+                             1597 ; 141  |}
+                             1598 
+P:00E6 05F07C rrrrrr  4  526 1600         movec   y:ss_FSFileDelete,ssh
+P:00E8 000000         2  528 1602         nop
+P:00E9 00000C         4  532 1603         rts
+                             1604 
+Y:0000                       1605         org     y,".yovlfsutilsc@FSFileDelete",overlay:
+                             1606 ss_FSFileDelete:
+Y:0000 RESERVED              1607         ds      1
+Y:0000
+                             1608 
+P:00EA                       1609         org     p,".ptextfsutilsc":
+                             1611 
+                             1612 ; 142  |    
+                             1613 ; 143  |    
+                             1614 ; 144  |    
+                             1615 ; 145  |/*
+                             1616 ; 146  |;///////////////////////////////////////////////////////////////////////////////
+                             1617 ; 147  |;> Name:            FSFileEof
+                             1618 ; 148  |; Type:             Function
+                             1619 ; 149  |; Description:      C wrapper for FileEOF
+                             1620 ; 150  |; Inputs:           
+                             1621 ; 151  |;                   a = File Handle.
+                             1622 ; 152  |; Outputs:          
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  24
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1623 ; 153  |;                   a = Number of bytes from the end or $7fffff if number of bytes
+                             1624 ; 154  |;                        from the end of file greater than $7fffff.
+                             1625 ; 155  |;                   a = -1 if function failed.
+                             1626 ; 156  |;
+                             1627 ; 157  |; Notes:
+                             1628 ; 158  |;                   see FILECreate for further information.
+                             1629 ; 159  |;<         
+                             1630 ; 160  |;///////////////////////////////////////////////////////////////////////////////
+                             1631 ; 161  |*/
+                             1632 ; 162  |INT _reentrant FSFileEof(INT Handle)
+                             1633 ; 163  |{
+                             1634 
+                             1639 FFSFileEof:
+P:00EA 055F7C         2  534 1640         movec   ssh,y:(r7)+
+                             1647 
+                             1648 ; 164  |    LONG retval;
+                             1649 ; 165  |    retval = Feof(Handle);
+                             1650 
+P:00EB 0BF080 rrrrrr  6  540 1652         jsr     FFeof
+P:00ED 210600         2  542 1654         move    a0,y0
+P:00EE 218700         2  544 1655         move    a1,y1
+                             1657 
+                             1658 ; 166  |    if (retval > (LONG)0x7fffff)
+                             1659 
+P:00EF 20001B         2  546 1661         clr     b   
+P:00F0 51F400 7FFFFF  3  549 1662         move    #$7FFFFF,b0
+P:00F2 200005         2  551 1663         cmp     b,a
+P:00F3 0AF0AF rrrrrr  6  557 1664         jle     L17
+                             1665 
+                             1666 ; 167  |    {
+                             1667 ; 168  |        retval = (LONG)0x7fffff;
+                             1668 
+P:00F5 212600         2  559 1670         move    b0,y0
+P:00F6 21A700         2  561 1671         move    b1,y1
+                             1672 
+                             1673 ; 169  |    }
+                             1674 ; 170  |    return (INT)retval;
+                             1675 
+                             1677 L17:
+P:00F7 200051         2  563 1679         tfr     y0,a
+                             1680 
+                             1681 ; 171  |}
+                             1682 
+P:00F8 05FF7C         4  567 1684         movec   y:-(r7),ssh
+P:00F9 000000         2  569 1687         nop
+P:00FA 00000C         4  573 1688         rts
+                             1690 
+                             1691 ; 172  |
+                             1692 ; 173  |
+                             1693 ; 174  |/*
+                             1694 ; 175  |;///////////////////////////////////////////////////////////////////////////////
+                             1695 ; 176  |;> Name:            FSFileRead
+                             1696 ; 177  |; Type:             Function
+                             1697 ; 178  |; Description:      C wrapper for FileRead
+                             1698 ; 179  |; Inputs:           
+                             1699 ; 180  |;                   a = Number of bytes to read
+                             1700 ; 181  |;                   b = Handle
+                             1701 ; 182  |;                   x0 = Memory Space
+                             1702 ; 183  |;                   y0 = Modulo
+                             1703 ; 184  |;                   r0 = Buffer Address
+                             1704 ; 185  |; Outputs:          
+                             1705 ; 186  |;                   a =Number bytes read or -1 if function failed
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  25
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1706 ; 187  |;
+                             1707 ; 188  |; Notes:
+                             1708 ; 189  |;                   see FileRead for further information.
+                             1709 ; 190  |;<         
+                             1710 ; 191  |;///////////////////////////////////////////////////////////////////////////////
+                             1711 ; 192  |*/
+                             1712 ; 193  |INT _reentrant FSFileRead(INT BytestoRead, INT Handle, INT memory_type, INT modulo, WORD *
+                                  buffer)
+                             1713 ; 194  |{
+                             1714 
+                             1721 FFSFileRead:
+P:00FB 055F7C         2  575 1722         movec   ssh,y:(r7)+
+                             1737 
+                             1738 ; 195  |    INT memtype;
+                             1739 
+P:00FC 21A500         2  577 1741         move    b1,x1
+                             1744 
+                             1745 ; 196  |    if (memory_type == 0x100000)
+                             1746 
+P:00FD 200049         2  579 1748         tfr     x0,b
+P:00FE 271000         2  581 1749         move    #<$10,y1
+P:00FF 20007D         2  583 1750         cmp     y1,b
+P:0100 0AF0A2 rrrrrr  6  589 1751         jne     L18
+                             1752 
+                             1753 ; 197  |        memtype = P_MEMORY;
+                             1754 
+P:0102 44F400 000004  3  592 1756         move    #>4,x0
+P:0104 0AF080 rrrrrr  6  598 1759         jmp     L21
+                             1760 
+                             1761 ; 198  |    else if (memory_type == 0x400000)
+                             1762 
+                             1764 L18:
+P:0106 274000         2  600 1767         move    #<$40,y1
+P:0107 20007D         2  602 1768         cmp     y1,b
+P:0108 0AF0A2 rrrrrr  6  608 1771         jne     L19
+                             1772 
+                             1773 ; 199  |        memtype = Y_MEMORY;
+                             1774 
+P:010A 44F400 000002  3  611 1776         move    #>2,x0
+P:010C 0AF080 rrrrrr  6  617 1778         jmp     L21
+                             1779 
+                             1780 ; 200  |    else
+                             1781 ; 201  |        memtype = X_MEMORY;
+                             1782 
+P:010E 240000         2  619 1784 L19:    move    #0,x0
+                             1785 
+                             1786 ; 202  |
+                             1787 ; 203  |    return Fread(Handle, (INT *) buffer, (LONG) BytestoRead, memtype,(INT) modulo);
+                             1788 
+                             1790 L21:
+P:010F 218800         2  621 1792         move    a1,a0
+P:0110 214C00         2  623 1793         move    a2,a1
+P:0111 200069         2  625 1795         tfr     x1,b
+P:0112 0BF080 rrrrrr  6  631 1796         jsr     FFread
+P:0114 210E00         2  633 1803         move    a0,a
+                             1804 
+                             1805 ; 204  |}    
+                             1806 
+P:0115 05FF7C         4  637 1808         movec   y:-(r7),ssh
+P:0116 000000         2  639 1811         nop
+P:0117 00000C         4  643 1812         rts
+                             1814 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  26
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1815 ; 205  |
+                             1816 ; 206  |
+                             1817 ; 207  |
+                             1818 ; 208  |/*
+                             1819 ; 209  |;///////////////////////////////////////////////////////////////////////////////
+                             1820 ; 210  |;> Name:            fseek
+                             1821 ; 211  |; Type:             Function
+                             1822 ; 212  |; Description:      C wrapper for FileSeek
+                             1823 ; 213  |; Inputs:           
+                             1824 ; 214  |;                   b1= FileHandle
+                             1825 ; 215  |;                   a = Number of bytes to seek
+                             1826 ; 216  |;                   x0= origin (SEEK_CUR,SEEK_END,SEEK_SET)           
+                             1827 ; 217  |; Outputs:          
+                             1828 ; 218  |;                   a = 0 if successful or -1 if function failed
+                             1829 ; 219  |;
+                             1830 ; 220  |; Notes:
+                             1831 ; 221  |;                   must convert all variables to FileSeek parameters..
+                             1832 ; 222  |;<         
+                             1833 ; 223  |;///////////////////////////////////////////////////////////////////////////////
+                             1834 ; 224  |*/
+                             1835 ; 225  |INT _reentrant fseek(INT Handle, LONG SeekOffset, INT type)
+                             1836 ; 226  |{
+                             1837 
+P:0118 055F7C         2  645 1842 Ffseek: movec   ssh,y:(r7)+
+                             1851 
+                             1852 ; 227  |    return Fseek(Handle,SeekOffset,type);
+                             1853 
+P:0119 0BF080 rrrrrr  6  651 1855         jsr     FFseek
+                             1859 
+                             1860 ; 228  |}
+                             1861 
+P:011B 05FF7C         4  655 1863         movec   y:-(r7),ssh
+P:011C 000000         2  657 1866         nop
+P:011D 00000C         4  661 1867         rts
+                             1869 
+                             1870 ; 229  |
+                             1871 ; 230  |/*
+                             1872 ; 231  |;///////////////////////////////////////////////////////////////////////////////
+                             1873 ; 232  |;> Name:            FSFileWrite
+                             1874 ; 233  |; Type:             Function
+                             1875 ; 234  |; Description:      C wrapper for FileWrite
+                             1876 ; 235  |; Inputs:           
+                             1877 ; 236  |;                   a = Number of bytes to write
+                             1878 ; 237  |;                   b = Handle
+                             1879 ; 238  |;                   x0 = Memory Space
+                             1880 ; 239  |;                   y0 = Modulo
+                             1881 ; 240  |;                   r0 = Buffer Address
+                             1882 ; 241  |; Outputs:          
+                             1883 ; 242  |;                   a =Number bytes written or -1 if function failed
+                             1884 ; 243  |;
+                             1885 ; 244  |; Notes:
+                             1886 ; 245  |;                   see FileWrite for further information.
+                             1887 ; 246  |;<         
+                             1888 ; 247  |;///////////////////////////////////////////////////////////////////////////////*/
+                             1889 ; 248  |
+                             1890 ; 249  |INT _reentrant FSFileWrite(INT wNumberBytes, INT Handle, INT memory_type, INT iModulo, WOR
+                                  D *buffer)
+                             1891 ; 250  |{
+                             1892 
+                             1897 FFSFileWrite:
+P:011E 055F7C         2  663 1898         movec   ssh,y:(r7)+
+                             1913 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  27
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             1914 ; 251  |    INT memtype;
+                             1915 
+P:011F 21A500         2  665 1917         move    b1,x1
+                             1920 
+                             1921 ; 252  |    if (memory_type == 0x100000)
+                             1922 
+P:0120 200049         2  667 1924         tfr     x0,b
+P:0121 271000         2  669 1925         move    #<$10,y1
+P:0122 20007D         2  671 1926         cmp     y1,b
+P:0123 0AF0A2 rrrrrr  6  677 1927         jne     L22
+                             1928 
+                             1929 ; 253  |        memtype = P_MEMORY;
+                             1930 
+P:0125 44F400 000004  3  680 1932         move    #>4,x0
+P:0127 0AF080 rrrrrr  6  686 1935         jmp     L25
+                             1936 
+                             1937 ; 254  |    else if (memory_type == 0x400000)
+                             1938 
+                             1940 L22:
+P:0129 274000         2  688 1943         move    #<$40,y1
+P:012A 20007D         2  690 1944         cmp     y1,b
+P:012B 0AF0A2 rrrrrr  6  696 1947         jne     L23
+                             1948 
+                             1949 ; 255  |        memtype = Y_MEMORY;
+                             1950 
+P:012D 44F400 000002  3  699 1952         move    #>2,x0
+P:012F 0AF080 rrrrrr  6  705 1954         jmp     L25
+                             1955 
+                             1956 ; 256  |    else
+                             1957 ; 257  |        memtype = X_MEMORY;
+                             1958 
+P:0131 240000         2  707 1960 L23:    move    #0,x0
+                             1961 
+                             1962 ; 258  |
+                             1963 ; 259  |    return Fwrite(Handle, (INT *)buffer, (LONG) wNumberBytes, memtype, iModulo);
+                             1964 
+                             1966 L25:
+P:0132 218800         2  709 1968         move    a1,a0
+P:0133 214C00         2  711 1969         move    a2,a1
+P:0134 200069         2  713 1971         tfr     x1,b
+P:0135 0BF080 rrrrrr  6  719 1972         jsr     FFwrite
+P:0137 210E00         2  721 1979         move    a0,a
+                             1980 
+                             1981 ; 260  |}
+                             1982 
+P:0138 05FF7C         4  725 1984         movec   y:-(r7),ssh
+P:0139 000000         2  727 1987         nop
+P:013A 00000C         4  731 1988         rts
+                             1990 
+                             1991 ; 261  |
+                             1992 ; 262  |
+                             1993 ; 263  |
+                             1994 ; 264  |LONG _reentrant ftell(INT Handle)
+                             1995 ; 265  |{
+                             1996 
+P:013B 055F7C         2  733 2001 Fftell: movec   ssh,y:(r7)+
+                             2006 
+                             2007 ; 266  |    return Ftell(Handle);
+                             2008 
+P:013C 0BF080 rrrrrr  6  739 2010         jsr     FFtell
+                             2012 
+                             2013 ; 267  |}
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  28
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2014 
+P:013E 05FF7C         4  743 2016         movec   y:-(r7),ssh
+P:013F 000000         2  745 2019         nop
+P:0140 00000C         4  749 2020         rts
+                             2022 
+                             2023 ; 268  |
+                             2024 ; 269  |
+                             2025 ; 270  |
+                             2026 ; 271  |LONG _reentrant FSFileSize(INT HandleNumber)
+                             2027 ; 272  |{
+                             2028 
+                             2033 FFSFileSize:
+P:0141 055F7C         2  751 2034         movec   ssh,y:(r7)+
+                             2039 
+                             2040 ; 273  |    return GetFileSize(HandleNumber);
+                             2041 
+P:0142 0BF080 rrrrrr  6  757 2043         jsr     FGetFileSize
+                             2045 
+                             2046 ; 274  |}
+                             2047 
+P:0144 05FF7C         4  761 2049         movec   y:-(r7),ssh
+P:0145 000000         2  763 2052         nop
+P:0146 00000C         4  767 2053         rts
+                             2055 
+                             2056 ; 275  |
+                             2057 ; 276  |
+                             2058 ; 277  |/*
+                             2059 ; 278  |;///////////////////////////////////////////////////////////////////////////////
+                             2060 ; 279  |;> Name:            FSChangeDir
+                             2061 ; 280  |; Type:             Function
+                             2062 ; 281  |; Description:      C wrapper for ChangeDirectory
+                             2063 ; 282  |; Inputs:           
+                             2064 ; 283  |;                   a = Device Number
+                             2065 ; 284  |;                   r0 = Pointer to Directory Name String
+                             2066 ; 285  |; Outputs:          
+                             2067 ; 286  |;                   a = -1 if function failed
+                             2068 ; 287  |;
+                             2069 ; 288  |; Notes:
+                             2070 ; 289  |;                   see ChangeDirectory for further information.
+                             2071 ; 290  |;                   Directory name must be in Y memory
+                             2072 ; 291  |;<         
+                             2073 ; 292  |;///////////////////////////////////////////////////////////////////////////////
+                             2074 ; 293  |*/
+                             2075 ; 294  |INT _reentrant FSChangeDir( _packed BYTE *dirname,INT DeviceNumber)
+                             2076 ; 295  |{
+                             2077 
+                             2082 FFSChangeDir:
+P:0147 055F7C         2  769 2083         movec   ssh,y:(r7)+
+                             2090 
+                             2091 ; 296  |        ConvName(dirname, DeviceNumber);
+                             2092 
+P:0148 0BF080 rrrrrr  6  775 2094         jsr     FConvName
+                             2097 
+                             2098 ; 297  |    return Chdir(namebuffer);
+                             2099 
+P:014A 60F400 rrrrrr  3  778 2101         move    #Fnamebuffer,r0
+P:014C 0BF080 rrrrrr  6  784 2102         jsr     FChdir
+                             2103 
+                             2104 ; 298  |}
+                             2105 
+P:014E 05FF7C         4  788 2107         movec   y:-(r7),ssh
+P:014F 000000         2  790 2110         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  29
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:0150 00000C         4  794 2111         rts
+                             2113 
+                             2114 ; 299  |
+                             2115 ; 300  |
+                             2116 ; 301  |
+                             2117 ; 302  |INT _reentrant FSCreateDir(_packed BYTE *dirname,INT DeviceNumber)
+                             2118 ; 303  |{
+                             2119 
+                             2124 FFSCreateDir:
+P:0151 055F7C         2  796 2125         movec   ssh,y:(r7)+
+                             2132 
+                             2133 ; 304  |        ConvName(dirname, DeviceNumber);
+                             2134 
+P:0152 0BF080 rrrrrr  6  802 2136         jsr     FConvName
+                             2139 
+                             2140 ; 305  |    return Mkdir(namebuffer);
+                             2141 
+P:0154 60F400 rrrrrr  3  805 2143         move    #Fnamebuffer,r0
+P:0156 0BF080 rrrrrr  6  811 2144         jsr     FMkdir
+                             2145 
+                             2146 ; 306  |}
+                             2147 
+P:0158 05FF7C         4  815 2149         movec   y:-(r7),ssh
+P:0159 000000         2  817 2152         nop
+P:015A 00000C         4  821 2153         rts
+                             2155 
+                             2156 ; 307  |
+                             2157 ; 308  |
+                             2158 ; 309  |INT _reentrant FSDeleteDir(_packed BYTE *dirname,INT DeviceNumber)
+                             2159 ; 310  |{
+                             2160 
+                             2165 FFSDeleteDir:
+P:015B 055F7C         2  823 2166         movec   ssh,y:(r7)+
+                             2173 
+                             2174 ; 311  |        ConvName(dirname, DeviceNumber);
+                             2175 
+P:015C 0BF080 rrrrrr  6  829 2177         jsr     FConvName
+                             2180 
+                             2181 ; 312  |    return Rmdir(namebuffer);
+                             2182 
+P:015E 60F400 rrrrrr  3  832 2184         move    #Fnamebuffer,r0
+P:0160 0BF080 rrrrrr  6  838 2185         jsr     FRmdir
+                             2186 
+                             2187 ; 313  |}
+                             2188 
+P:0162 05FF7C         4  842 2190         movec   y:-(r7),ssh
+P:0163 000000         2  844 2193         nop
+P:0164 00000C         4  848 2194         rts
+                             2196 
+                             2197 ; 314  |
+                             2198 ; 315  |// 1Jul2005 convert to reentrant for yovl mem savings but uses p
+                             2199 ; 316  |INT _reentrant FSFileClose(INT Handle)
+                             2200 ; 317  |{
+                             2201 
+                             2206 FFSFileClose:
+P:0165 055F7C         2  850 2207         movec   ssh,y:(r7)+
+                             2212 
+                             2213 ; 318  |    return Fclose(Handle);
+                             2214 
+P:0166 0BF080 rrrrrr  6  856 2216         jsr     FFclose
+                             2218 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  30
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2219 ; 319  |//    Fclose(Handle); // can use this ver if _inline but extern keyword in h file prevents
+                                   inline from working
+                             2220 ; 320  |}
+                             2221 
+P:0168 05FF7C         4  860 2223         movec   y:-(r7),ssh
+P:0169 000000         2  862 2226         nop
+P:016A 00000C         4  866 2227         rts
+                             2229 
+                             2230 ; 321  |
+                             2231 ; 322  |
+                             2232 ; 323  |/*
+                             2233 ; 324  |;///////////////////////////////////////////////////////////////////////////////
+                             2234 ; 325  |;> Name:            FSFileAppend
+                             2235 ; 326  |; Type:             Function
+                             2236 ; 327  |; Description:      C wrapper for FILEAppend
+                             2237 ; 328  |; Inputs:           
+                             2238 ; 329  |;                   a = Device Number
+                             2239 ; 330  |;                   r0 = Pointer to File Name String
+                             2240 ; 331  |; Outputs:          
+                             2241 ; 332  |;                   a = Handle for the file created or -1 if function failed
+                             2242 ; 333  |;
+                             2243 ; 334  |; Notes:
+                             2244 ; 335  |;                   see FILEAppend for further information.
+                             2245 ; 336  |;                   File name must be in Y memory
+                             2246 ; 337  |;<         
+                             2247 ; 338  |;///////////////////////////////////////////////////////////////////////////////
+                             2248 ; 339  |*/
+                             2249 ; 340  |INT _reentrant FSFileAppend(_packed BYTE *fname,INT DeviceNumber)
+                             2250 ; 341  |{
+                             2251 
+                             2256 FFSFileAppend:
+P:016B 055F7C         2  868 2257         movec   ssh,y:(r7)+
+                             2264 
+                             2265 ; 342  |        ConvName(fname, DeviceNumber);
+                             2266 
+P:016C 0BF080 rrrrrr  6  874 2268         jsr     FConvName
+                             2271 
+                             2272 ; 343  |        return Fopen(namebuffer,(_packed char *)"a");
+                             2273 
+P:016E 64F400 rrrrrr  3  877 2275         move    #L26,r4
+P:0170 60F400 rrrrrr  3  880 2276         move    #Fnamebuffer,r0
+P:0172 0BF080 rrrrrr  6  886 2277         jsr     FFopen
+                             2278 
+                             2279 ; 344  |}
+                             2280 
+P:0174 05FF7C         4  890 2282         movec   y:-(r7),ssh
+P:0175 000000         2  892 2285         nop
+P:0176 00000C         4  896 2286         rts
+                             2288 
+                             2289 ; 345  |
+                             2290 ; 346  |
+                             2291 ; 347  |/*
+                             2292 ; 348  |;///////////////////////////////////////////////////////////////////////////////
+                             2293 ; 349  |;> Name:            FSFileAttribute
+                             2294 ; 350  |; Type:             Function
+                             2295 ; 351  |; Description:      C wrapper for FILEAttribute
+                             2296 ; 352  |; Inputs:           
+                             2297 ; 353  |;                   a = Attribute(s)
+                             2298 ; 354  |;                   r0 = Pointer to file name string
+                             2299 ; 355  |;                   b = Device number.
+                             2300 ; 356  |; Outputs:          
+                             2301 ; 357  |;                   a = -1 if function failed
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  31
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2302 ; 358  |;
+                             2303 ; 359  |; Notes:
+                             2304 ; 360  |;                   see FILEAttribute for further information.
+                             2305 ; 361  |;<         
+                             2306 ; 362  |;///////////////////////////////////////////////////////////////////////////////
+                             2307 ; 363  |*/
+                             2308 ; 364  |INT _reentrant FSFileAttribute(INT Attributes, _packed BYTE *fname, INT DeviceNumber)
+                             2309 ; 365  |{
+                             2310 
+                             2315 FFSFileAttribute:
+P:0177 055F7C         2  898 2316         movec   ssh,y:(r7)+
+P:0178 3F0300         2  900 2319         move    #3,n7
+P:0179 000000         2  902 2320         nop
+P:017A 204F00         2  904 2321         move    (r7)+n7
+                             2335 
+                             2336 ; 366  |    INT retval, attrib;
+                             2337 ; 367  |    INT handle;
+                             2338 
+P:017B 77F400 FFFFFD  3  907 2340         move    #-3,n7
+P:017D 000000         2  909 2341         nop
+P:017E 5C6F00         4  913 2342         move    a1,y:(r7+n7)
+                             2345 
+                             2346 ; 368  |        ConvName(fname, DeviceNumber);
+                             2347 
+P:017F 21AE00         2  915 2349         move    b1,a
+P:0180 0BF080 rrrrrr  6  921 2350         jsr     FConvName
+                             2355 
+                             2356 ; 369  |        handle = Fopen(namebuffer,(_packed char *)"r");
+                             2357 
+P:0182 60F400 rrrrrr  3  924 2359         move    #Fnamebuffer,r0
+P:0184 64F400 rrrrrr  3  927 2360         move    #L6,r4
+P:0186 0BF080 rrrrrr  6  933 2361         jsr     FFopen
+                             2363 
+                             2364 ; 370  |    if (handle < 0)
+                             2365 
+P:0188 200003         2  935 2367         tst     a
+                             2368 
+                             2369 ; 371  |        return handle;
+                             2370 
+P:0189 0AF0A9 rrrrrr  6  941 2372         jlt     L28
+P:018B 77F400 FFFFFE  3  944 2373         move    #-2,n7
+P:018D 000000         2  946 2374         nop
+P:018E 5C6F00         4  950 2375         move    a1,y:(r7+n7)
+                             2376 
+                             2377 ; 372  |    attrib = filegetattrib(namebuffer);
+                             2378 
+P:018F 60F400 rrrrrr  3  953 2380         move    #Fnamebuffer,r0
+P:0191 0BF080 rrrrrr  6  959 2381         jsr     Ffilegetattrib
+                             2384 
+                             2385 ; 373  |    Attributes = Attributes | attrib;        
+                             2386 
+P:0193 77F400 FFFFFD  3  962 2388         move    #-3,n7
+P:0195 000000         2  964 2389         nop
+P:0196 5DEF00         4  968 2390         move    y:(r7+n7),b1
+P:0197 21C400         2  970 2391         move    a,x0
+P:0198 20004A         2  972 2392         or      x0,b
+P:0199 21AF00         2  974 2397         move    b1,b
+                             2400 
+                             2401 ; 374  |    retval = filesetattrib(handle, Attributes);
+                             2402 
+P:019A 77F400 FFFFFE  3  977 2404         move    #-2,n7
+P:019C 000000         2  979 2405         nop
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  32
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+P:019D 5EEF00         4  983 2406         move    y:(r7+n7),a
+P:019E 0BF080 rrrrrr  6  989 2407         jsr     Ffilesetattrib
+P:01A0 045FA0         2  991 2410         movec   m0,n7
+P:01A1 000000         2  993 2411         nop
+P:01A2 5E6F00         4  997 2412         move    a,y:(r7+n7)
+                             2414 
+                             2415 ; 375  |    Fclose(handle);
+                             2416 
+P:01A3 77F400 FFFFFE  3 1000 2418         move    #-2,n7
+P:01A5 000000         2 1002 2419         nop
+P:01A6 5EEF00         4 1006 2420         move    y:(r7+n7),a
+P:01A7 0BF080 rrrrrr  6 1012 2421         jsr     FFclose
+                             2422 
+                             2423 ; 376  |    return retval;
+                             2424 
+P:01A9 045FA0         2 1014 2426         movec   m0,n7
+P:01AA 000000         2 1016 2427         nop
+P:01AB 5EEF00         4 1020 2428         move    y:(r7+n7),a
+                             2431 
+                             2432 ; 377  |}
+                             2433 
+P:01AC 77F400 FFFFFC  3 1023 2435 L28:    move    #-4,n7
+P:01AE 000000         2 1025 2436         nop
+P:01AF 05EF7C         4 1029 2437         movec   y:(r7+n7),ssh
+P:01B0 204F00         2 1031 2439         move    (r7)+n7
+P:01B1 00000C         4 1035 2441         rts
+                             2444 
+                             2445 ; 378  |
+                             2446 ; 379  |
+                             2447 ; 380  |
+                             2448 ; 381  |INT _reentrant FSFileAttributeClear(INT Attributes, _packed BYTE *fname, INT DeviceNumber)
+                                  
+                             2449 ; 382  |{
+                             2450 
+                             2455 FFSFileAttributeClear:
+P:01B2 055F7C         2 1037 2456         movec   ssh,y:(r7)+
+P:01B3 3F0300         2 1039 2459         move    #3,n7
+P:01B4 000000         2 1041 2460         nop
+P:01B5 204F00         2 1043 2461         move    (r7)+n7
+                             2475 
+                             2476 ; 383  |    INT retval, attrib;
+                             2477 ; 384  |    INT handle;
+                             2478 
+P:01B6 77F400 FFFFFD  3 1046 2480         move    #-3,n7
+P:01B8 000000         2 1048 2481         nop
+P:01B9 5C6F00         4 1052 2482         move    a1,y:(r7+n7)
+                             2485 
+                             2486 ; 385  |        ConvName(fname, DeviceNumber);
+                             2487 
+P:01BA 21AE00         2 1054 2489         move    b1,a
+P:01BB 0BF080 rrrrrr  6 1060 2490         jsr     FConvName
+                             2495 
+                             2496 ; 386  |        handle = Fopen(namebuffer,(_packed char *)"r");
+                             2497 
+P:01BD 60F400 rrrrrr  3 1063 2499         move    #Fnamebuffer,r0
+P:01BF 64F400 rrrrrr  3 1066 2500         move    #L6,r4
+P:01C1 0BF080 rrrrrr  6 1072 2501         jsr     FFopen
+                             2503 
+                             2504 ; 387  |    if (handle < 0)
+                             2505 
+P:01C3 200003         2 1074 2507         tst     a
+                             2508 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  33
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+                             2509 ; 388  |        return handle;
+                             2510 
+P:01C4 0AF0A9 rrrrrr  6 1080 2512         jlt     L30
+P:01C6 77F400 FFFFFE  3 1083 2513         move    #-2,n7
+P:01C8 000000         2 1085 2514         nop
+P:01C9 5C6F00         4 1089 2515         move    a1,y:(r7+n7)
+                             2516 
+                             2517 ; 389  |    attrib = filegetattrib(namebuffer);
+                             2518 
+P:01CA 60F400 rrrrrr  3 1092 2520         move    #Fnamebuffer,r0
+P:01CC 0BF080 rrrrrr  6 1098 2521         jsr     Ffilegetattrib
+                             2524 
+                             2525 ; 390  |    Attributes = Attributes ^ 0xffffff;
+                             2526 
+P:01CE 77F400 FFFFFD  3 1101 2528         move    #-3,n7
+P:01D0 000000         2 1103 2529         nop
+P:01D1 5DEF00         4 1107 2530         move    y:(r7+n7),b1
+P:01D2 45F400 FFFFFF  3 1110 2531         move    #$FFFFFF,x1
+P:01D4 20006B         2 1112 2532         eor     x1,b
+                             2535 
+                             2536 ; 391  |    Attributes = Attributes & attrib;
+                             2537 
+P:01D5 21C600         2 1114 2539         move    a,y0
+P:01D6 20005E         2 1116 2540         and     y0,b
+P:01D7 21AF00         2 1118 2543         move    b1,b
+                             2546 
+                             2547 ; 392  |    retval = filesetattrib(handle, Attributes);
+                             2548 
+P:01D8 77F400 FFFFFE  3 1121 2550         move    #-2,n7
+P:01DA 000000         2 1123 2551         nop
+P:01DB 5EEF00         4 1127 2552         move    y:(r7+n7),a
+P:01DC 0BF080 rrrrrr  6 1133 2553         jsr     Ffilesetattrib
+P:01DE 045FA0         2 1135 2556         movec   m0,n7
+P:01DF 000000         2 1137 2557         nop
+P:01E0 5E6F00         4 1141 2558         move    a,y:(r7+n7)
+                             2560 
+                             2561 ; 393  |    Fclose(handle);
+                             2562 
+P:01E1 77F400 FFFFFE  3 1144 2564         move    #-2,n7
+P:01E3 000000         2 1146 2565         nop
+P:01E4 5EEF00         4 1150 2566         move    y:(r7+n7),a
+P:01E5 0BF080 rrrrrr  6 1156 2567         jsr     FFclose
+                             2568 
+                             2569 ; 394  |    return retval;
+                             2570 
+P:01E7 045FA0         2 1158 2572         movec   m0,n7
+P:01E8 000000         2 1160 2573         nop
+P:01E9 5EEF00         4 1164 2574         move    y:(r7+n7),a
+                             2577 
+                             2578 ; 395  |}
+                             2579 
+P:01EA 77F400 FFFFFC  3 1167 2581 L30:    move    #-4,n7
+P:01EC 000000         2 1169 2582         nop
+P:01ED 05EF7C         4 1173 2583         movec   y:(r7+n7),ssh
+P:01EE 204F00         2 1175 2585         move    (r7)+n7
+P:01EF 00000C         4 1179 2587         rts
+                             2590 
+                             2591 ; 396  |    
+                             2592 ; 397  |    
+                             2593 
+                             2595 
+                             2599 
+TASKING DSP2410 assembler v1.5r1 Build 138 SN 00100122
+                                                                                                                            Page  34
+
+M:ADDR CODE           CYCLES LINE SOURCELINE
+Y:0000                       2600         org     y,".ybssfsutilsc",bss:
+                             2601 Fnamebuffer:
+Y:0000                       2602         ds      86
+   |   RESERVED                   
+Y:0055
+                             2621 
+Y:0000                       2622         org     y,".yconstfsutilsc",const:
+Y:0000 000061 000000         2623 L26:    dc      "a"++$00
+Y:0002 000072 000000         2628 L6:     dc      "r"++$00
+Y:0004 000077 000000         2631 L16:    dc      "w"++$00
+Y:0006 000072 00002B         2642 L7:     dc      "r+"++$00
+       000000                     
+                             2651 
+                             2652         extern  FChdir, y:FDriveLetter, FFSGetByte, FFastOpen, FFclose
+                             2653         extern  FFeof, FFopen, FFread, FFremove, FFseek, FFtell, FFwrite
+                             2654         extern  FGetFileSize, FMkdir, FPutByte, FRmdir, Ffilegetattrib
+                             2655         extern  Ffilesetattrib
+                             2656 
+                             2657         global  FConvName, FDummyvariable, FFSChangeDir, FFSCreateDir
+                             2658         global  FFSDeleteDir, FFSFastOpen, FFSFileAppend, FFSFileAttribute
+                             2659         global  FFSFileAttributeClear, FFSFileClose, FFSFileCreate
+                             2660         global  FFSFileDelete, FFSFileEof, FFSFileOpen, FFSFileRead
+                             2661         global  FFSFileSize, FFSFileWrite, Ffseek, Fftell, Fnamebuffer
+                             2662 
+                             2663         local   L3, L4, L5, L6, L7, L8, L10, L11, L13, L14, L15, L16, L17
+                             2664         local   L18, L19, L21, L22, L23, L25, L26, L28, L30
+                             2665         local   ss_FSFileCreate, ss_FSFileDelete
+                             2666 
+                             2667         calls   "ConvName", "FSGetByte", "PutByte"
+                             2668         calls   "FSChangeDir", "Chdir", "ConvName"
+                             2669         calls   "FSCreateDir", "ConvName", "Mkdir"
+                             2670         calls   "FSDeleteDir", "ConvName", "Rmdir"
+                             2671         calls   "FSFastOpen", "FastOpen"
+                             2672         calls   "FSFileAppend", "ConvName", "Fopen"
+                             2673         calls   "FSFileAttribute", "ConvName", "Fclose", "Fopen"
+                             2674         calls   "FSFileAttribute", "filegetattrib", "filesetattrib"
+                             2675         calls   "FSFileAttributeClear", "ConvName", "Fclose", "Fopen"
+                             2676         calls   "FSFileAttributeClear", "filegetattrib", "filesetattrib"
+                             2677         calls   "FSFileClose", "Fclose"
+                             2678         calls   "FSFileCreate", "ConvName", "Fopen"
+                             2679         calls   "FSFileDelete", "ConvName", "Fremove"
+                             2680         calls   "FSFileEof", "Feof"
+                             2681         calls   "FSFileOpen", "ConvName", "Fopen"
+                             2682         calls   "FSFileRead", "Fread"
+                             2683         calls   "FSFileSize", "GetFileSize"
+                             2684         calls   "FSFileWrite", "Fwrite"
+                             2685         calls   "fseek", "Fseek"
+                             2686         calls   "ftell", "Ftell"
+                             2687 
